@@ -1,0 +1,131 @@
+Specification "sn.lf".
+
+Schema c :=
+ {T}(x:tm,y:of x T).
+
+%The following collection of theorems let us omit some assumptions about
+%typing which can be infered from other assumption derivations
+Theorem step__tm :
+ctx G:c, forall M N D, {G |- D : step M N} => {G |- M : tm} /\ {G |- N : tm}.
+induction on 1. intros. case H1.
+  %case 1: step_lam
+    apply IH to H5. case H6. split. search. search.
+  %case 2: step_beta
+    split. search. inst H3 with n = M1. search.
+  %case 3: step_app2
+    apply IH to H5. case H6. split. search. search.
+  %case 4: step_app1
+    apply IH to H5. case H6. split. search. search.
+    
+Theorem sn__tm :
+ctx G:c, forall M D, {G |- D : sn M} => {G |- M : tm}.
+intros. case H1. search.
+
+
+%Formulas for sn:
+%(ctx G:c, forall M,
+%    {G |- M : tm} =>
+%    (forall N D, {G |- D : step M N} => exists D', {G |- D' : sn N}) =>
+%        exists D, {G |- D : sn M})
+% and
+%(ctx G:c, forall M D,
+%    {G |- D : sn M} =>
+%        forall N D, ({G |- D : step M N} => exists D', {G |- D' : sn N}))
+%% The later of these formulas can be proved directly in the logic using instantiation.
+Theorem sn_step__sn : ctx G:c, forall M D,
+    {G |- D : sn M} =>
+        forall N D, ({G |- D : step M N} => exists D', {G |- D' : sn N}).
+intros. case H1. apply step__tm to H2. case H5.
+inst H4 with n = N. inst H8 with n1 = D1.
+exists (P N D1). search.
+
+%%reduction steps preserve typing
+Theorem of_step : ctx G:c, forall M N T D1 D2,
+{G |- D1 : of M T} => {G |- D2 : step M N} => exists D3, {G |- D3 : of N T}.
+induction on 2. intros. case H2.
+  %case 1: step_lam
+    case H1. apply IH to H10 H6. prune H11.
+    exists (of_lam ([x]R' x) T1 T2 ([x][y]D1 y x)). search.
+  %case 2: step_beta
+    case H1. case H10.
+    inst H15 with n2 = M1. inst H16 with n3 = D5.
+    exists (D6 M1 D5). search.
+  %case 3: step_app2
+    case H1. apply IH to H12 H6.
+    exists (of_app M1 N' T U a1 D3). search.
+  %case 4: step_app1
+    case H1. apply IH to H11 H6.
+    exists (of_app M' N1 T U D3 a2). search.
+
+%%sn is preserved by reduction steps
+Theorem sn_step : ctx G:c, forall M N D1 D2,
+{G |- D1 : sn M} => {G |- D2 : step M N} => exists D3, {G |- D3 : sn N}.
+intros. case H1. apply step__tm to H2. case H5. inst H4 with n = N. inst H8 with n1 = D2.
+exists (P N D2). search.
+
+%%CR2
+Theorem reduce_step :
+ctx G:c, forall M N T D1 D2,
+    {G |- D1 : reduce M T} => {G |- D2 : step M N} => exists D3, {G |- D3 : reduce N T}.
+induction on 1. intros. apply step__tm to H2. case H3. case H1.
+  %case 1: reduce_arr
+    %%%to obtain the typing judgement {G |- D : of N (arr A B)}
+      apply of_step to H9 H2. prune H11.
+    %%%to obtain the reducibility judgement {G |- [x][y] D x y : {x:tm}{y:of x A}reduce (app N x) B}
+      assert {G, n:tm, n1:reduce n A |- step_app1 M n N D2 : step (app M n) (app N n)}.
+        weaken H7 with tm. weaken H4 with tm. weaken H13 with (reduce n3 A).
+        weaken H5 with tm. weaken H15 with (reduce n5 A).
+        weaken H2 with tm. weaken H17 with (reduce n7 A).
+        search.
+      apply IH to H10 H12.
+      exists (reduce_arr N A B D3 ([x][y]D1 y x)). search.
+  %case 2: reduce_top
+    apply of_step to H7 H2. apply sn_step to H8 H2.
+    exists (reduce_top N D3 D1). search.
+
+%%CR2 with induction directly on the type T rather than through reduce
+%%CR2
+Theorem reduce_step :
+ctx G:c, forall M N T D1 D2,
+    {G |- T : ty} =>
+    {G |- D1 : reduce M T} => {G |- D2 : step M N} => exists D3, {G |- D3 : reduce N T}.
+induction on 1. intros. apply step__tm to H3. case H4. case H1.
+  %case 1: arrow type
+    case H2. apply of_step to H12 H3. prune H14.
+    assert {G, n:tm, n1:reduce n T1 |- step_app1 M n N D2 : step (app M n) (app N n)}.
+        weaken H10 with tm. weaken H5 with tm. weaken H16 with (reduce n3 T1).
+        weaken H6 with tm. weaken H18 with (reduce n5 T1).
+        weaken H3 with tm. weaken H20 with (reduce n7 T1).
+        search.
+    weaken H10 with tm. weaken H8 with tm. weaken H17 with (reduce n3 T1).
+    apply IH to H18 H13 H15. prune H19.
+      exists (reduce_arr N T1 T2 D3 ([x][y] D1 y x n2)). search.
+  %case 2: top type
+    case H2. apply of_step to H8 H3. apply sn_step to H9 H3.
+    exists (reduce_top N D3 D1). search.
+
+%%% sn (app M x) => sn M
+Theorem sn_app_c :
+(ctx G:c, forall M,
+    {G |- M : tm} =>
+    (forall N D, {G |- D : step M N} => exists D', {G |- D' : sn N}) =>
+        exists D, {G |- D : sn M}) => 
+(ctx G:c, forall M D,
+    {G |- D : sn M}@ =>
+        forall N D, ({G |- D : step M N} => exists D', {G |- D' : sn N}*)) => 
+ctx G:c, forall M x D,
+{G |- D : sn (app M x)} => exists D, {G |- D : sn M}.
+induction on 3. intros. case H3(keep).
+%%%% using the property in H2 moving from sn to the definition
+apply H2 to H3.
+%%%% show the key property of stron normalizability: anything M steps to is strongly normalizing
+assert (forall N D, {G |- D : step M N} => exists D', {G |- D' : sn N}).
+  intros. apply step__tm to H7. case H8. prune H10. prune H7.
+  assert {G |- step_app1 M x N D: step (app M x) (app N x)}.
+      case H4. search.
+  apply H6 to H11. prune H12.
+  apply IH to H1 H2. apply H13 to H12. prune H14.
+  exists D1. search.
+%%%% use property of H1 to move from the formula being true to existance of an LF derivation and conclude
+case H4. apply H1 to H8 H7. prune H10.
+exists D. search.

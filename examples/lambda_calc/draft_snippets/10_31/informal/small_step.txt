@@ -1,0 +1,70 @@
+Typing rules for the STLC:
+
+x:t ∈ Γ
+======= var
+Γ ⊢ x:t
+
+Γ, x:t1 ⊢ m:t2
+============== abs
+Γ ⊢ λx:t1.m : t1→t2
+
+Γ⊢m:t1→t2   Γ⊢n:t1
+=================== app
+Γ ⊢ m n:t2
+
+Weak small step call by value reduction rules for the STLC:
+
+
+==================================== β
+(λx:t1.m) (λy:t2.n) → [x→(λy:t2.n)]m
+
+m1 → m2
+=========== app1
+m1 n → m2 n
+
+n1 → n2
+========================= app2
+(λx:t.m) n1 → (λx:t.m) n2
+
+
+Subject Reduction: forall contexts Γ, terms m1 and m2 and type t,
+
+Γ⊢m1:t ==> m1→m2 ==> Γ⊢m2:t
+
+Proof:
+
+We will prove this by induction on the height of the derivation tree for
+reduction.  Proceed by cases on the final reduction rule used.
+
+β case:
+  m1 = (λx:(t1→t2)→t.m3) (λy:t1.m4)
+  m2 = [x→(λy:t1.m4)] m3
+
+Since m1 is an application, Γ⊢m1:t must have been proven using the app rule.
+Therefore, we know Γ,x:t1→t2⊢m3:t and Γ⊢(λy:t1.m4):t1→t2. Using instantiation,
+we know Γ⊢[x→(λy:t1.m4)] m3:t which is exactly what must be proven.
+
+app1 case:
+  m1 = m3 n
+  m2 = m4 n
+  we know m3 → m4
+
+Since m1 is an application, Γ⊢m1:t must have been proven using the app rule.
+Therefore, we know Γ⊢m3:t2→t and Γ⊢n:t2 for some t2. Using the inductive
+hypothesis on Γ⊢m3:t2→t and m3→m4, we know Γ⊢m4:t2→t. Applying the app rule with
+Γ⊢n:t2, we get Γ⊢m4 n:t, which is exactly what must be proven.
+
+app2 case:
+  m1 = (λx:t2.m3) n1
+  m2 = (λx:t2.m3) n2
+  we know n1 → n2
+
+Since m1 is an application whose typing judgements were proven
+using the app rule, we know:
+
+  Γ⊢(λx:t2.m3):t2→t
+  Γ⊢n1:t2
+
+Using the inductive hypothesis with Γ⊢n1:t2 and (n1→n2) we know that Γ⊢n2:t2.
+Applying the app rule with Γ⊢n2:t2 and Γ⊢(λx:t2.m3):t2→t gives us
+Γ⊢(λx:t2.m3)n2:t, which is exactly what must be proven.

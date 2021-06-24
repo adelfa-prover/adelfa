@@ -1,0 +1,11 @@
+Examples in First Order Logic.
+
+arith
+-----
+Examples encoding and reasoning about natural numbers and arithmetic
+expressions.
+
+
+lists
+-----
+Encoding of lists of natural numbers, append and reverse.

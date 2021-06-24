@@ -1,0 +1,16 @@
+nat : type.
+z : nat.
+s : {x:nat} nat.
+
+plus : nat -> nat -> nat -> type.
+plus_z : {N:nat} plus z N N.
+plus_s : {N1:nat}{N2:nat}{N3:nat}
+  {P:plus N1 N2 N3} plus (s N1) N2 (s N3).
+
+mult : nat -> nat -> nat -> type.
+mult_z : {N:nat} mult z N z.
+mult_s : {N1:nat}{N2:nat}{N3:nat}{N4:nat}
+    {M:mult N1 N2 N3}{P: plus N2 N3 N4} mult (s N1) N2 N4.
+
+eq : nat -> nat -> type.
+refl : {N:nat} eq N N.

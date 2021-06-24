@@ -1,0 +1,5 @@
+<src> : include
+<src/main.*> : package(str)
+<planning_notes> : -include
+<src/test> : include
+<src/test/*.*> : package(oUnit), package(str)

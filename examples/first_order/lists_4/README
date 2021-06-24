@@ -1,0 +1,151 @@
+Let us define the relation rev_acc between three lists as follows:
+
+                  ----------------     rev_acc_nil
+		   rev_acc nil L L
+
+
+
+                 rev_acc L1 (X::L2) L3
+		 ---------------------   rev_acc_cons
+		 rev_acc (X::L1) L2 L3
+
+
+Using the relation, we define the main relation, rev:
+
+                rev_acc L1 nil L2
+		-----------------
+		    rev  L1 L2
+
+
+We then have the following Lemmas
+
+Lemma 1:
+   for all L1 L2 L3 L4,
+      if (rev_acc L1 L2 L3) and (rev_app L1 L2 L4) are derivable then L3 = L4.
+
+Proof:
+
+  We prove the (universal) statement by induction on the height of the
+  derivation of (rev_acc L1 L2 L3); the hypothesis is invoked as we
+  consider the cases for the derivation.
+
+  If (rev_acc L1 L2 L3) is derived by rev_app_nil, then clearly L1 =
+  nil and L3 = L2. But now (rev_acc nil L2 L4) could only be derived
+  by rev_acc_nil and then L4 = L2, from which obviously L3 = L4.
+
+  If (rev_acc_nil L1 L2 L3) is derived by rev_app_cons, the, for some
+  X and L1', L1 = (X::L1') and (rev_acc L1' (X::L2) L3) has a shorter
+  derivation. But then (rev_acc_cons L1 L2 L4) could obly have been
+  derived by deriving (rev_acc_cons L1' (X::L2) L4). Invoking the
+  induction hypothesis with (rev_acc L1' (X::L2) L3) and
+  (rev_acc_cons L1' (X::L2) L4), it follows that L3 = L4.
+ QED 
+
+Lemma 2
+
+for all L1 L2 L3 L4 L5,
+  If (rev_acc L1 L2 L3), (rev_app L3 nil L4) and (rev_app L2 L1 L5) have
+  derivations, then L4 = L5.
+
+Proof:
+
+We prove the statement by induction on the height of the derivation of
+(rev_acc L1 L2 L3); the induction hypothesis is invoked as we consider
+the cases by which this judgement was derived.
+
+Suppose it was derived by rev_acc_nil. Then L1 = nil and L2 = L3. Then
+we have derivations for (rev_acc L2 nil L4) and (rev_app L2 nil
+L5). By Lemma 1, L4 = L5.
+
+Suppose it was derived by rev_acc_cons. Then there is some X and L1'
+such that L1 = (X::L1') and (rev_acc L1' (X::L2) L3) has a shorter
+derivation. Since (rev L2 (X::L1') L5) has a derivation, by rev_acc_cons, so
+does (rev_acc (X::L2) L1' L5). Using the further assumption that
+(rev_acc L3 nil L4) has a derivation, from the induction hypothesis it
+follows that L4 = L5.
+QED
+
+We can use Lemma 2 to conclude that the accumulator based version of
+reverse is convolutive by picking L2 in the lemma to be nil. However,
+to do so, we need to know that there is a derivation of
+(rev_acc L3 nil L4). We cannot be sure about this unless we know that
+L3 has a list structure. Fortunately, we can guarantee this from
+knowing that (rev_acc L1 nil L3) holds.
+
+To make all this explicit, we first introduce the definition of an
+islist relation:
+
+               -------------------
+	            islist nil
+
+                     islist L
+  		   -------------
+		   islist (X::L)
+
+Then, we prove the following lemmas
+
+Lemma 3
+
+For all L1 L2 L3,
+  if (rev_acc L1 L2 L3) and (islist L2) have derivations then
+  (islist L3) has one too.
+
+Proof:
+
+By induction on the height of the derivation of (rev_acc L1 L2 L3);
+the hypothesis gets used in the course of analyzing the cases by which
+(rev_acc L1 L2 L3) was derived.
+
+If it was derived using rev_acc_nil, then L3 = L2 and the result is
+obvious.
+
+If it was derived using rev_acc_cons, then for some X and L1' we have
+that L1 = (X::L1') and (rev_acc L1' (X::L2) L3) has a shorter
+derivation. It is easy to see that (islist (X::L2)) must have a
+derivation if (islist L2) has a derivation. But then the induction
+hypothesis leads to the conclusion that (islist L3) must hold.
+QED
+
+Lemma 4
+
+  for all L1 L2,
+    if islist L1 has a derivation then there must be an L3 such that 
+    (rev_acc L1 L2 L3) has a derivation.
+
+Proof:
+
+By induction on the height of the derivation of (islist L1). We
+consider by cases the ways in which it may have been derived.
+
+If it was derived by using rev_acc_nil, then pick L3 to be L2: clearly
+(rev_acc nil L2 L2) has a derivation.
+
+If it was derived using rev_acc_cons, then for some X and L1' it is
+the case that L1 = (X::L1) and (islist L1) has a shorter
+derivation. By the induction hypothesis, there is some L3 such that
+(rev_acc L1' (X:: L2) L3) has a derivation. But then clearly
+(rev_acc (X::L1') L2 L3) must also have a derivation.
+QED
+
+
+We can now prove the main theorem. 
+
+
+Main Theorem
+
+for all L1 L2, if (rev L1 L2) has a derivation then (rev L2 L1) also
+has a derivation.
+
+Proof:
+
+Since (rev L1 L2) has a derivation, (rev_acc L1 nil L2) must have a
+derivation.
+
+Using Lemma 3 it follows that (islist L2) has a derivation. Using
+Lemma 4 it follows that there is some L3 such that (rev_acc L2 nil L3)
+has a derivation.
+
+Clearly, (rev_acc nil L1 L1) has a derivation.
+
+Putting all this together with Lemma 2, we conclude that (rev L2 L1)
+has a derivation.

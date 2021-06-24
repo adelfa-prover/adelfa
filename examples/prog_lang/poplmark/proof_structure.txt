@@ -1,0 +1,207 @@
+Discussion of Transitivity & Narrowing Result
+=============================================
+
+a note about the structure of contexts.
+---------------------------------------
+
+
+To state the narrowing property we will need to identify the
+particular binding on which narrowing is performed. In binding this
+variable however, we essentially make it so that narrowing can only be
+applied on the last context entry since dependencies do not allow
+context entries to be freely permuted. For example, in a context
+    x1:ty, y1:bound x1 T1, x2:ty, y2:bound x2 T2(x1)
+we cannot move (y2:bound x2 T2(x1)) to the left of (x1:ty).
+
+It is also important that these subtyping assumptions are permitted
+for variables only, not arbitrary type expressions.
+
+To follow the approach of the CMU solution which weakens the context
+such that the structure can be described in a way where the ty
+variable can be disassociated from the binding assumption. In the end,
+the specification ensures that the contexts are only extended by both
+pieces but the schema is flexible enough to allow for permutation of
+independent parts in reasoning.
+
+context structure:
+  L satisfies the structure ctx if:
+    - L = L',(x:ty,y:var x,z:bound x S,w:bound_var x S z y)
+      and L' satisfies the structure ctx
+    - L = L',(x:ty,y:var x)
+      and L' satisfies the structure ctx
+    - L = L',(z:bound X S,w:bound_var X S z DV)
+      and L' satisfies the structure ctx
+    - L = nil
+
+
+Thus in our encoding we interpret a type variable binding, "X <: T",
+using a sequence of dependent context entries capturing that X is a
+type, X is a variable, X is bound to T, and that this binding is
+well-formed (i.e. is for something bound earlier and which is a
+variable).
+
+
+The LF Specification
+--------------------
+Given the note about context above, I have also chosen to include more
+assumptions in the form of the rules for subtyping which I encode for
+the problem. The encoding use is one which explicitly builds in
+checks that the context is well-formed through LF typing assumptions.
+
+
+SA-Top:
+------------------
+Gamma |- S <: Top
+
+SA-Refl-TVar:
+Gamma |- X type variable 
+--------------------------
+Gamma |- X <: X
+
+SA-Trans-TVar:
+Gamma |- U <: T   X<:U in Gamma 
+---------------------------------
+Gamma |- X :< T
+
+SA-Arrow:
+Gamma |- T1 <: S1   Gamma |- S2 <: T2
+----------------------------------------------------
+Gamma |- S1 -> S1 <: T1 -> T2
+
+SA-All:
+Gamma |- T1<:S1   Gamma,X<:T1 |- S2 <: T2
+------------------------------------------------------
+Gamma |- All X<: S1. S2 <: All X<:T1.T2
+
+
+For example, we have included premises on SA-Refl-TVar which require
+that we verify X is a type variable, which we check by identifying the
+existence of some X<:S in Gamma.
+
+Thus, in the LF encoding of this system we end up with a slightly
+different form than in the Twelf solution. In both SA-Refl-TVar and
+SA-Trans-TVar the premise that there exists a subtyping assumption
+X <: T is encoded through premises that ensure all four of the
+components are available.
+
+Through these choices the details of our solution look somewhat
+different than what is done in the Twelf solution as we have made
+explicit the additional assumptions which are involved in working with
+the dependencies in the contexts. For example, in Twelf they
+explicitly prove theorems that assuming "var top", "var (arrow...)",
+or "var (all...)" leads to a contradiction. Making this explicit is
+unnecessary in our solution as it is obvious that such a judgment is
+not derivable.
+
+Lemmas
+------
+
+There are a few lemmas which are useful in the course of this
+discussion.
+
+1. a well-formed subtyping relation implies types are well-formed
+ctx L:c, forall D U1 U2, {L |- D : sub U1 U2} =>
+    {L |- U1 : ty} /\ {L |- U2 : ty}.
+
+This lemma is used to determine that the two terms U1 and U2 must be
+well formed of the type `ty' if there is an assumption that
+{L |- sub U1 U2} is valid.
+
+2. strengthening properties for types "ty" and "var X"
+ctx L:c, forall X S DV T: o -> o -> o,
+  {L |- X : ty} => {L |- S : ty} => {L |- DV : var X} =>
+  {L |- [x][y] T x y : {x:bound X S}{y:bound_var X S x DV}ty} =>
+  exists T' Eq, {L |- Eq : eq_ty X S DV ([x][y] T x y) ([x][y] T')}.
+
+Theorem var_strengthening : ctx L:c, forall Q X S DV T: o -> o -> o,
+  {L |- X : ty} => {L |- S : ty} => {L |- DV : var X} =>
+  {L |- [x][y] T x y : {x:bound X S}{y:bound_var X S x DV}var Q} =>
+  exists T' Eq, {L |- Eq : eq_var Q X S DV ([x][y] T x y) ([x][y] T')}.
+
+Given the valid ways to construct terms of these sorts of types, their
+derivations cannot depend on any assumptions of the type "bound ..."
+or "bound_var ...". Thus a derivation with such assumptions can be
+strengthened.
+These results are useful in proving the next lemma, a form of narrowing.
+
+3. narrowing properties for types "ty" and "var X"
+ctx L:c, forall Q X P D T: o -> o -> o DV,
+  {L |- X : ty} => {L |- DV : var X} =>
+  {L |- D : sub P Q} =>
+  {L |- [x][y](T x y) : {x:bound X Q}{y:bound_var X Q x DV}ty} =>
+  {L |- [x][y](T x y) : {x:bound X P}{y:bound_var X P x DV}ty}.
+
+ctx L:c, forall S Q X P D T: o -> o -> o DV,
+  {L |- X : ty} => {L |- DV : var X} =>
+  {L |- D : sub P Q} =>
+  {L |- [x][y](T x y) : {x:bound X Q}{y:bound_var X Q x DV}var S} =>
+  {L |- [x][y](T x y) : {x:bound X P}{y:bound_var X P x DV}var S}.
+
+Obviously, since judgments of these types cannot depend on assumptions
+of types "bound ..." or "bound_var ..." we can include any assumptions
+we like of such types, as long as they are well-formed.
+
+In proving narrowing for the system F<:, it is useful to be able to
+also apply the narrowing within the context of other judgments like
+these in constructing the desired derivations.
+
+
+Transitivity & Narrowing Proof
+------------------------------
+
+Informally, the theorem would be stated as follows.
+
+For all Q and all contexts G of the form (n1:ty,...,nm:ty) such that
+{G |- Q : ty} is valid, 
+  (1) for all contexts L satisfying structure ctx, for all terms D1 D2 P and T,
+  if {L |- D1:sub P Q} and {L |- D2 : sub Q T} are valid then there is
+  a term D3 such that {L |- D3:sub P T} is valid and,
+  (2) for all contexts L satisfying structure ctx,
+  for all terms D1 D2 P Q X M and N,
+  if  => {L |- D1 : sub P Q} and
+  {L, n1:bound X Q, n2:bound_var X Q n1 DV |- D2 : sub M N} are valid,
+  then there is a term D3 such that {L, n1:bound X P |- D3 : sub M N}
+  is valid.
+
+
+In proving transitivity for a forall type we will need to apply
+narrowing, which is why we prove the two properties by mutual
+induction. The proof is by induction and case analysis on the well
+formedness of the type Q (validity of {G |- Q : ty}). In proving
+transitivity there is an inner induction and case analysis on the
+formula {L |- D1:sub P Q}, and in proving narrowing there is an inner
+induction and case analysis on
+{L, n1:bound X Q, n2:bound_var X Q n1 DV |- D2 : sub M N}. In proving
+narrowing we will need to apply transitivity for the type Q and so we
+will prove transitivity first and then narrowing.
+
+Note the inclusion of assumptions {L |- X : ty} and {L |- DV : var X}
+in the statement of narrowing. These are necessary to ensure that for
+all instance, the context expression
+(L, n1:bound X Q, n2:bound_var X Q n1 DV)
+will be a good LF context. This is necessary for the statement to be
+valid, as an ill-formed context would mean it is not possible to find
+a D3 such that the conclusion formula is valid.
+
+Considering the Twelf proof script
+----------------------------------
+
+We can see that the structure of the argument that we have provided
+corresponds with that of the existing solution in Twelf to the
+challenge problem. Some details (like needing to use a natural number
+to ensure termination properties) are specific to Twelf and are not
+part of our solution, but the overall structure is the same.
+
+The termination ordering given in Twelf identifies a mutual
+lexicographical ordering, which mirrors the nested and mutual
+induction of our proof. One thing to note is that this is where the
+numbering argument comes to play here so that narrowing can call
+to transitivity on the same term Q because the nat term does
+decrease and so the ordering decreases.
+
+There is a term-level constant for every possible combination of
+ground input terms to the relation, and each case determined by our
+case analysis will correspond to one of these. The types of the
+constants describe the proof structure for that case with arguments
+types that are also relations corresponding to applications of the
+corresponding lemma or inductive hypothesis.

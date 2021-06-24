@@ -1,0 +1,42 @@
+Untyped Terms
+=============
+<uterm> =
+  <constant>
+  <var-id>
+  Type
+  {<var-id>:<uterm>} <uterm>     (<-- pi)
+  <uterm> -> <uterm>
+  [<var-id>:<uterm>] <uterm>     (<-- lam)
+  <uterm> <uterm>
+
+Untyped Context Expressions
+===========================
+<entry> = <var-id> : <uterm>
+
+<ctx-var> = <var-id> : <schema-name>
+
+<block> = <var-id> ... <var-id>. <entry>, ..., <entry>
+
+<ctx-expr> =
+  ""
+  <var-id>
+  <ctx-expr>,<entry>
+
+Untyped Formulas
+================
+<annotation> =
+  ""
+  @
+  *
+
+<uformula> =
+  true
+  false
+  <uformula> => <uformula>
+  <uformula> /\ <uformula>
+  <uformula> \/ <uformula>
+  forall <var-id> ... <var-id>, <uformula>
+  exists <var-id> ... <var-id>, <uformula>
+  ctx <ctx-var> ... <ctx-var>, <uformula>
+  < <ctx-expr> |- <uterm> : <uterm> ><annotation>
+

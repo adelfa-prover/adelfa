@@ -1,0 +1,31 @@
+Specification "miniml.lf".
+
+Theorem id_fun :
+  forall F, < F : texpr (arrow nat nat) > => exists G, <G : texpr (arrow nat nat)> =>
+  forall X, <X : texpr nat> =>
+  exists V D1 D2,
+      <D1 : teval nat (app-t nat nat F (app-t nat nat G X)) V> /\
+      <D2 : teval nat (app-t nat nat G (app-t nat nat F X)) V> .
+intros. exists (lam-t nat nat ([x] x)).
+intros.
+exists (app-t nat nat F X).
+exists (teval-app nat nat F (app-t nat nat ([x] x) X) ([x] F' x) Y (app-t nat nat F X) (:teval nat )).
+
+
+Theorem id_fun :
+  forall F, < F : texpr (arrow nat nat) > => exists G, <G : texpr (arrow nat nat)> =>
+  forall X, <X : texpr nat> =>
+  forall V1 V2 D1 D2,
+      <D1 : teval nat (app-t nat nat F (app-t nat nat G X)) V1> =>
+      <D2 : teval nat (app-t nat nat G (app-t nat nat F X)) V2> =>
+  exists D, <D : teq nat V1 V2>.
+intros. exists (lam-t nat nat ([x] x)). intros.
+case H1.
+  %case 1: fix
+  %case 2: 
+  %case 3:
+  %case 4:
+  %case 5:
+  %case 6:
+  %case 7:
+  %case 8:

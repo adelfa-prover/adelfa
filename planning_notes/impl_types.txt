@@ -1,0 +1,69 @@
+Weak types are essentially simple types which are used to ensure the
+well formedness properties for sequents/formulas/terms of the
+logic. The notion of weak typing is based on a form of equality for LF
+types which forgets about dependencies. So types `a t1 ... tn' and
+`a s1 ... sn' are equal regardless of the terms t1,...,tn,s1,..,sn.
+
+To keep requirements as general as possible we allow type variables in
+weak types and use constraints on these variables to ensure that known
+relations between the weak types of variables are maintained.
+For example, if two quantified variables `F' and `T' appear only once
+with in a formula
+     ...(F T)...
+Then we cannot assign particular weak types without input from the
+user. Rather than immediately doing so we use a type variable and a
+constraint on the types of `F' and `T'. A later instantiation from the
+user for one or both these variables can then update their types to
+the one desired by the user.
+
+
+
+(Weak) Types
+============
+Weak types are simple types constructed from the LF type level
+constants using arrow. They may also contain variables to indicate
+that a particular type constant is not identified yet.
+
+  Constructors:
+    Type Variable
+      Type variables represent types which we do not want to yet
+      choose an instance for.
+
+      Components:
+        - variable name/symbol
+        
+    Arrow Type
+      An arrow type contains a left and right subtype and is the type
+      for a term which given an argument term of the left subtype and
+      produces a term of the right subtype.
+      
+      Components:
+        - left type
+        - right type
+        
+    Constant Type
+      A constant type is a type level constant from the LF
+      signature. Since weak type equivalence forgets dependencies
+      this is the only relevant part of a type and so is what we
+      construct weak types from.
+      
+      Components:
+        - constant symbol (will be an LF type-level constant from signature)
+
+
+  Operations:
+    - construct type
+    - instantiate type variable
+
+Weak Type Constraints
+=====================
+  Weak type constraints represent requirements on the weak type
+  variables for a sequent.
+  
+  Components:
+    - left type
+    - right type
+
+
+  Operations:
+    - update constraint

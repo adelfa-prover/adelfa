@@ -1,0 +1,57 @@
+This directory contains documents used in working out the design of
+various aspects of the implementation.
+
+impl_components.txt
+-------------------
+Works through what the necessary components of an implementation will
+be from a high level to a lower level of detail.
+
+impl_context_exprs.txt
+----------------------
+Outlines the components we will need for context expressions including
+context variables and block instances.
+
+impl_context_schemas.txt
+------------------------
+Outlines the components of context schemas and block definitions.
+
+impl_datatypes.txt
+------------------
+An initial attempt at describing what the datatypes of the
+implementation will be. (***NOT CURRENT***)
+
+impl_formulas.txt
+-----------------
+Outlines the components of formulas.
+
+impl_lf_sig.txt
+---------------
+Outlines the components of LF signatures.
+
+impl_proof_state.txt
+--------------------
+Outlines what information will be needed in the proof state.
+
+impl_sequents.txt
+-----------------
+Outlines the components of sequents.
+
+impl_tactics.txt
+----------------
+Lists the planned tactics available to users and provides details of
+what the tactics will be doing to the state and how they will
+manipulate the various data structures. Includes discussions of other
+functionality that is directly related to the application of tactics
+such as unification and type checking.
+
+impl_terms.txt
+--------------
+Outlines the components of terms of the logic.
+
+README
+------
+This document.
+
+theoremfile.txt
+---------------
+Describes the contents and syntax of theorem files.

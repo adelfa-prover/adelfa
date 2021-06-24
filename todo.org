@@ -1,0 +1,291 @@
+#+TODO: TODO TESTING | DONE
+
+#+FILETAGS: :Mary:reasoning:implementation:todo:
+
+Tracking things to do with regard to implementation
+
+
+* TODO come up with a file extension
+
+
+* TODO implement some form of logging system
+
+
+* TODO unit tests for permutation of contexts
+  1. no context variables, good permutation 
+  2. use context variables, good permutation
+  3. make bad permutation by breaking dependencies
+  4. omit an item from context
+  5. add extra items to context
+
+
+* TODO lemma application does not consider permutations of nominal constants
+  Non-urgent: the assumption formulas used in an application can
+  always be permuted first and then applied as arguments which will
+  match without permutation. It would be good to have this issues
+  addressed, but it does not make the system unsound or cause issues
+  with constructing derivatiosn for things we expect to be provable.
+
+
+  A lemma
+    ctx G:c, forall T, {G, n:tm |- T : ty} => {G |- T : ty}
+  cannot be applied to a hypothesis with a different nominal constant,
+    e.g. {n1:tm |- T : ty}
+  because of a unification failure.
+  However, we should permit them to match under a permutation of
+  nominal constants.
+
+
+* TODO build unit tests for definitions
+
+* DONE Adding definitions to system
+  Provide a means for defining predicates in Adelfa, as well as
+  tactics for unfolding and applying these definitions during
+  reasoning.
+
+* DONE weakening must extend restricted names sets for context variables
+  Weakening introduces a binding into a context expression with the
+  intended meaning that this name is arbitrary but distinct from
+  anything else which might appear in the instances of the
+  context. Thus it must add the new nominal constant to the restircted
+  set for any context variables in the weakened context expression.
+
+
+* DONE checking formation of context expressions in search is incorrect
+  There is an issue in the way search determines if a context
+  expression will be well-formed which permits invalid formuals to be
+  proved. Issue has been identified as the checking of explicit
+  bindings of a context expression.
+
+
+  Search structure has been revised to ensure that checking of
+  contexts is treated properly. Search will now ensure that the
+  explicit bindings are all for distinct nominal constants, and that
+  any bindings not from elaborations of a context variable are
+  contained in the restricted set of the context variable (if one
+  appears in the formula). Revealed a problem with weakening which
+  does not add the newly introduced name to the restricted set of
+  names.
+
+
+* DONE (NOT AN ISSUE) nominal constants in lemmas leads to nominal renaming issues
+  NOT AN ISSUE
+  This is in fact not an issue; the behavior of the weakening property
+  is in line with the logic. The real issue is that the search tactic
+  is permitting invalid theorems to be proved because it does not
+  properly check that the context expression will be well-formed.
+
+
+* DONE Name Capture
+  There are problems with instantiating which result in name
+  capture. A particular example of this issue can be seen in the
+  example sent by Daniel on May 13th. We must ensure that when
+  substituting into a term, if there is a binding for a name, and that
+  name appears in some term of the substituton, then renaming is
+  performed to avoid accidental capture.
+
+  From that example the issue appears to arise from instantiating a
+  type from the signature, but we should check if there are other
+  means of producing this behavior (eg in apply tactic).
+
+  - make_subgoals
+    I believe the naming issue with regard to search may be an issue
+    in the make_subgoals function in how it blindly replaces within
+    the term ignoring the possible clash between names that might
+    appear in the given arguments and the names of binders form the LF
+    type. If at this point we want to assume that there are not
+    clashes then the check & any necessary renaming will have to have
+    been done preveously. We may also want to push the duty of
+    ensuring name capture does not occure to the replace_term_vars
+    function on the terms; but then we would need to make sure that
+    there is consistency on how we expect replacement to work in all
+    other contexts in which this function gets used.
+
+  Fix: 
+  It would be difficult to perform the renaming within the
+  instantiation function replace_term_vars, but we can ensure that
+  there will be no conflicts when calling this function by using
+  freshen_type to instantiate all the Pi-bound names in an LF type
+  with variables that are distinct from anything currently in the
+  context of the sequent. This is the same function that is used to
+  obtain generic instances for the case analysis of atomic formulas,
+  and it makes sense to reuse it in another place where we want to
+  check if a particular type matches a generic instance of another
+  type.
+
+
+* DONE normalization modifies IH and renames if not already in normal form
+  The normalization process updates hypotheses by reducing to normal
+  form. If not in normal form it should try to reuse the same name if
+  possible to air user understanding, not just with the induction
+  hypothesis.
+
+
+  Marking completed since it is unclear how one might even produce an
+  inductive hypothesis which would be modified by the normalization
+  process.
+
+
+* DONE ensure raising is performed when new nominal constants are introduced by instantiations 
+  Marking done as this statement is not sensible; new nominal
+  constants cannot be introduced by an instantiation (application of
+  inst tactic).
+
+
+* DONE new nominal introduction does not check existing names
+  This was observed with weakening initially, but also occurs with
+  intros applications of abs-L. Only when the two names are introduced
+  at the same time is the name issue not encountered. The introduction
+  of new names by instantiating existentials on the right does check
+  the existing name set, but has other problem in not extending the
+  support set.
+
+  NOTE: we do allow new nominal constants in exists applications b\c
+  we first extend the collection of names using structural rule then
+  using exists-R.
+
+  issue in the weaken and abstraction rule that only collects used
+  nominal constant names from the formula. it is ok to reuse a nominal
+  constant name unless in the formula, but we still have to respect
+  the typing for any existing names in the sequent.
+
+  Fix: to address this immediately I will make it such that anywhere a
+  name is being chosen, all currently available names are considered
+  as used. This will certainly result in correct behavior; we can
+  relax this to re-use names where possible at another time.
+* DONE ~~~instantiation tactic~~~
+  Implement an instantiation tactic based on applying the
+  instantiation proof rule through a cut.
+
+* DONE remove auto inference for apply withs
+  Since the inference of terms for an apply does not work properly for
+  even basic examples it seems better for now to omit this
+  functionality until it is more robust.
+
+  I would also like to have an argument that any sucessful inference
+  will in fact be correct. I do not currently have any examples of an
+  issues on this line, as it will fail to infer the terms properly in
+  even quite simple cases, but before commiting to the feature I'd
+  like to have stronger arguments for correctness.
+
+
+  The functionality has been removed and the test suit updated to
+  provide all of the instantiations. Existing examples have yet to be
+  modified to follow the requirement, and so will likely be failing at
+  this point.
+
+* DONE new names used multiple times in generation of new blocks during case analysis
+  when generating a new block in case analysis a new name can be chosen for
+  more than one block item. See attempts at showing subordination in the
+  transitivity proof
+
+* DONE search cannot determine that {L |- nat:type} is derivable from assumptions using L
+
+  The search tactic currently tries to unify context expressions in
+  the goal with context expressions from assumptions. This is not
+  correct. Instead the context checks need to look for exact matches,
+  up to renaming of nominals, of the goal context expression with a
+  *prefix* of an assumption context. 
+
+  The unification to determine if the goal is an *instance* of an
+  assumption is only done for the apply tactic which is able to take a
+  more general lemma/formula and apply it in a more specified setting
+  by instantiating the quantified variables. In search we cannot do
+  this as we have to derive the goal for every possible instance of
+  the formula, not just the one which matches the goal formula.
+
+* DONE parsing errors are very uninformative
+  By resetting the line and offest for each command, we can provide an
+  informative error position in interactive mode. The only potential
+  for confusion is if multiple commands are provided at once; then the
+  error position is given relative the the individual command where
+  there was a problem.
+
+* DONE keep from crashing when bad input
+  At least for any basic mistake in commands the system will not crash
+  and instead will reset to the last state and allow the proof to
+  continue.
+
+* DONE search
+  updating search tactic so that checking context expressions is more robust
+  
+  searching for derivation
+  0. if goal is "true" then done
+  1. if the given formula matches an assumption formula then done
+     (allow permutation in names of assumption context expression)
+     this is the identity proof rule that F -> F is valid
+  2. if the term of the judgment is an application, decompose into subgoals
+     - determine head and args
+     - if head is an eigenvariable, fail
+     - if head is a variable not in the context, fail
+     - if head is a variable in the context, check types match & check context good
+     - if head is a constant in the signature, check types match & check context good
+     - using head type, create subgoals for each arg
+  3. if the term of the judgment is an abstraction, move variable to context
+     (the type added to the context is not checked at this step, checked 
+      at leaves instead)
+
+  checking a context
+  0. if context is empty then done
+  1. if context is a prefix of a context expression of an assumption then done
+     (allow permutation in names of assumption context expression)
+  2. if contains an explicit binding then generate subgoals
+     - generate search subgoals using kinding decomposition on final type
+     - create context checking subgoal to check remaining part of context
+
+* DONE refine the emacs mode to read specification filenames
+  The emacs mode commands can't currently process the command loading a 
+  specification because the file name will contain a `.lf' or `.elf'. 
+  It would be nice to find a way to have it handle this command properly
+  if not too difficult. 
+
+  The idea would be to identify that the line starts with the 
+  `Specification' keyword and so read the full line rather than look
+  for the dot as the end of the command.
+* DONE error on apply if instantiations not identified for quantified variables or context variables
+  In Daniel's deaft_snipets/10_28/draft.thm the application of IH does
+  not identify an instantiation for context variable Gamma, but tactic
+  application still succeeds. This should not happen.
+
+  When the resulting formula is returned as part of the apply tactic
+  we check for any remaining uninstantiated context variables or
+  variables in the formula. If an instantiation couldn't be determined
+  then the tactic fails.
+* DONE modify the syntax for schema definitions to use braces and not dots
+  After discussion with Yuting it doesn't seem right to use the dot
+  as a delimiter in the block schema definitions. I plan to use braces
+  to identify the schematic variables and this change needs to get 
+  reflexted into the implementation syntax. This change will also mean 
+  that the emacs mode commands can read the schema definitions properly.
+* DONE allow arity type annotations on terms to aid typing
+  (arity) types are not required on abstractions but if given can help
+  with type reconstruction in the translation from untyped pre-terms
+  to terms.
+* DONE case tactic does not always check assumptions for normal forms
+  have the normalization of hypotheses is now run after any successful
+  application of the case tactic.
+* DONE case analysis adds extra assumptions which are not sound
+  currently, case analysis adds hypotheses which capture the
+  well-formedness of the type but this is not actually in line with
+  the theory. These additional assumptions must be omitted.
+* DONE fixes to the apply tactic
+** DONE matching of non-atomic formulas does not handle equivalence under renaming for quantifiers
+   this seems to be an issue with all_meta_right_permute_unify not
+   unifying the two formulas.
+   Likely it is in the treatment of the quantifiers in
+   formula_instance where they are not matched.
+
+** DONE matching of an atomic formula in normal form with a non-normal but equal formula fails
+   eg. if one formula is an abstraction and the other is reduced to
+   application, or if there is an existential at the top level in the
+   argument
+
+
+For both above issues, we have addressed the compliction only at the
+top-level. It is possible that other, more complex, formulas will
+still not be able to match successfully. Since failing to match does
+not introduce any inconsistencies into the logic this is good enough
+for now and can be revisited again later if needed.
+
+** DONE an implication result is broken up when added to the assumptions.
+* DONE crash error when atomic formulas have ill-formed type expressions

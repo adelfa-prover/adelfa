@@ -1,0 +1,40 @@
+Sequents form the part of the proof state which is most relevant for
+constructing derivations. The tactics we provide will apply sequences
+of valid rule applications to the current sequent to make progress on
+the proof.
+
+Sequents
+========
+Sequents contain an eigenvariable context, a context variable context,
+a set of assumption formulas, and a goal formula. For this
+implementation we will split the assumption formulas into those
+arising from explicit vs implicit term arguments, allowing us to hide
+the implicit arguments of terms from the user. We also keep weak
+typing constraints with a sequent which identify equations on the type
+variables which may appear in weak types in the sequent.
+
+  Components:
+    - list of variables
+        (the eigenvariable context)
+    - list of nominal constants
+    - list of context variables
+        (the context variable context)
+    - list of formulas
+        (the implicit assumptions)
+    - list of formulas
+        (the explicit assumptions)
+    - formula
+        (the goal)
+    - list of weak type constraints
+        (the constraints)
+
+
+  Operations:
+    - add eigenvariables
+    - lookup eigenvariable
+    - substitution application
+    - add context variables
+    - lookup context variables
+    - add/remove assumption formula
+    - change goal formula
+    - update constraints

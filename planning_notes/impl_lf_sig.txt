@@ -1,0 +1,80 @@
+The terms in our logic are LF expressions which mean that they are
+based on a particular LF signature declaring the type and object level
+constants. The LF Signature forms the basis of reasoning about
+derivability and one must be specified for any other interactions with
+the system to be sensible.
+
+LF Signature
+============
+A signature will consist of two symbol tables mapping symbols to type
+and object level constants respectively. We use symbol tables because
+we will need to look up constants during LF type reconstruction, type
+checking, and case analysis.
+  Components:
+    - type constant declaration symbol table
+    - object constant declaration symbol table
+  Operations:
+    - add declaration
+    - lookup declaration
+
+LF Type Constant Declaration
+============================
+A type constant declaration represents a particular type-level
+constant and will include all the information about such a constant
+that may be needed during reasoning.
+
+The kind of the constant will be used in type reconstruction and type
+checking. The fixity, precedence, associativity, and # implicit
+arguments are used in printing of types constructed using this
+constant, and the list of associated object constants if used by case
+analysis to easily access those objects which could possibly generate
+a case.
+
+  Components:
+    - name/symbol
+    - LF kind (as a Term)
+    - # implicit args
+    - fixity
+    - precedence
+    - associativity
+    - list of associated object constants
+
+  Operations:
+    - new type declaration
+    - update fixity, precedence, or associativity
+    - extend list of associated object constants
+    - get kind
+    - get # implicit arguments
+    - get fixity, associativity, precedence
+    - get list of associated object constants
+
+LF Object Constant Declaration
+==============================
+An object constant declaration represents a particular LF object-level
+constant and will include information about that constant which is
+needed during reasoning.
+
+The LF type of the constant is important in that it will be used to
+come up with the weak type for instances of this constant, it will be
+used in LF type reconstruction and LF type checking, and is needed for
+case analysis to generate generic instances of this constant to match
+with the judgment being analyzed. The number of implicit arguments
+will be used by case analysis to determine which new formulas are
+implicit assumptions and which are explicit. The number of implicit
+arguments, fixity, associativity, and precedence information will be
+used in printing terms using this constant.
+
+  Components:
+    - name/symbol
+    - LF type (as a Term)
+    - # implicit arguments
+    - fixity
+    - associativity
+    - precedence
+
+  Operations:
+    - new object declaration
+    - update fixity, associativity, and precedence
+    - get type
+    - get # implicit arguments
+    - get fixity, associativity, precedence

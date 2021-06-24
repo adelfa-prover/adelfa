@@ -1,0 +1,7 @@
+Proves several properties of the append and reverse operations on lists of
+natural numbers:
+
+- append is associative
+
+- the reverse of the reverse of a list is the original list (proven when reverse
+  is defined using either append or an accumulator list)

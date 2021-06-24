@@ -1,0 +1,109 @@
+ty : type.
+top : ty.
+arr : {Z1:ty} {Z2:ty} ty.
+
+tm : type.
+app : {Y1:tm} {Y2:tm} tm.
+lam : {Z:ty} {Y:{x:tm}tm} tm.
+
+of : tm -> ty -> type.
+of_app : {M:tm}{N:tm}{T:ty}{U:ty}
+          {a1:of M (arr U T)} {a2:of N U} of (app M N) T.
+of_lam : {R : {x:tm} tm}{T:ty}{U:ty}
+          {a1:({x:tm}{z:of x T} of (R x) U)}
+          of (lam T R) (arr T U).
+
+step : tm -> tm -> type.
+step-app1 : {M1:tm} {M2:tm} {N:tm} {D : step M1 M2}
+            step (app M1 N) (app M2 N).
+step-app2 : {M:tm} {N1:tm} {N2:tm} {D : step N1 N2}
+            step (app M N1) (app M N2).
+step-beta : {T:ty} {R:{x:tm}tm} {N:tm}
+            step (app (lam T R) N) (R N).
+step-lam  : {T:ty} {R1:{x:tm}tm} {R2:{x:tm}tm}
+            {D : {x:tm} {d:of x T} step (R1 x) (R2 x)}
+            step (lam T R1) (lam T R2).
+
+eq_tm : tm -> tm -> type.
+refl_tm : {M:tm} eq_tm M M.
+
+eq_ty : ty -> ty -> type.
+refl_ty : {T:ty} eq_ty T T.
+
+% reflexive & transitive closure of step
+stepr : tm -> tm -> type.
+
+stepr-refl : {M:tm} stepr M M.
+stepr-trans : {M1:tm} {M2:tm} {M3:tm} {D1:step M1 M2} {D2:stepr M2 M3} stepr M1 M3.
+
+normal : tm -> type.
+norm-var : tm -> type.
+norm-lam : tm -> type.
+norm-app : tm -> type.
+
+normal-var : {M:tm} {D:norm-var M} normal M.
+normal-lam : {M:tm} {D:norm-lam M} normal M.
+normal-app : {M:tm} {D:norm-app M} normal M.
+
+norm-lam-m : {T:ty} {R:{x:tm}tm}
+             {D : {a:tm} {a1:of a T} {a2:norm-var a} normal (R a)} 
+             norm-lam (lam T R).
+
+norm-app-var : {M1:tm} {M2:tm} {D1:norm-var M1} {D2:normal M2} norm-app (app M1 M2).
+norm-app-app : {M1:tm} {M2:tm} {D2:norm-app M1} {D2:normal M2} norm-app (app M1 M2).
+
+sn : tm -> type.
+sn-step : {M1:tm} {D : {M2:tm} {D1 : step M1 M2} sn M2} sn M1.
+sn-norm : {M1:tm} {D : normal M1} sn M1.
+
+reduce : tm -> ty -> type.
+reduce-top : {M:tm} {D1 : of M top} {D2 : sn M}
+             reduce M top.
+reduce-abs : {T1:ty} {T2:ty} {M:tm} {D1 : of M (arr T1 T2)}
+             {D2 : {x:tm} {d : reduce x T1} reduce (app M x) T2}
+	     reduce M (arr T1 T2).
+
+% experimental past this point
+step-or-norm : tm -> type.
+son-norm : {M:tm} {D : normal M} step-or-norm M.
+son-step : {M1:tm} {M2:tm} {D : step M1 M2} step-or-norm M1.
+
+nat : type.
+z : nat.
+s : {N:nat} nat.
+
+% a specific normalization sequence with a length
+norm-seq : {M:tm} {N:nat} type.
+norm-seq-norm : {M:tm} {N:nat} {D:normal M} norm-seq M N.
+norm-seq-step : {M1:tm} {M2:tm} {N:nat} {D1:step M1 M2} {D2:norm-seq M2 N} norm-seq M1 (s N).
+
+% v t n means all normalization sequence lengths of t are bounded by n
+v : {M:tm} {N:nat} type.
+v-norm : {M:tm} {N:nat} {D:normal M} v M N.
+v-step : {M1:tm} {M:tm} {N:nat} {D1:step M1 M} {D2:{M2:tm} {a1:step M1 M2} v M2 N} v M1 (s N).
+
+
+% UNUSED
+% empty : type.
+
+% snapp2 : tm -> tm -> type.
+% snapp2-m : {M1:tm} {M2:tm} {D : {M3:tm} {D1 : step (app M1 M2) (app M1 M3)} snapp2 M1 M3}
+%              snapp2 M1 M2.
+
+% neutral : tm -> type.
+% neutral-m : {M:tm} {D:{T:ty} {R:{x:tm}tm} {D1 : eq_tm M (lam T R)} empty} neutral M.
+
+% trying something new
+% can : tm A -> type.
+% atm : tm A -> type.
+% can_lam: can (lam M) <- ({x}{a: atm x} can (M x)).
+% can_atm:  {N:tm o} atm N -> can N.
+% atm_app: atm M -> can N -> atm (app M N).
+ 
+% can : tm -> type.
+% atm : tm -> type.
+% 
+% can-lam : {R:{x:tm} tm} {T:ty} {a1:({x:tm}{a: atm x} can (R x))} can (lam T R).
+% can-atm : {M:tm} {D1: of M top} {D2 : can M} atm M.
+
+% atm-app : {M:tm} {N:tm} {D1 : atm M} {D2 : can N} atm (app M N).

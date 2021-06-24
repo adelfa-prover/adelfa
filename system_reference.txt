@@ -1,0 +1,327 @@
+This document will give a basic introduction to the theorem prover and
+run through a reasoning example demonstrate how it can be used to
+reason about LF specifications.
+
+Syntax
+=======
+
+The syntax for terms <lf-term> and <lf-type> follows that of Twelf:
+
+[x] <lf-term>             abstraction
+{x:<lf-type>}<lf-type>     Pi type
+<lf-type> -> <lf-type>    shorthand Pi type when no dependency
+<lf-term> <lf-term>       term application
+<lf-type> <lf-term>       type application
+
+Context expressions <context> are written as:
+
+<empty string>                 empty context
+<id>                           context variable
+<context>, <name>:<lf-type>    explicit context item
+
+
+The syntax for formulas <formula> is:
+
+forall <var-list>, <formula>            universal quantification
+exists <var-list>, <formula>            existential quantification
+ctx <name>:<schema-id>, <formula>       context quantification
+<formula> => <formula>                  implication
+<formula> /\ <formula>                  conjunction
+<formula> \/ <formula>                  disjunction
+{<context> |- <lf-term> : <lf-type>}    LF typing judgment
+false                                   
+true
+<prop-name> <tm-list>                   A defined predicate
+
+
+The quantified variables in <var-list> are given by a space separated
+list, the variables can also be anotated by an arity type constructed
+from the base type `o' using the constructor `->'.
+
+Commands
+========
+There are 4 top level commands when using the tool
+
+1. Quit.
+Quit the prover.
+
+2. Specification <file-name>.
+Load the LF specification given in file <file-name>.
+
+We use Twelf syntax for type and term constant declarations, but any
+other Twelf style declarations are currently ignored. Must use fully
+explicit LF, not the implicit LF syntax available with Twelf.
+
+3. Schema <name> :=
+     {<id-list>} (<aid-list>);
+     ...
+     {<id-list>} (<aid-list>).
+Defines a schema named <name> comprising the given block
+structures. <id-list> is a space separated list of schematic variable
+names, and <aid-list> is a list of comma separated names associated
+with an LF type expression.
+
+4. Theorem <name> : <formula>.
+Set up the prover to construct a derivation for the given formula via
+tactics.
+
+5. Define <prop-name> : <prop-type> by
+     <prop-form> := <formula>;
+     ...
+     <prop-form> := <formula>.
+
+Adds to the prover state a definition of the name <prop-name> defined
+by the given clauses. No nominal constants may appear in a definition,
+and the formula appearing to the left of the := must be an instance of
+the defined predicate. Definitions may only be unfolded or applied to
+an appropriate formula; case analysis cannot be performed on defined
+formulas.
+
+Tactics
+=======
+In constructing formula derivations there are 20 tactics.
+
+1. search.
+Search for a derivation of the current goal using matching with
+assumption formulas and decomposing judgments into subgoals using LF
+derivation rules.
+
+2. intros.
+Introduces variables and assumptions from a goal formula until it no
+longer has top-level universal quantification, context quantification,
+or implications.
+
+3. split.
+If the current goal is a conjunction, F1 /\ F2, creates subgoals for
+each sub formula, F1 and F2.
+
+4. left.
+If the current goal is a disjunction, F1 \/ F2, changes the goal to be
+the left side formula, F1.
+
+5. right.
+If the current goal is a disjunction, F1 \/ F2, changes the goal to be
+the right side formula, F2.
+
+6. assert <formula>.
+Changes the proof state to one which has the given formula as a goal;
+once derivation of this goal is complete returns to the previous proof
+state with the given formula added as an assumption.
+
+7. apply <name> to <assumption-names>.
+   apply <name> to <assumption-names>
+      with (G1 = <context>), ..., (Gn = <context>),
+           X1 = <lf-term>, ..., Xm = <lf-term>.
+Apply an assumption formula or lemma to the given derivations and add
+the resulting formula to the assumptions. Instantiations for
+quantified context and/or term variables may be given explicitly.
+
+(For now, it is recommended to provide the instantiations in all but
+most simple cases as the determining of instantiations does not always
+succeed)
+
+
+8. induction on <int>.
+Given a goal of the form `<quantifiers> F1 => ... => Fn => F' if Fi is
+atomic inducts on this formula and introduces an inductive hypothesis
+to the assumptions.
+
+9. exists <lf-term>.
+Instantiates an existential goal with the given term, if it is of the
+correct arity type.
+
+10. case <assumption-name>.
+    case <assumption-name>(keep).
+Performs case analysis on the given assumption. By default the
+assumption is removed, use `(keep)' to retain the analyzed
+assumption.
+
+11. weaken <assumption-name> with <lf-type>.
+If the given assumption is of the form {G |- M : A}, and if it can be
+verified that the given LF type must be well formed in the current
+context under G, then a new assumption is added in which the the
+typing judgment is weakened to include the given type.
+
+12. strengthen <assumption-name>.
+If the given assumption is of the form {G, n:A1 |- M : A2} if n does not appear
+in M or A2 then a new assumption is added in which the typing judgment
+is strengthened to {G |- M : A2}.
+
+13. ctxpermute <assumption-name> to <context>.
+If the given assumption is of the form {G |- M:A}, and if the given
+context is a valid permutation of the context G (does not violate
+dependencies), then a new assumption is added with the permuted
+context expression.
+
+14. inst <assumption-name> with n=<lf-term>.
+This tactic captures the use of the substitution property for LF.
+If the given assumption is of the form {G1,n:B,G2 |- M:A}, and the
+given term can be determined to be such that {G1 |- <lf-term> : B}
+is valid then this tactic replaces the given assumption with one in
+which n:B is removed from the context expression and all occurrences of
+n are replaced by <lf-term>.
+
+15. prune <assumption-name>.
+If the given assumption is of the form {G |- X n1 ... nm : A} for some
+eigenvariable X and distinct nominal constants n1,...,nm then this
+tactic will prune those nominal constants appearing as arguments to X
+which (1) do not already appear in G and (2) are not permitted in the
+instantiations for the context variable in G.
+
+16. undo.
+Undo the last step of reasoning.
+
+17. skip.
+Skip to the next subgoal of derivation.
+
+18. abort.
+Abort the proof construction and return to top-level loop without
+adding formula to the available lemmas.
+
+19. unfold.
+    unfold <assumption-name>.
+
+If the given assumption formula is a defined predicate then it is
+unfolded using the relevant definition, using the first clause which
+matches. If no assumption formula is given, the goal formula is
+unfolded.
+
+20. applydfn <prop-name>.
+    applydfn <prop-name> to <assumption-name>.
+
+Attempts to apply a clause of the definition of <prop-name> to the
+given assumption formula. The first clause which matches is the one
+used. If no assumption formula is provided the definition is applied
+to the goal formula.
+
+
+Example: Type Uniqueness of STLC Lemma: independence of type ty 
+===============================================================
+
+In showing type uniqueness of the simply typed lambda calculus we use
+the property that terms of type `ty' must be independent of anything
+appearing in the contexts of the schema defined for typing
+derivations. This is true because in the encoding of the simply typed
+lambda calculus the type `ty' is subordinate to the type `tm'.
+
+We will walk through the proof of this example lemma to
+demonstrate using the system to construct a proof of validity for a
+formula. The informal argument for this property is by induction on
+the derivation of type `ty', with the only way to construct such a
+derivation to be using the `arrow' constant from the signature, and
+the property is easily shown for this case using the inductive
+hypothesis.
+
+
+
+The specification and theorem files can be found in the examples
+directory.
+
+First we want to load in the LF specification for this example from
+the file `unique.elf'.
+
+    Specification "unique.elf".
+
+The contexts we want to consider will have a particular structure of
+adding a new variable and a typing assumption for that variable. We
+define a schema describing the structure of these context
+expressions.
+
+    Schema c :=
+     T. x:tm,y:of x T.
+
+We next state the lemma as a formula to prove.
+
+    Theorem ty_independent : ctx Gamma:c, forall T,
+        {Gamma |- T : ty} => {T:ty}.
+
+This results in the proof state:
+
+    Subgoal ty_independent:     
+
+
+    ==================================
+    ctx Gamma:c. forall T, {Gamma |- T : ty} => {T : ty}  
+
+We want to induct on the assumption formula, so we use the induction
+tactic to introduce the inductive hypothesis.
+
+    induction on 1.
+
+This results in the proof state:
+
+    Subgoal ty_independent:
+
+    IH:ctx Gamma:c. forall T, {Gamma |- T : ty}* => {T : ty}
+
+    ==================================
+    ctx Gamma:c. forall T, {Gamma |- T : ty}@ => {T : ty}
+
+Next we will introduce the quantified variables and the assumptions.
+
+    intros.
+
+This results in the proof state:
+
+    Subgoal ty_independent:
+
+    Vars: T:o
+    Contexts: Gamma:c[]
+    IH:ctx Gamma:c. forall T, {Gamma |- T : ty}* => {T : ty}
+    H1:{Gamma |- T : ty}@
+
+    ==================================
+    {T : ty}
+
+Next we consider the possible ways that {Gamma |- T : ty}@ might be
+valid using case analysis.
+
+    case H1.
+
+Given the LF specification and the context
+schema of Gamma there is only one possible structure for this
+derivation to have had, which is that T = arrow T1 T2 for some other
+well formed terms of type `ty', which is what we see in the resulting
+state.
+
+    Subgoal ty_independent:
+
+    Vars: _:o, _1:o
+    Contexts: Gamma:c[]
+    IH:ctx Gamma:c. forall T, {Gamma |- T : ty}* => {T : ty}
+    H2:{Gamma |- T1 : ty}*
+    H3:{Gamma |- T2 : ty}*
+
+    ==================================
+    {arr T1 T2 : ty}
+
+We can apply the inductive hypothesis to these two new assumption
+formulas since they are of a smaller height than the original
+derivation.
+
+    apply IH to H2.
+    apply IH to H3.
+
+After these two applications we are left in the state:
+
+    Subgoal ty_independent:
+
+    Vars: _:o, _1:o
+    Contexts: Gamma:c[]
+    IH:ctx Gamma:c. forall T, {Gamma |- T : ty}* => {T : ty}
+    H2:{Gamma |- T1 : ty}*
+    H3:{Gamma |- T2 : ty}*
+    H4:{T1 : ty}
+    H5:{T2 : ty}
+
+    ==================================
+    {arr T1 T2 : ty}
+
+The goal formula can be constructed using the derivation rules of LF
+from any valid ground instances of the assumptions H4 and H5, and so
+we conclude the proof of this lemma using search.
+
+    search.
+
+Now that the proof is completed we return to the top level
+interaction, and can continue with further top-level commands.

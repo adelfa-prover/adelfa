@@ -1,0 +1,663 @@
+System Interactions
+===================
+
+There are four main things a user should be able to do with the
+system:
+  1. Provide an LF signature
+  2. Define relevant context schemas
+  3. Sate relevant Theorems
+  4. Apply sound proof steps to construct derivations for theorems
+
+Throughout this interaction we will want to display the current proof
+state to the user in an intelligible way.
+
+
+1. LF Signatures
+----------------
+For a user to supply a signature we will need to be able to parse LF
+signature declarations and to perform type reconstruction (if using
+implicit LF, which we would like to do).
+
+The provided signature underlies the other aspects of reasoning so
+the particular signature being used should be kept available for other
+components. Additionally, a signature must be specified before any
+other interactions can take place.
+
+Relevant Components:
+  1. The parser will take a Twelf file as input
+  2. The parser will produce a representation of the signature as
+  output
+  3. The types for constants given in the signature will be used in LF
+  type checking
+  4. The weak types (erased dependencies) of constants will be used in
+  weak type checking
+  5. The constants/types of the signature will also be used in case
+  analysis to determine what cases must be considered
+
+
+2. Define Context Schemas
+-------------------------
+We will require a syntax for describing the blocks of a schema
+definition and a parser for interpreting a definition and checking it
+is formed correctly.
+
+Again, we will need to maintain the various schema definitions that
+may be provided for use in reasoning.
+
+Relevant Components:
+  1. A parser for schema definitions will take a particular syntax for
+  schema definitions as input
+  2. A parser for schema definitions will produce an internal
+  representation of the schema definition as output
+  3. The context type checker will use the definition of a schema to
+  determine if a given context expression satisfies the schema
+  4. Case analysis will use the schema definition to identify possible
+  cases to consider
+
+
+3. State Theorems (Formulas)
+----------------------------
+To state a theorem a user will need a particular syntax for expressing
+formulas of the logic, and we will need a parser capable of accurately
+interpreting this syntax. We will also need to be able to check that a
+given formula is weakly well formed.
+
+Proved theorems will have to be tracked so that they can be used as
+lemmas in other proofs.
+
+Relevant components:
+  1. A parser for formulas will take some syntax for formulas as input
+  2. A parser for formulas will produce an internal representation of
+  formulas as output
+  3. Formulas are used as part of a sequent, read as something to be
+  proved
+  4. Formulas are also stored and viewed as lemmas
+
+
+4. Construct Derivations
+------------------------
+In one sense we just need to provide a means for applying each of the
+proof rules of the logic to manipulate the current sequent. However,
+to make the system easier to use we may wish to implement tactics
+similar to those in Abella which can wrap up reasoning steps into a
+single user command.
+
+While constructing a derivation we will need to track the current
+sequent as well as any other subgoals that have been generated and
+will require proving.
+
+For this action we would also need to be able to communicate the
+current proof state to the user in an intelligible way.
+
+Relevant components:
+  1. Derivations are constructed by applying proof rules to a sequent
+  2. A derivation will be a sequence of operations on a sequent, think
+  of keeping in a .thm file like Abella
+  3. Application of tactics will move from one proof state to another
+
+
+Overview of User Interaction
+============================
+  1. Must first supply an LF signature
+  2. Then can define any relevant context schemas
+  3. Supply a formula, the theorem to be proved
+  4. Supply the steps to construct a proof for the given formula
+  (through tactics)
+  5. Add completed theorem to list of lemmas
+  6. Repeat 2-5 until session complete
+
+  So an LF signature must be supplied at the start. Then enter a loop
+  where users can enter top-level "commands" either a theorem or a
+  schema definition. When a theorem is given enter another loop to
+  recieve user input on constructing a derivation via tactics which
+  will manipulate the proof state until all subgoals are
+  completed. Then the theorem is added to the lemmas and return to the
+  outer loop.
+  
+
+Components Needed
+==================
+
+1. LF Signatures
+
+  LF Parser
+  ---------
+  Takes Twelf signature file(s) as input
+  Produces internal representation of a signature
+    A signature is a sequence of type and object level constant
+    declarations
+
+  The result of parsing is used in Type Checking LF judgments and for
+  weak type checking of formulas
+
+2. Schema Definitions
+
+  Schema Parser
+  -------------
+  Takes as input a syntax for defining schemas (sequence of blocks)
+  Produces internal representation of schemas
+    A schema definition is a collection of block definitions
+
+  The schemas are used in case analysis to determine possible context
+  cases and in ctx-L to check that a context expression satisfies the
+  given schema.
+
+  Schema Lookup
+  -------------
+  We need to be able to lookup a particular schema definition and
+  access the block definitions for that schema.
+
+  This is used both in checking a context expression against a schema
+  (checking if a particular explicit part matches a block definition)
+  and in generating generic block instances during case analysis.
+
+3. State Theorems
+(A theorem is a formula in the context of a particular LF signature
+and collection of schema definitions)
+
+  Formula Parser
+  --------------
+  Takes a syntax for formulas as input
+  Produces internal representation of formulas & ensures formulas are
+  weakly well formed
+
+  Formulas are used both as goals (things to be proved) in a sequent
+  and also used as lemmas we might use in a derivation.
+
+  Weak Type Inference/Checker
+  ---------------------------
+  When a formula is first given we need to check that it is weakly
+  well formed. In doing this we will annotate eigenvariables and
+  quantified variables with a weak type. Under these assignments the
+  formula should be weakly well formed.
+
+4. Construct Derivations
+
+  Perform Reasoning Steps
+  -----------------------
+  Takes as input the current proof state
+  Returns a new proof state
+
+  Proof State will include:
+    - LF signature
+    - schema definitions
+    - lemmas
+    - sequent (eigenvariables, context variables, assumptions, goal)
+    - subgoals
+
+  Tactics:
+    - Search (id, atm-R, pi_R, base-R, top-R, bottom-L)
+    - Induction
+    - Case Analysis (base-L)
+    - Intros (ctx-R, all-R, imp-R)
+    - Exists (exists-R)
+    - Split (and-R, or-L)
+    - Left (and-L, or-R)
+    - Right (and-L, or-R)
+    - Apply (all-L, ctx-L, imp-L)
+    - Cut (cut)
+    - Lemma Application
+
+
+Data Required for Components
+============================
+
+1. LF Signatures
+----------------
+Parts of a Signature:
+  - type level constants and their kinds
+  - object level constants and their types
+Uses of Signature:
+  - look up types/kinds of constants during LF type checking &
+    reconstruction
+  - look up weak types of constants during weak type checking
+    (checking well formedness of sequents, formulas, instantiation
+    terms, block definitions)
+
+Uses of Types/Kinds:
+  - LF type checking
+  - weak type checking
+
+Uses of Constants:
+  - construct expressions
+
+IDEA: if we treat eigenvariables, constants, nominals, etc as a single
+datatype with different tags then we can have the type on the var
+*object* be the weak type and use the LF signature, which has the LF
+type, when doing LF type checking
+
+2. Define Context Schemas
+-------------------------
+
+Parts of a Schema Definition:
+  - name for schema
+  - collection of block definitions
+
+Uses of Schemas:
+  - annotating context quantifiers in formulas
+  - checking that a context expression satisfies a particular schema
+  - generating cases in case analysis
+
+Parts of a Block Definition:
+  - schematic variables
+  - sequence of type assignments
+
+Uses of Block Definitions:
+  - as a structure to check particular context against
+  - generate a generic structure for context variables in case analysis
+
+3. State Theorems (Formulas)
+----------------------------
+
+Parts of a Theorem:
+  - name of theorem (so it can be referenced in future proofs & used as
+  lemma)
+  - formula expressing the theorem (should already have weak type
+  annotations)
+
+Uses of a theorem:
+  - theorems already proved can be used as lemmas
+  - used to set up an initial proof state for a derivation
+
+Syntax for Formulas:
+  - needs to have a means of specifying atomic formulas and each
+  connective
+
+Parts of a Formula (internal representation):
+  - quantifiers annotated with weak types
+  - constraints on weak types within formula
+    (^^ actually, these will be kept with the sequent)
+
+4. Construct Derivations
+------------------------
+
+Parts of a Derivation:
+  - sequence of tactics/proof steps that describe how to construct a
+  proof for the theorem in the logic
+
+Parts of the proof state:
+  - LF signature
+  - schema definitions
+  - lemmas
+  - sequent
+  - subgoals
+
+Uses of the proof state:
+  - User commands will manipulate the proof state (providing the
+  signature, defining a schema, adding completed theorem to lemmas,
+  using tactics to manipulate the sequent & subgoals)
+
+Parts of a sequent:
+  - eigenvariables
+  - context variables
+  - assumption formulas
+  - implicit assumption formulas
+    ^^ I am including this to facilitate implicit LF implementation at
+    a later time.
+  - goal formula
+  - weak typing constraints
+
+Uses of sequents:
+  - tactics will manipulate the sequent (andproof state in general) to
+  represent the result of applying particular proof rules
+
+Tactics/Proof Steps:
+  We will want to provide the user with ability to use the rules of
+  the logic to construct proofs in a way that is not too
+  cumbersome. One option is to implement each rule individually and
+  allow the user to identify the sequence of rule applications they
+  wish to apply. Or we can identify specific collections of steps to
+  perform in a single tactic, and identify particular invertible steps
+  that will be performed automatically. The later is more similar to
+  Abella and seems as though it would be easier to use.
+
+  In Abella, the general scheme seems to be that assumptions are
+  decomposed as much as possible automatically. On the other hand,
+  decomposition of the goal formula is in general left until asked for
+  by the user. So each universal quantifier or implication in the goal
+  must be specifically introduced by the user, but an existential in
+  an assumption will automatically introduce a new eigenvariable to
+  instantiate it.
+
+  However, regardless of what we end up wanting to fold into tactics,
+  in the end we will be manipulating the sequent based on the rules of
+  the logic and so we can still plan for these operations.
+
+  proof rules:
+  - induction
+      will need to know which formula to induct on.
+      will introduce the IH as an assumption formula.
+      will modify goal formula to annotate the formula inducting on.
+      will fail if the identified formula is not atomic of the form
+      form {G |- M : A}.
+
+  - case analysis
+      will need to know which formula to analyze.
+      will use unification to match the typing judgment (object+type)
+      in given formula with a generic instance of either a constant
+      from the signature or a variable from the context.
+      will generate a collection of subgoals, one for each case
+      constructed.
+      will add cases by (1) applying MGU from successful unification
+      (2) replacing analyzed assumption formula with appropriate
+      atomic formulas typing subterms.
+      can only be performed on atomic assumption formulas of the form
+      {G |- M : a t1 ... tn}.
+      
+  - cut
+      will need to be given a formula to cut.
+      will generate 2 subgoals: (1) sequent with goal formula modified
+      to be the formula provided (2) sequent with assumption formulas
+      extended to include cut formula.
+      will fail if supplies formula is not weakly well formed.
+
+  - atm-R
+      will perform LF type checking on goal formula of the form
+      {G |- M : A}.
+      Completes current subgoal if successful.
+      will fail if goal not of the form {G |- M : A}.
+
+  - id
+      will complete current subgoal if the goal formula is contained
+      in the assumption formulas.
+      ***technically I defined this only on atomic formulas, but we
+      can see easily that it should extend to arbitrary formulas,
+      right?
+      
+  - base-R
+      will introduce two new subgoals corresponding to the two
+      premises of the LF typing rule for applications.
+      will fail if goal formula is not an atomic formula of an
+      appropriate form.
+      
+  - pi-R
+      will update the current subgoal such that the goal formula has
+      moved the pi-quantified variable to the context.
+      will introduce a new nominal constant for the pi-quantified
+      variable and substitute the nominal for all occurrences of the
+      variable in the object & type expression of the formula.
+      will fail if the goal formula is not an atomic formula of an
+      appropriate form.
+      
+  - pi-L
+      will need to identify which assumption formula to apply rule
+      to.
+      will update the current subgoal replacing the identified
+      assumption formula with one in which the pi-quantified variable
+      has been introduced to the context.
+      will introduce a new nominal constant for the context binding
+      and substitute this nominal constant for the pi-quantified
+      variable in both the object and type expressions of the
+      formula.
+      will fail if the identified assumption is not of the appropriate
+      form.
+      
+  - ctx-R
+      will introduce a new context variable of the given schema
+      context type updating the current subgoal's context variables
+      and the goal formula.
+      will fail if goal formula is not of an appropriate form.
+      
+  - ctx-L
+      will need to identify the assumption formula to apply to as well
+      as the context expression to use.
+      will check that the context expression satisfy the context
+      schema of the context quantification.
+      will update the current subgoal by instantiating the quantified
+      context variable with the given context expression in the
+      identified assumption formula.
+      will fail if the identified formula is of the wrong form or the
+      context expression does not satisfy the schema.
+      
+  - top-R
+      will complete the derivation for the current subgoal.
+      will fail if the goal formula is not Top.
+      
+  - bot-L
+      will complete the derivation for the current subgoal.
+      will fail if Bottom is not in the assumption formulas.
+      
+  - all-R
+      will introduce a new eigenvariable annotated with the same weak
+      type as the quantifier.
+      will replace the quantified variable with the new eigenvariable
+      in the goal formula.
+      will fail to apply if the goal formula is not of the appropriate
+      form.
+      
+  - all-L
+      will need to identify the assumption formula to apply to and a
+      term.
+      will check that the term is weakly well formed at the type
+      annotating the quantifier.
+      will modify the current subgoal by replacing occurrences of the
+      quantified variable with the term in the identified assumption
+      formula and will update the weak typing constraints of the
+      subgoal based on the term provided.
+      will fail to apply if the assumption identified is of the wrong
+      form or if the term supplied is not weakly well formed at the
+      type annotating the quantifier.
+      
+  - exists-R
+      will need to identify the assumption formula to apply to and a
+      term.
+      will check that the term is weakly well formed at the type
+      annotating the quantifier.
+      will modify the current subgoal by replacing occurrences of the
+      quantified variable with the term in the identified assumption
+      formula and will update the weak typing constraints of the
+      subgoal based on the term provided.
+      will fail to apply if the assumption identified is of the wrong
+      form or if the term supplied is not weakly well formed at the
+      type annotating the quantifier.
+      
+  - exists-L
+      will introduce a new eigenvariable annotated with the same weak
+      type as the quantifier.
+      will replace the quantified variable with the new eigenvariable
+      in the goal formula.
+      will fail to apply if the goal formula is not of the appropriate
+      form.
+ 
+  - imp-R
+      will modify the current subgoal by adding the left-hand side of
+      the implication to the assumption formulas and updating the goal
+      formula to be the right-hand side of the implication.
+      will fail if the goal is not of the right form.
+      
+  - imp-L
+      will need to identify which assumption formula to apply to.
+      will produce two subgoals, one with the goal set to be the
+      left-hand side of the identified implication and the other
+      replacing the identified assumption formula with the right-hand
+      side of the formula.
+      will fail if the identified assumption formula is of the wrong
+      structure.
+      
+  - and-R
+      will produce two subgoals: one with the left-hand side as the
+      goal formula and one with the right-hand side as the goal
+      formula.
+      will fail to apply if the goal formula is not of the correct
+      structure.
+      
+  - and-Li
+      will need to identify which assumption formula to apply to and
+      also which side of the conjunction to follow.
+      Will update the current subgoal replacing the identified formula
+      with the identified side of the conjunction.
+      will fail to apply if the identified formula is of the wrong
+      structure.
+
+  - or-Ri
+      will need to identify which side of the disjunction for follow.
+      Will update the current subgoal so that the goal formula is the
+      formula from the identified side of the disjunction.
+      will fail to apply if the goal formula is of the wrong
+      structure.
+      
+  - or-L
+      will need to identify which assumption formula to apply to.
+      will create two subgoals: one with the identified assumption
+      formula replaced with the left-hand side of the disjunction and
+      the other with the identified assumption formula replaced with
+      the right-hand side of the disjunction.
+      will fail to apply if the identified formula is of the wrong
+      structure.
+
+  possible tactics:
+  - lemma application
+      like cut, but already have derivation of cut formula.
+
+      will need to be given the instantiations for lemma that produce
+      the instance we want to use.
+      should check the available lemmas for the given name.
+      apply this lemma to the given instantiations, and add the
+      resulting formula to the assumption formulas.
+      should probably check if proof can now be easily completed
+      (eg. using id).
+      fail if lemma name is not in list or if arguments supplied for
+      instantiaing are bad.
+
+  - search
+      try to construct a derivation of the goal formula automatically
+      (so use things like id, atm-R, pi-T, base-R, etc)
+
+      will either succeed in finding a derivation (using some
+      as-yet-to-be-determined process) or fail to apply.
+      
+  - intros
+      introduce top level universal quantifiers and implications of
+      goal formula
+      (so applying imp-R, ctx-R, and all-R until other top-level connectives found)
+  
+      will update the current subgoal to move top-level universals,
+      context quantifications, and implications to the eigenvariable,
+      context variable, and assumption set. 
+
+Current Components and Data (an overview)
+========================================
+
+  Components
+  ----------
+  1. LF Parser
+      a. LF Type Checking
+      b. LF Reconstruction
+  2. Schema Parser
+      a. weak type inference
+      b. weak type checking
+  3. formula parser
+      a. weak well-formedness checking
+      b. weak type inference
+      c. weak type checker
+  4. tactic application/proof construction
+      a. unification
+      b. substitution application
+      c. weak type checker
+  5. pretty printing
+
+  Data
+  ----
+  1. Formulas
+      a. terms
+      b. quantifiers - annotated with weak types
+      c. connectives
+      d. context variables
+      e. eigenvariables
+      f. nominal constants
+      d. weak typing constraints
+  2. Sequents
+      a. eigenvariables
+      b. context variables
+      c. formulas
+      d. weak typing constraints
+  3. Schemas
+      a. schematic variables
+      b. nominal constants
+      c. LF types
+  4. LF declarations
+      a. constants
+      b. LF types
+      c. LF kinds
+
+
+
+Possible Modules
+================
+
+  Terms
+  -----
+  the structure of terms underlies pretty much all the interactions
+  and data representations.
+  
+  data:
+    terms
+    context expressions
+
+  operations:
+    construct a term
+    apply substitution
+    head normalization
+    (?)print terms
+
+  Weak Typing
+  -----------
+  data:
+    type variables.
+    weak types.
+    weak typing constraints.
+    
+  operations:
+    constructing weak types and constraints
+      requires LF signature (for type constants)
+    weak type inference on formulas
+      requires a formula + LF signature
+    weak type checking
+      requires a term and collection of weakly typed variables
+    erasure (map from LF type to a weak type)
+      requires a term
+
+  LF Typing
+  ---------
+  data:
+    type constant declarations
+    object constant declarations
+    lf signature
+
+  operations:
+    construct declarations/signature
+    lookup constant in signature
+    LF type reconstruction & type checking
+      requires relevant terms
+      in Twelf type checking is built into type reconstruction.
+        
+  Sequents
+  --------
+  data:
+    eigenvariable list
+    context variable list
+    assumption formulas list
+    goal formaula
+    weak type constraints
+
+  operations:
+    modify eigenvariables
+    modify context variables
+    modify types of context variables
+    modify assumption formulas
+    modify goal formula
+    refine weak type constraints
+
+
+
+Things to check out in detail:
+==============================
+
+1. Which rules are invertible? (can be moved to end of derivation)
+   What form will formulas in our sequents have?
+   Which rules do we want to apply automatically?
+   Which will we wait for direction from the user?
+
+2. Allowing type variables, are we able to uniquely come up with weak
+   typing for a formula?
+   How can we determine weak types given an arbitrary formula?

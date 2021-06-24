@@ -1,0 +1,162 @@
+Specification "reduce.elf".
+
+Schema c :=
+ {T}(x:tm,y:of x T).
+
+Schema red :=
+ {T}(x:tm,y:reduce x T).
+
+Theorem uniq_lemma : ctx Gamma:c, forall T,
+  {Gamma |- T : ty} => {T : ty}.
+
+  induction on 1. intros. case H1.
+
+  % arr case
+  apply IH to H2.
+  apply IH to H3.
+  search.
+
+  % top case.
+  search.
+
+Theorem uniq_type : ctx Gamma:c, forall M T1 T2 D1 D2,
+  {Gamma |- D1 : of M T1} => {Gamma |- D2 : of M T2} => exists D3,
+  {D3 : eq_ty T1 T2}.
+
+  induction on 1. intros. case H1.
+
+  % of-lam case
+  case H2.
+  apply IH to H6 H12.
+  case H15.
+  apply uniq_lemma to H10.
+  exists refl_ty (arr T U1).
+  search.
+
+  % of-app case
+  case H2.
+  apply IH to H7 H15.
+  case H19.
+  case H20.
+  exists refl_ty T2.
+  search.
+
+  % var case
+  case H2.
+  apply uniq_lemma to H4.
+  exists refl_ty T.
+  search.
+
+% INCOMPLETE: subject reduction
+Theorem sr : ctx Gamma:c, forall M1 M2 T D1 D2,
+  {Gamma |- D1 : step M1 M2} => {Gamma |- D2 : of M1 T} => exists D3,
+  {Gamma |- D3 : of M2 T}.
+
+  induction on 1. intros. case H1.
+
+  % step-lam case
+  case H2.
+  apply IH to H6 H12.
+
+  % QUESTION: why does this fail?
+  exists of_lam ([x] R2 x) T1 U ([x] [x1] D3).
+  search.
+
+%  % this works
+%   assert {Gamma |- lam : {e:ty} {d:{a: tm} tm} tm}.
+%   search.
+%  
+%  % a successful attempt to verify a partial version of a lambda term.
+%   assert {Gamma |- lam T1 : {d:{a: tm} tm} tm}.
+%   weaken H3 with ({a:tm}tm).
+%   search.
+%  
+%  % this works.
+%  assert {Gamma |- ([x] [x1] D3) : {y:tm} {y1:of y T1} of (R2 y) U}.
+%  search.
+%  
+%  % a failed attempt to prove a partial section of the proof by repeatedly weakening.
+%   assert {Gamma |- of_lam R2 : {T3:ty} {U3:ty} {a3:({x:tm}{z:of x T3} of (R2 x) U3)} of (lam T3 ([x] R2 x)) (arr T3 U3)}.
+%   search.
+%   weaken H5 with ty.
+%   weaken H19 with ty.
+%   % weakening fails.
+%   weaken H20 with ({x:tm}{z:of x n1} of (R2 x) n2).
+%   skip.
+
+
+  % the other cases.
+  skip.
+
+  % step-beta case
+  case H2.
+  case H12.
+  inst H19 with n = N.
+  inst H22 with n1 = a2.
+  exists (a3 N a2).
+  search.
+
+  % step-app2 case
+  case H2.
+  apply IH to H6 H14.
+  exists of_app M N2 T U a1 D3.
+  search.
+
+  % step-app1 case
+  case H2.
+  apply IH to H6 H13.
+  exists of_app M4 N T U D3 a2.
+  search.
+
+Theorem cr2: ctx Gamma:c, forall M1 M2 T D1 D2,
+  {T:ty} => {Gamma |- D1 : reduce M1 T} => {Gamma |- D2 : step M1 M2} => exists D3,
+  {Gamma |- D3 : reduce M2 T}.
+
+  induction on 1. intros. case H2.
+
+  % arrow case.
+  assert {Gamma |- M2 : tm}.
+  case H3. search. search. search. search.
+
+  assert exists D5, {Gamma, n:tm, n1:reduce n T1 |- D5 : step (app M1 n) (app M2 n)}.
+    weaken H3 with tm.
+    weaken H4 with tm.
+    weaken H12 with (reduce n T1).
+
+    weaken H6 with tm.
+    weaken H15 with (reduce n T1).
+
+    weaken H11 with tm.
+    weaken H17 with (reduce n T1).
+    
+    exists step-app1 M1 M2 n D2.
+
+    search.
+  case H1.
+  apply IH to H14 H8 H12.
+
+  apply sr to H3 H7.
+  
+  exists reduce-abs T1 T2 M2 D6 ([x] [x1] D1).
+  search.
+  
+  % top case.
+  case H6.
+  assert {Gamma |- M2 : tm}.
+  case H3. search. search. search. search.
+  inst H10 with n = M2.
+  inst H13 with n1 = D2.
+  apply sr to H3 H5.
+  exists reduce-top M2 D1 (D M2 D2).
+  search.
+
+% some things I've tried attempting to make neutral useful.
+Theorem empty_false : ctx Gamma:c, forall M, {Gamma |- M : empty} => false.
+  intros.
+  case H1.
+
+Theorem var_neutral: ctx Gamma:red, exists D, {Gamma, n:tm |- D : neutral n}.
+  intros. abort.
+
+Theorem adelfa_neutral: ctx Gamma:red, forall T R D, {Gamma, n:tm |- D : eq_tm n (lam T R)} => false.
+  intros. case H1.

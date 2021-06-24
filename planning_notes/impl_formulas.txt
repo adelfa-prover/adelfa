@@ -1,0 +1,86 @@
+This file describes the representation of formulas in the
+system. They describe properties of LF derivability based on the
+atomic formulas which are LF typing judgments.
+
+Formulas
+========
+The representation of formulas will have a constructor for each
+connective and quantifier of the logic as well as a constructor for
+atomic formulas. Since we will work within the subset of formulas
+which are weakly well formed the quantifiers of formulas are annotated
+with weak types.
+
+  Constructors:
+    Atomic Formulas
+      Atomic formulas {G|- M:A} are valid if the judgment G|-S M:A is
+      derivable in LF.
+      
+      Components:
+        - context expression
+        - term (representing the LF object)
+        - term (representing the LF type)
+
+    Top
+      Top is always valid.
+      
+    Bottom
+      Bottom is not valid.
+      
+    Implication
+      An implication is valid if whenever the left subformula is valid
+      the right subformula is valid. 
+      
+      Components:
+        - left formula
+        - right formula
+        
+    Conjunction
+      A conjunction is valid if both subformulas are valid.
+
+      Components:
+        - left formula
+        - right formula
+        
+    Disjunction
+      A disjunction is valid if one of the subformulas is valid.
+      
+      Components:
+        - left formula
+        - right formula
+        
+    Context Quantification
+      A formula with a context quantification is valid if, under every
+      possible instantiation for the context variable (i.e. every
+      context expression satisfying the schema definition) the
+      resulting formula is valid.
+
+      Components:
+        - context variable name/symbol
+        - context schema symbol
+        - body formula
+        
+    Universal
+      A universal formula is valid if for every term the formula
+      obtained by replacing the quantified variable with that term is
+      valid.
+      
+      Components:
+        - quantified variable name/symbol
+        - weak type
+        - body formula
+        
+    Existential
+      An existential formula is valid if there is a term such that
+      replacing the quantified variable with that term results in a
+      formula which is valid.
+      
+      Components:
+        - quantified variable name/smbol
+        - weak type
+        - body formula
+
+
+  Operations:
+    - weak well formedness checking
+    - substitution application
+    - normalization

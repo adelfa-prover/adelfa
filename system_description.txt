@@ -1,0 +1,14 @@
+Adelfa System Description
+
+Adelfa is an interactive proof assistant for constructing proofs about
+derivations of the Edinburgh Logical Framework (LF). It implements the
+logic described in [reference logic paper]. The focus of this logic is
+on reasoning about properties of LF derivability; LF typing
+derivations are the atomic formulas and the semantics is based on an
+understanding of derivability in LF. Adelfa is an implementation of
+the proof system for this logic which provides a means for reasoning
+inductively based on the semantics of formulas. A feature of this
+logic is the ability to reason generally about contexts through the
+use of context variables and allowing for partial identification of
+these contexts to provide a usable form of case analysis on atomic
+formulas.

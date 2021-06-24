@@ -1,0 +1,447 @@
+=================================
+Example: Type Uniqueness for stlc
+=================================
+
+Load "stlc.elf".
+Result:
+  Load in LF signature from a file
+
+Schema c =
+  {T:ty}(x:tm,y:of x T).
+Result:
+  Defines a new context schema with single block definition
+
+Theorem ty_unique =
+  pi G:c forall E T1 T2 D1 D2 {G|-D1 : of E T1} -> {G|-D2 : of E T2} -> T1=T2.
+Result:
+  Variables:
+  Contexts:
+  Assumptions:
+  ============================================================================
+  pi G:c forall E T1 T2 D1 D2 {G|-D1 : of E T1} -> {G|-D2 : of E T2} -> T1=T2.
+
+Induction 1.
+Result:
+  Variables:
+  Contexts:
+  Assumptions:
+    IH:pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}*->{G|-D2 : of E T2}->T1=T2
+  ============================================================================
+  pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}@ -> {G|-D2 : of E T2} -> T1=T2
+
+Intros.
+Result:
+  Variables: E T1 T2 D1 D2 
+  Contexts:
+    G:c[]
+  Assumptions:
+    IH:pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}*->{G|-D2 : of E T2}->T1=T2
+    H1:{G|-D1 : of E T1}@
+    H2:{G|-D2 : of E T2}
+  ============================================================================
+  T1=T2
+
+Cases H1.
+Result:
+  Variables: M N T T1 T2 D3 D4 D2
+  Contexts:
+    G:c[]
+  Assumptions:
+    IH:pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}*->{G|-D2 : of E T2}->T1=T2
+    H2:{G|-D2 : of (app E1 E2) T2}
+    H11:{G|-M : tm}
+    H12:{G|-N : tm}
+    H13:{G|-T : ty}
+    H14:{G|-T1 : ty}
+    H3:{G|-D3 : of N T}*
+    H4:{G|-D4 : of M (arr T T1)}*
+  ============================================================================
+  T1=T2
+
+  Case 2: (arr T T1)=T2
+  Case 3: T=T2
+
+Cases H2.
+Result:
+  Variables: M N T T1 T' T2 D3 D4 D5 D6
+  Contexts:
+    G:c[]
+  Assumptions:
+    IH:pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}*->{G|-D2 : of E T2}->T1=T2
+    H11:{G|-M : tm}
+    H12:{G|-N : tm}
+    H13:{G|-T : ty}
+    H14:{G|-T1 : ty}
+    H3:{G|-D3 : of N T}*
+    H4:{G|-D4 : of M (arr T T1)}*
+    H21:{G|-M : tm}
+    H22:{G|-N : tm}
+    H23:{G|-T' : ty}
+    H24:{G|-T2 : ty}
+    H5:{G|-D5 : of N T'}
+    H6:{G|-D6 : of M (arr T' T2)}
+  ============================================================================
+  T1=T2
+
+  Case 2: (arr T T1)=T2
+  Case 3: T=T2
+
+Apply IH to G, M, (arr T T1), (arr T' T2), D4, D6, H4, H6.
+Result:
+  Variables: M N T T1 T' T2 D3 D4 D5 D6
+  Contexts:
+    G:c[]
+  Assumptions:
+    IH:pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}*->{G|-D2 : of E T2}->T1=T2
+    H11:{G|-M : tm}
+    H12:{G|-N : tm}
+    H13:{G|-T : ty}
+    H14:{G|-T1 : ty}
+    H3:{G|-D3 : of N T}*
+    H4:{G|-D4 : of M (arr T T1)}*
+    H21:{G|-M : tm}
+    H22:{G|-N : tm}
+    H23:{G|-T' : ty}
+    H24:{G|-T2 : ty}
+    H5:{G|-D5 : of N T'}
+    H6:{G|-D6 : of M (arr T' T2)}
+    H7:(arr T T1)=(arr T' T2)
+  ============================================================================
+  T1=T2
+
+  Case 2: (arr T T1)=T2
+  Case 3: T=T2
+
+Search.
+Result:
+  Variables: M T T1 T2 D3 D2 
+  Contexts:
+    G:c[]
+  Assumptions:
+    IH:pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}*->{G|-D2 : of E T2}->T1=T2
+    H11:{G,n1:tm|-M n1 : tm}
+    H12:{G|-T : ty}
+    H13:{G|-T1 : ty}
+    H2:{G|-D2 : of (lam T M) T2}
+    H3:{G,n1:tm,n2:of n1 T|-D3 n1 n2: of (M n1) T1}*
+  ============================================================================
+  (arr T T1)=T2
+
+  Case 3: T=T2
+
+Cases H2.
+Result:
+  Variables: M T T1 T2 D3 D4 
+  Contexts:
+    G:c[]
+  Assumptions:
+    IH:pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}*->{G|-D2 : of E T2}->T1=T2
+    H11:{G,n1:tm|-M n1 : tm}
+    H12:{G|-T : ty}
+    H13:{G|-T1 : ty}
+    H3:{G,n1:tm,n2:of n1 T|-D3 n1 n2: of (M n1) T1}*
+    H21:{G,n1:tm|-M n1 : tm}
+    H22:{G|-T : ty}
+    H23:{G|-T2 : ty}
+    H4:{G,n1:tm,n2:of n1 T|-D4 n1 n2:of (M n1) T2}
+  ============================================================================
+  (arr T T1)=(arr T T2)
+
+  Case 3: T=T2
+  
+Apply IH to (G,n1:tm,n2:of n1 T), (M n1), T1, T2, D3, D4, H3, H4.
+Result:
+  Variables: M T T1 T2 D3 D4 
+  Contexts:
+    G:c[]
+  Assumptions:
+    IH:pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}*->{G|-D2 : of E T2}->T1=T2
+    H11:{G,n1:tm|-M n1 : tm}
+    H12:{G|-T : ty}
+    H13:{G|-T1 : ty}
+    H3:{G,n1:tm,n2:of n1 T|-D3 n1 n2: of (M n1) T1}*
+    H21:{G,n1:tm|-M n1 : tm}
+    H22:{G|-T : ty}
+    H23:{G|-T2 : ty}
+    H4:{G,n1:tm,n2:of n1 T|-D4 n1 n2:of (M n1) T2}
+    H5:T1=T2
+  ============================================================================
+  (arr T T1)=(arr T T2)
+
+  Case 3: T=T2
+
+Search.
+Result:
+  Variables: T T2 D2
+  Contexts:
+    G:c[(n1:tm,n2:of n1 T)]
+  Assumptions:
+    IH:pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}*->{G|-D2 : of E T2}->T1=T2
+    H2:{G|-D2 : of n1 T2}
+  ============================================================================
+  T=T2
+
+Cases H2.
+Result:
+  Variables: T
+  Contexts:
+    G:c[(n1:tm,n2:of n1 T)]
+  Assumptions:
+    IH:pi G:c forall E T1 T2 D1 D2{G|-D1 : of E T1}*->{G|-D2 : of E T2}->T1=T2
+  ============================================================================
+  T=T
+
+Search.
+Result: Proof completed
+
+
+==================================
+Example: Type Preservation in stlc
+==================================
+
+Load "stlc.elf".
+Result:
+  Load in LF signature from a file
+
+Theorem type_preservation =
+  forall E V T D1 D2 {|-D1 : of E T} -> {|-D2 : eval E V} ->
+           exists D3 {|-D3 : of V T}.
+Result:
+  Variables:
+  Contexts:
+  Assumptions:
+  ============================================================================
+  forall E V T D1 D2 {|-D1 : of E T} -> {|-D2 : eval E V} ->
+           exists D3 {|-D3 : of V T}.
+
+Induction 1.
+Result:
+  Variables:
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+ ============================================================================
+  forall E V T D1 D2 {|-D1 : of E T}@ -> {|-D2 : eval E V} ->
+           exists D3 {|-D3 : of V T}.
+
+Intros.
+Result:
+  Variables: E V T D1 D2
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+    H1: {|-D1 : of E T}@
+    H2: {|-D2 : eval E V}
+  ============================================================================
+  exists D3 {|-D3 : of V T}.
+
+Cases H1.
+Result:
+  Variables: M N V T' T D3 D4 D2
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+    H2: {|-D2 : eval (app M N) V}
+    H11: {|-M : tm}
+    H12: {|-N : tm}
+    H13: {|-T' : ty}
+    H14: {|-T : ty}
+    H3: {|-D3 : of N T'}*
+    H4: {|-D4 : of M (arr T' T)}*
+  ============================================================================
+  exists D3 {|-D3 : of V T}.
+
+  Case 2: exists D3 {|-D3 : of V (arr T' T)}
+
+Cases H2.
+Result:
+  Variables: M N M' N' T' T T1 D3 D4 D5 D6
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+    H11: {|-M : tm}
+    H12: {|-N : tm}
+    H13: {|-T' : ty}
+    H14: {|-T : ty}
+    H3: {|-D3 : of N T'}*
+    H4: {|-D4 : of M (arr T' T)}*
+    H21: {|-M : tm}
+    H22: {n1:tm|-M' n1 : tm}
+    H23: {|-N : tm}
+    H24: {|-N' : tm}
+    H25: {|-T1 : ty}
+    H5: {|-D5 : eval N N'}
+    H6: {|-D6 : eval M (lam T1 M')}
+  ============================================================================
+  exists D3 {|-D3 : of (M' N') T}.
+
+  Case 2: exists D3 {|-D3 : of V (arr T' T)}
+
+Apply IH to N, N', T', H3, H5.
+Result:
+  Variables: M N M' N' T' T T1 D3 D4 D5 D6 D7
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+    H11: {|-M : tm}
+    H12: {|-N : tm}
+    H13: {|-T' : ty}
+    H14: {|-T : ty}
+    H3: {|-D3 : of N T'}*
+    H4: {|-D4 : of M (arr T' T)}*
+    H21: {|-M : tm}
+    H22: {n1:tm|-M' n1 : tm}
+    H23: {|-N : tm}
+    H24: {|-N' : tm}
+    H25: {|-T1 : ty}
+    H5: {|-D5 : eval N N'}
+    H6: {|-D6 : eval M (lam T1 M')}
+    H7: {|-D7 : of N' T'}
+  ============================================================================
+  exists D3 {|-D3 : of (M' N') T}.
+
+  Case 2: exists D3 {G|-D3 : of V (arr T' T)}
+
+Apply IH to M, (lam T1 M'), (arr T' T), D4, D6, H4, H6.
+Result:
+  Variables: M N M' N' T' T D3 D4 D5 D6 D7 D8
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+    H11: {|-M : tm}
+    H12: {|-N : tm}
+    H13: {|-T' : ty}
+    H14: {|-T : ty}
+    H3: {|-D3 : of N T'}*
+    H4: {|-D4 : of M (arr T' T)}*
+    H21: {|-M : tm}
+    H22: {n1:tm|-M' n1 : tm}
+    H23: {|-N : tm}
+    H24: {|-N' : tm}
+    H25: {|-T' : ty}
+    H5: {|-D5 : eval N N'}
+    H6: {|-D6 : eval M (lam T' M')}
+    H7: {|-D7 : of N' T'}
+    H8: {|-D8 : of (lam T' M') (arr T' T)}
+  ============================================================================
+  exists D3 {|-D3 : of (M' N') T}.
+
+  Case 2: exists D3 {G|-D3 : of V (arr T' T)}
+
+Cases H8.
+Result:
+  Variables: M N M' N' T' T D3 D4 D5 D6 D7 D9
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+    H11: {|-M : tm}
+    H12: {|-N : tm}
+    H13: {|-T' : ty}
+    H14: {|-T : ty}
+    H3: {|-D3 : of N T'}*
+    H4: {|-D4 : of M (arr T' T)}*
+    H21: {|-M : tm}
+    H22: {n1:tm|-M' n1 : tm}
+    H23: {|-N : tm}
+    H24: {|-N' : tm}
+    H25: {|-T' : ty}
+    H5: {|-D5 : eval N N'}
+    H6: {|-D6 : eval M (lam T' M')}
+    H7: {|-D7 : of N' T'}
+    H31: {n1:tm|-M' n1 : tm}
+    H32: {|-T' : ty}
+    H33: {|-T : ty}
+    H9: {n1:tm,n2:of n1 T'|-D9 n1 n2 : of (M' n1) T}
+  ============================================================================
+  exists D3 {|-D3 : of (M' N') T}.
+
+  Case 2: exists D3 {G|-D3 : of V (arr T' T)}
+
+Exists (D9 N' D7).
+Result:
+  Variables: M N M' N' T' T D3 D4 D5 D6 D7 D9
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+    H11: {|-M : tm}
+    H12: {|-N : tm}
+    H13: {|-T' : ty}
+    H14: {|-T : ty}
+    H3: {|-D3 : of N T'}*
+    H4: {|-D4 : of M (arr T' T)}*
+    H21: {|-M : tm}
+    H22: {n1:tm|-M' n1 : tm}
+    H23: {|-N : tm}
+    H24: {|-N' : tm}
+    H25: {|-T' : ty}
+    H5: {|-D5 : eval N N'}
+    H6: {|-D6 : eval M (lam T' M')}
+    H7: {|-D7 : of N' T'}
+    H31: {n1:tm|-M' n1 : tm}
+    H32: {|-T' : ty}
+    H33: {|-T : ty}
+    H9: {n1:tm,n2:of n1 T'|-D9 n1 n2 : of (M' n1) T}
+  ============================================================================
+  {|-(D9 N' D7) : of (M' N') T}.
+
+  Case 2: exists D3 {G|-D3 : of V (arr T' T)}
+
+Search.
+Result:
+  Variables: M T' V T D3 D2
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+    H2: {|-D2 : eval (lam T' M) V}
+    H11: {n1:tm|-M n1 : tm}
+    H12: {|-T' : ty}
+    H13: {|-T : ty}
+    H3: {n1:tm,n2:of n1 T'|-D3 n1 n2:of (M n1) T}*
+  ==========================================================================
+  exists D3 {|-D3 : of V (arr T' T)}
+
+Cases H2.
+Result:
+  Variables: M T' T D3 D4
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+    H2: {|-D2 : eval (lam T' M) V}
+    H11: {n1:tm|-M n1 : tm}
+    H12: {|-T' : ty}
+    H13: {|-T : ty}
+    H3: {n1:tm,n2:of n1 T'|-D3 n1 n2 : of (M n1) T}*
+    H21: {n1:tm|-M n1 : tm}
+    H22: {|-T' : ty}
+  ==========================================================================
+  exists D3 {|-D3 : of (lam T' M) (arr T' T)}
+
+Exists (of_lam M T' T D3).
+Result:
+  Variables: M T' T D3 D4
+  Contexts:
+  Assumptions:
+    IH:  forall E V T D1 D2 {|-D1 : of E T}* -> {|-D2 : eval E V} ->
+                  exists D3 {|-D3 : of V T}.
+    H2: {|-D2 : eval (lam T' M) V}
+    H11: {n1:tm|-M n1 : tm}
+    H12: {|-T' : ty}
+    H13: {|-T : ty}
+    H3: {n1:tm,n2:of n1 T'|-D3 n1 n2 : of (M n1) T}*
+    H21: {n1:tm|-M n1 : tm}
+    H22: {|-T' : ty}
+  ==========================================================================
+  {|-(of_lam M T' T D3) : of (lam T' M) (arr T' T)}
+
+Search.
+Result: Proof Completed.

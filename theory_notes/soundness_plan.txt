@@ -1,0 +1,132 @@
+Planning: Soundness for Reasoning Logic
+
+Induction
+=========
+    X;C;D,...{G|- M:A}*... --> ...{G|- M:A}@...
+    -------------------------------------------
+    X;C;D --> ...{G|- M:A}...
+({G|- M:A} is to left of at least one implication in the formula)
+
+For induction we can actually think of taking a formula we wish to
+show and instead think of showing a formula saying that the desired
+formula is true for LF derivations of G|-M:A of any height
+  forall m:nat, ...{G|-M:A}m...
+where {G|-M:A}i represents a derivation in LF of height i.
+
+We do this by showing the formula
+  forall m:nat,
+    (forall n:nat, if n<m and ...{G|-M:A}n...) then ...{G|-M:A}m...
+which we should be able to show is sound (assuming other rules are
+sound) by strong induction on natural numbers. [this should actually
+be strong induction principle, right?]
+(the property P here is the initial formula we want to use induction
+  rule on)
+
+Using the annotations in the implementation means that we are
+restricting ourselves to only be able to show this when the "smaller"
+derivation is a subderivation (comes from analyzing) the "larger" LF
+derivation; thus it is sound to use the inductive step in proofs
+(though may not be complete, but we are ok with that).
+
+Essentially, a proof using this induction is a schema from which a
+concrete proof (without use of induction) can be obtained for any
+particular LF derivation that might be given (since a valid LF
+derivation has a height so instance of the formula given above).
+
+Case Analysis
+=============
+    {X';C';D' --> F' | sequent is generated from possible ways to
+                       derive G|-M:A in LF}
+    --------------------------------------------------------------
+    X;C;D,{G|-M:A} --> F
+
+How we find cases:
+  1. try using constant from signature
+  2. try using a variable from an explicit part of G
+  3. use variable from an as-yet unspecified part of G by introducing
+     a new block
+
+For the rule to be sound we want to prove the formula F from each
+possible way {G|-M:A} might have a derivation in LF.
+
+The cases that we consider in this rule may contain instances which
+end up not being well formed in LF, but it will cover all of the valid
+possibilities and so will be sound.
+
+All valid instances are obtainable as an instantiation of one of the
+generated cases due to unification in the simply typed setting
+generalizing unification in the dependently types setting.
+
+In showing soundness we focus on just valid cases in LF; the rule then
+is more general so retain soundness but lose completeness.
+
+To show generalizing of LF solutions we might describe unification in
+LF in a way which adds unification problems for the types (like
+Carsten's); in the simply typed setting we are solving all the other
+unification problems but leaving these unsolved, thus they should
+cover all possible LF unifiers.
+
+
+Right Rules: LF Judgments
+=========================
+
+Four ways to derive {G|- M:A} on the right
+
+    1. in assumptions
+      
+       -----------------------------
+       X;C;D,{G|- M:A} --> {G|- M:A}
+    2. abstraction term
+       X;C;D --> {G,x:A|- M:B}
+       -----------------------------
+       X;C;D --> {G|- [x:A]M:{x:A}B}
+    3. application term
+       X;C;D --> {G|- M:{x:B}A}    X;C;D --> {G|- N:B}
+       -----------------------------------------------
+       X;C;D --> {G|- M N:A[N/x]}
+    4. derivable in LF
+       G |- M:A  in LF
+       -------------------
+       X;C;D --> {G|- M:A}
+
+These are all sound.
+    The interpretation of a sequent is that under any instantiations
+    for variables in X and contexts in C satisfying constraints, if
+    all the assumptions D are true then the goal formula F is ture.
+    
+    1. In all instances, {G|-M:A} is either true, in which case we can
+       clearly conclude {G|-M:A} is true, or it is not true and the
+       formula is vacuously true
+
+    2. for all instances of X and C, either D contains something not
+       true (thus the premise is vacuously true and also the
+       conclusion) or everything in D is true and so from premise
+       G,x:A|-M:B is derivable in LF. Then G|-[x:A]M:{x:A}B is
+       derivable in LF so conclusion is true.
+    
+    3. for all instances of X and C, either everything in D is true or
+       something is not true. If something is not true, then both
+       premises and conclusion are vacuously true since they share
+       assumptions. If all in D are true then G|-M:{x:B}A and G|-N:B
+       must be derivable in LF and so G|-M N:A[N/x] must be derivable
+       in LF.
+    
+    4. If G|- M:A is derivable in LF then clearly it is true under any
+       instance of X and C.
+    
+
+ May want to use further properties such as:
+  1. weakening
+    if {G|-M:A} is derivable and G |- A':Type in LF then {G,x:A'|-M:A}
+    is derivable
+
+
+Other Things to Remember
+========================
+
+(for implementation)
+LF judgments on the right are not decomposed unless demanded
+
+  But are judgments on the left decomposed as possible?
+  Then we'd need some other properties I think, like that
+  if proved from {G|-M:{x:B}A} then prove from {G|-M x:A}

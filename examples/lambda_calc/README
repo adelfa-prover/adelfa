@@ -1,0 +1,7 @@
+Examples relating to lambda calculi.
+
+unique
+------
+Type uniqueness for the simply-typed lambda-calculus. Also contains a
+proof that self application is untypable in the simply-typed
+lambda-calculus.

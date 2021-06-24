@@ -1,0 +1,40 @@
+ty : type.
+top_ty : ty.
+arr : {Z1:ty} {Z2:ty} ty.
+
+tm : type.
+app : {M:tm}{N:tm} tm.
+lam : {T:ty}{R:(tm -> tm)}tm.
+
+of : {M:tm}{T:ty}type.
+of_app : {M:tm}{N:tm}{T:ty}{U:ty}
+          {a1:of M (arr U T)} {a2:of N U} of (app M N) T.
+of_lam : {R : {x:tm} tm}{T:ty}{U:ty}
+          {a1:({x:tm}{z:of x T} of (R x) U)}
+          of (lam T R) (arr T U).
+
+% Assumes we can always find at least one element in the reducability relation.
+cc : tm.
+of_cc : {T:ty} of cc T.
+
+step : {M:tm}{N:tm}type.
+step_app1 : {M:tm}{N:tm}{M':tm}{S:step M M'} step (app M N) (app M' N).
+step_app2 : {M:tm}{N:tm}{N':tm}{S:step N N'} step (app M N) (app M N').
+step_beta : {T:ty}{R:tm -> tm}{M:tm} step (app (lam T ([x]R x)) M) (R M).
+step_lam : {T:ty}{R:tm -> tm}{R': tm -> tm}
+           {P:{x:tm}{y:of x T} step (R x) (R' x)}
+           step (lam T ([x] R x)) (lam T ([x] R' x)).
+
+nat : type.
+z : nat.
+s : {n:nat} nat.
+sn : {N:nat}{M:tm} type.
+sn_tm : {N:nat}{M:tm}{P:{M':tm}{S:step M M'}sn N M'} sn (s N) M.
+
+reduce : {M:tm}{A:ty} type.
+reduce_top : {N:nat}{M:tm}{D:of M top_ty}{S:sn N M}reduce M top_ty.
+reduce_arr : {M:tm}{A:ty}{B:ty}{D:of M (arr A B)}
+             {P:{x:tm}{R:reduce x A}reduce (app M x) B} reduce M (arr A B).
+
+eq_tm : {M1:tm}{M2:tm} type.
+refl : {M:tm} eq_tm M M.

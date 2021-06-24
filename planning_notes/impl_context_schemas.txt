@@ -1,0 +1,46 @@
+Context Schemas are used to describe a particular subset of context
+expressions which are made up of sequences of context items of
+particular forms. This regular structure allows us to reason about
+unspecified contexts.
+
+Context Schema
+==============
+  A context schema comprises a name identifying the schema along with
+  some number of block structure definitions.
+  
+  Components:
+    - name
+    - list of block definitions
+
+  Operations:
+    - define schema
+    - weak well formedness check
+
+Block Definition
+================
+  A block definition describes a sequence of context items which
+  appear as a block within a context. An instantiation of the
+  schematic variables results in an instance of a block definition.
+  
+  Components:
+    - list of schematic variables
+    - list of block items
+
+  Operations:
+    - construct an instance (and generic instances)
+    - weak well formedness check
+
+Block Items
+===========
+  A block item is a structure for one of the context items in a block
+  definition. The terms of these block items may use the schematic
+  variables of the block definition as well as any variables also
+  defined in the block.
+
+  Components:
+    - variable name/symbol
+    - term (representing an LF type)
+
+  Operations:
+    - construct instance
+    - weak well formedness check

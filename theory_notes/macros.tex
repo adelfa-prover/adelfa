@@ -1,0 +1,50 @@
+%formulas
+\newcommand{\fatm}[2]{\{#1 \vdash #2\}}
+\newcommand{\fand}[2]{#1\wedge #2}
+\newcommand{\for}[2]{#1\vee #2}
+\newcommand{\fimp}[2]{#1\supset #2}
+\newcommand{\fall}[2]{\forall #1. #2}
+\newcommand{\fexists}[2]{\exists #1. #2}
+\newcommand{\fctx}[3]{\Pi_{#2}#1.#3}
+\newcommand{\feq}[2]{#1=#2}
+
+%sequents
+\newcommand{\seq}[4]{#1;#2;#3\longrightarrow #4}
+\newcommand{\seqsans}[2]{#1\longrightarrow #2}
+\newcommand{\subs}[2]{#1(#2)}
+\newcommand{\setand}[2]{#1\uplus\{#2\}}
+
+%typing
+\newcommand{\flatten}[1]{\overline{#1}}
+\newcommand{\ctxty}[2]{#1\lbrack {#2}\rbrack}
+
+%well formedness 
+\newcommand{\wfform}[3]{#1;#2\longrightarrow #3~formula}
+\newcommand{\wfseq}[4]{#1;#2;#3\longrightarrow #4~sequent}
+\newcommand{\wfctx}[3]{#1;#2\longrightarrow #3~context}
+
+%lf expressions
+\newcommand{\lfprove}[2]{#1 \vdash_{\Sigma} #2}
+\newcommand{\typedpi}[3]{\Pi {#1}{:}{#2}.{\mkern 3mu} #3}
+\newcommand{\type}{\mbox{\it Type}}
+\newcommand{\imp}[2]{#1\rightarrow #2}
+\newcommand{\app}{\ }
+\newcommand{\subst}[2]{#2[#1]}
+
+%keywords for examples
+\newcommand{\sarr}{{\it arr}}
+\newcommand{\sapp}{{\it app}}
+\newcommand{\slam}{{\it lam}}
+\newcommand{\sty}{{\it ty}}
+\newcommand{\stm}{{\it tm}}
+\newcommand{\of}{{\it of}}
+\newcommand{\ofapp}{{\it of\_app}}
+\newcommand{\oflam}{{\it of\_lam}}
+
+%Theorems & proofs
+\newcommand{\case}[1]{\noindent{\bf Case: #1}\\\noindent}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}

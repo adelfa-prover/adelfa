@@ -1,0 +1,11 @@
+adelfa.el provides an emacs mode for developing proofs in .ath files. To
+use, add the following to your .emacs file.
+
+  (load "/path/to/system/emacs/adelfa.el")
+
+Where /path/to/system is replaced with the actual location where the
+system exists.
+
+Note that reading forward commands works properly with the declaring
+specifications and schema definitions, but the moving backwards or
+undoing does not work properly outside of proof development.

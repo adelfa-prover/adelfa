@@ -1,0 +1,114 @@
+The Terms of the logic are LF expressions and so our representation of
+terms will be such that it captures all three levels of LF
+expressions. These terms are sometimes viewed as simply typed terms
+(weak typing) and other times we view them as LF kind, type, or object
+expressions (LF typing).
+
+Terms
+=====
+  Constructors:
+    Applications
+      An application term can represent an application at any level in
+      LF. The representation we use is a head term along with a list
+      of the arguments it is applied to. This form was chosen over the
+      curried form because of how these application terms are used in
+      reasoning.
+
+      Q: Should applications be curried or use a list of arguments?
+        All the uses of application terms will want to do something
+        with the full list of arguments, not process one by one. Thus
+        it seems like the list form is going to work better for our
+        purposes, and it is also the same representation as Abella
+        uses thus will make re-using the unification procedure
+        easier. 
+
+
+      Components:
+        - head term
+        - list of argument terms
+        
+    Abstractions
+      An abstraction term represents a single abstraction (not
+      multi-abstraction) because abstractions in LF are typed and we
+      will use this type during reasoning and for printing out the
+      proof state.
+
+      Q: Should abstractions be nested or multiple in one?
+         What about Pi-types?
+        After more thought I think we will use a multi-let and
+        multi-pi setup and be more similar to the Abella
+        implementation. An abstraction will contain a list of variable
+        + type (represented using a term) pairs for the sequence of
+        binders along with the body term.
+
+      Components:
+        - bound variable name + type of bound variable pair list
+        - body of abstraction
+    
+    Pi-types
+      Similar to the abstraction term is the Pi term. The difference
+      is that when viewed as an LF expression abstractions are objects
+      with Pis are types.
+      
+      Components:
+        - bound variable name + type of bound variable pair list
+        - body of type
+    
+    Variables
+      Like in Abella we use the `Var' constructor to represent
+      constants, eigenvariables, logic variables, and nominal
+      constants. The names of variables are given by a symbol and they
+      are annotated with a weak type.
+
+      We use the "time stamp" on variables to make re-use of the code
+      easier even though we do not have arbitrary quantifier
+      alternation.
+      
+      Components:
+        - tag
+        - symbol
+        - timestamp
+        - weak type
+    
+    
+    Type
+      This constructor is used to represent the base kind `Type' of
+      LF.
+
+    DB
+      Represents a de Brujin index.
+      
+      Components:
+        - int
+
+    Susp
+      Represents a suspended substitution on a term.
+
+      Components:
+        - the term
+        - number of substitutions being made on t
+        - new level of the term (for renumbering bound variables)
+        - the substitution
+
+    Ptr
+      Pointer to a term.
+
+  Operations:
+    - unification
+    - head normalization
+    - substitution application
+    - mapping to a weak type
+    - weak type checking/type inference
+    - LF type checking/type reconstruction/inference
+
+
+
+Notes:
+  To help with the reuse of Abella code we will reuse the term
+  structure from that implementation as much as possible. We will use
+  the same term datatype with two new constructors for Pi and Type. We
+  also will need to modify the representation of abstractions to use
+  types that are representations of dependent types (i.e. terms
+  themselves). Finally, the type of a nominal constant is dependent on
+  the context it appears in so difference instances of the same
+  variable name may have different weak types.

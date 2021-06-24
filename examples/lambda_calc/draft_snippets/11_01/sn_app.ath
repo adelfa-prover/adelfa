@@ -1,0 +1,333 @@
+Specification "reduce.elf".
+
+Schema c :=
+ {T}(x:tm,y:of x T).
+
+Schema red :=
+ {T}(x:tm,y:reduce x T).
+
+Schema sn_ctx :=
+ {M}(x:tm,y:sn M).
+
+Schema step_ctx :=
+ {M}(x:tm,y:step M x).
+
+Schema step_and_tm :=
+ (x:tm);
+ {M1 M2}(x:step M1 M2).
+
+% explicit sn:
+% forall M2 D1, {? |- D1 : step M1 M2} => exists V D2 D3,
+%                          {? |- D2 : can V} /\ {? |- D3 : stepr M2 V}
+
+% backup of definitely right explicit version.
+% Theorem sn_app_explicit : ctx Gamma:c, forall M1 M2, {Gamma |- M2 : tm} =>
+%   (forall M3 D1, {Gamma |- D1 : step (app M1 M2) M3} => exists V D2 D3,
+%     {Gamma |- D2 : can V} /\ {Gamma |- D3 : stepr M3 V}) =>
+%   (forall M4 D4, {Gamma |- D4 : step M1          M4} => exists V D5 D6,
+%     {Gamma |- D5 : can V} /\ {Gamma |- D6 : stepr M4 V}).
+
+Theorem sn_app_exp_lemma : ctx Gamma:c, forall M1 M2 V D1 D2,
+  {Gamma |- D1 : stepr (app M1 M2) V} => {Gamma |- D2 : can V} =>
+  exists V2 D3 D4, {Gamma |- D3 : can V2} /\ {Gamma |- D4 : stepr M1 V2}.
+
+  induction on 1. intros. case H1.
+
+  % trans case
+  case H6(keep).
+  % beta case.
+  case H2.
+  skip.
+  % app2 case
+  apply IH to H7 H2.
+  case H16.
+  exists V2. exists D3. exists D1.
+  split.
+  search.
+  search.
+  % app1 case
+  apply IH to H7 H2.
+  case H16.
+  assert exists D10, {Gamma |- D10 : stepr M1 V2}.
+    exists stepr-trans M1 M5 V2 D D1.
+      assert {Gamma |- V2 : tm}. case H18. search. search.
+    search.
+  exists V2. exists D3. exists D10. split.
+  search. search.
+  % refl case
+  case H2.
+
+Theorem sn_app_explicit : ctx Gamma:c, forall M1 M2 M4 D4, {Gamma |- M2 : tm} =>
+  (forall M3 D1, {Gamma |- D1 : step (app M1 M2) M3} => exists V D2 D3,
+    {Gamma |- D2 : can V} /\ {Gamma |- D3 : stepr M3 V}) =>
+  {Gamma |- D4 : step M1          M4} => exists V D5 D6,
+    {Gamma |- D5 : can V} /\ {Gamma |- D6 : stepr M4 V}.
+
+  induction on 3.
+  intros.
+  assert exists D10, {Gamma |- D10 : step (app M1 M2) (app M4 M2)}.
+  exists step-app1 M1 M4 M2 D4.
+  assert {Gamma |- M1 : tm}. case H3. search. search. search. search.
+  assert {Gamma |- M4 : tm}. case H3. search. search. search. search.
+  search.
+  apply H2 to H4.
+  case H5.
+  apply sn_app_exp_lemma to H7 H6.
+  exists V2. exists D1. exists D5.
+  % Very minor thing, may not be worth improving: my goal is of the form A /\ B
+  % and I have A /\ B as a hypothesis, but search fails and I had to split them
+  % both and prove them one by one. You could improve search to recognize this
+  % but, again, that would be a pretty minor improvement.
+  case H8.
+  split.
+  search.
+  search.
+
+% along with sn2_app_lemma, this is a good example of trying to put a forall
+% in the LF signature leads to issues because it causes the Schema to get tangled
+% up in stuff and it would be nice to be able to unfold.
+Theorem sn2_app : ctx Gamma:step_ctx, forall M1 M2 D1,
+  {Gamma |- D1 : sn2 (app M1 M2)} =>
+  exists D2, {Gamma |- D2 : sn2 M1}.
+
+  intros. case H1.
+  
+  assert {Gamma, n:tm, n1:step (app M1 M2) n |- D : can V}.
+    weaken H4 with tm.
+    weaken H2 with tm.
+    case H8.
+    weaken H7 with (step (app M1 M2) n).
+    search.
+
+  apply sn_app_exp_lemma to H5 H7.
+
+Theorem sn2_app_lemma : ctx Gamma:step_ctx, forall M1 M2 V D1 D2,
+  {Gamma |- D1 : stepr (app M1 M2) V} => {Gamma |- D2 : can V} =>
+  exists V2 D3 D4, {Gamma |- D3 : can V2} /\ {Gamma |- D4 : stepr M1 V2}.
+
+  induction on 1. intros. case H1.
+
+  % trans case
+  case H6(keep).
+  % beta case.
+  case H2.
+  skip.
+  % app2 case
+  apply IH to H7 H2.
+  case H16.
+  exists V2. exists D3. exists D1.
+  split.
+  search.
+  search.
+  % app1 case
+  apply IH to H7 H2.
+  case H16.
+  assert exists D10, {Gamma |- D10 : stepr M1 V2}.
+    exists stepr-trans M1 M5 V2 D D1.
+      assert {Gamma |- V2 : tm}. case H18. search. search.
+    search.
+  exists V2. exists D3. exists D10. split.
+  search. search.
+  % variable case
+  skip.
+  % refl case
+  case H2.
+
+Theorem sn_app_name_clash : ctx Gamma:sn_ctx, forall M1 M2 D1, {Gamma |- D1 : sn (app M1 M2)} => exists D2,
+  {Gamma |- D2 : sn M1}.
+
+  induction on 1. intros. case H1.
+
+  % H3 should have n1:step (app M1 M2) n, instead it has n1:step (app M1 n) n
+  % Changing M2 to M3 in the statement of sn_app fixes the problem,
+  % but shouldn't be necessary.
+  % Note that sn is defined as follows, using the name M2:
+  % sn : tm -> type.
+  % sn-m : {M1:tm} {D : {M2:tm} {D1 : step M1 M2} sn M2} sn M1.
+
+  abort.
+
+Theorem sn_app_lemma : forall M2 M3 N N2 D1 D2 D3,
+  {D1 : step (app M2 M3) N} =>
+  {D2 : step M2 N2} =>
+  {D3 : step (app M2 M3) (app N2 M3)} =>
+  exists D4, {D4 : eq_tm N (app N2 M3)}.
+
+  intros.
+  case H3.
+
+Theorem sn_app_v7 : ctx Gamma:step_ctx, forall M1 D1,
+  {Gamma |- D1 : sn M1} =>
+  (exists M2 M3 D2, {Gamma |- D2 : eq_tm M1 (app M2 M3)} => (exists D3, {Gamma |- D3 : sn M2})).
+
+  induction on 1. intros.
+  case H1.
+  apply IH to H3.
+  case H6.
+
+Theorem sn_app_false_lemma : ctx Gamma:step_ctx, forall M1 D1,
+  {Gamma |- D1 : sn M1} =>
+  (exists M2 M3 D2, {Gamma |- D2 : eq_tm M1 (app M2 M3)} => (false)).
+
+  induction on 1. intros.
+  case H1.
+  apply IH to H3.
+  case H7.
+
+Theorem sn_false : ctx Gamma:step_ctx, forall M1 D1,
+  {Gamma |- D1 : sn M1} => false.
+
+  intros. apply sn_app_false_lemma to H1. case H4.
+  abort.
+
+Theorem of_app_false_lemma : ctx Gamma:c, forall M1 D1 T,
+  {Gamma |- D1 : of M1 T} =>
+  (exists M2 M3 D2, {Gamma |- D2 : eq_tm M1 (app M2 M3)} => (false)).
+
+  induction on 1. intros. case H1.
+  apply IH to H5.
+  case H10.
+  apply IH to H7.
+  case H12.
+  exists n.
+  exists n.
+  exists refl_tm n.
+  intros.
+  case H4.
+
+Theorem of_false : ctx Gamma:c, forall M1 T D1,
+  {Gamma |- D1 : of M1 T} => false.
+  intros. apply of_app_false_lemma to H1. case H4.
+
+
+Theorem is_false : false.
+  assert {n:tm, n1:of n top |- n1:of n top}. search.
+  apply of_false to H1 with (Gamma = n:tm, n1:of n top).
+  
+Theorem sn_app_v8 : ctx Gamma:step_ctx, forall M1 M2 D1,
+  {Gamma |- D1 : sn (app M1 M2)} =>
+  exists D2, {Gamma |- D2 : sn M1}.
+
+  intros.
+  apply sn_app_v7 to H1.
+  case H4.
+
+
+Theorem sn_app_v6 : ctx Gamma:step_and_tm, forall M1 M2 M3 D1 D2, {Gamma |- D1 : eq_tm M1 (app M2 M3)} => {Gamma |- D2 : sn M1} => exists D3,
+  {Gamma |- D3 : sn M2}.
+
+  induction on 2. intros. case H2.
+
+  case H1.
+  weaken H4 with tm.
+  assert {Gamma, n:tm, n1:step (app M2 M3) n, n2:tm |- M2 : tm}.
+    case H3.
+    weaken H10 with tm.
+    weaken H11 with tm.
+    weaken H12 with (step (app M2 M3)) n.
+    weaken H14 with tm.
+    search.
+  weaken H9 with (step M2 n2).
+
+  weaken H10 with (step M2 n2).
+  assert {Gamma, n:tm, n1:step (app M2 M3) n, n2:tm, n3:step M2 n2 |- M3 : tm}.
+    case H3.
+    weaken H14 with tm.
+    weaken H13 with tm.
+    weaken H15 with (step (app M2 M3) n).
+    weaken H17 with tm.
+    weaken H18 with (step M2 n2).
+    search.
+  weaken H11 with (step (app M2 M3) (app n2 M3)).
+  
+
+Theorem sn_app_v0 : ctx Gamma:sn_ctx, forall M1 M3 D1, {Gamma |- D1 : sn (app M1 M3)} => exists D2,
+  {Gamma |- D2 : sn M1}.
+
+  induction on 1. intros. case H1. case H2.
+
+  weaken H3 with tm.
+
+  weaken H5 with tm.
+  weaken H6 with tm.
+  weaken H8 with (step (app M1 M3) n).
+  weaken H10 with tm.
+  weaken H7 with (step M1 n2).
+
+  assert exists D4, {Gamma, n:tm, n1:step (app M1 M3) n, n2:tm, n3:step M1 n2 |- D4 : (step (app M1 M3) (app n2 M3))}.
+
+  exists step-app1 M1 n2 M3 n3.
+
+  weaken H11 with (step M1 n2).
+  weaken H9 with (step (app M1 M3) n).
+  weaken H14 with tm.
+  weaken H15 with (step M1 n2).
+
+  weaken H11 with (step M1 n2).
+
+  weaken H9 with tm.
+  weaken H8 with tm.
+  weaken H14 with (step (app M1 M3) n).
+  weaken H14 with tm.
+  weaken H15 with (step M1 n2).
+
+  search.
+
+  ctxpermute H12 to Gamma, n2:tm, n3:step M1 n2, n:tm, n1:step (app M1 M3) n.
+
+  % alternative path:
+  % note the result of this is not marked as smaller (*). Was that a burden from assert?
+  % maybe, but it didn't have an effect on the instantiation.
+  %  assert {Gamma, n2:tm, n3:step M1 n2 |- app n2 M3 : tm}.
+  %  weaken H9 with (step M1 n).
+  %  search.
+
+  weaken H9 with (step M1 n).
+
+
+  % These two instantiations correspond to `apply H2 to H4` from the Abella version.
+  % However, in Abella that does not remove inductive eligibility.
+  % In fact, in Abella it didn't matter that H4 didn't have inductive eligibility.
+  inst H14 with n = (app n2 M3).
+
+  ctxpermute H13 to Gamma, n2:tm, n3:step M1 n2, n:tm, n1:step (app M1 M3) n.
+  strengthen H17.
+  strengthen H18.
+
+  inst H16 with n1 = D4.
+
+  % fails due to inductive restriction violation.
+  apply IH to H20.
+
+  abort.
+
+Theorem sn_app_v1 : ctx Gamma:sn_ctx, forall M1 M3 D1, {Gamma |- M3 : tm} => {Gamma |- D1 : sn (app M1 M3)} => exists D2,
+  {Gamma |- D2 : sn M1}.
+
+  induction on 1. intros. case H2.
+
+  abort.
+
+Theorem sn_app_v2 : ctx Gamma:sn_ctx, forall M1 M2,
+  (forall M3 D1, {Gamma |- D1 : step (app M1 M2) M3} => exists D2, {Gamma |- D2 : sn M3}) =>
+  exists D3, {Gamma |- D3 : sn M1}.
+
+  induction on 1. intros.
+  abort.
+
+Theorem sn_app_v3 : ctx Gamma:sn_ctx, forall M1 M3 D1, {Gamma |- D1 : sn (app M1 M3)} => exists D2,
+  {Gamma |- D2 : sn M1}.
+
+  abort.
+
+
+Theorem sn_app_v4 : ctx Gamma:step_ctx, forall M1 M3 D1, {Gamma |- D1 : sn (app M1 M3)} => exists D2,
+
+  {Gamma |- D2 : sn M1}.
+
+  induction on 1. intros. case H1.
+
+  apply IH to H3.
+
+  abort.
+

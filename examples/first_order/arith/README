@@ -1,0 +1,18 @@
+Examples encoding and reasoning about natural numbers and arithmetic
+expressions.
+
+even-or-odd
+-----------
+Proof that every natural number is either even or odd.
+
+ident
+-----
+Proof that there is a term which is a right and a left identity for
+plus.
+
+
+arith
+-----
+A collection of properties for simple arithmetic expressions of
+addition and multiplication of natural numbers.
+Currently contains some incomplete theorems.
