@@ -20,3 +20,12 @@ using the system.
 adelfa.byte -i <filename>
 Specifies <filename> as the file from which to read input. Runs each
 command from the file and then quits the system.
+
+
+To Build the Adelfa Tarball:
+============================
+If a tarball of the source is desired, for example to distribute on
+the Adelfa web page, run `make tar' to produce adelfa.tar. To adjust
+what files are included or not included in the tarball, edit the
+command in the makefile. Arguments to `tar' are read as includes, use
+the --exclude flag to mark items to be excluded.
