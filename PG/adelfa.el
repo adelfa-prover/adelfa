@@ -19,7 +19,7 @@
 (require 'adelfa-syntax)
 
 (defvar adelfa-shell-handle-output
-  '(lambda (cmd stirng)
+  '(lambda (cmd string)
      (when (string-match "Proof \\(Completed!\\|Aborted\.\\)" string)
        (proof-clean-buffer proof-goals-buffer))))
 
