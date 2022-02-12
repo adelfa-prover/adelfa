@@ -19,27 +19,53 @@ install of Proof General. Then add an entry for Adelfa resembling: `(adelfa
       (adelfa "Adelfa" "ath")
 ```
 
-Your personal configuration for Proof General should still work. If it does
-not, ensure your byte compilations are up to date or don't compile it at all.
-Here is my configuration for reference:
+In your Emacs configuration, commonly located at `~/.emacs` or
+`~/.emacs.d/init.el`, add the following lines: 
 
 ``` emacs-lisp
 (defconst proof-site-file
   (expand-file-name "path-to-pg/PG/generic/proof-site.el"))
 
-(setq proof-splash-enable nil
-      proof-output-tooltips nil
-      proof-three-window-mode-policy 'horizontal)
-(add-hook 'adelfa-mode-hook
-          #'(lambda ()
-              (setq indent-line-function 'indent-relative)))
+(when (file-exists-p proof-site-file)
+  (setq proof-splash-enable nil
+        proof-output-tooltips nil
+        proof-three-window-mode-policy 'horizontal)
 
-(load-file proof-site-file)
-(setq auto-mode-alist
-   (append
-     '(("\\.ath\\'" . adelfa-mode))
-     auto-mode-alist))
+  (load-file proof-site-file)
+
+  (add-hook 'adelfa-mode-hook
+            #'(lambda ()
+                (setq indent-line-function 'indent-relative)))
+
+  (setq auto-mode-alist
+        (append
+         '(("\\.ath\\'" . adelfa-mode))
+         auto-mode-alist)))
 ```
+
+Where `path-to-pg` should be changed to the file path of your installation
+location of Proof General.
+
+If you have previously installed Proof General and it seems Adelfa isn't
+working, the byte compilation of your installation may be out of date. Running
+the `make` command in the `PG` directory should refresh them. You may also wish
+to not byte compile PG by running `make clean`.
+
+## Using Proof General
+
+You can now use Emacs to open a `ath` file. After executing your first command
+you should see two new windows representing the assistant's state. Some
+basic and common Proof General commands are:
+
+- `C-c C-RET` Execute command(s) up to the pointer position.
+- `C-c C-n` Execute next command.
+- `C-c C-u` Undo last command.
+
+Where then `C-c C-n` notation represents control key with "c" followed by
+control key with "n".
+
+More in depth instructions can be found in the [Proof General User
+Documentation](https://proofgeneral.github.io/doc/master/userman/).
 
 ## Important Notes
 
