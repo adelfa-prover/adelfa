@@ -4,7 +4,7 @@
 
 Copy the `adelfa` directory as a whole from this repo and paste it into your
 install of Proof General. Then add an entry for Adelfa resembling: `(adelfa
-"Adelfa" "\\.ath$")` in the `proof-assistant-table-default` constant, located in
+"Adelfa" "ath")` in the `proof-assistant-table-default` constant, located in
 `PG/generic/proof-site.el`, like:
 
 ``` emacs-lisp
@@ -16,7 +16,7 @@ install of Proof General. Then add an entry for Adelfa resembling: `(adelfa
       (coq "Coq" "v" nil (".vo" ".glob"))
       (easycrypt "EasyCrypt" "ec" "\\.eca?\\'")
       (phox "PhoX" "phx" nil (".phi" ".pho"))
-      (adelfa "Adelfa" "\\.ath$")
+      (adelfa "Adelfa" "ath")
 ```
 
 Your personal configuration for Proof General should still work. If it does
