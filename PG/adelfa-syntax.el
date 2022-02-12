@@ -39,13 +39,13 @@
 (defconst adelfa-reasoning-font-lock-keywords
   '(
     ;; (regexp-opt '("Schema" "Specification") 'words)
-    ("\\<\\(S\\(?:chema\\|pecification\\)\\)\\>"
+    ("\\<\\(S\\(?:chema\\|pecification\\)\\|H[0-9]+\\)\\>"
      . font-lock-builtin-face)
     ;; (regexp-opt '("Define" "Theorem" "by") 'words)
     ("\\<\\(Define\\|Theorem\\|by\\)\\>"
      . font-lock-keyword-face)
-    ;; (regexp-opt '("search" "intros" "split" "left" "right" "apply" "induction" "exists" "case" "to" "on" "keep") 'words)
-    ("\\<\\(apply\\|case\\|exists\\|in\\(?:duction\\|tros\\)\\|keep\\|left\\|on\\|right\\|s\\(?:earch\\|plit\\)\\|to\\)\\>"
+    ;; (regexp-opt '("search" "intros" "split" "left" "right" "apply" "induction" "exists" "case" "to" "on" "keep" "with") 'words)
+    ("\\<\\(apply\\|case\\|exists\\|in\\(?:duction\\|tros\\)\\|keep\\|left\\|on\\|right\\|s\\(?:earch\\|plit\\)\\|to\\|with\\)\\>"
      . font-lock-function-name-face)
     ;; (regexp-opt '("weaken" "strengthen" "ctxpermute" "inst" "prune" "unfold" "applydfn") 'words)
     ("\\<\\(weaken\\|strengthen\\|ctxpermute\\|inst\\|prune\\|unfold\\|applydfn\\)\\>"
