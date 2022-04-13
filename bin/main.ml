@@ -1,4 +1,5 @@
 (* Implements the main interaction loop of the system. *)
+open Core
 open Tactics
 open Lexer
 open Parser

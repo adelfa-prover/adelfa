@@ -181,7 +181,7 @@ module List = struct
     let rec aux list =
       match list with
         | [] -> []
-        | (a, b)::tail when cmp x a -> aux tail
+        | (a, _)::tail when cmp x a -> aux tail
         | head::tail -> head::(aux tail)
     in
       aux list
@@ -255,7 +255,7 @@ module List = struct
 
   let rec drop n list =
     match list with
-      | x::xs when n > 0 -> drop (n-1) xs
+      | _::xs when n > 0 -> drop (n-1) xs
       | _ -> list
 
   let drop_last n list = rev (drop n (rev list))
@@ -317,7 +317,7 @@ module Either = struct
       | Left x -> left x
       | Right x -> right x
 
-  let rec partition_eithers eithers =
+  let partition_eithers eithers =
     let left x (l, r) = (x::l, r) in
     let right x (l, r) = (l, x::r) in
       List.fold_right (either left right) eithers ([], [])

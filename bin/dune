@@ -1,0 +1,18 @@
+(executable
+ (name main)
+ (modes byte)
+ (libraries str core))
+
+(rule
+ (action
+  (copy main.exe adelfa.exe)))
+
+(rule
+ (action
+  (copy main.bc adelfa.bc)))
+
+(install
+ (section bin)
+ (package adelfa)
+ (files
+  (adelfa.exe as adelfa)))

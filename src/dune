@@ -1,0 +1,12 @@
+(library
+ (name core)
+ (libraries str))
+
+(ocamllex lexer)
+
+(ocamllex twelfLexer)
+
+(ocamlyacc parser)
+
+(ocamlyacc twelfParser)
+

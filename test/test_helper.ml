@@ -1,6 +1,7 @@
 open OUnit
+open Core
 open Term
-  
+
 let raises f =
   try
     f ();

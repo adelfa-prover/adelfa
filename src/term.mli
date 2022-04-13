@@ -8,8 +8,7 @@
  *)
 
 open Type
-open Extensions
-  
+
 type tag = Eigen | Constant | Logic | Nominal
 type id = string
 
