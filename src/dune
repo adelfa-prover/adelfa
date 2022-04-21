@@ -1,6 +1,6 @@
 (library
  (name core)
- (libraries str))
+ (libraries str stdlib))
 
 (ocamllex lexer)
 
