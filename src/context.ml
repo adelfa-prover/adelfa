@@ -105,9 +105,13 @@ let fresh =
         i
 
 let fresh_name name used  =
-  let i = fresh () in
-  let name = "G" ^ (string_of_int i) in
-  name
+  let rec aux () =
+    let i = fresh () in
+    let new_name = name ^ (string_of_int i) in
+    if List.mem new_name used then aux ()
+    else new_name
+  in
+  aux ()
 
 let fresh_wrt name used =
   let id = fresh_name name used in
@@ -119,7 +123,7 @@ let fresh_wrt name used =
 type block = entry list
 type ctx_typ = CtxTy of string * block list
 
-let ctx_typ ?blocks:(blocks=[]) ~id =
+let ctx_typ ?blocks:(blocks=[]) ~id () =
   CtxTy(id, blocks)
 
 (* given a substitution for term variables, make the substitution
@@ -201,7 +205,7 @@ let rec context_prefix g1 g2 =
      (if n1 = n2 && Term.eq t1 t2
       then context_prefix g1' g2'
       else false)
-  | _, Ctx(g2', e2) -> context_prefix g1 g2'
+  | _, Ctx(g2', _) -> context_prefix g1 g2'
   | _, _ -> false
 
 let remove_ctx_items expr ids =

@@ -45,7 +45,7 @@
       error_report ~pos:(Parsing.rhs_start_pos vnum)
         "Invalid bound variable %S.@\nIdentifiers matching n[0-9]+ are reserved for nominal cuonstants." vid
 
-  let deloc_id ((pos, _),id) =
+  let deloc_id (_,id) =
     (* if is_illegal_constant id then *)
     (*   error_report ~pos *)
     (*     "Invalid bound variable %S.@\nIdentifiers matching n[0-9]+ are reserved for nominal constants." *)
@@ -55,7 +55,7 @@
   let deloc_id_ty (lid, ty) = (deloc_id lid, ty)
 
   let check_legal_idterm = function
-    | Uterms.UConst(pos,id) -> ()
+    | Uterms.UConst _ -> ()
     | utm ->
        error_report
          ~pos:(snd (Uterms.get_pos utm))
@@ -131,7 +131,10 @@ id_list:
 aid:
   | term COLON term
     { check_legal_idterm $1;
-      let Uterms.UConst(pos,id) = $1 in
+      let pos, id = match $1 with
+        | Uterms.UConst (pos, id) -> (pos, id)
+        | _ -> bugf "Expected constant"
+      in
       ((pos,id), $3)
     }
 

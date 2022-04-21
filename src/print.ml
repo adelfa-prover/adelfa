@@ -135,7 +135,7 @@ and pr_term' cx ppf t =
   | DB(i) -> pr_db cx ppf i
   | Lam(idtys,tm) ->
     Format.fprintf ppf "(%a)" (fun ppf -> pr_lam cx ppf idtys) tm
-  | App(h,tms) ->
+  | App _ ->
      Format.fprintf ppf "(%a)" (pr_term cx) t
   | Pi(idtys,tm) -> pr_pi cx ppf idtys tm
   | Type -> pr_str ppf typekwd
@@ -154,7 +154,7 @@ and pr_lam cx ppf idtys tm =
   let rec pr_bndr cx ppf idtys =
     match idtys with
     | [] -> pr_term cx ppf tm
-    | (n,ty)::idtys' ->
+    | (n,_)::idtys' ->
        Format.fprintf ppf "@[<2>[@,%a@,]%a@]" pr_str n(pr_bndr (n::cx)) idtys'
   in
   pr_bndr cx ppf idtys
@@ -233,13 +233,13 @@ let rec pr_ctxbndrs ppf bndrs =
 let rec pr_allbndrs ppf bndrs =
   match bndrs with
   | [] -> ()
-  | ((n,ty)::bndrs') ->
+  | ((n,_)::bndrs') ->
      Format.fprintf ppf "forall %a,@ %a" pr_str n pr_allbndrs bndrs'
 
 let rec pr_existsbndrs ppf bndrs =
   match bndrs with
   | [] -> ()
-  | ((n,ty)::bndrs') ->
+  | ((n,_)::bndrs') ->
      Format.fprintf ppf "exists %a,@ %a" pr_str n pr_existsbndrs bndrs'
 
                     
@@ -370,6 +370,7 @@ let pr_udef ppf (f1, f2) =
   Format.fprintf ppf "%a@ :=%a" pr_uform f1 pr_uform f2
   
 let rec pr_udefs ppf = function
+  | [] -> ()
   | [def] ->
      pr_udef ppf def
   | (def:: defs) ->
@@ -442,10 +443,11 @@ and pr_with ppf = function
   | Uterms.Cws(id,uctx) ->
     Format.fprintf ppf "(%a@ =@ %a)" pr_str id pr_uctxtm uctx
 and pr_withs ppf = function
+  | [] -> ()
   | (w::[]) -> pr_with ppf w
   | (w::withs) ->
     Format.fprintf ppf "%a,@ %a" pr_with w pr_withs withs
-                    
+
 let rec pr_uschema ppf =
   function
   | [] -> ()
@@ -468,7 +470,7 @@ and pr_locids ppf = function
   | ((_,id)::locids) ->
     Format.fprintf ppf "%a@,@ %a" pr_str id pr_locids locids
                     
-let rec pr_topcommand ppf = function
+let pr_topcommand ppf = function
   | Uterms.Theorem(name,uform) ->
      Format.fprintf ppf "@[<4>Theorem@ %a@,:@ %a.@]" pr_str name pr_uform uform
   | Uterms.Schema(name,uschema) ->

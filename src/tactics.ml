@@ -62,7 +62,7 @@ let freshen_term ~used ?(support=[]) (tids : (id * Type.ty) list) t =
 let freshen_type ~used ?(support=[]) = function
   | Pi(vtys,base) ->
     let (vars, lftys) = List.split vtys in
-    let (alist, new_vars) =
+    let (alist, _) =
       Formula.fresh_raised_alist
         ~tag:Eigen
         ~ts:1
@@ -82,7 +82,7 @@ let freshen_type ~used ?(support=[]) = function
 
    Returns the new block's entry list.*)
 let freshen_block ~used ?(support=[]) (Context.B(schema_vars,entries)) =
-  let (alist, vars) = Formula.fresh_raised_alist ~tag:Eigen ~used ~ts:1 ~support schema_vars in
+  let (alist, _) = Formula.fresh_raised_alist ~tag:Eigen ~used ~ts:1 ~support schema_vars in
   List.map (fun (x,y) -> (x, replace_term_vars alist y)) entries
     
 (* replaces the given bound vars in a formula by new logic variables.*)
@@ -122,7 +122,12 @@ let context_instance schemas nvars ctxvar_ctx bound_ctxvars g1 g2 =
       let ctxty = List.assoc_opt v (ctxvar_ctx@bound_ctxvars) in
       if Option.is_some ctxty
       then
-        let Context.CtxTy(s,[]) = Option.get ctxty in
+        let s =
+          let ctxty' = Option.get ctxty in
+          match ctxty' with
+          | Context.CtxTy(s, []) -> s
+          | _ -> bugf "Expected a context type"
+        in
         let schema = List.assoc s schemas in
         (if Typing.of_schema nvars (ctxvar_ctx@bound_ctxvars) g2 (s,schema)
          then Some [(v,g2)]
@@ -249,10 +254,9 @@ let all_meta_right_permute_unify ~sc schemas nvars ctxvar_ctx new_ctxvar_ctx t1 
                    then
                      sc (subst,Term.get_bind_state ())
                  with
-                 | Unify.UnifyFailure e -> ()))
+                 | Unify.UnifyFailure _ -> ()))
 
 (* like all_meta_right_permute_unify but only attempts to unify the two context expressions. *)
-            
 let all_meta_right_permute_unify_ctxexpr ~sc schemas nvars ctxvar_ctx new_ctxvar_ctx g1 g2 =
   let support_g1 = Formula.context_support_sans (new_ctxvar_ctx @ ctxvar_ctx) g1 in
   let support_g2 = Formula.context_support_sans (new_ctxvar_ctx @ ctxvar_ctx) g2 in
@@ -284,15 +288,13 @@ let all_meta_right_permute_unify_ctxexpr ~sc schemas nvars ctxvar_ctx new_ctxvar
                    then
                      sc (subst,Term.get_bind_state ())
                  with
-                 | Unify.UnifyFailure e -> ()))
-    
+                 | Unify.UnifyFailure _ -> ()))
 (* determines if f2 is an instance of formula f1.
    Allowed to instantiate the eigenvariables in f1 but not
    those in f2. *)
 let instance_of nvars ctxvar_ctx f1 f2 =
   let f1' = Formula.copy_formula f1 in
-  all_meta_right_permute_unify ~sc:(fun s -> raise Success) [] nvars ctxvar_ctx [] f1' f2
- 
+  all_meta_right_permute_unify ~sc:(fun _ -> raise Success) [] nvars ctxvar_ctx [] f1' f2
 
 (* Given an LF signature, a context expression, and a type
    this function computes
@@ -305,7 +307,7 @@ let decompose_kinding lf_sig used ctx typ =
     match observe (hnorm typ) with
     | Pi(tyctx,ty) ->
        let (v,typ) = List.hd tyctx in
-       let (nvar, used') = fresh_wrt 3 Nominal "n" (erase typ) !used in
+       let (nvar, used') = fresh_wrt ~ts:3 Nominal "n" (erase typ) !used in
        used := used';
        List.append
          (decompose ctx typ)
@@ -328,14 +330,18 @@ let decompose_kinding lf_sig used ctx typ =
        if Signature.is_type lf_sig (get_id (observe (hnorm h)))
        then
          let ty_decl = Signature.lookup_type_decl lf_sig (get_id (observe (hnorm h))) in
-         let Pi(tyargs,Type) = ty_decl.Signature.kind in
+         let tyargs =
+           match ty_decl.Signature.kind with
+           | Pi (tyargs, _) -> tyargs
+           | _ -> bugf "Expected Pi type"
+         in
          let tyargs_args = List.combine tyargs args in
          List.mapi
-           (fun i ((v,typ),arg) ->
+           (fun i ((_,typ),arg) ->
             let typ' =
               replace_term_vars
                 (List.map
-                   (fun ((v,t),a) -> (v.Term.name, a))
+                   (fun ((v,_),a) -> (v.Term.name, a))
                    (List.take i tyargs_args))
                 typ
             in
@@ -379,7 +385,7 @@ let search signature sequent =
   (* checks that the explicit bindings in context expression g are all distinct and are 
      restricted from appearing in any instance of any context variable appearing in g. *)
   let check_context_names g =
-    let explicit_names = (List.map (fun (x,y) -> x.Term.name) (Context.get_explicit g)) in
+    let explicit_names = (List.map (fun (x,_) -> x.Term.name) (Context.get_explicit g)) in
     (List.is_unique explicit_names)
     &&
     (if Context.has_var g
@@ -402,7 +408,11 @@ let search signature sequent =
       let hyp_ctxexprs =
         List.map
           (fun x ->
-            let Formula.Atm(g,_,_,_) = x.formula in
+            let g =
+              match x.formula with
+              | Formula.Atm(g,_,_,_) -> g
+              | _ -> bugf "Expected atomic formula"
+            in
             g)
           (List.filter
              (fun x ->
@@ -440,7 +450,7 @@ let search signature sequent =
       match g with
       | Context.Nil -> raise Success
       | Context.Var _ -> ()
-      | Context.Ctx(g',(v,typ)) ->
+      | Context.Ctx(g',(_,typ)) ->
         let save_seq, bind_state =
           Sequent.cp_sequent sequent,
           Term.get_bind_state ()
@@ -473,7 +483,7 @@ let search signature sequent =
           let f = h.formula in
           (* try each permutation of nominals in assumption formula*)
           match f with
-          | Formula.Atm(g,m,a,ann) ->
+          | Formula.Atm(_,_,_,ann) ->
             if satisfies ann (Formula.formula_to_annotation sequent.goal)
             then 
               let support_hyp =
@@ -527,30 +537,34 @@ let search signature sequent =
           | (arg::[]), bndrs when List.length bndrs > 1 ->
              (* arg : pi(bndrs,body) *)
              let subgoal =
-               let seq = Sequent.cp_sequent sequent in
+               let _ = Sequent.cp_sequent sequent in
                (fun () ->
                 sequent.goal <- Formula.Atm(g,arg, pi bndrs body,ann))
              in
              [subgoal]
           | (arg::args'), ((v,ty)::bndrs') ->
              let subgoal =
-               let seq = Sequent.cp_sequent sequent in
+               let _ = Sequent.cp_sequent sequent in
                (fun () ->
                 sequent.goal <- Formula.Atm(g,arg,ty,ann))
              in
              subgoal::(mk_sg args' (List.map (fun (b,ty) -> (b,Term.replace_term_vars [(v.name,arg)] ty)) bndrs'))
+          | [], _ | _, [] -> bugf "Expected two have same number of args as binders"
         in
         mk_sg args bndrs
       in
       (* Note: Since this is analysis is always performed after normalization we 
                are assured that the type of the judgement is atomic and the head of the 
                term component of the judgement is a variable or an application term. *)
-      let Formula.Atm(g,m,a,ann) = sequent.goal in
+      let (g, m, a, ann) = match sequent.goal with
+        | Formula.Atm (g, m, a, ann) -> (g, m, a, ann)
+        | _ -> bugf "Expected atomic form"
+      in
       match Term.observe (Term.hnorm m) with
       | Term.Var _ as h
       | Term.App(h, []) ->
         (* leaf analysis in this case *)
-          let new_tms, new_lftys, hd_ty =
+          let _, _, hd_ty =
             match Term.observe (Term.hnorm h) with
              | Term.Var v when v.tag=Term.Constant ->
                 (* Freshen the type from the signature to ensure that *)
@@ -564,6 +578,8 @@ let search signature sequent =
                   List.assoc v (Context.ctxexpr_to_ctx (Sequent.get_cvar_tys sequent.ctxvars) g)
                   |> Term.hnorm
                   |> freshen_type ~used:sequent.vars ~support:[]
+             | Term.Var _ -> bugf "Expected constant or nominal"
+             | _ -> bugf "Head of term expected to be a variable"
           in
           (try
               if Term.eq hd_ty a
@@ -594,6 +610,8 @@ let search signature sequent =
                   List.assoc v (Context.ctxexpr_to_ctx (Sequent.get_cvar_tys sequent.ctxvars) g)
                   |> Term.hnorm
                   |> freshen_type ~used:sequent.vars ~support:[]
+             | Term.Var _ -> bugf "Expected constant or nominal"
+             | _ -> bugf "Head of term expected to be a variable"
           in
           let hd_ty = pi (List.map2 (fun t ty -> ((Term.term_to_var t),ty)) new_tms new_lftys) target_ty in
           (try
@@ -650,7 +668,7 @@ let ind sequent i =
   let rec mk_ih form i =
     match form with
     | Formula.Imp(l,r) when i=1 ->
-       let rec aux f =
+       let aux f =
          (match f with
           | Formula.Atm(g,m,a,ann) ->
               if ann = Formula.None
@@ -739,7 +757,7 @@ let addBlock (seq:Sequent.sequent) (tycvar:Sequent.cvar_entry) (bl_schm :Context
   in
   (* generating the new block and related eigenvariable context *)
   let Context.B(schema_vars,entries) = bl_schm in
-  let Context.CtxTy(schema,blocks) = Sequent.get_ctxvar_ty tycvar in
+  let Context.CtxTy(_,blocks) = Sequent.get_ctxvar_ty tycvar in
   let pre_blocks = List.take j blocks in
   let nj = List.flatten pre_blocks |> List.map (fun (v,_) -> Term.var_to_term v) in
   let (thetaj'', psij'') =
@@ -770,7 +788,7 @@ let addBlock (seq:Sequent.sequent) (tycvar:Sequent.cvar_entry) (bl_schm :Context
   let _ = List.iter (Sequent.add_var seq) psij' in
   let _ = Sequent.replace_seq_vars thetaj' seq in
   let _ = List.iter (Sequent.add_var seq) (List.map Term.term_to_pair psij'') in
-  let (gamma, ngamma, (Context.CtxTy(schema,blocks))) =
+  let (_, _, (Context.CtxTy(schema,blocks))) =
     Sequent.ctxvar_lookup seq.ctxvars (Sequent.get_ctxvar_id tycvar)
   in
   let _ =
@@ -784,7 +802,6 @@ let addBlock (seq:Sequent.sequent) (tycvar:Sequent.cvar_entry) (bl_schm :Context
   (* returning heads tuple *)
   let (ni, ai) = List.nth g i  in
   (Sequent.cp_sequent seq, (Term.var_to_term ni), ai)
-  
 
 (* enumerates all the name choices of arity types atys relative to 
    names and away from prohibited.
@@ -803,11 +820,12 @@ let rec namesLists (atys:Type.ty list) (names:Term.term list) (prohibited:Term.t
             (List.map Term.term_to_pair (List.append names prohibited)))
      in
      let avail_choices =
-       List.filter (fun v -> Term.get_var_ty v = a) (List.minus ~cmp:Term.eq names prohibited)
+       List.minus ~cmp:Term.eq names prohibited
+       |> List.filter (fun v -> Term.get_var_ty v = a)
      in
      let pick n =
-       let lsts_new = namesLists atys' names (n :: prohibited) in
-       List.map (fun l -> n::l) lsts_new
+       namesLists atys' names (n :: prohibited)
+       |> List.map (fun l -> n::l)
      in
      List.map pick (new_name :: avail_choices) |> List.flatten
 
@@ -835,7 +853,7 @@ let rec namesLists (atys:Type.ty list) (names:Term.term list) (prohibited:Term.t
     - usable is the collection of nominal constants (N \ NGamma \ prohibited)
  *)
 let allBlocks (seq:Sequent.sequent) (g:Context.ctx_expr) (tycvar:Sequent.cvar_entry) (bl_schm:Context.block_schema) : (Sequent.sequent * Term.term * Term.term) list =
-  let Context.B(atyids, entries) = bl_schm in
+  let Context.B(_, entries) = bl_schm in
   let entry_atys = List.map (fun (v,_) -> v.ty) entries in
   let noms = Sequent.get_nominals seq in
   let n_gamma =
@@ -845,7 +863,7 @@ let allBlocks (seq:Sequent.sequent) (g:Context.ctx_expr) (tycvar:Sequent.cvar_en
   in
   let prohibited =
     Context.ctxexpr_to_ctx (Sequent.get_cvar_tys seq.ctxvars) g
-    |> List.map (fun (v,ty) -> Term.var_to_term v)
+    |> List.map (fun (v,_) -> Term.var_to_term v)
   in
   let usable =
     List.minus ~cmp:Term.eq
@@ -864,7 +882,7 @@ let allBlocks (seq:Sequent.sequent) (g:Context.ctx_expr) (tycvar:Sequent.cvar_en
      call:
      addblock seq tycvar bl_schm names usable j i *)
   let namelsts = namesLists entry_atys usable (n_gamma @ prohibited) in
-  let Context.CtxTy(schema, blocks) = Sequent.get_ctxvar_ty tycvar in
+  let Context.CtxTy(_, blocks) = Sequent.get_ctxvar_ty tycvar in
   let js = List.range 0 (List.length blocks) in
   let is = List.range 0 ((List.length entries)-1) in
   List.map
@@ -901,7 +919,7 @@ let allBlocks (seq:Sequent.sequent) (g:Context.ctx_expr) (tycvar:Sequent.cvar_en
 let implicitHeads seq schemas (g:Context.ctx_expr):(Sequent.sequent * Term.term * Term.term) list =
   let gamma = Context.get_ctx_var g in
   let tycvar = Sequent.ctxvar_lookup seq.ctxvars gamma in
-  let Context.CtxTy(schema, blocks) = Sequent.get_ctxvar_ty tycvar in
+  let Context.CtxTy(schema, _) = Sequent.get_ctxvar_ty tycvar in
   let block_schemas = List.assoc schema schemas in
   List.map (allBlocks seq g tycvar) block_schemas |> List.flatten
 
@@ -918,7 +936,7 @@ let sigHeads lf_sig seq :(Sequent.sequent * Term.term * Term.term) list =
   List.map
     (fun obj ->
      (seq,
-       (Term.const obj.Signature.name (Term.erase obj.Signature.typ)),
+       (Term.const obj.Signature.obj_name (Term.erase obj.Signature.typ)),
        obj.Signature.typ))
     objs
     
@@ -940,48 +958,51 @@ let heads lf_sig schemas seq g =
    Note that the unification procedure we use returns at most one 
    unifier, so either an empty (non-unifiable) or a singleton list is
    returned. *)       
-let makeCases (Formula.Atm(g,m,a,ann) as form) seq (h:Term.term) typ : case list =
-  let (save_seq,bind_state) = Sequent.cp_sequent seq, Term.get_bind_state () in
-  let (new_tms,new_lftys,genty) =
-    freshen_type ~used:seq.Sequent.vars
-                 ~support:(Sequent.get_nominals seq |> List.map snd)
-                 (observe (hnorm typ))
-  in
-  let gentm = app h new_tms in
-  match Unify.try_left_unify_list_cpairs
-    ~used:seq.Sequent.vars
-    [genty ; gentm]
-    [a ; m] with
-  | Some [] ->
-    List.map
-      (fun (id,t) ->
-       Sequent.add_var seq (term_to_pair t))
-      (List.append
-         (Formula.get_formula_used (Sequent.get_cvar_tys seq.ctxvars) form)
-         (Formula.get_formula_used_nominals (Sequent.get_cvar_tys seq.ctxvars) form));
-    let new_hyps =
-      List.map2
-       (fun t ty ->
-         (Formula.Atm(g,
-                      t,
-                      ty,
-                      Formula.reduce_inductive_annotation ann)))
-        new_tms
-        new_lftys 
-    in
-    List.iter (Sequent.add_hyp seq) new_hyps;
-    let case = make_case seq in
-    Sequent.assign_sequent seq save_seq;
-    Term.set_bind_state bind_state;
-    [case]
-  | None ->
-    Sequent.assign_sequent seq save_seq;
-    Term.set_bind_state bind_state;
-    []
-  | _ -> 
-    Sequent.assign_sequent seq save_seq;
-    Term.set_bind_state bind_state;
-    raise NotLlambda
+let makeCases form seq (h:Term.term) typ : case list =
+   match form with
+   | Formula.Atm (g, m, a, ann) ->
+     begin
+       let (save_seq,bind_state) = Sequent.cp_sequent seq, Term.get_bind_state () in
+       let (new_tms,new_lftys,genty) =
+         freshen_type ~used:seq.Sequent.vars
+           ~support:(Sequent.get_nominals seq |> List.map snd)
+           (observe (hnorm typ))
+       in
+       let gentm = app h new_tms in
+       match Unify.try_left_unify_list_cpairs
+               ~used:seq.Sequent.vars
+               [genty ; gentm]
+               [a ; m] with
+       | Some [] ->
+         Formula.get_formula_used (Sequent.get_cvar_tys seq.ctxvars) form @
+         Formula.get_formula_used_nominals (Sequent.get_cvar_tys seq.ctxvars) form
+         |> List.iter
+           (fun (_,t) -> Sequent.add_var seq (term_to_pair t));
+         let new_hyps =
+           List.map2
+             (fun t ty ->
+                (Formula.Atm(g,
+                             t,
+                             ty,
+                             Formula.reduce_inductive_annotation ann)))
+             new_tms
+             new_lftys
+         in
+         List.iter (Sequent.add_hyp seq) new_hyps;
+         let case = make_case seq in
+         Sequent.assign_sequent seq save_seq;
+         Term.set_bind_state bind_state;
+         [case]
+       | None ->
+         Sequent.assign_sequent seq save_seq;
+         Term.set_bind_state bind_state;
+         []
+       | _ ->
+         Sequent.assign_sequent seq save_seq;
+         Term.set_bind_state bind_state;
+         raise NotLlambda
+     end
+   | _ -> bugf "Expected atomic formula when making cases"
 
 
 (* Given a sequent and a name identifying an assumption formula,
@@ -999,7 +1020,7 @@ let cases lf_sig schemas seq id : case list =
     try get_hyp seq id
     with Not_found -> raise (InvalidName id)
   in
-  let (g,m,a,ann) =
+  let (g,_,a,_) =
     match hyp.formula with
     | Formula.Atm(g,m,a,ann) -> (g,m,a,ann)
     | _ -> raise (InvalidFormula (hyp.formula, "Formula must be atomic."))
@@ -1007,12 +1028,12 @@ let cases lf_sig schemas seq id : case list =
   let ty_head =
     match Term.norm a with
     | Var v when v.tag = Constant ->
-      Signature.lookup_type_decl lf_sig v.name;
+      ignore @@ Signature.lookup_type_decl lf_sig v.name;
       v.name
-    | App(h,args) ->
+    | App(h,_) ->
        (match Term.norm h with
        | Var(v) when v.tag = Constant ->
-          Signature.lookup_type_decl lf_sig v.name;
+          ignore @@ Signature.lookup_type_decl lf_sig v.name;
           v.name
         | _ -> raise (InvalidFormula (hyp.formula,
                      "Atomic formula must have a base type typing judgment.")))
@@ -1021,7 +1042,7 @@ let cases lf_sig schemas seq id : case list =
   in
   let case_heads =
     heads lf_sig schemas seq g
-      |> List.filter (fun (s,n,typ) -> (Term.get_ty_head typ) = ty_head)
+      |> List.filter (fun (_,_,typ) -> (Term.get_ty_head typ) = ty_head)
   in
   let per_head (seq, h, typ) =
     (* let (save_seq,bind_state) = (Sequent.cp_sequent seq, Term.get_bind_state ()) in *)
@@ -1082,13 +1103,12 @@ let some_formula_to_annotation f =
   match f with
   | None -> Formula.None
   | Some f -> Formula.formula_to_annotation f
-    
+
 let apply_arrow schemas sequent nvars ctxvar_ctx bound_ctxvars form args =
   let () = check_restrictions
       (map_args Formula.formula_to_annotation form)
       (List.map Formula.formula_to_annotation args)
   in
-  let context_pairs = ref [] in
   let result =
     List.fold_left
       (fun term arg ->
@@ -1169,17 +1189,17 @@ let apply schemas sequent formula args =
 
 let take_from_binders binders withs =
   let withs' =
-    List.find_all (fun (x, t) -> List.mem_assoc x binders) withs
+    List.find_all (fun (x, _) -> List.mem_assoc x binders) withs
   in
-  let binders' = List.remove_all (fun (x, ty) -> List.mem_assoc x withs) binders
+  let binders' = List.remove_all (fun (x, _) -> List.mem_assoc x withs) binders
   in
   (binders', withs')
 
 let take_from_ctxbinders ctxbinders withs =
   let withs' =
-    List.find_all (fun (x,t) -> List.mem_assoc x ctxbinders) withs
+    List.find_all (fun (x,_) -> List.mem_assoc x ctxbinders) withs
   in
-  let binders' = List.remove_all (fun (x,ctxty) -> List.mem_assoc x withs) ctxbinders
+  let binders' = List.remove_all (fun (x,_) -> List.mem_assoc x withs) ctxbinders
   in
   (binders', withs')
             
@@ -1247,7 +1267,7 @@ let intro sequent =
        (List.map2 (fun (n,_) (_,t)-> (n,Term.app t support)) vs new_vars)
        f
   | Formula.Ctx(cvars,f) ->
-     let cvars' = List.map (fun (v,id) -> (v, ref [], Context.ctx_typ id)) cvars in
+     let cvars' = List.map (fun (v,id) -> (v, ref [], Context.ctx_typ ~id ())) cvars in
      sequent.ctxvars <- cvars' @ sequent.ctxvars;
      sequent.goal <- f
   | _ -> raise (InvalidFormula (sequent.goal, "Cannot introduce further."))
@@ -1278,7 +1298,7 @@ let weaken lf_sig sequent form t =
                sequent.vars
   in
   match form with
-  | Formula.Atm(g,m,a,ann) ->
+  | Formula.Atm(g,_,_,_) ->
      (* 1. save current state.
         2. for each goal formula, set as sequent goal and search. *)
      let (save_seq,bind_state) = Sequent.cp_sequent sequent,
@@ -1302,138 +1322,157 @@ let weaken lf_sig sequent form t =
 
 
 exception InvalidCtxPermutation of string
-let permute_ctx (Formula.Atm(g,m,a,ann) as f) g' =
+
+let permute_ctx form g' =
   (* need to verify that 
        (1) all items in g are in g' and all in g ' are in g
        (2) g' respects dependencies (i.e. no name is used
      in a type before it appears in the context) *)
   let rec check_dependencies = function
     | [],[] -> ()
-    | ((v::vs),(typ::typs)) ->
+    | ((v::vs),(_::typs)) ->
       ((if List.mem (v.Term.name) (List.map fst (Term.get_used typs))
         then
-           raise (InvalidCtxPermutation "Later contet items cannot depend on later name")) ;
+          raise (InvalidCtxPermutation "Later contet items cannot depend on later name")) ;
        check_dependencies (vs, typs))
+    | _ -> bugf "Could not check dependencies"
   in
-  let g_used_ctxvars = Context.get_used_ctxvars [g] in
-  let g'_used_ctxvars = Context.get_used_ctxvars [g'] in
-  (if not (List.length g_used_ctxvars = List.length g'_used_ctxvars)
-   then
-     raise (InvalidCtxPermutation "context expression must contain the same number of context variables."));
-  List.iter
-    (fun cvar ->
-      if not (List.mem cvar g'_used_ctxvars)
-      then raise (InvalidCtxPermutation "contexts must use same context variables")
-      else ())
-    g_used_ctxvars;
-  let g_explicit = Context.get_explicit g in
-  let g'_explicit = Context.get_explicit g' in
-  (if not (List.length g_explicit = List.length g'_explicit)
-   then
-     raise (InvalidCtxPermutation "explicit portion of context must be the same length.") ) ;
-  List.iter
-    (fun g'_entry ->
-       if not (List.exists (fun g_entry -> Context.entry_eq g_entry g'_entry) g_explicit)
-       then
-         (let (v,t) = g'_entry in
-          raise (InvalidCtxPermutation ("not found: "^v.Term.name^". all entried must be in both contexts")))
-       else ())
-    g'_explicit ;
-  check_dependencies (List.split g'_explicit);
-  Formula.atm ~ann:ann g' m a
+  match form with
+  | Formula.Atm (g, m, a, ann) ->
+    let g_used_ctxvars = Context.get_used_ctxvars [g] in
+    let g'_used_ctxvars = Context.get_used_ctxvars [g'] in
+    (if not (List.length g_used_ctxvars = List.length g'_used_ctxvars)
+     then
+       raise (InvalidCtxPermutation "context expression must contain the same number of context variables."));
+    List.iter
+      (fun cvar ->
+         if not (List.mem cvar g'_used_ctxvars)
+         then raise (InvalidCtxPermutation "contexts must use same context variables")
+         else ())
+      g_used_ctxvars;
+    let g_explicit = Context.get_explicit g in
+    let g'_explicit = Context.get_explicit g' in
+    (if not (List.length g_explicit = List.length g'_explicit)
+     then
+       raise (InvalidCtxPermutation "explicit portion of context must be the same length.") ) ;
+    List.iter
+      (fun g'_entry ->
+         if not (List.exists (fun g_entry -> Context.entry_eq g_entry g'_entry) g_explicit)
+         then
+           (let (v,_) = g'_entry in
+            raise (InvalidCtxPermutation ("not found: "^v.Term.name^". all entried must be in both contexts")))
+         else ())
+      g'_explicit ;
+    check_dependencies (List.split g'_explicit);
+    Formula.atm ~ann:ann g' m a
+  | _ -> bugf "Expected atomic formula when permuting context"
                                 
-let strengthen ctxvars (Formula.Atm((Context.Ctx(g,(v,t))),m,a,ann)) =
-  let used = Formula.formula_support (Sequent.get_cvar_tys ctxvars) (Formula.Atm(g,m,a,ann)) in
-  if List.exists (fun t -> Term.term_to_name t = v.Term.name) used
-  then
-    None
-  else
-    Some(Formula.Atm(g,m,a,ann))
+let strengthen ctxvars form =
+  match form with
+  | Formula.Atm((Context.Ctx(g, (v, _))), m, a, ann) ->
+    let used = Formula.formula_support (Sequent.get_cvar_tys ctxvars) (Formula.Atm(g,m,a,ann)) in
+    if List.exists (fun t -> Term.term_to_name t = v.Term.name) used
+    then
+      None
+    else
+      Some(Formula.Atm(g,m,a,ann))
+  | _ -> bugf "Expected atomic formula when strengthening"
 
 exception InstTypeError of Formula.formula
 
 (* currently we assume that only one instantiation is given.
    This has been checked in the prover before calling this tactic. *)
-let inst lf_sig sequent (Formula.Atm(g,m,a,ann) as f) ([(n, t)] as subst) =
-(* split the context g based on location on n into g1,n:b,g2.
-   search for a proof that under g1 the term t has type b.
-   if successful replace n with t in g2, m, and a and return the 
-   updated formula. *)
-  let (save_seq,bind_state) = Sequent.cp_sequent sequent,
-                              Term.get_bind_state () in
-  let (g1, b, g2) = Context.split_ctx g n in
-  let to_prove = Formula.Atm(g1,t,b,Formula.None) in
-  try
-    Term.set_bind_state bind_state;
-    sequent.Sequent.goal <- to_prove;
-    search lf_sig sequent;
-    raise (InstTypeError(to_prove))
-  with
-  |Success ->
-    (
-      let _ = Sequent.assign_sequent sequent save_seq;
-              Term.set_bind_state bind_state in
-      let g2' = List.map
-                  (fun (id,ty) ->
-                   (id, Term.replace_term_vars ~tag:Term.Nominal subst ty))
-                  g2
-      in
-      let g' = Context.append_context g1 g2' in
-      let m' = Term.replace_term_vars ~tag:Term.Nominal subst m in
-      let a' = Term.replace_term_vars ~tag:Term.Nominal subst a in
-      Formula.Atm(g',m',a',Formula.None)
-    )
+let inst lf_sig sequent form subst =
+   match form, subst with
+   | Formula.Atm (g, m, a, _), [(n, t)] ->
+     begin
+       (* split the context g based on location on n into g1,n:b,g2.
+          search for a proof that under g1 the term t has type b.
+          if successful replace n with t in g2, m, and a and return the
+          updated formula. *)
+       let (save_seq,bind_state) = Sequent.cp_sequent sequent,
+                                   Term.get_bind_state () in
+       let (g1, b, g2) = Context.split_ctx g n in
+       let to_prove = Formula.Atm(g1,t,b,Formula.None) in
+       try
+         Term.set_bind_state bind_state;
+         sequent.Sequent.goal <- to_prove;
+         search lf_sig sequent;
+         raise (InstTypeError(to_prove))
+       with
+       | Success ->
+         let _ = Sequent.assign_sequent sequent save_seq;
+           Term.set_bind_state bind_state in
+         let g2' = List.map
+             (fun (id,ty) ->
+                (id, Term.replace_term_vars ~tag:Term.Nominal subst ty))
+             g2
+         in
+         let g' = Context.append_context g1 g2' in
+         let m' = Term.replace_term_vars ~tag:Term.Nominal subst m in
+         let a' = Term.replace_term_vars ~tag:Term.Nominal subst a in
+         Formula.Atm(g',m',a',Formula.None)
+     end
+   | _, _ -> bugf "Expected atomic formula and list of one tuple when inst"
 
 (* Prune will identify dependencies which are impossible given the restriction
    on the nominal constants which may appear in an instantiation for a 
    context variable. *)
-let prune sequent (Formula.Atm(g,m,a,ann)) =
-  if Context.has_var g
-  then
-    let Term.App(hd,args) = Term.norm m in
-    let gamma = Context.get_ctx_var g in
-    let cvar = Sequent.ctxvar_lookup sequent.ctxvars gamma in
-    let bound_names =
-      List.map (fun (v,_) -> v.Term.name) (Context.ctxexpr_to_ctx (Sequent.get_cvar_tys sequent.ctxvars) g)
-    in
-    let restricted =
-      List.minus
-        (Sequent.get_ctxvar_restricted cvar)
-        bound_names
-    in
-    (if restricted = []
-     then
-       ()
-     else
-       let Type.Ty(atys,id) = (Term.get_var_ty hd) in
-       let ns =
-         List.map Term.eta_normalize args 
-       in
-       let to_prune =
-         List.map (fun t -> List.mem (Term.get_id t) restricted) args 
-       in
-       let args' =
-         (List.combine to_prune ns)
-         |> List.filter (fun (b,_) -> not b)
-         |> List.map (fun (_,v) -> Term.nominal_var (Term.get_id v) (Term.get_var_ty v))
-       in
-       let atys' =
-         (List.combine to_prune atys)
-         |> List.filter (fun (b,_) -> not b)
-         |> List.map snd
-       in
-       let new_ty = Type.Ty(atys',id) in
-       let new_term =
-         Term.var Eigen (Term.get_id hd) 1 new_ty
-       in
-       let subst =
-         [(Term.get_id hd),
-          (List.fold_left (fun body n ->
-                               abstract (Term.get_id n) (Term.get_var_ty n) body)
-                          (Term.app new_term args')
-                          (List.rev ns))]
-       in
-       Sequent.add_var sequent (Term.get_id hd,new_term);
-       Sequent.replace_seq_vars subst sequent)
-  else
-    ()
+let prune sequent form =
+   match form with
+   | Formula.Atm (g, m, _, _) ->
+     begin
+       if Context.has_var g
+       then
+         let (hd, args) =
+           let h = Term.norm m in
+           match h with
+           | Term.App(hd, args) -> (hd, args)
+           | _ -> bugf "Expected application when pruning"
+         in
+         let gamma = Context.get_ctx_var g in
+         let cvar = Sequent.ctxvar_lookup sequent.ctxvars gamma in
+         let bound_names =
+           List.map (fun (v,_) -> v.Term.name) (Context.ctxexpr_to_ctx (Sequent.get_cvar_tys sequent.ctxvars) g)
+         in
+         let restricted =
+           List.minus
+             (Sequent.get_ctxvar_restricted cvar)
+             bound_names
+         in
+         (if restricted = []
+          then ()
+          else
+            let Type.Ty(atys,id) = (Term.get_var_ty hd) in
+            let ns =
+              List.map Term.eta_normalize args
+            in
+            let to_prune =
+              List.map (fun t -> List.mem (Term.get_id t) restricted) args
+            in
+            let args' =
+              (List.combine to_prune ns)
+              |> List.filter (fun (v, _) -> not v)
+              |> List.map (fun (_,v) -> Term.nominal_var (Term.get_id v) (Term.get_var_ty v))
+            in
+            let atys' =
+              (List.combine to_prune atys)
+              |> List.filter (fun (v, _) -> not v)
+              |> List.map snd
+            in
+            let new_ty = Type.Ty(atys',id) in
+            let new_term =
+              Term.var Eigen (Term.get_id hd) 1 new_ty
+            in
+            let subst =
+              [(Term.get_id hd),
+               (List.fold_left (fun body n ->
+                    abstract (Term.get_id n) (Term.get_var_ty n) body)
+                   (Term.app new_term args')
+                   (List.rev ns))]
+            in
+            Sequent.add_var sequent (Term.get_id hd,new_term);
+            Sequent.replace_seq_vars subst sequent)
+       else ()
+   end
+   | _ -> bugf "Expected pruning atomic formula"

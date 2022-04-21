@@ -6,21 +6,22 @@ exception NotLFTerm of term
 exception NotLFType of term
 exception TypeMismatch of term * term
 
-let rec wf_type sign ctx ty =
+let wf_type sign _ ty =
   match ty with
   | Var v when v.tag = Constant ->
      if Signature.is_type sign v.name
      then ()
      else raise (NotLFType ty) 
   | Type -> ()
-  | Pi(bndrs,body) ->
-     () (* to finish *)
+  | Pi(_,_) ->
+     () (* TODO finish *)
+  | _ -> ()
                                    
 let wf_ctx sign ctx =
   let rec aux ctx =
     match ctx with
     | [] -> ()
-    | ((n,ty)::ctx') ->
+    | ((_,ty)::ctx') ->
        wf_type sign ctx' ty;
        aux ctx'
   in
@@ -41,9 +42,10 @@ let rec get_type sign (ctx:Term.lftyctx) tm =
       List.assoc v ctx
     else
       raise (NotLFTerm tm)
-  | App(h,args) ->
+  | App(h,_) ->
      let h_ty = get_type sign ctx h in
      h_ty
+  | _ -> bugf "Unexpected term when getting type"
 and check_type sign (ctx:Term.lftyctx) tm ty =
   match tm with
   | Var _ | App _ ->
@@ -72,12 +74,13 @@ and check_type sign (ctx:Term.lftyctx) tm ty =
         (* couldn't happen when terms are weakly well formed. *)
         assert false
       | _ -> raise (NotLFType ty))
+  | _ -> bugf "Unexpected term when checking type"
 
 (* Context Expression Typing *)
 (* given a particular context variable context, determines if the 
    given context expression satisfies the given schema. *)
 let of_schema nvars ctxvars ctx (id,schema) =
-  let ntys = List.map (fun (x,t) -> Term.get_var_ty t) nvars in
+  let ntys = List.map (fun (_,t) -> Term.get_var_ty t) nvars in
   (* if block is instance of one block schema *)
   let is_block block =
     let instance (Context.B(vars,entries)) =
@@ -117,7 +120,7 @@ let of_schema nvars ctxvars ctx (id,schema) =
             gen_block
             block;
           true
-        with e -> false
+        with _ -> false
     in
     List.fold_left (fun tv bsch -> tv || instance bsch) false schema
   in
@@ -153,7 +156,7 @@ let rec match_tys (l1:Type.ty list) (l2:Type.ty list) =
         raise (TypeError(h1,h2))
   | _ -> ()
                 
-let rec apply_ty fty argtys =
+let apply_ty fty argtys =
   match fty, argtys with
   | _,[] -> fty
   | (Type.Ty(atys,base)),_ ->
@@ -169,7 +172,7 @@ let rec infer_ty env tm  =
   match observe (norm tm) with
   | Var(v) -> v.ty
   | Lam(vs,body) ->
-    let vars,typs = List.split vs in
+    let _,typs = List.split vs in
     Type.tyarrow
       typs
       (infer_ty ((List.rev typs) @ env) body)
@@ -187,5 +190,4 @@ let of_type tm ty =
   then
     true
   else
-    (raise (TypeError(ty,got_type));
-    false)
+    raise @@ TypeError (ty, got_type)

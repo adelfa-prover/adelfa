@@ -18,7 +18,7 @@ let case_tests =
           let b = var Eigen "B" 0 ity in
           let p = var Eigen "P" 0 ity in
           let term = atm Context.Nil p (Term.app eval [a;b]) in
-          let seq = Sequent.make_sequent_from_goal Bottom in
+          let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
           Sequent.add_hyp seq ~name:"H1" term;
           match cases eval_sig [] seq "H1" with
           | [case1;case2] ->
@@ -80,7 +80,7 @@ let apply_tests =
           let p4 = var Eigen "P4" 0 ity in
           let p5 = var Eigen "P5" 0 ity in
           let seq =
-            Sequent.make_sequent_from_goal (atm Context.Nil p3 (Term.app typeof [b;c]))
+            Sequent.make_sequent_from_goal ~form:(atm Context.Nil p3 (Term.app typeof [b;c])) ()
           in
           let f =
             forall
@@ -116,7 +116,7 @@ let apply_tests =
           let p4 = var Eigen "P4" 0 ity in
           let p5 = var Eigen "P5" 0 ity in
           let seq =
-            Sequent.make_sequent_from_goal (atm Context.Nil p3 (Term.app typeof [b;c]))
+            Sequent.make_sequent_from_goal ~form:(atm Context.Nil p3 (Term.app typeof [b;c])) ()
           in
           let f =
             forall
@@ -152,7 +152,7 @@ let apply_tests =
           let p4 = var Eigen "P4" 0 ity in
           let p5 = var Eigen "P5" 0 ity in
           let seq =
-            Sequent.make_sequent_from_goal (atm Context.Nil p3 (Term.app typeof [b;c]))
+            Sequent.make_sequent_from_goal ~form:(atm Context.Nil p3 (Term.app typeof [b;c])) ()
           in
           let f =
             forall
@@ -188,7 +188,7 @@ let apply_tests =
           let p4 = var Eigen "P4" 0 ity in
           let p5 = var Eigen "P5" 0 ity in
           let seq =
-            Sequent.make_sequent_from_goal (atm Context.Nil p3 (Term.app typeof [b;c]))
+            Sequent.make_sequent_from_goal ~form:(atm Context.Nil p3 (Term.app typeof [b;c])) ()
           in
           let f =
             forall
@@ -223,7 +223,7 @@ let apply_tests =
           let p4 = var Eigen "P4" 0 ity in
           let p5 = var Eigen "P5" 0 ity in
           let seq =
-            Sequent.make_sequent_from_goal (atm Context.Nil p3 (Term.app typeof [b;c]))
+            Sequent.make_sequent_from_goal ~form:(atm Context.Nil p3 (Term.app typeof [b;c])) ()
           in
           let f =
             forall
@@ -258,7 +258,7 @@ let apply_tests =
           let p4 = var Eigen "P4" 0 ity in
           let p5 = var Eigen "P5" 0 ity in
           let seq =
-            Sequent.make_sequent_from_goal (atm Context.Nil p3 (Term.app typeof [b;c]))
+            Sequent.make_sequent_from_goal ~form:(atm Context.Nil p3 (Term.app typeof [b;c])) ()
           in
           let f =
             forall
@@ -294,7 +294,7 @@ let apply_tests =
           let p4 = var Eigen "P4" 0 ity in
           let p5 = var Eigen "P5" 0 ity in
           let seq =
-            Sequent.make_sequent_from_goal (atm Context.Nil p3 (Term.app typeof [b;c]))
+            Sequent.make_sequent_from_goal ~form:(atm Context.Nil p3 (Term.app typeof [b;c])) ()
           in
           let f =
             forall
@@ -329,7 +329,7 @@ let apply_tests =
           let p4 = var Eigen "P4" 0 ity in
           let p5 = var Eigen "P5" 0 ity in
           let seq =
-            Sequent.make_sequent_from_goal (atm Context.Nil p3 (Term.app typeof [b;c]))
+            Sequent.make_sequent_from_goal ~form:(atm Context.Nil p3 (Term.app typeof [b;c])) ()
           in
           let f =
             forall
@@ -363,7 +363,7 @@ let apply_tests =
           let p4 = var Eigen "P4" 0 ity in
           let p5 = var Eigen "P5" 0 ity in
           let seq =
-            Sequent.make_sequent_from_goal (atm Context.Nil p3 (Term.app typeof [b;c]))
+            Sequent.make_sequent_from_goal ~form:(atm Context.Nil p3 (Term.app typeof [b;c])) ()
           in
           let f =
             forall
@@ -407,7 +407,7 @@ let apply_tests =
           let e = Context.ctx_var "E" in
           let l = Context.ctx_var "L" in
           let seq =
-            Sequent.make_sequent_from_goal Bottom
+            Sequent.make_sequent_from_goal ~form:Bottom ()
           in
           let _ =
             Sequent.add_ctxvar seq l (Context.CtxTy("c",[]));
@@ -476,7 +476,7 @@ let exists_tests =
           let f =
             Formula.exists [("A",ity)] (atm Context.Nil p (Term.app hyp [a])) 
           in
-          let seq = Sequent.make_sequent_from_goal f in
+          let seq = Sequent.make_sequent_from_goal ~form:f () in
           exists seq t;
           assert_pprint_equal "{P : hyp t}" seq.goal) ;
       
@@ -489,7 +489,7 @@ let exists_tests =
           let f =
             Formula.exists [("A",ity)] (atm Context.Nil p (Term.app hyp [a])) 
           in
-          let seq = Sequent.make_sequent_from_goal f in
+          let seq = Sequent.make_sequent_from_goal ~form:f () in
           assert_raises (Tactics.InvalidTerm t)
                         (fun () -> exists seq t)) ;
     ]
@@ -509,7 +509,7 @@ let search_tests =
           let f =
             (atm Context.Nil x tm)
           in
-          let seq = Sequent.make_sequent_from_goal f in
+          let seq = Sequent.make_sequent_from_goal ~form:f () in
           Sequent.add_hyp seq ~name:"H1" f;
           assert_raises Tactics.Success (fun () -> search eval_sig seq)) ;
 
@@ -523,14 +523,14 @@ let search_tests =
               (abstract "x" ity (abstract "y" ity (Term.app arrow [x;y])))
               (Term.pi [(term_to_var x,ty);(term_to_var y,ty)] ty)
           in
-          let seq = Sequent.make_sequent_from_goal f in
+          let seq = Sequent.make_sequent_from_goal ~form:f () in
           assert_raises Tactics.Success (fun () -> search eval_sig seq)) ;
 
       "Should permute nominal constants" >::
         ( fun () ->
           let n1 = var Nominal "n1" 3 ity in
           let n2 = var Nominal "n2" 3 ity in
-          let seq = Sequent.make_sequent_from_goal (atm Context.Nil n1 tm) in
+          let seq = Sequent.make_sequent_from_goal ~form:(atm Context.Nil n1 tm) () in
           Sequent.add_var seq (term_to_pair n1);
           Sequent.add_var seq (term_to_pair n2);
           Sequent.add_hyp seq ~name:"H1" (atm Context.Nil n2 tm);
@@ -542,7 +542,7 @@ let search_tests =
           let n2 = var Nominal "n2" 3 ity in
           let x = var Eigen "X" 1 ity in
           let f = atm (Context.Ctx(Context.Nil,(term_to_var n1,tm))) x ty in
-          let seq = Sequent.make_sequent_from_goal f in
+          let seq = Sequent.make_sequent_from_goal ~form:f () in
           let hyp = atm (Context.Ctx(Context.Nil,(term_to_var n2,tm))) x ty in
           Sequent.add_var seq (term_to_pair n1);
           Sequent.add_var seq (term_to_pair n2);
@@ -562,7 +562,7 @@ let inst_tests =
           let t = var Eigen "T" 1 ity in
           let f1 = atm Context.Nil t tm in
           let f2 = atm (Context.Ctx(Context.Nil, (term_to_var n, tm))) n tm in
-          let seq = Sequent.make_sequent_from_goal Top in
+          let seq = Sequent.make_sequent_from_goal ~form:Top () in
           Sequent.add_var seq (term_to_pair n);
           Sequent.add_var seq (term_to_pair t);
           Sequent.add_hyp seq ~name:"H1" f1;
@@ -582,7 +582,7 @@ let inst_tests =
                       (term_to_var n2, (Term.app arrow [t; n1])))
           in
           let f2 = atm g e (Term.app eval [n1; t]) in
-          let seq = Sequent.make_sequent_from_goal Top in
+          let seq = Sequent.make_sequent_from_goal ~form:Top () in
           Sequent.add_var seq (term_to_pair n1);
           Sequent.add_var seq (term_to_pair n2);
           Sequent.add_var seq (term_to_pair t);
@@ -598,7 +598,7 @@ let inst_tests =
           let t = var Eigen "T" 1 ity in
           let f1 = atm Context.Nil t ty in
           let f2 = atm (Context.Ctx(Context.Nil, (term_to_var n, tm))) n tm in
-          let seq = Sequent.make_sequent_from_goal Top in
+          let seq = Sequent.make_sequent_from_goal ~form:Top () in
           Sequent.add_var seq (term_to_pair n);
           Sequent.add_var seq (term_to_pair t);
           Sequent.add_hyp seq ~name:"H1" f1;

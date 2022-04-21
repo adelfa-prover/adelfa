@@ -86,7 +86,7 @@ let closing_depth t =
     aux t
 
 (* Transforming a term to represent substitutions under abstractions *)
-let rec lift t n =
+let lift t n =
   match observe t with
     | Var _ -> t
     | DB i -> db (i+n)
@@ -138,7 +138,7 @@ let check_flex_args l fts =
   * requirements for the arguments of a flex term whose timestamp is [fts].
   * @raise NotLLambda if the list doesn't satisfy the requirements. *)
 let ensure_flex_args l fts =
-  let (res,l') = check_flex_args l fts in
+  let (res,_) = check_flex_args l fts in
   if not res then
     raise (UnifyError NotLLambda)
 
@@ -242,14 +242,14 @@ let raise_and_invert ts1 ts2 a1 a2 lev =
         end
   in
 
-  (** [prune args n] "prunes" those items in [args] that are not
-    * bound by an embedded abstraction and that do not appear in
-    * [a1]. At the same time inverts the items that are not pruned
-    * and that are not bound by an embedded abstraction; [n] is assumed to be
-    * the length of [args] here and hence yields the index of the
-    * leftmost argument position. This pruning computation is
-    * relevant to the case when [ts1 < ts2]. The terms in [args]
-    * are assumed to be constants or de Bruijn indices. *)
+  (*  [prune args n] "prunes" those items in [args] that are not
+      bound by an embedded abstraction and that do not appear in
+      [a1]. At the same time inverts the items that are not pruned
+      and that are not bound by an embedded abstraction; [n] is assumed to be
+      the length of [args] here and hence yields the index of the
+      leftmost argument position. This pruning computation is
+      relevant to the case when [ts1 < ts2]. The terms in [args]
+      are assumed to be constants or de Bruijn indices. *)
   let rec prune l n = match l,n with
     | [],0 -> false,[],[]
     | t::q,n ->
@@ -280,15 +280,15 @@ let raise_and_invert ts1 ts2 a1 a2 lev =
     | _ -> assert false
   in
 
-  (** Relevant to the case when [ts1 > ts2]. In this case,
-    * [prune_and_raise args n] prunes those constants and de
-    * Bruijn indices not bound by an embedded abstraction that do
-    * not appear in [a1] and, in the case of constants, that do not
-    * have a timestamp less than [ts1]. Constants that do have a timestamp
-    * greater than or equal to [ts1] are preserved via a raising of
-    * [v1]. As in prune, [n] is assumed to be the length of the list
-    * args. The terms in [args] are assumed to be constants or de
-    * Bruijn indices. *)
+  (*  Relevant to the case when [ts1 > ts2]. In this case,
+      [prune_and_raise args n] prunes those constants and de
+      Bruijn indices not bound by an embedded abstraction that do
+      not appear in [a1] and, in the case of constants, that do not
+      have a timestamp less than [ts1]. Constants that do have a timestamp
+      greater than or equal to [ts1] are preserved via a raising of
+      [v1]. As in prune, [n] is assumed to be the length of the list
+      args. The terms in [args] are assumed to be constants or de
+      Bruijn indices. *)
   let rec prune_and_raise l n = match l,n with
     | [],0 -> false,[],[]
     | a::q,n ->
@@ -468,13 +468,13 @@ let makesubst tyctx h1 t2 a1 n =
   let ts1 = hv1.ts in
   let a1 = List.map hnorm a1 in
 
-  (** Generating a substitution term and performing raising and
-    * pruning substitutions corresponding to a non top-level
-    * (sub)term. In this case the variable being bound cannot appear
-    * embedded inside the term. This code assumes that its term
+  (*  Generating a substitution term and performing raising and
+      pruning substitutions corresponding to a non top-level
+      (sub)term. In this case the variable being bound cannot appear
+      embedded inside the term. This code assumes that its term
       * argument is head normalized. Exceptions can be
-    * raised if unification fails or if LLambda conditions are found
-    * to be violated. *)
+      raised if unification fails or if LLambda conditions are found
+      to be violated. *)
   let rec nested_subst tyctx c lev =
     match observe c with
       | Var v when constant v.tag ->
@@ -558,19 +558,19 @@ let makesubst tyctx h1 t2 a1 n =
       | _ -> assert false
   in
 
-  (** Processing toplevel structure in generating a substitution.
-    * First descend under abstractions. Then if the term is a
-    * variable, generate the simple substitution. Alternatively, if
-    * it is an application with the variable being bound as its head,
-    * then generate the pruning substitution. In all other cases,
-    * pass the task on to nested_subst. An optimization is possible
-    * in the case that the term being examined has no outer
-    * abstractions (i.e. lev = 0) and its head is a variable with a
-    * time stamp greater than that of the variable being bound. In
-    * this case it may be better to invoke raise_and_invert
-    * directly with the order of the "terms" reversed.
-    *
-    * The incoming term is assumed to be head normalized. *)
+  (*  Processing toplevel structure in generating a substitution.
+      First descend under abstractions. Then if the term is a
+      variable, generate the simple substitution. Alternatively, if
+      it is an application with the variable being bound as its head,
+      then generate the pruning substitution. In all other cases,
+      pass the task on to nested_subst. An optimization is possible
+      in the case that the term being examined has no outer
+      abstractions (i.e. lev = 0) and its head is a variable with a
+      time stamp greater than that of the variable being bound. In
+      this case it may be better to invoke raise_and_invert
+      directly with the order of the "terms" reversed.
+
+      The incoming term is assumed to be head normalized.*)
   let rec toplevel_subst tyctx t2 lev =
     match observe t2 with
       | Lam (idtys,t2) ->
@@ -611,7 +611,7 @@ let makesubst tyctx h1 t2 a1 n =
             | App _ | Lam _
             | Var _ | DB _ ->
                 nested_subst tyctx t2 lev
-            | Susp _ | Ptr _ -> assert false
+            | Susp _ | Ptr _ | Type | Pi _ -> assert false
           end
       | Ptr _ -> assert false
       | _ ->
@@ -717,7 +717,7 @@ and unify_lam_term tyctx tys1 t1 t2 =
 and unify_type_term tyctx tm1 tm2 =
   match observe tm1, observe tm2 with
   | Pi([],t1),Pi([],t2) -> unify_type_term tyctx t1 t2
-  | Pi(((v1,ty1)::lftys1), t1),Pi(((v2,ty2)::lftys2),t2) ->
+  | Pi(((v1,ty1)::lftys1), t1),Pi(((_,ty2)::_),_) ->
     (unify_type_term tyctx ty1 ty2;
      unify_type_term
        ((v1.name, v1.ty)::tyctx)
@@ -801,7 +801,7 @@ let pattern_unify ~used t1 t2 =
 (* Given Lam(tys1, App(h1, a1)) and Lam(tys2, App(h2, a2))
    where h1 is flexible, h2 is rigid, and len(tys1) <= len(tys2),
    return a complete list of possible bindings for h1 *)
-let flexible_heads ~used ~sr (tys1, h1, a1) (tys2, h2, a2) =
+let flexible_heads ~used (tys1, h1, a1) (tys2, h2, a2) =
   assert (tc [] (lambda tys1 (app h1 a1)) = tc [] (lambda tys2 (app h2 a2))) ;
   let n1 = List.length tys1 in
   let n2 = List.length tys2 in
@@ -825,7 +825,7 @@ let flexible_heads ~used ~sr (tys1, h1, a1) (tys2, h2, a2) =
                (List.filter
                   (* We aren't implementing subordination so behave as if all types are subordinate *)
                   (* (fun (aty, _) -> Subordination.query sr aty ty) *)
-                  (fun (aty, _) -> true)
+                  (fun _ -> true)
                   (List.combine arg_tys dbs))
            in
            app (named_fresh  hv1.name
@@ -854,7 +854,7 @@ let flexible_heads ~used ~sr (tys1, h1, a1) (tys2, h2, a2) =
     let bty = match hv1.ty with Type.Ty(tys, ty) -> Type.Ty(List.drop n tys, ty) in
     let bn = match bty with Type.Ty(tys, _) -> List.length tys in
       List.filter_map
-        (fun (a, aty, i) ->
+        (fun (_, aty, i) ->
            let Type.Ty(tys, ty) = aty in
            let use = List.drop_last bn tys in
            let leave = List.take_last bn tys in
@@ -878,7 +878,7 @@ let flexible_heads ~used ~sr (tys1, h1, a1) (tys2, h2, a2) =
 
 end
 
-let standard_handler t1 t2 = raise (UnifyError NotLLambda)
+let standard_handler _ _ = raise (UnifyError NotLLambda)
 
 module Right =
   Make (struct

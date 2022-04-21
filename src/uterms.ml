@@ -12,7 +12,10 @@ type uterm =
 | UApp of pos * uterm * uterm
 | UType of pos
 
-let get_const_id (UConst(_,id)) = id
+let get_const_id utm = match utm with
+  | UConst(_,id) -> id
+  | ULam _ | UPi _
+  | UApp _ | UType _ -> bugf "Expected constant when getting id"
              
 let get_pos = function
   | UConst(p,_)
@@ -30,9 +33,10 @@ let change_pos p = function
 
 let get_hid_and_args utm =
   let rec aux args = function
-    | UConst(pos,id) -> (id, args)
-    | UApp(pos, t1, t2) ->
+    | UConst(_,id) -> (id, args)
+    | UApp(_, t1, t2) ->
        aux (t2 :: args) t1
+    | _ -> bugf "Cannot get id and args of uterm"
   in
   aux [] utm
                      
@@ -75,8 +79,12 @@ let is_vws = function
   | Vws _ -> true
   | _ -> false
 
-let unwrap_cws (Cws(id,ctx)) = (id, ctx)
-let unwrap_vws (Vws(id,tm)) = (id, tm) 
+let unwrap_cws uw = match uw with
+  | Cws(id,ctx) -> (id, ctx)
+  | Vws _ -> bugf "Expected with context when unwrapping"
+let unwrap_vws uw = match uw with
+  | Vws(id,tm) -> (id, tm)
+  | Cws _ -> bugf "Expected with term when unwrapping"
     
 type command =
 | Skip
@@ -106,7 +114,6 @@ type top_command =
 | Specification of string
 | Quit
 | Define of aid * (udef list)
-
 
 type mode =
 | Plus
@@ -153,7 +160,7 @@ type sig_decl =
 
 let extract_unbound_uterm bvars utm =
   let rec aux bvars = function
-    | UConst(pos,id) ->
+    | UConst(_,id) ->
        if List.mem id bvars
        then []
        else [id]

@@ -6,7 +6,6 @@
  *)
 open Term
 open Context
-open Extensions
 
 type annotation =
   | None

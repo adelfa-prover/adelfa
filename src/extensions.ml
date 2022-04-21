@@ -24,10 +24,8 @@ let curry f (x,y) = f x y
 let uncurry f x y = f (x,y)
 
 let failwithf fmt = Printf.ksprintf failwith fmt
-let bugf      fmt = Printf.ksprintf failwith
-    ("[ABELLA BUG]\n" ^^ fmt ^^
-     "\nPlease report this at https://github.com/abella-prover/abella/issues")
-    
+let bugf      fmt = Printf.ksprintf failwith @@ "[ADELFA BUG]\n" ^^ fmt
+
 let maybe_guard ?guard f =
   match guard with
   | None -> f

@@ -288,8 +288,8 @@ exception ApplyFailure of string
     
 let type_apply_withs form (vwiths, cwiths) =
   let (all_bindings, ctx_bindings) = toplevel_bindings form in
-  let nvars = List.filter (fun (x,t) -> Term.is_var Term.Nominal t) sequent.vars in
-  let evars = List.filter (fun (x,t) -> Term.is_var Term.Eigen t) sequent.vars in
+  let nvars = List.filter (fun (_,t) -> Term.is_var Term.Nominal t) sequent.vars in
+  let evars = List.filter (fun (_,t) -> Term.is_var Term.Eigen t) sequent.vars in
   let evar_ctx =
     List.map
       (fun (_,t) -> (Term.get_id t,ref (Some(t))))
@@ -505,7 +505,7 @@ let split () =
                      sequent.next_subgoal_id <- seq.next_subgoal_id;
                      Term.set_bind_state bind_state]
    with
-     Tactics.InvalidFormula (f,str) -> prerr_endline str; undo () )
+     Tactics.InvalidFormula (_,str) -> prerr_endline str; undo () )
        
 let left () =
   save_undo_state ();
@@ -513,7 +513,7 @@ let left () =
      let l = Tactics.left sequent.goal in
      sequent.goal <- l
    with
-     Tactics.InvalidFormula (f,str) -> prerr_endline str; undo () )
+     Tactics.InvalidFormula (_,str) -> prerr_endline str; undo () )
         
 let right () =
   save_undo_state ();
@@ -521,7 +521,7 @@ let right () =
      let r = Tactics.right sequent.goal in
      sequent.goal <- r
    with
-     Tactics.InvalidFormula (f,str) -> prerr_endline str; undo () )
+     Tactics.InvalidFormula (_,str) -> prerr_endline str; undo () )
 
 let weaken remove id ty =
   save_undo_state ();
@@ -532,9 +532,14 @@ let weaken remove id ty =
     undo ()
   with
   | Not_found -> prerr_endline ("No assumption of name `"^id^"'."); undo ()
-  | Tactics.InvalidFormula (f, str) -> prerr_endline str; undo ()
+  | Tactics.InvalidFormula (_, str) -> prerr_endline str; undo ()
   | Tactics.Success ->
-    let Formula.Atm(g,a,m,ann) as f = (Sequent.get_hyp sequent id).formula in
+    let (g,a,m,ann) =
+      let f = (Sequent.get_hyp sequent id).formula in
+      match f with
+      | Formula.Atm(g, a, m, ann) -> (g, a, m, ann)
+      | _ -> bugf "Non-atomic formula not expected"
+    in
     let _ = 
       if remove
       then
@@ -542,7 +547,7 @@ let weaken remove id ty =
     in
     let (nvar,_) =
       Term.fresh_wrt
-        3
+        ~ts:3
         Term.Nominal
         "n"
         (Term.erase ty)
@@ -585,7 +590,7 @@ let strengthen remove name =
   save_undo_state ();
   try
     match (Sequent.get_hyp sequent name).formula with
-    | (Formula.Atm(Context.Ctx(g,e),m,a,ann)) as f ->
+    | (Formula.Atm(Context.Ctx _, _, _, _)) as f ->
        let f_op = Tactics.strengthen sequent.ctxvars f in
        if Option.is_some f_op
        then
@@ -607,8 +612,8 @@ let strengthen remove name =
 
 exception InstError of string
 let inst_aux name withs =
-  let nvars = List.filter (fun (x,t) -> Term.is_var Term.Nominal t) sequent.vars in
-  let evars = List.filter (fun (x,t) -> Term.is_var Term.Eigen t) sequent.vars in
+  let nvars = List.filter (fun (_,t) -> Term.is_var Term.Nominal t) sequent.vars in
+  let evars = List.filter (fun (_,t) -> Term.is_var Term.Eigen t) sequent.vars in
   let evar_ctx =
     List.map
       (fun (_,t) -> (Term.get_id t,ref (Some(t))))
@@ -619,17 +624,16 @@ let inst_aux name withs =
       (fun (_,t) -> (Term.get_id t, ref (Some(t))))
       nvars
   in 
-  let check_hyp name =
+  let (g, form) =
     try
       let f = (Sequent.get_hyp sequent name).formula in
       match f with
-      | Formula.Atm _ -> f
+      | Formula.Atm (g,_,_,_) -> (g, f)
       | _ -> raise (InstError "Invalid formula for instantiation")
     with
     | Not_found ->
       raise (InstError ("No hyp of name `"^name^"' found."))
-  in
-  let (Formula.Atm(g,m,a,ann) as form) = check_hyp name in
+        in
   let instantiable = List.map (fun (x,_) -> (x.Term.name, x)) (Context.get_explicit g) in
   let check_withs = function
     | Uterms.Cws _ -> raise (InstError "Only nominal constants can be instantiated.")
@@ -686,7 +690,7 @@ let prune name =
   try
     let f = (Sequent.get_hyp sequent name).formula in
     match f with
-    | Formula.Atm(g,m,a,ann) when (check_term (Term.norm m)) ->
+    | Formula.Atm(_,m,_,_) when (check_term (Term.norm m)) ->
        Tactics.prune sequent f
     | _ ->
        (prerr_endline ("Pruning formulas must be of the form {G |- X n1 ... nm : A} with n1,...,nm distinct.");
@@ -709,7 +713,7 @@ let unfold hypop uwiths =
     in
     let defs = 
       match f with
-      | Formula.Prop(p,args) ->
+      | Formula.Prop(p,_) ->
          lookup_definition p 
       | _ ->
          (save_undo_state ();
@@ -718,7 +722,7 @@ let unfold hypop uwiths =
     (* for each clause of the definition, construct the formula and try applying *)
     let f' =
       let rec try_each = function
-        | (support, tyctx, f1, f2)::defs' ->
+        | (_, tyctx, f1, f2)::defs' ->
             (try
               save_undo_state ();
               let f_def = Formula.forall tyctx (Formula.imp f1 f2) in
@@ -752,7 +756,7 @@ let applydfn defname hypnameop uwiths =
     (* for each clause of the definition, construct the formula and try applying *)
     let f' =
       let rec try_each = function
-        | (support, tyctx, f1, f2)::defs' ->
+        | (_, tyctx, f1, f2)::defs' ->
             (try
               save_undo_state ();
               let f_def = Formula.forall tyctx (Formula.imp f2 f1) in

@@ -137,11 +137,11 @@ let rec collect_terms ctxvars = function
   | Top | Bottom -> []
   | Imp(l,r) | Or(l,r) | And(l,r) ->
     (collect_terms ctxvars l) @ (collect_terms ctxvars r)
-  | Atm(g,m,a,ann) ->
+  | Atm(g,m,a,_) ->
      (collect_terms_ctx ctxvars g) @ [m;a]
   | All(_,f) | Exists(_,f) | Ctx(_,f) ->
      (collect_terms ctxvars f)
-  | Prop(p, tmlst) -> tmlst
+  | Prop(_, tmlst) -> tmlst
 and collect_terms_ctx ctxvars = function
   | Nil -> []
   | Context.Var g ->
@@ -160,9 +160,9 @@ let formula_support ctxvars f =
   | Top | Bottom -> []
   | And(l,r) | Or(l,r) | Imp(l,r) -> aux l @ aux r
   | All(_,f') | Exists(_,f') | Ctx(_,f') -> aux f'
-  | Atm(g,m,a,ann) ->
+  | Atm(g,m,a,_) ->
      context_support ctxvars g @ term_support m @ term_support a
-  | Prop(p, tmlst) ->
+  | Prop(_, tmlst) ->
      term_list_support tmlst
   in
   List.unique ~cmp:Term.eq (aux f)
@@ -220,7 +220,7 @@ let get_formula_used_nominals ctxvars t =
 let fresh_alist ~used ~tag ~ts tids =
   let used = ref used in
     List.map (fun (n,t) ->
-                let (fresh, curr_used) = Term.fresh_wrt ts tag n t !used in
+                let (fresh, curr_used) = Term.fresh_wrt ~ts tag n t !used in
                   used := curr_used ;
                   (*                 (n, Term.eta_expand fresh)) *)
                   (n, fresh))
@@ -274,7 +274,7 @@ let rec replace_formula_vars_rename ~used alist t =
        if List.mem id fvars
        then
          (* get a fresh variable to replace this identifier with *)
-         let (fresh, curr_used) = Term.fresh_wrt 1 Term.Logic id ty used in
+         let (fresh, curr_used) = Term.fresh_wrt ~ts:1 Term.Logic id ty used in
          (used'@curr_used, ((Term.get_id fresh, Term.get_var_ty fresh)::bndrs'), ((id, fresh)::alist))
        else
          (used', ((id,ty)::bndrs'), alist)
@@ -328,7 +328,7 @@ let rec copy_formula f =
      let vs' = List.map (fun (n,ty) -> var Eigen n 0 ty) vs in
      let body' =
        copy_formula (replace_formula_vars
-                             (List.map2 (fun (n,ty) tm -> (n,tm)) vs vs')
+                             (List.map2 (fun (n,_) tm -> (n,tm)) vs vs')
                              body)
      in
      forall vs body'
@@ -336,7 +336,7 @@ let rec copy_formula f =
      let vs' = List.map (fun (n,ty) -> var Eigen n 0 ty) vs in
      let body' =
        copy_formula (replace_formula_vars
-                             (List.map2 (fun (n,ty) tm -> (n,tm)) vs vs')
+                             (List.map2 (fun (n,_) tm -> (n,tm)) vs vs')
                              body)
      in
      exists vs body'
@@ -407,4 +407,3 @@ let rec replace_ctx_vars ctxvar_subst f =
       | None -> f)
     else
       f
-

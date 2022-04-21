@@ -35,30 +35,30 @@ let get_error_pos = function
   | Other(pos, _) -> pos
     
 let explain_error = function
-  | NoType(pos,id) ->
+  | NoType(_,id) ->
        ("could not determine type for variable "^id)
-  | TypeMismatch(pos,expected,got) ->
+  | TypeMismatch(_,expected,got) ->
      ("expected type\n  "^(Print.string_of_ty expected)^
          "\nbut got type\n  "^(Print.string_of_ty got))
-  | TooManyArgs(pos) ->
+  | TooManyArgs _ ->
       "term applied to too many arguments."
-  | BadSchema(pos,id) ->
+  | BadSchema(_,id) ->
      ("can't find context schema "^id)
-  | BadDefinition(pos, id) ->
+  | BadDefinition(_, id) ->
      ("No definition for "^id)
-  | BadProp(pos) ->
+  | BadProp _ ->
      ("Expected a defined expression.")
-  | UnknownContext(pos, id) ->
+  | UnknownContext(_, id) ->
      ("unknown context variable "^id)
-  | UnknownConstant(pos,id) ->
+  | UnknownConstant(_,id) ->
      ("unknown constant "^id)
-  | Other(pos, s) -> s
+  | Other(_, s) -> s
 
 let nominal_regexp = Str.regexp "['n']['0-9']*"       
 let maybe_nominal name =
   Str.string_match nominal_regexp name 0
        
-let rec trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
+let trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
   let rec trans_match nvar_ctx bvar_ctx ty = function
      (* order for resolving of names: 
              1. bound variables
@@ -166,7 +166,7 @@ let rec trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
            raise (TypingError(notype idpos id))
         | _ ->
            raise (TypingError(typemismatch pos (Type.tyarrow [(Option.get tyopt)] ty) ty)))
-    | UPi(pos, (idpos,id), typ, tm) ->
+    | UPi(pos, (_,id), typ, tm) ->
        (match ty with
         | Type.Ty([], "o") ->
            let (ty', nvar_ctx') = trans_match nvar_ctx bvar_ctx Type.oty typ in
@@ -176,7 +176,7 @@ let rec trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
         | _ ->
            raise (TypingError(typemismatch pos Type.oty ty)))
     | UApp(pos, tm1, tm2) ->
-       let (tm1', (Type.Ty(args,bty) as got), nvar_ctx') = trans_get nvar_ctx bvar_ctx tm1 in
+       let (tm1', (Type.Ty(args,bty)), nvar_ctx') = trans_get nvar_ctx bvar_ctx tm1 in
        (match args with
         | (argty::args') ->
           let (tm2', nvar_ctx'') = trans_match nvar_ctx' bvar_ctx argty tm2 in
@@ -187,7 +187,7 @@ let rec trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
              raise (TypingError(typemismatch pos ty (Type.Ty(args', bty))))
         | [] ->
            raise (TypingError(toomanyargs pos)))
-    | UType(pos) ->
+    | UType _ ->
        (Term.Type, nvar_ctx)
   and trans_get nvar_ctx bvar_ctx = function
     | UConst(pos,id) when List.mem_assoc id bvar_ctx ->
@@ -234,7 +234,7 @@ let rec trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
            (Term.const id ty, ty, nvar_ctx)
          else
            raise (TypingError(unknownconstant pos id))
-    | ULam(pos, (idpos,id,tyopt), tm) ->
+    | ULam(_, (idpos,id,tyopt), tm) ->
        let bvar = (id, ref (Some (Term.const ~ts:2 id (Option.get tyopt)))) in
        let (tm', ty, nvar_ctx') = trans_get nvar_ctx (bvar::bvar_ctx) tm in
        let id_ty_opt = !(snd bvar) in
@@ -244,7 +244,7 @@ let rec trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
          (Term.abstract id argty tm', (Type.tyarrow [argty] ty), nvar_ctx')
        else
          raise (TypingError(notype idpos id))
-    | UPi(pos, (idpos,id), typ, tm) ->
+    | UPi(_, (_,id), typ, tm) ->
        let (typ',nvar_ctx') = trans_match nvar_ctx bvar_ctx Type.oty typ in
        let atyp = Term.erase typ' in
        let (tm',nvar_ctx'') = trans_match nvar_ctx' ((id,ref (Some(Term.const ~ts:2 id atyp)))::bvar_ctx) Type.oty tm in
@@ -257,7 +257,7 @@ let rec trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
            (Term.app tm1' [tm2'], (Type.Ty(args, bty)), nvar_ctx'')
         | _ ->
            raise (TypingError(toomanyargs pos)))
-    | UType(pos) ->
+    | UType _ ->
        (Term.Type, Type.oty, nvar_ctx)
   in
   match ty_opt with
@@ -268,7 +268,7 @@ let rec trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
      (tm',nvar_ctx')
        
 let rec trans_ctx lf_sig evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx = function
-  | UNil pos ->
+  | UNil _ ->
      (Context.Nil, nvar_ctx)
   | UVar(pos,name) ->
      if Sequent.ctxvar_mem ctxvar_ctx name
@@ -276,7 +276,7 @@ let rec trans_ctx lf_sig evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx = function
        (Context.Var (Context.ctx_var name), nvar_ctx)
      else
        raise (TypingError (unknowncontext pos name))
-  | UCtxTm(pos, uctx, (name,utm)) ->
+  | UCtxTm(_, uctx, (name,utm)) ->
      let (ctx, nvar_ctx') = trans_ctx lf_sig evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx uctx in
      let ctx_entries = Context.ctxexpr_to_ctx (Sequent.get_cvar_tys ctxvar_ctx) ctx in
      let (tm,nvar_ctx'') =
@@ -285,7 +285,7 @@ let rec trans_ctx lf_sig evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx = function
          evar_ctx
          logicvar_ctx
          (List.append
-            (List.rev (List.map (fun (x,t) -> (x.Term.name,ref (Some(Term.var_to_term x)))) ctx_entries))
+            (List.rev (List.map (fun (x,_) -> (x.Term.name,ref (Some(Term.var_to_term x)))) ctx_entries))
             nvar_ctx')
          []
          (Some(Type.oty))
@@ -294,8 +294,8 @@ let rec trans_ctx lf_sig evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx = function
      try
        (Context.Ctx(ctx, (Term.term_to_var (Term.nominal_var name (Term.erase tm)),tm)), nvar_ctx'')
      with
-     | Assert_failure(e) -> raise (TypingError(unknownconstant (Uterms.get_pos utm) (Term.get_ty_head tm)))
-                    
+     | Assert_failure _ -> raise (TypingError(unknownconstant (Uterms.get_pos utm) (Term.get_ty_head tm)))
+
 let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx formula =
   let rec trans logicvar_ctx (ctxvar_ctx : Sequent.cvar_entry list) nvar_ctx = function
     | UTop ->
@@ -315,7 +315,7 @@ let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx 
        let (f2', nvar_ctx') = trans logicvar_ctx ctxvar_ctx nvar_ctx f2 in 
        (Formula.f_and f1' f2', nvar_ctx')
     | UAll(locids,f) ->
-       let (pos,idtys) = List.split locids in
+       let (_,idtys) = List.split locids in
        let new_logicvar_ctx =
          List.map
            (fun (x,y) ->
@@ -338,7 +338,7 @@ let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx 
          let (pos,_) = List.find (fun (_,(x,_)) -> x = untyped) locids in
          raise (TypingError (notype pos untyped))
     | UExists(locids,f) ->
-       let (pos,idtys) = List.split locids in
+       let (_,idtys) = List.split locids in
        let new_logicvar_ctx =
          List.map
            (fun (x,y) ->
@@ -366,7 +366,7 @@ let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx 
          let cvar = Context.ctx_var id in
          try
            let _ = List.assoc schema schemas in
-           (cvar,ref [], Context.ctx_typ schema)
+           (cvar,ref [], Context.ctx_typ ~id:schema ())
          with
          | Not_found -> raise (TypingError (badschema pos schema))
        in
@@ -387,7 +387,7 @@ let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx 
          List.append
            (List.rev
               (List.map
-                 (fun (x,t) -> (x.Term.name,ref (Some(Term.var_to_term x))))
+                 (fun (x,_) -> (x.Term.name,ref (Some(Term.var_to_term x))))
                  (Context.ctxexpr_to_ctx (Sequent.get_cvar_tys ctxvar_ctx) ctx)))
            nvar_ctx'
        in
@@ -396,7 +396,7 @@ let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx 
          try
            Term.erase a
          with
-         | Assert_failure(e) -> raise (TypingError(unknownconstant (Uterms.get_pos uty) (Term.get_ty_head a)))
+         | Assert_failure _ -> raise (TypingError(unknownconstant (Uterms.get_pos uty) (Term.get_ty_head a)))
        in
        let (m, nvar_ctx'''') = trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx''' [] (Some(arity_typ)) utm in
        (Formula.atm ~ann:ann ctx m a, nvar_ctx'''')
@@ -407,9 +407,11 @@ let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx 
          with
          | Failure _ -> raise (TypingError(badprop (Uterms.get_pos utm)))
        in
-       let (Type.Ty(argtys, "prop")) =
+       let argtys =
          try
-           List.assoc prop dfns
+           match List.assoc prop dfns with
+           | Type.Ty(argtys, "prop") -> argtys
+           | _ -> bugf "Expected a prop type"
          with
          | Not_found -> raise (TypingError(baddefinition (Uterms.get_pos utm) prop))
          | Failure _ ->  raise (TypingError(badprop (Uterms.get_pos utm)))
@@ -444,14 +446,14 @@ let trans_schema lf_sig ublock_schemas =
     let logicvar_ctx = List.map (fun (_,id) -> (id, ref None)) locids in
     let entry_list =
       List.fold_left
-        (fun prev_entries (pos,id,utm) ->
+        (fun prev_entries (_,id,utm) ->
          let (tm, nvar_ctx) =
            trans_term
              lf_sig
              []
              logicvar_ctx
              []
-             (List.map (fun (v,typ) -> (v.Term.name,ref(Some(Term.var_to_term v)))) prev_entries)
+             (List.map (fun (v,_) -> (v.Term.name,ref(Some(Term.var_to_term v)))) prev_entries)
              (Some(Type.oty))
              utm
          in
@@ -471,7 +473,7 @@ let trans_schema lf_sig ublock_schemas =
               (x, Term.get_var_ty (Option.get !y)))
              logicvar_ctx,
            (List.rev entry_list))
-    | ((n,_)::l) ->
+    | ((n,_)::_) ->
        let (pos, id) = List.find (fun (_,x) -> x = n) locids in
        raise (TypingError(notype pos id))
   in
@@ -480,7 +482,7 @@ let trans_schema lf_sig ublock_schemas =
 let trans_dfn (lf_sig: Signature.signature) (schemas:(string * Context.ctx_schema) list) (dfns:(string * Type.ty) list) (name:Term.id) (ty:Type.ty) (udefs: Uterms.udef list) =
   let trans_def (ufleft, ufright) =
     match ufleft with
-    | Uterms.UProp(utm) ->
+    | Uterms.UProp _ ->
        (* find unbound names across both formulas.
           create new, untyped logic variables for these names.
           attempt to translate both formulas with the extended logic variable context.

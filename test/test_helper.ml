@@ -18,7 +18,7 @@ let renumber_term t =
     | Term.Var _ | Term.DB _ | Term.Type -> t
     | Term.Lam (tycx, t) ->
       let (dep, tycx) = List.fold_left begin
-        fun (dep, tycx) (v, ty) ->
+        fun (dep, tycx) (_, ty) ->
           let xv = "x" ^ string_of_int dep in
           let dep = dep + 1 in
           let tycx = (xv, ty) :: tycx in
@@ -29,7 +29,7 @@ let renumber_term t =
       Term.lambda tycx t
    | Term.Pi (tycx, t) ->
         let (dep, tycx) = List.fold_left begin
-          fun (dep, tycx) (v, ty) ->
+          fun (dep, tycx) (_, ty) ->
             let xv = Term.term_to_var (Term.var Term.Constant ( ("x" ^ string_of_int dep)) 3 (Term.erase ty)) in
             let dep = dep + 1 in
             let tycx = (xv, ty) :: tycx in
@@ -78,9 +78,9 @@ let assert_string_list_equal lst1 lst2 =
 let assert_raises_any ?msg (f: unit -> 'a) =
   let str = "expected exception, but no exception was raised." in
     match raises f, msg with
-      | Some e, _ -> ()
-	  | None, None -> assert_failure str
-	  | None, Some s -> assert_failure (Format.sprintf "%s\n%s" s str)
+    | Some _, _ -> ()
+    | None, None -> assert_failure str
+    | None, Some s -> assert_failure (Format.sprintf "%s\n%s" s str)
 
 let rec extract_tests path test =
   match path, test with

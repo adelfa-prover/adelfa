@@ -34,7 +34,7 @@ val get_used_ctxvars : ctx_expr list -> ctx_var list
 type block = entry list
 type ctx_typ = CtxTy of string * block list
 
-val ctx_typ : ?blocks:block list -> id:string  -> ctx_typ
+val ctx_typ : ?blocks:block list -> id:string -> unit -> ctx_typ
 val replace_ctx_typ_vars : ?tag:Term.tag -> (string * Term.term)list -> ctx_typ -> ctx_typ
                                                    
 (* context schemas *)

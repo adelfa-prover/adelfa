@@ -1,13 +1,10 @@
 (* Implements the main interaction loop of the system. *)
 open Core
-open Tactics
-open Lexer
-open Parser
 open Extensions
 open Printf
 
 let welcome_message = "Welcome!"
-let exit_message = "Goodbye!\n"
+let exit_message = "Goodbye!"
 
 let interactive = ref true
 let out = ref stdout
@@ -104,7 +101,7 @@ let specList =
    ("-a", Arg.Set Globals.annotate, " Annotate mode")]
                                 
 let parse_args () =
-  Arg.parse specList (fun x -> ()) usageMsg
+  Arg.parse specList (fun _ -> ()) usageMsg
 
 let print_top_prompt () =
   print_string ">> ";
@@ -130,6 +127,7 @@ let read_spec filename =
            else
              let odecl = Signature.obj_dec id tm 0 Signature.NoFixity in
              Prover.set_sig (Signature.add_obj_decl !Prover.lf_sig odecl)
+        | Fixity _ -> bugf "Expected const reading specification"
       done
   with
   | End_of_file -> (close_in inchan; ())
@@ -164,7 +162,7 @@ let process_proof () =
     (try
        Prover.induction i
      with
-     | Tactics.InvalidFormula(f,str) ->
+     | Tactics.InvalidFormula(_,str) ->
          prerr_endline str)
   | Uterms.Apply(Uterms.Keep(name),args,withs)
   | Uterms.Apply(Uterms.Remove(name),args,withs) ->
@@ -184,7 +182,7 @@ let process_proof () =
       List.filter (fun (_,t) -> Term.is_var Term.Eigen t) (Prover.get_sequent ()).Sequent.vars
     in
     (match (Prover.get_sequent ()).goal with
-     | Formula.Exists((n,ty)::vs, body) -> 
+     | Formula.Exists((_,ty)::_, _) ->
       let (term,_) =
         Translate.trans_term
           !Prover.lf_sig
@@ -369,7 +367,7 @@ let process () =
      let theorem =
        Translate.trans_formula !Prover.lf_sig !Prover.schemas (Prover.get_propty_lst ()) [] [] [] [] uthm
      in
-     Prover.set_sequent (Sequent.make_sequent_from_goal ~name:name ~form:theorem);
+     Prover.set_sequent (Sequent.make_sequent_from_goal ~name:name ~form:theorem ());
      (try
        Prover.display_state ();
        proof_loop ()
@@ -392,7 +390,8 @@ let process () =
    | Uterms.Define((id, Some(ty)), udefs) ->
       let dfn = Translate.trans_dfn !Prover.lf_sig !Prover.schemas (Prover.get_propty_lst ()) id ty udefs in
       Prover.add_definition dfn;
-      ());
+      ()
+   | Uterms.Define((_, None), _) -> bugf "Expected to defined some type");
   if !interactive then flush stdout ;
   if !Globals.annotate then fprintf !out "</pre>%!" ;
   fprintf !out "\n%!" 
@@ -434,7 +433,7 @@ let () =
        interactive_or_exit ()
      else
        begin
-         fprintf !out "Goodbye!\n" ;
+         fprintf !out "%s\n" exit_message;
          if !Globals.annotate then fprintf !out "</pre>\n%!" ;
          exit 0
        end

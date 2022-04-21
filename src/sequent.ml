@@ -43,7 +43,7 @@ let assign_sequent sq1 sq2 =
   sq1.name <- sq2.name;
   sq1.next_subgoal_id <- sq2.next_subgoal_id
                            
-let add_var sequent ((id,tm) as v) =
+let add_var sequent (id,tm) =
   if not (List.mem_assoc id sequent.vars)
   then
     sequent.vars <- ((id, tm) :: sequent.vars)
@@ -56,22 +56,26 @@ let add_if_new_var sequent (id,tm) =
   then
     add_var sequent (id,tm)
   (* add_var sequent (id,tm) *)
+
 let get_nominals sequent =
   List.filter (fun (_,t) -> Term.is_var Term.Nominal t) sequent.vars
+
+(** Generates a new eigenvariable in relation to [sequent]
+    @param sequent the sequent to generate an eigenvariable for *)
 let get_eigen sequent =
   List.filter (fun (_,t) -> Term.is_var Term.Eigen t) sequent.vars
-              
+
 let add_ctxvar sequent c ?rstrct:(r=[]) t =
   sequent.ctxvars <- (c,ref r,t) :: sequent.ctxvars
 let remove_ctxvar sequent v =
   sequent.ctxvars <- List.filter (fun (c,_,_) -> not (Context.ctx_var_eq v c)) sequent.ctxvars
-let get_ctxvar_restricted (id, rstrct, ctxty) = !rstrct
-let get_ctxvar_id (id, rstrct, ctxty) = id
-let get_ctxvar_ty (id, rstrct, ctxty) = ctxty
+let get_ctxvar_restricted (_, rstrct, _) = !rstrct
+let get_ctxvar_id (id, _, _) = id
+let get_ctxvar_ty (_, _, ctxty) = ctxty
 (* This function will update the given context variable context entry 
    to add ns to the collection of restricted names. Returns the
    updated context variable entry. *)                                 
-let restrict_in ((id,rstrct,ctxty) as cvar) ns =
+let restrict_in ((_,rstrct,_) as cvar) ns =
   rstrct := ns @ (!rstrct);
   cvar
 let ctxvar_mem cvars n =
@@ -80,7 +84,7 @@ let ctxvar_mem cvars n =
 let ctxvar_lookup cvars n =
   List.find (fun (var,_,_) -> Context.ctx_var_eq n var) cvars
 let get_cvar_tys cvars =
-  List.map (fun (x,y,z) -> (x,z)) cvars
+  List.map (fun (x,_,z) -> (x,z)) cvars
             
 (* apply susbtitution to eigenvariables in sequent.
    Does not modify Psi (eigenvariable context) to reflect the substitution;
@@ -233,9 +237,9 @@ let exists_left sequent formula =
 let norm sequent formula =
   let rec aux formula =
     match formula with 
-    | Formula.Exists(vs,f) ->
+    | Formula.Exists _ ->
        aux (exists_left sequent formula)
-    | Formula.Atm(g,m,a,ann) ->
+    | Formula.Atm _ ->
         norm_atom sequent formula
     | _ -> formula
   in
@@ -254,7 +258,7 @@ let normalize_hyps sequent =
   List.iter update hyp_ids
 
 
-let make_sequent_from_goal ?name:(name="") ~form:goal =
+let make_sequent_from_goal ?name:(name="") ~form:goal () =
   {
 vars = List.map Term.term_to_pair (Formula.formula_support [] goal);
 ctxvars = [];

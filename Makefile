@@ -3,7 +3,7 @@ default : main
 
 .PHONY: main
 main:
-	@dune build @install --profile release
+	@dune build @install
 
 .PHONY: debug
 debug:

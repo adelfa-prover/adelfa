@@ -51,7 +51,7 @@ and in_ptr = V of var | T of term
  * match the erased form of the LF types associated
  * with them in the given context. *)                               
 let lftyctx_to_tyctx lftyctx = 
-  List.map (fun (v,tm) -> (v.name, v.ty)) lftyctx
+  List.map (fun (v,_) -> (v.name, v.ty)) lftyctx
                                
 let rec observe = function
   | Ptr {contents=T d} -> observe d
@@ -149,7 +149,7 @@ let rec hnorm term =
                    than pi-bound variables *)
                 let n = List.length args in
                 let alist =
-                  List.map2 (fun (v,lfty) a -> (v.name,a)) (List.take n lfidtys) args
+                  List.map2 (fun (v,_) a -> (v.name,a)) (List.take n lfidtys) args
                 in
                 pi
                   (List.map
@@ -279,6 +279,7 @@ let rec get_ty_head tm =
   | Pi (_, h) -> get_ty_head h
   | App (t, _) -> get_ty_head t
   | Var v -> v.name
+  | _ -> bugf "Cannot get type of head"
 
 let rec is_kind tm =
   match observe (hnorm tm) with
@@ -315,13 +316,13 @@ let bind v t =
 let get_bind_state () = !bind_state
 
 let clear_bind_state () =
-  List.iter (fun (v, ov, nv) -> v := ov) !bind_state ;
+  List.iter (fun (v, ov, _) -> v := ov) !bind_state ;
   bind_state := [] ;
   bind_len := 0
 
 let set_bind_state state =
   clear_bind_state () ;
-  List.iter (fun (v, ov, nv) -> bind (Ptr v) nv) (List.rev state)
+  List.iter (fun (v, _, nv) -> bind (Ptr v) nv) (List.rev state)
 
 (* Scoped bind state is more efficient than regular bind state, but it
    must always be used in a lexically scoped fashion. The unwind_state
@@ -334,7 +335,7 @@ let get_scoped_bind_state () = !bind_len
 let set_scoped_bind_state state =
   while !bind_len > state do
     match !bind_state with
-      | (v, ov, nv)::rest ->
+      | (v, ov, _)::rest ->
           v := ov ;
           bind_state := rest ;
           decr bind_len
@@ -365,7 +366,7 @@ let abstract test =
 
 (** Abstract (object) [t] over constant or variable [v]. *)
 let abstract id ty t =
-  lambda [(id,ty)] (abstract (fun t id' -> id' = id) 1 t)
+  lambda [(id,ty)] (abstract (fun _ id' -> id' = id) 1 t)
     
 (** Utilities.
   * Easy creation of constants and variables, with sharing. *)
@@ -385,10 +386,12 @@ let const ?(ts=0) s ty =
 let get_id t =
   match observe (hnorm t) with
   | Var(v) -> v.name
+  | _ -> bugf "Cannot get id of term"
     
 let get_tag t =
   match observe t with
   | Var(v) -> v.tag
+  | _ -> bugf "Cannot get tag of term"
 
 let is_var tag t =
   match observe (hnorm t) with
@@ -397,11 +400,12 @@ let is_var tag t =
                 
 let rec get_hd_id t =
   match observe (hnorm t) with
-  | App(h,args) -> get_hd_id h
-  | Lam(tyargs,btm) -> get_hd_id btm
-  | Var v -> v.name 
+  | App(h,_) -> get_hd_id h
+  | Lam(_,btm) -> get_hd_id btm
+  | Var v -> v.name
+  | _ -> bugf "Cannot get id of head"
                 
-let rec get_var_ty t =
+let get_var_ty t =
   match observe (hnorm t) with
   | Var(v) -> v.ty
   | Lam _ ->
@@ -434,7 +438,7 @@ let fresh' =
         incr varcount ;
         i
 
-let rec fresh ?(tag=Logic) ?(ts=1) ty =
+let fresh ?(tag=Logic) ?(ts=1) ty =
   let i = fresh' () in
   let name = (prefix tag) ^ (string_of_int i) in
   (var tag name ts ty)
@@ -446,7 +450,7 @@ let rec eta_expand t =
   | Var v ->
     (match v.ty with
     | Type.Ty([],_) -> t
-    | Type.Ty(tyargs,bty) -> 
+    | Type.Ty(tyargs,_) ->
       let bvars = List.map (fresh ~tag:Constant ~ts:2) tyargs in
       List.fold_right2
         (fun name ty btm -> abstract (get_hd_id name) ty btm)
@@ -457,7 +461,8 @@ let rec eta_expand t =
      lambda tyctx (eta_expand body)
   | App(h,tms) ->
      app (eta_expand h) (List.map eta_expand tms)
-  | DB(i) -> t
+  | DB _ -> t
+  | _ -> bugf "Eta expanded invalid term"
 
       
 let remove_trailing_numbers s =
@@ -507,7 +512,7 @@ let select_var_refs f ts =
       match observe t with
         | Var v -> if f v then t::acc else acc
         | App (h, ts) -> List.fold_left fv (fv acc h) ts
-        | Lam (idtys, t') -> fv acc t'
+        | Lam (_, t') -> fv acc t'
         | Pi(lfidtys, t') -> List.fold_left fv (fv acc t') (List.map snd lfidtys)
         | DB _ | Type -> acc
         | Susp _ -> assert false
@@ -522,14 +527,14 @@ let find_vars tag ts =
   List.map term_to_var (find_var_refs tag ts)
 
 let map_vars f ts =
-  select_var_refs (fun v -> true) ts
+  select_var_refs (fun _ -> true) ts
   |> List.rev
   |> List.unique
   |> List.map term_to_var
   |> List.map f
 
 let get_used ts =
-  select_var_refs (fun v -> true) ts
+  select_var_refs (fun _ -> true) ts
   |> List.rev
   |> List.unique
   |> List.map term_to_pair
@@ -564,7 +569,7 @@ let rec erase t =
          Ty(tys @ tys', bty)
      )
   | Var v when v.tag = Constant -> oty
-  | App (h, _) -> oty
+  | App _ -> oty
   | Type -> oty
   | _ -> assert false
 

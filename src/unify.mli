@@ -3,7 +3,6 @@
  *)
 
 open Term
-open Extensions
 
 type unify_failure =
   | OccursCheck

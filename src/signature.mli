@@ -19,17 +19,17 @@ type fixity =
   | NoFixity
 
 type type_decl = {
-  name:id ;
+  ty_name:id ;
   kind:Term.term;
-  implicit:int;
-  fix:fixity;
+  ty_implicit:int;
+  ty_fix:fixity;
   mutable objs:id list
 }
 and obj_decl = {
-  name:id;
+  obj_name:id;
   typ:Term.term;
-  implicit:int;
-  fix:fixity;
+  obj_implicit:int;
+  obj_fix:fixity;
 }
 
 val ty_dec : id -> Term.term -> int -> fixity  -> id list -> type_decl
