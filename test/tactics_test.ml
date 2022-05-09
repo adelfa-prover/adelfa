@@ -1,5 +1,4 @@
 open OUnit
-open Core
 open Test_helper
 open Term
 open Formula

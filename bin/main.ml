@@ -1,5 +1,4 @@
 (* Implements the main interaction loop of the system. *)
-open Core
 open Extensions
 open Printf
 

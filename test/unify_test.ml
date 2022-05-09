@@ -1,5 +1,4 @@
 open OUnit
-open Core
 open Term
 open Term.Notations
 open Unify

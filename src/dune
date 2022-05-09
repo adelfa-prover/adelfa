@@ -1,6 +1,8 @@
 (library
  (name core)
- (libraries str stdlib))
+ (libraries str stdlib)
+ (modes byte)
+ (wrapped false))
 
 (ocamllex lexer)
 
@@ -9,4 +11,3 @@
 (ocamlyacc parser)
 
 (ocamlyacc twelfParser)
-
