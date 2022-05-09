@@ -125,8 +125,6 @@ let next_subgoal () =
     ()
 ;;
 
-let fresh_hyp_name base = Sequent.fresh_hyp_name sequent base
-
 let display_state () =
   print_endline "";
   Print.print_sequent sequent;
@@ -341,6 +339,7 @@ let type_apply_withs form (vwiths, cwiths) =
       cwiths )
 ;;
 
+(*
 let freshen_formula_names f (vwiths, cwiths) =
   let support =
     Formula.formula_support_sans (Sequent.get_cvar_tys sequent.Sequent.ctxvars) f
@@ -369,6 +368,7 @@ let freshen_formula_names f (vwiths, cwiths) =
   List.iter (fun (_, t) -> Sequent.add_var sequent (Term.term_to_pair t)) rename;
   Formula.replace_formula_vars rename f
 ;;
+*)
 
 let term_vars_alist tag terms = List.map Term.term_to_pair (Term.find_var_refs tag terms)
 

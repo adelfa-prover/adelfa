@@ -53,10 +53,12 @@ let fresh_nameless_alist ~support ~tag ~ts tids =
 
 (* replace the given variables in a term by new eigenvariables
    which have been raised over the given support. *)
+(*
 let freshen_term ~used ?(support = []) (tids : (id * Type.ty) list) t =
   let alist, vars = Formula.fresh_raised_alist ~tag:Eigen ~ts:1 ~used ~support tids in
   List.map term_to_pair vars, replace_term_vars alist t
 ;;
+*)
 
 (* given a type Pi([(x1,A1);...;(xm,Am)],B)
    introduces new eigenvariables X1,...,Xm, raised over the given support,
@@ -87,10 +89,12 @@ let freshen_type ~used ?(support = []) = function
    variables. Does not choose new names for entry items. 
 
    Returns the new block's entry list.*)
+(*
 let freshen_block ~used ?(support = []) (Context.B (schema_vars, entries)) =
   let alist, _ = Formula.fresh_raised_alist ~tag:Eigen ~used ~ts:1 ~support schema_vars in
   List.map (fun (x, y) -> x, replace_term_vars alist y) entries
 ;;
+*)
 
 (* replaces the given bound vars in a formula by new logic variables.*)
 let freshen_nameless_bindings ~support ~ts bindings form =
@@ -210,6 +214,10 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
   inst f1 f2
 ;;
 
+(* TODO(Chase): The List.permute is not sustainable as far as I can tell. The
+   number of nominals I'm getting in proofs causes too many permutations to
+   be generated, causing a stack overflow. Maybe we could move to a [Stream]
+   instead of a list?*)
 (* Try to unify t1 and t2 under permutations of nominal constants.
    For each successful unification, call sc.
    t1 may contain logic variables, t2 is ground                    *)
