@@ -36,14 +36,13 @@
       head args
 
   let nominal_constant_re = Str.regexp "n[0-9]+"
-  exception Illegal
   let is_illegal_constant k =
     Str.string_match nominal_constant_re k 0
 
   let check_legal_var vid vnum =
     if is_illegal_constant vid then
       error_report ~pos:(Parsing.rhs_start_pos vnum)
-        "Invalid bound variable %S.@\nIdentifiers matching n[0-9]+ are reserved for nominal cuonstants." vid
+        "Invalid bound variable %S.@\nIdentifiers matching n[0-9]+ are reserved for nominal constants." vid
 
   let deloc_id (_,id) =
     (* if is_illegal_constant id then *)
