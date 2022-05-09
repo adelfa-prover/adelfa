@@ -35,7 +35,6 @@ and obj_decl =
 
 let ty_dec n k i f os = { ty_name = n; kind = k; ty_implicit = i; ty_fix = f; objs = os }
 let obj_dec n t i f = { obj_name = n; typ = t; obj_implicit = i; obj_fix = f }
-let add_obj_to_ty td id = td.objs <- id :: td.objs
 
 type signature = (id * type_decl) list * (id * obj_decl) list
 

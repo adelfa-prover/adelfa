@@ -25,8 +25,6 @@ type formula =
   | Or of formula * formula
   | Prop of id * term list
 
-type def = formula * formula
-
 (* Checks if two formulas are equal, ignoring
    annotations. *)
 let rec eq f1 f2 =
@@ -119,12 +117,6 @@ let formula_to_annotation f =
   match f with
   | Atm (_, _, _, r) -> r
   | _ -> None
-;;
-
-let set_annotation ann t =
-  match t with
-  | Atm (g, m, a, _) -> Atm (g, m, a, ann)
-  | _ -> bugf "Attempting to set restriction to non-atomic formula"
 ;;
 
 let reduce_inductive_annotation r =

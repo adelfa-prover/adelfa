@@ -71,23 +71,6 @@ let rec observe = function
   | t -> t
 ;;
 
-let rec deep_copy t =
-  match t with
-  | Ptr { contents = T t } -> deep_copy t
-  | Lam (cx, t) -> Lam (cx, deep_copy t)
-  | Pi (cx, t) -> Pi (cx, deep_copy t)
-  | App (t, ts) -> App (deep_copy t, List.map deep_copy ts)
-  | Susp (t, ol, nl, e) -> Susp (deep_copy t, ol, nl, deep_copy_env e)
-  | Ptr _ | DB _ | Var _ | Type -> t
-
-and deep_copy_env e = List.map deep_copy_env_item e
-
-and deep_copy_env_item item =
-  match item with
-  | Binding (t, n) -> Binding (deep_copy t, n)
-  | Dum _ -> item
-;;
-
 let db n = DB n
 let get_ctx_tys tyctx = List.map snd tyctx
 let get_lfctx_tys lftyctx = List.map snd lftyctx
@@ -533,14 +516,6 @@ let select_var_refs f ts =
 
 let find_var_refs tag ts = List.unique (select_var_refs (fun v -> v.tag = tag) ts)
 let find_vars tag ts = List.map term_to_var (find_var_refs tag ts)
-
-let map_vars f ts =
-  select_var_refs (fun _ -> true) ts
-  |> List.rev
-  |> List.unique
-  |> List.map term_to_var
-  |> List.map f
-;;
 
 let get_used ts =
   select_var_refs (fun _ -> true) ts |> List.rev |> List.unique |> List.map term_to_pair

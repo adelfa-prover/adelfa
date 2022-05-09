@@ -39,10 +39,6 @@ let fail f = raise (UnifyFailure f)
 
 type unify_error = NotLLambda
 
-let explain_error = function
-  | NotLLambda -> "Unification incompleteness (non-pattern unification problem)"
-;;
-
 exception UnifyError of unify_error
 
 (* An explicit handler is specified for how to deal with
@@ -744,6 +740,7 @@ module Make (P : Param) = struct
   (* Given Lam(tys1, App(h1, a1)) and Lam(tys2, App(h2, a2))
    where h1 is flexible, h2 is rigid, and len(tys1) <= len(tys2),
    return a complete list of possible bindings for h1 *)
+  (* Commenting this out because it's not used.
   let flexible_heads ~used (tys1, h1, a1) (tys2, h2, a2) =
     assert (tc [] (lambda tys1 (app h1 a1)) = tc [] (lambda tys2 (app h2 a2)));
     let n1 = List.length tys1 in
@@ -822,6 +819,7 @@ module Make (P : Param) = struct
     in
     results
   ;;
+  *)
 end
 
 let standard_handler _ _ = raise (UnifyError NotLLambda)

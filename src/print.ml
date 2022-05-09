@@ -10,7 +10,6 @@ let topkwd = "True"
 let bottomkwd = "False"
 let andkwd = "/\\"
 let orkwd = "\\/"
-let emptykwd = "."
 let pr_str ppf s = Format.fprintf ppf "%s" s
 
 let rec pr_strlst ppf = function
@@ -556,9 +555,6 @@ let print_ty = pr_ty Format.std_formatter
 let print_term = pr_term [] Format.std_formatter
 let print_sequent = pr_sequent Format.std_formatter
 let print_uterm = pr_uterm Format.std_formatter
-let print_uform = pr_uform Format.std_formatter
-let print_command = pr_command Format.std_formatter
-let print_topcommand = pr_topcommand Format.std_formatter
 
 (* use general formatting functions to generate a string *)
 let string_of_ty ty =

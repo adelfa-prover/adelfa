@@ -44,8 +44,6 @@ let make_case seq =
   }
 ;;
 
-let alist_to_used (_, t) = term_to_pair t
-
 let fresh_nameless_alist ~support ~tag ~ts tids =
   let ntys = List.map (tc []) support in
   List.map
@@ -251,6 +249,7 @@ let all_meta_right_permute_unify ~sc schemas nvars ctxvar_ctx new_ctxvar_ctx t1 
 ;;
 
 (* like all_meta_right_permute_unify but only attempts to unify the two context expressions. *)
+(* Commenting this out because it's not used
 let all_meta_right_permute_unify_ctxexpr ~sc schemas nvars ctxvar_ctx new_ctxvar_ctx g1 g2
   =
   let support_g1 = Formula.context_support_sans (new_ctxvar_ctx @ ctxvar_ctx) g1 in
@@ -282,14 +281,17 @@ let all_meta_right_permute_unify_ctxexpr ~sc schemas nvars ctxvar_ctx new_ctxvar
               with
               | Unify.UnifyFailure _ -> ())))
 ;;
+*)
 
 (* determines if f2 is an instance of formula f1.
    Allowed to instantiate the eigenvariables in f1 but not
    those in f2. *)
+(* Commenting this out because it's not used
 let instance_of nvars ctxvar_ctx f1 f2 =
   let f1' = Formula.copy_formula f1 in
   all_meta_right_permute_unify ~sc:(fun _ -> raise Success) [] nvars ctxvar_ctx [] f1' f2
 ;;
+*)
 
 (* Given an LF signature, a context expression, and a type
    this function computes
@@ -1109,12 +1111,6 @@ let rec map_args f t =
   match t with
   | Formula.Imp (left, right) -> f left :: map_args f right
   | _ -> []
-;;
-
-let some_formula_to_annotation f =
-  match f with
-  | None -> Formula.None
-  | Some f -> Formula.formula_to_annotation f
 ;;
 
 let apply_arrow schemas sequent nvars ctxvar_ctx bound_ctxvars form args =
