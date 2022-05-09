@@ -1153,15 +1153,20 @@ let apply_arrow schemas sequent nvars ctxvar_ctx bound_ctxvars form args =
           if satisfies
                (Formula.formula_to_annotation arg)
                (Formula.formula_to_annotation left)
-          then
-            all_meta_right_permute_unify
-              ~sc:(fun x -> res := x)
-              schemas
-              nvars
-              ctxvar_ctx
-              bound_ctxvars
-              left
-              arg;
+          then (
+            try
+              all_meta_right_permute_unify
+                ~sc:(fun x ->
+                  res := x;
+                  raise Success)
+                schemas
+                nvars
+                ctxvar_ctx
+                bound_ctxvars
+                left
+                arg
+            with
+            | Success -> ());
           (match !res with
           | Some ctx_subst, bind_state ->
             Term.set_bind_state bind_state;
