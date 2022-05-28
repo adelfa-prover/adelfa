@@ -35,6 +35,7 @@
     "Formula not of valid form for induction"
     "No assumption of name.*"
     "Formula not a disjunction"
+    "Unknown context variable.*"
     "Found logic varaible at toplevel."
     "weakening failed."
     "Given expression is not a type"
