@@ -1,0 +1,350 @@
+%POPLmark 1a: Reflexivity and transitivity for Fsub
+
+Specification "1a.lf".
+
+Schema c :=
+  {U}(w:ty, x: var w, y:bound w U, z:bound_var w U y x);
+  (x:ty, y:var x);
+  {V T DV}(x:bound V T, y:bound_var V T x DV).
+
+Schema wf :=
+  (x:ty).
+
+Theorem sub__ty : ctx L:c, forall D U1 U2, {L |- D : sub U1 U2} => {L |- U1 : ty} /\ {L |- U2 : ty}.
+intros. case H1.
+  %case 1: sa-all
+  split. search. search.
+  %case 2: sa-arrow
+  split. search. search.
+  %case 3: sa-trans-tvar
+  split. search. search.
+  %case 4: sa-refl-tvar
+  split. search. search.
+  %case 5: sa-top
+  split. search. search.
+
+%Derivations for types "ty" and "var" cannot depend on assumptions of type
+%"bound" or "bound_var". We show this by inducion on the assumption
+%derivation of type ty or type var, showing that in each case the term
+%could not exhibit a dependency on such assumptions.
+%
+%These results will be used in proving a narrowing result for the types "ty"
+%and "var" which is useful in showing narrowing of subtyping judgments.
+
+Theorem ty_strengthening : ctx L:c, forall X S DV T: o -> o -> o,
+  {L |- X : ty} => {L |- S : ty} => {L |- DV : var X} =>
+  {L |- [x][y] T x y : {x:bound X S}{y:bound_var X S x DV}ty} =>
+  exists T' Eq, {L |- Eq : eq_ty X S DV ([x][y] T x y) ([x][y] T')}.
+induction on 4. intros. case H4.
+  %case 1: all
+    apply IH to H1 H2 H3 H5 with (L = L), X = X, S = S, DV = DV, T = [x][y] T1 y x.
+        prune H7.
+    case H7.
+    weaken H6 with (var n2).
+    ctxpermute H12 to L,n2:ty,n7:var n2,n:bound X S, n1:bound_var X S n DV.
+    weaken H1 with ty. weaken H14 with (var n8).
+    weaken H2 with ty. weaken H16 with (var n10).
+    weaken H3 with ty. weaken H18 with (var n12).
+    apply IH to H15 H17 H19 H13 with (L = L,n2:ty,n7:var n2), S = S, X = X, DV = DV, T = [x][y] F y x n2.
+        prune H20.
+    case H20.
+    exists all T3 ([z3]F2 z3). exists refl_ty X S DV ([x][y]all T3 ([z3]F2 z3)).
+    search.
+  %case 2: arrow
+    apply IH to H1 H2 H3 H5.
+      case H7.
+    apply IH to H1 H2 H3 H6.
+      case H12.
+    exists arrow T4 T5. exists refl_ty X S DV ([x][y]arrow T4 T5).
+    search.
+  %case 3: top
+    weaken H1 with (bound X S). weaken H2 with (bound X S). weaken H3 with (bound X S).
+    exists top. exists refl_ty X S DV ([x][y] top).
+    search.
+  %case 4: new full block
+    weaken H1 with (bound (X n2 n3 n4 n5) (S n2 n3 n4 n5)).
+    weaken H2 with (bound (X n2 n3 n4 n5) (S n2 n3 n4 n5)).
+    weaken H3 with (bound (X n2 n3 n4 n5) (S n2 n3 n4 n5)).
+    exists n2. exists refl_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([x][y]n2).
+    search.
+  %case 5: new split block
+    weaken H1 with (bound (X n2 n3) (S n2 n3)).
+    weaken H2 with (bound (X n2 n3) (S n2 n3)).
+    weaken H3 with (bound (X n2 n3) (S n2 n3)).
+    exists n2. exists refl_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([x][y]n2).
+    search.
+
+Theorem var_strengthening : ctx L:c, forall Q X S DV T: o -> o -> o,
+  {L |- X : ty} => {L |- S : ty} => {L |- DV : var X} =>
+  {L |- [x][y] T x y : {x:bound X S}{y:bound_var X S x DV}var Q} =>
+  exists T' Eq, {L |- Eq : eq_var Q X S DV ([x][y] T x y) ([x][y] T')}.
+induction on 4. intros. case H4.
+  %case 1: new full block
+    weaken H1 with bound (X n2 n3 n4 n5) (S n2 n3 n4 n5).
+    weaken H2 with bound (X n2 n3 n4 n5) (S n2 n3 n4 n5).
+    weaken H3 with bound (X n2 n3 n4 n5) (S n2 n3 n4 n5).
+    exists n3. exists (refl_var n2 (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([x][y]n3)).
+    search.
+  %case 2: new split block
+    weaken H1 with bound (X n2 n3) (S n2 n3).
+    weaken H2 with bound (X n2 n3) (S n2 n3).
+    weaken H3 with bound (X n2 n3) (S n2 n3).
+    exists n3. exists refl_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([x][y]n3).
+    search.
+
+%With the strengthening results above, narrowing for these types is proved
+%directly by strengthening the assumption derivation and then weakening it
+%with the desired context items.
+
+Theorem narrow_ty : ctx L:c, forall Q X P D T: o -> o -> o DV,
+  {L |- X : ty} => {L |- DV : var X} =>
+  {L |- D : sub P Q} =>
+  {L |- [x][y](T x y) : {x:bound X Q}{y:bound_var X Q x DV}ty} =>
+  {L |- [x][y](T x y) : {x:bound X P}{y:bound_var X P x DV}ty}.
+intros. apply sub__ty to H3. case H5.
+apply ty_strengthening to H1 H7 H2 H4. case H8.
+strengthen H12. strengthen H13.
+weaken H1 with (bound X P). weaken H6 with (bound X P). weaken H2 with (bound X P).
+weaken H14 with (bound X P). weaken H18 with (bound_var X P n9 DV).
+search.
+
+Theorem narrow_var : ctx L:c, forall S Q X P D T: o -> o -> o DV,
+  {L |- X : ty} => {L |- DV : var X} =>
+  {L |- D : sub P Q} =>
+  {L |- [x][y](T x y) : {x:bound X Q}{y:bound_var X Q x DV}var S} =>
+  {L |- [x][y](T x y) : {x:bound X P}{y:bound_var X P x DV}var S}.
+intros. apply sub__ty to H3. case H5.
+apply var_strengthening to H1 H7 H2 H4. case H8.
+strengthen H13. strengthen H14.
+weaken H1 with (bound X P). weaken H6 with (bound X P). weaken H2 with (bound X P).
+weaken H15 with (bound X P). weaken H19 with (bound_var X P n9 DV).
+search.
+
+Theorem trans_and_narrow' :
+  forall Q, ctx G:wf, {G |- Q : ty} =>
+  (ctx L:c, forall S T D1 D2,
+  {L |- D1: sub S Q} => {L |- D2 : sub Q T} =>
+  exists D3, {L |- D3 : sub S T})
+  /\
+  (ctx L:c, forall X M N P D1 D2: o -> o -> o DV,
+  {L |- X : ty} => {L |- DV : var X} =>
+  {L |- D1 : sub P Q} =>
+  {L |- [x][y](D2 x y) : {x:bound X Q}{y:bound_var X Q x DV}sub M N} =>
+  exists D4: o -> o -> o, {L |- [x][y](D4 x y) : {x:bound X P}{y:bound_var X P x DV}sub M N}).
+induction on 1. intros.
+  %%%will want to use transitivity on Q in narrowing so we
+  %%%prove transitivity first
+  assert (ctx L:c, forall S T D1 D2,
+          {L |- D1: sub S Q} => {L |- D2 : sub Q T} =>
+             exists D3, {L |- D3 : sub S T}).
+  %%%second induction for transitivity is on the derivation the S is a subtype of Q
+  %%%case analysis on both subtyping assumptions
+  induction on 1. intros. case H2 (keep).
+  %case 1: sa-all, S = all S1 ([x] S2 x) & Q = all T1 ([x] T2 x)
+    case H3(keep).
+      %case 1.1: sa-all, T = (all T3 ([x] T4 x))
+    %%%the proof will use transitivity and narrowing based on T1 and transitivity based on T2
+      case H1(keep).
+      apply IH to H16 with (G = G), Q = T1. case H18.
+      apply IH to H17 with (G = G, n12:ty), Q = (T5 n12). case H21.
+    %%%use transitivity based on T1 (H19) to derive (sub T3 S1)
+      apply H19 to H14 H8 with S = T3, T = S1, D1 = D3, D2 = a1.
+          prune H24.
+    %%%use narrowing based on T1 (H20) to derive (sub (S2 n) (T5 n))
+      assert {L, n:ty, n1:var n |- D3 : sub T3 T1}.
+        weaken H14 with ty. weaken H25 with (var n13). search.
+      assert {L, n:ty, n1:var n |- n : ty}.
+        search.
+      assert {L, n:ty, n1:var n |- n1 : var n}.
+        search.
+      apply H20 to H26 H27 H25 H9 with (L135 = L, n:ty, n1:var n), X = n, M = (S2 n), N = (T5 n), P = T3, DV = n1, D1 = D3, D2 = a2 n n1.
+          prune H28.
+    %%%use transitivity based on T2 (H22) to derive (sub (S2 n) (T4 n))
+      apply H22 to H28 H15 with (L81012 = L,n12:ty,n1:var n12, n2:bound n12 T3, n3 :bound_var n12 T3 n2 n1), T = (T4 n12), D1 = D2 n n1 n12 n2 n3, D2 = D4 n12 n1 n2 n3, S = S2 n12.
+          prune H29.
+      exists (sa-all S1 ([x] S2 x) T3 ([x] T4 x) (D1 n12) ([w][x][y][z] D5 w z y x)).
+      search.
+      %case 1.2: sa-trans-tvar
+        case H13.
+      %case 1.3: sa-refl-tvar
+        case H12.
+      %case 1.4: sa-top
+        exists (sa-top (all S1 ([x]S2 x))). search.
+  %case 2: sa-arrow, S = (arrow S1 S2) & Q = (arrow T1 T2)
+    case H3.
+    %case 2.1: sa-arrow, T = (arrow T3 T4)
+      %%%proof will use transitivity based on T1 and T2
+      case H1.
+      apply IH to H16. case H18.
+      apply IH to H17. case H21.
+      apply H19 to H14 H8. apply H22 to H9 H15.
+      exists (sa-arrow S1 S2 T3 T4 D3 D1).
+      search.
+    %case 2.2: sa-trans-tvar,
+      case H13.
+    %case 2.3: sa-refl-tvar
+      case H12.
+    %case 2.4: sa-top
+      exists (sa-top (arrow S1 S2)). search.
+  %case 3: sa-trans-tvar
+    %%%use inner induction on derivation of (sub U1 Q)
+    apply IH1 to H10 H3.
+    apply sub__ty to H11. case H12.
+    exists (sa-trans-tvar U1 T S v a1 a2 D3). search.
+  %case 4: sa-refl-tvar
+    exists D2. search.
+  %case 5: sa-top, Q = top
+    case H3.
+      %case 5.1: sa-trans-tvar
+      %%%this case is impossible
+      case H8.
+      %case 5.2: sa-refl-tvar
+      %%%this case is impossible
+      case H7.
+      %sa-top
+      exists (sa-top S). search.
+%%%completed proof of transitivity, now need to prove narrowing
+split.
+  %transitivity, already done above
+  %%%note: since identical, search should probably determine match
+  %%%but search does not work with non-atomic formulas
+  intros.
+  apply H2 to H3 H4. exists D3. search.
+  %narrowing
+  %%%now we can prove narrowing using the transitivity result for Q
+  %%%induction is on the subtyping derivation
+  induction on 4. intros. case H6 (keep).
+    %case 1: sa-all, M = (all M1 ([x] M2 x)) & N = (all N1 ([x] N2 x))
+    %%%we will apply the inner inductive hypothesis to the derivations of both
+    %%%(sub N1 M1) and (sub (M2 n) (N2 n)).
+      %%%use narrowing on derivation of (sub N1 M1)
+      apply IH1 to H3 H4 H5 H11 with X = X, M = N1, N = M1, P = P, D1 = D1, D2 = [x][y] a1 y x.
+          prune H13.
+      %%%Showing that (M2 n) is subtype of (N2 n) in the weakend & permuted context
+      assert {L, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2, n4:bound X Q, n5:bound_var X Q n4 DV |- a2 n5 n4 n n2 n1 n3  : sub (M2 n) (N2 n)}***.
+          ctxpermute H12 to L,n4:ty,n5:var n4, n6:bound n4 N1, n7:bound_var n4 N1 n6 n5, n:bound X Q, n1:bound_var X Q n DV.
+          search.
+      %%%Showing P is a subtype of Q in the weakened context
+      assert {L, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2 |- D1 : sub P Q}.
+          weaken H5 with ty. weaken H15 with (var n12). 
+          strengthen H9. strengthen H17. weaken H18 with ty. weaken H19 with (var n14).
+          weaken H16 with (bound n12 N1).
+          weaken H20 with (bound n14 N1).
+          weaken H21 with (bound_var n12 N1 n16 n13).
+          search.
+      %%%weakening the assumptions for X and DV
+      assert {L, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2 |- X : ty}.
+        weaken H3 with ty. weaken H16 with (var n12).
+        strengthen H9. strengthen H18.
+        weaken H19 with ty. weaken H20 with (var n14). weaken H21 with (bound n14 N1).
+        weaken H17 with (bound n12 N1). weaken H23 with (bound_var n12 N1 n17 n13).
+        search.
+      assert {L, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2 |- DV : var X}.
+        weaken H4 with ty. weaken H17 with (var n12).
+        strengthen H9. strengthen H19.
+        weaken H20 with ty. weaken H21 with (var n14). weaken H22 with (bound n14 N1).
+        weaken H18 with (bound n12 N1). weaken H24 with (bound_var n12 N1 n17 n13).
+        search.
+      %%%use narrowing on the derivation of (sub (M2 n) (N2 n))
+      apply IH1 to H16 H17 H15 H14 with (L = L, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2), X = X, M = (M2 n), N = (N2 n), P = P, D1 = D1, D2 = [x][y] a2 y x n n2 n1 n3, DV = DV.
+          prune H18.
+          
+      %%%permute back context
+      ctxpermute H18 to L,n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2.
+      %%%will also need derivations that M1, N1, M2 and N2 are well formed types
+      %%%under the narrowed context
+      apply sub__ty to H13. case H20.
+      apply sub__ty to H19 with (L = L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1: bound n N1, n3:bound_var n N1 n1 n2 ), D = D2 n3 n2 n1 n n14 n15, U1 = (M2 n), U2 = (N2 n).
+      case H23.
+      %%%derivation that M2 is a type, in the narrowed context
+      strengthen H24. strengthen H26. strengthen H27.
+      %%%derivation that N2 is a type, in the narrowed context
+      strengthen H25. strengthen H29. strengthen H30.
+      exists ([w][x] sa-all M1 ([z] M2 z) N1 ([z] N2 z) (D4 w x) ([x1][x2][x3][x4] D2 x4 x2 x3 x1 w x)).
+      search.
+    %case 2: sa-arrow
+      apply IH1 to H3 H4 H5 H11 with X = X, M = N1, N = M1, P = P, DV = DV, D1 = D1, D2 = [x][y]a1 y x.
+          prune H13.
+      apply IH1 to H3 H4 H5 H12 with X = X, M = M2, N = N2, P = P, DV = DV, D1 = D1, D2 = [x][y] a2 y x.
+          prune H14.
+      apply sub__ty to H13. case H15.
+      apply sub__ty to H14. case H18.
+      exists ([x][y] sa-arrow M1 M2 N1 N2 (D4 x y) (D2 x y)).
+      search.
+    %case 3: sa-trans-tvar
+      case H11.
+        %case 3.1: from explicit context, X = M, a1 = [x][y] y
+          case H12.
+          %%%applying narrowing to assumption of (sub Q N)
+          apply IH1 to H3 H4 H5 H13 with M = Q, N = N, D1 = D1, D2 = [x][y] D y x.
+              prune H14.
+          %%%weakening assumption of (sub P Q) to be able to apply transitivity
+          assert {L, n:bound M P, n1:bound_var M P n DV |- D1 : sub P Q}.
+            apply sub__ty to H5. case H15.
+            apply sub__ty to H6. case H18.
+            strengthen H19. strengthen H21. strengthen H10. strengthen H23.
+            weaken H24 with (bound M P). weaken H22 with (bound M P). weaken H16 with (bound M P).
+            weaken H5 with (bound M P). weaken H28 with (bound_var M P n9 DV).
+            search.
+          %%%applying transitivity
+          apply H2 to H15 H14 with (L = L, n:bound M P, n1:bound_var M P n DV), S = P, T = N, D1 = D1, D2 = D4 n n1.
+              prune H16.
+          apply sub__ty to H16. case H17.
+          assert {L, n:bound M P, n1:bound_var M P n DV |- M : ty}.
+            apply sub__ty to H5. case H20.
+            weaken H21 with (bound M P). weaken H4 with (bound M P).
+            weaken H3 with (bound M P). weaken H25 with (bound_var M P n8 DV).
+            search.
+          assert {L, n:bound M P, n1:bound_var M P n DV |- DV : var M}.
+            apply sub__ty to H5. case H21.
+            weaken H22 with (bound M P). weaken H3 with (bound M P).
+            weaken H4 with (bound M P). weaken H26 with (bound_var M P n8 DV).
+            search.
+          exists ([x][y] sa-trans-tvar P N M DV x y (D3 y x)).
+          search.
+        %case 3.2: from new full ctx var block
+          apply IH1 to H3 H4 H5 H13 with X = (X n2 n3 n4 n5), M = (U2 n2 n3 n4 n5), N = (N n2 n3 n4 n5), P = P n2 n3 n4 n5, D1 = D1 n2 n3 n4 n5, D2 = [x][y]D n2 n3 n4 n5 y x, DV = DV n2 n3 n4 n5.
+              prune H14.
+          apply sub__ty to H14. case H15.
+          exists ([x][y] sa-trans-tvar (U2 n2 n3 n4 n5) (N n2 n3 n4 n5) n2 n3 n4 n5 (D4 n5 n4 n3 n2 x y)).
+          search.
+        %case 3.3: from a new split ctx var block
+          case H12.
+          apply IH1 to H3 H4 H5 H13 with X = (X n2 n3), M = T2 n2 n3, N = (N n2 n3), P = P n2 n3, D1 = D1 n2 n3, D2 = [x][y] D n2 n3 y x, DV = DV n2 n3.
+              prune H14.
+          %%%obtaining derivations of sub-term well-formedness under narrowed context
+          apply sub__ty to H14. case H15.
+          apply narrow_ty to H3 H4 H5 H9.
+          apply narrow_var to H3 H4 H5 H10.
+          exists ([x][y] sa-trans-tvar (T2 n2 n3) (N n2 n3) (M1 n2 n3) (DV2 n2 n3) n2 n3 (D4 n3 n2 x y)).
+          search.
+    %case 4: sa-refl-tvar
+      case H10.
+        %case 4.1: from explicit context
+          case H11.
+          %%%need to obtain the derivations that P, N, and DV are well formed
+          %%%under the narrowed context, then can derive the result
+          apply narrow_ty to H3 H4 H5 H8.
+          apply narrow_var to H3 H4 H5 H9.
+          assert {L, n:bound N P, n1:bound_var N P n DV |- P : ty}.
+            apply sub__ty to H5. case H14.
+            strengthen H12. strengthen H13.
+            weaken H15 with (bound N P). weaken H19 with (bound_var N P n10 DV).
+            search.
+          exists ([x][y] sa-refl-tvar P N DV x y). search.
+        %case 4.2: from new context variable block, full block
+          case H9. case H11.
+          %%%will need derivation that U3 is well formed at type ty under the
+          %%%narrowed context, then derive the result
+          apply narrow_ty to H3 H4 H5 H7.
+          exists ([x][y] sa-refl-tvar (U3 n2 n3 n4 n5) n2 n3 n4 n5). search.
+        %case 4.3: from new context variable block, split block
+          case H11.
+          %%%need typing for T2, N1, and DV2 in narrowed context
+          apply narrow_ty to H3 H4 H5 H7. apply narrow_ty to H3 H4 H5 H8.
+          apply narrow_var to H3 H4 H5 H9.
+          exists ([x][y] sa-refl-tvar (T2 n2 n3) (N1 n2 n3) (DV2 n2 n3) n2 n3). search.
+    %case 5: sa-top
+      %%%we will need to construct the typing derivation for M under narrowed context
+      apply narrow_ty to H3 H4 H5 H7.
+      exists ([x][y] sa-top M). search.

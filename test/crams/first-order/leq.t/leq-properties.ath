@@ -1,0 +1,125 @@
+Specification "leq-properties.lf".
+
+Theorem plus-zero-id : forall x1,
+  {x1: nat} => exists D, {D: plus x1 z x1}.
+induction on 1.
+intros.
+case H1.
+apply IH to H2.
+exists plus-s x z x D.
+search.
+exists plus-z z.
+search.
+
+Theorem plus-flip : forall x1 x2 x3 D,
+  {D: plus x1 x2 x3} =>
+  exists D2, {D2: plus x1 (s x2) (s x3)}.
+induction on 1.
+intros.
+case H1.
+apply IH to H5.
+exists plus-s x4 (s x2) (s x6) D2.
+search.
+exists plus-z (s x3).
+search.
+
+Theorem plus-commutes : forall x1 x2 x3 D,
+  {D: plus x1 x2 x3} => exists D2, {D2: plus x2 x1 x3}.
+induction on 1.
+intros.
+case H1.
+apply IH to H5.
+apply plus-flip to H6.
+exists D1.
+search.
+apply plus-zero-id to H2.
+exists D.
+search.
+
+Theorem leq-reflexive : forall x, {x : nat} => exists D, {D: leq x x}.
+induction on 1.
+intros.
+case H1.
+apply IH to H2.
+exists leq-s x1 x1 D.
+search.
+exists leq-z z.
+search.
+
+
+Theorem leq-antisymmetric : forall x1 x2 D1 D2,
+  {D1: leq x1 x2} =>
+  {D2: leq x2 x1} => exists E, {E: eq-nat x1 x2}.
+induction on 1.
+intros.
+case H1.
+case H2.
+apply IH to H5 H8.
+exists eq-nat-s x3 x4 E.
+search.
+case H2.
+exists eq-nat-z.
+search.
+
+Theorem leq-transitive : forall x1 x2 x3 D1 D2,
+  {D1: leq x1 x2} => {D2: leq x2 x3} =>
+  exists E, {E: leq x1 x3}.
+induction on 1.
+intros.
+case H1.
+case H2.
+apply IH to H5 H8.
+exists leq-s x4 x7 E.
+search.
+case H2.
+exists leq-z (s x5).
+search.
+exists leq-z x3.
+search.
+
+% Monotonicity of leq over addition
+% for all m n p q, such that m <= n and p <= q
+% m + p <= n + q
+
+% First prove it works for right side of the addition
+% m p q, such that p <= q
+% m + p <= m + q
+Theorem leq-monotonic-plus-r : forall x1 x2 x3 x12 x13 D1 D2 D3,
+  {D2: plus x1 x2 x12} => {D1: leq x2 x3} =>
+  {D3: plus x1 x3 x13} =>
+  exists E, {E: leq x12 x13}.
+induction on 1.
+intros.
+case H1.
+case H3.
+apply IH to H7 H2 H11.
+exists leq-s x6 x8 E.
+search.
+case H3.
+exists D1.
+search.
+
+% Then prove it works for left side of the addition
+% m n p, such that m <= n
+% m + p <= n + p
+Theorem leq-monotonic-plus-l : forall x1 x2 x3 x13 x23 D1 D2 D3,
+  {D1: leq x1 x2} => {D2: plus x1 x3 x13} => {D3: plus x2 x3 x23} =>
+  exists E, {E: leq x13 x23}.
+intros.
+apply plus-commutes to H2.
+apply plus-commutes to H3.
+apply leq-monotonic-plus-r to H4 H1 H5.
+exists E.
+search.
+
+Theorem leq-monotonic-plus : forall x1 x2 x3 x4 x13 x23 x24 D1 D2 D3 D4 D5,
+  {D1: leq x1 x2} => {D2: leq x3 x4} =>
+  {D3: plus x1 x3 x13} => {D4: plus x2 x4 x24} =>
+  {D5: plus x2 x3 x23} =>
+  exists E, {E: leq x13 x24}.
+intros.
+apply leq-monotonic-plus-l to H1 H3 H5.
+apply leq-monotonic-plus-r to H5 H2 H4.
+apply leq-transitive to H6 H7.
+exists E2.
+search.

@@ -1,0 +1,14 @@
+This directory's subtree holds a series of cram tests that serve as a form of
+regression testing.
+
+Information on cram tests can be found here:
+  https://bitheap.org/cram/
+
+Dune's integration of them here:
+  https://dune.readthedocs.io/en/stable/tests.html#cram-tests-1
+
+Cram works by recursively searching and turning each `*.t` directory into a
+sandbox environment with the same files and Adelfa installed. The `run.t` file
+in said directory specifies which commands to run in the environment and the
+expected output.
+

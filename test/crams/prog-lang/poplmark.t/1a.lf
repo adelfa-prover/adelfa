@@ -1,0 +1,53 @@
+ty : type.
+bound : {X:ty}{T:ty}type.
+var : {v:ty}type.
+bound_var : {X:ty}{T:ty} {D1:bound X T}{D2:var X}type.
+
+top : ty.
+arrow : {T1:ty}{T2: ty} ty.
+all : {T:ty}{F:{x:ty} ty} ty.
+
+sub : {T1:ty}{T2:ty}type.
+sa-top : {S:ty} sub S top.
+sa-refl-tvar : {U:ty}{X:ty}{v:var X}
+               {a1:bound X U}{a2:bound_var X U a1 v}
+               sub X X.
+sa-trans-tvar : {U1:ty}{U2:ty}{X:ty}{v:var X}
+                {a1:bound X U1}{a2:bound_var X U1 a1 v}
+                {D: sub U1 U2} sub X U2.
+sa-arrow : {S1:ty}{S2:ty}{T1:ty}{T2:ty}
+           {a1:sub T1 S1} {a2:sub S2 T2}
+            sub (arrow S1 S2) (arrow T1 T2).
+sa-all : {S1:ty}{S2:{x:ty}ty}{T1:ty}{T2:{x:ty}ty}
+         {a1:sub T1 S1}
+           {a2:({w:ty}{x:var w}{y:bound w T1}{z:bound_var w T1 y x} sub (S2 w) (T2 w))}
+           sub (all S1 ([x]S2 x)) (all T1 ([x]T2 x)).
+
+
+wfty : {T:ty} type.
+
+wfty-top : wfty top.
+wfty-arrow : {T1:ty}{T2:ty}
+              {d1:wfty T1}{d2: wfty T2} wfty (arrow T1 T2).
+wfty-all : {T1:ty}{T2:{x:ty} ty}
+            {d1: wfty T1 }{d2: ({x:ty} wfty (T2 x))}
+             wfty (all T1 ([x] T2 x)).
+
+
+% Some equality definitions for use in strengthening lemmas
+eq_ty : {X:ty}{S:ty}{DV:var X}
+        {T1:{x:bound X S}{y:bound_var X S x DV}ty}
+        {T2:{x:bound X S}{y:bound_var X S x DV}ty}
+        type.
+refl_ty : {X:ty}{S:ty}{DV:var X}
+          {T:{x:bound X S}{y:bound_var X S x DV}ty}
+          eq_ty X S DV T T.
+
+eq_var : {Q:ty}{X:ty}{S:ty}{DV:var X}
+         {T1:{x:bound X S}{y:bound_var X S x DV}var Q}
+         {T2:{x:bound X S}{y:bound_var X S x DV}var Q}
+         type.
+
+refl_var : {Q:ty}{X:ty}{S:ty}{DV:var X}
+           {T:{x:bound X S}{y:bound_var X S x DV}var Q}
+           eq_var Q X S DV T T.

@@ -1,0 +1,15 @@
+Specification "append.lf".
+
+Theorem app-nil : forall L, {L : list} =>
+  exists D, {D : append L nil L}.
+
+  induction on 1. intros. case H1.
+
+  % append-cons case
+  apply IH to H3.
+  exists append-cons N L1 nil L1 D.
+  search.
+
+  % append-nil case
+  exists append-nil nil.
+  search.

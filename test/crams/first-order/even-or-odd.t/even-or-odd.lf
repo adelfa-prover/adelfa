@@ -1,0 +1,9 @@
+nat : type.
+z : nat.
+s : {x:nat} nat.
+
+even : {N:nat} type.
+odd : {N:nat} type.
+even-z : even z.
+even-s : {N:nat}{O: odd N} even (s N).
+odd-s : {N:nat}{E: even N} odd (s N).

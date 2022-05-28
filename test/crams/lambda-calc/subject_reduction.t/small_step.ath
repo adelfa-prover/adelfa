@@ -1,0 +1,47 @@
+Specification "reduce.lf".
+
+Schema c :=
+ {T}(x:tm,y:of x T).
+
+% MINORBUG1: from a fresh start of Adelfa, run the "Specification reduce.elf"
+% command twice, then try the theorem up to case H2. You will see there are 6
+% subgoals when there should be 3. run Specification a 3rd time and there are 9:
+% 3 copies of the 3 goals you were supposed to have.
+% 
+% So I think running Specification multiple times stacks the type signatures
+% together in a way that doesn't really seem ideal.
+% 
+% Note that if you only run Specification once, the theorem works as intended and
+% there is no issue. So this is avoidable.
+
+% Subject reduction for weak small step call by value reduction.
+Theorem subject_reduction_wsscbv : ctx Gamma:c, forall M1 M2 T D1 D2,
+  {Gamma |- D1 : of M1 T} => {D2 : sscbv M1 M2} =>
+  exists D3, {Gamma |- D3 : of M2 T}.
+
+  induction on 2. intros. case H2.
+
+  % beta case.
+  case H1.
+  case H11.
+  inst H16 with n3 = (lam T2 R2).
+  inst H17 with n4 = D5.
+  exists D6 (lam T2 R2) D5.
+  search.
+
+  % app2 case.
+  case H1.
+  apply IH to H13 H7.
+  %QUESTION: H14 has an eigenvariable without it being in the context. prune?
+  %QUESTION: Shouldn't prune work in this scenario?
+  prune H14.
+  exists of_app (lam T1 R) M4 T D4 D5 (D1 n).
+  assert {Gamma |- M4 : tm}. case H14. search. search. search. search.
+  search.
+
+  % app1 case.
+  case H1.
+  apply IH to H11 H6.
+  exists of_app M4 N T U D1 a2.
+  assert {Gamma |- M4 : tm}. case H13. search. search. search.
+  search.
