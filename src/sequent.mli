@@ -55,6 +55,7 @@ val ctxvar_lookup : cvar_entry list -> Context.ctx_var -> cvar_entry
 val get_cvar_tys : cvar_entry list -> (Context.ctx_var * Context.ctx_typ) list
 val fresh_hyp_name : sequent -> string -> string
 val add_hyp : sequent -> ?name:string -> Formula.formula -> unit
+val make_hyp : sequent -> ?name:string -> ?tag:tag -> Formula.formula -> hyp
 val get_hyp : sequent -> string -> hyp
 val remove_hyp : sequent -> string -> unit
 val replace_hyp : sequent -> string -> Formula.formula -> unit

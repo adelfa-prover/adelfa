@@ -58,7 +58,7 @@ let add_var sequent (id, tm) =
 ;;
 
 let remove_var sequent id =
-  sequent.vars <- List.filter (fun (n, _) -> not (id = n)) sequent.vars
+  sequent.vars <- List.remove_all (fun (n, _) -> id = n) sequent.vars
 ;;
 
 let add_if_new_var sequent (id, tm) =
@@ -156,31 +156,19 @@ let fresh_hyp_name sequent base =
   else fresh_name base (List.map (fun h -> h.id) sequent.hyps)
 ;;
 
-let add_hyp sequent ?name form =
-  let name =
-    fresh_hyp_name
-      sequent
-      (match name with
-      | None -> ""
-      | Some name -> name)
-  in
-  sequent.hyps
-    <- List.append sequent.hyps [ { id = name; formula = form; tag = Explicit } ]
+let make_hyp sequent ?(name = "") ?(tag = Explicit) form =
+  let name = fresh_hyp_name sequent name in
+  { id = name; formula = form; tag }
 ;;
 
-let get_hyp sequent name =
-  let hyp = List.find (fun h -> h.id = name) sequent.hyps in
-  hyp
+let add_hyp sequent ?(name = "") form =
+  sequent.hyps <- List.append sequent.hyps [ make_hyp sequent ~name form ]
 ;;
 
-let rec remove_all f l =
-  match l with
-  | [] -> []
-  | h :: tl -> if f h then remove_all f tl else h :: remove_all f tl
-;;
+let get_hyp sequent name = List.find (fun h -> h.id = name) sequent.hyps
 
 let remove_hyp sequent name =
-  sequent.hyps <- remove_all (fun h -> h.id = name) sequent.hyps
+  sequent.hyps <- List.remove_all (fun h -> h.id = name) sequent.hyps
 ;;
 
 let replace_hyp sequent name f =
