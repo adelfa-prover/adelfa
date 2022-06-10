@@ -469,30 +469,22 @@ let search signature sequent =
     let get_type_decl_args (decl : Signature.type_decl) : Term.term list =
       match decl with
       | { ty_name; kind = Pi (l, _); ty_implicit; ty_fix; objs } -> List.map snd l
-      | { ty_name; kind = Var _; ty_implicit; ty_fix; objs }
-      | { ty_name; kind = DB _; ty_implicit; ty_fix; objs }
-      | { ty_name; kind = Lam (_, _); ty_implicit; ty_fix; objs }
-      | { ty_name; kind = App (_, _); ty_implicit; ty_fix; objs }
-      | { ty_name; kind = Susp (_, _, _, _); ty_implicit; ty_fix; objs }
-      | { ty_name; kind = Ptr _; ty_implicit; ty_fix; objs }
-      | { ty_name; kind = Type; ty_implicit; ty_fix; objs } -> []
+      | { ty_name
+        ; kind = Var _ | DB _ | Lam _ | App _ | Susp _ | Ptr _ | Type
+        ; ty_implicit
+        ; ty_fix
+        ; objs
+        } -> []
     in
     let extract_tys (f : Formula.formula) =
       let get_signature_entry t =
         match observe t with
         | Var h -> Signature.lookup_type_decl_op signature h.name
-        | _ -> None
+        | DB _ | App _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> None
       in
       match f with
-      | Formula.Top
-      | Formula.Bottom
-      | Formula.Ctx _
-      | Formula.All _
-      | Formula.Exists _
-      | Formula.Imp _
-      | Formula.And _
-      | Formula.Or _
-      | Formula.Prop _ -> []
+      | Formula.(Top | Bottom | Ctx _ | All _ | Exists _ | Imp _ | And _ | Or _ | Prop _)
+        -> []
       | Formula.Atm (ctx, tm, ty, ann) ->
         (match observe (hnorm ty) with
         | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> []
