@@ -688,6 +688,32 @@ let search_tests =
          Sequent.add_var seq (term_to_pair e);
          Sequent.add_hyp seq ~name:"H1" (atm Context.Nil d (Term.app typeof [ e; t ]));
          assert_raises Tactics.Success (fun () -> search eval_sig seq))
+       ; ("Extracted types do not weaken into a ctx"
+         >:: fun () ->
+         let d = var Eigen "D" 0 ity in
+         let t = var Eigen "T" 0 ity in
+         let e = var Eigen "E" 0 ity in
+         let n1 = var Nominal "n1" 3 ity in
+         let f = atm (Context.Ctx (Context.Nil, (term_to_var n1, tm))) t ty in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         Sequent.add_var seq (term_to_pair d);
+         Sequent.add_var seq (term_to_pair t);
+         Sequent.add_var seq (term_to_pair e);
+         Sequent.add_hyp seq ~name:"H1" (atm Context.Nil d (Term.app typeof [ e; t ]));
+         assert_equal () (search eval_sig seq))
+       ; ("Extracted types do not strengthen out of a ctx"
+         >:: fun () ->
+         let d = var Eigen "D" 0 ity in
+         let t = var Eigen "T" 0 ity in
+         let e = var Eigen "E" 0 ity in
+         let n1 = var Nominal "n1" 3 ity in
+         let f = atm Context.Nil t ty in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         Sequent.add_var seq (term_to_pair d);
+         Sequent.add_var seq (term_to_pair t);
+         Sequent.add_var seq (term_to_pair e);
+         Sequent.add_hyp seq ~name:"H1" (atm (Context.Ctx (Context.Nil, (term_to_var n1, tm))) d (Term.app typeof [ e; t ]));
+         assert_equal () (search eval_sig seq))
        ]
 ;;
 
