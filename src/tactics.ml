@@ -462,9 +462,55 @@ let search signature sequent =
       sequent.goal <- goal'
     in
     (* attempt to apply id proof step by matching with some hypothesis *)
+    (* Find a type with applications in the type.
+       Look up the head of that type in the signature.
+       Create "invisible" hypotheses for the arguments to the type in the hypothesis
+       to the types they are assigned in the signature.*)
+    let get_type_decl_args (decl : Signature.type_decl) : Term.term list =
+      match decl with
+      | { ty_name; kind = Pi (l, _); ty_implicit; ty_fix; objs } -> List.map snd l
+      | { ty_name; kind = Var _; ty_implicit; ty_fix; objs }
+      | { ty_name; kind = DB _; ty_implicit; ty_fix; objs }
+      | { ty_name; kind = Lam (_, _); ty_implicit; ty_fix; objs }
+      | { ty_name; kind = App (_, _); ty_implicit; ty_fix; objs }
+      | { ty_name; kind = Susp (_, _, _, _); ty_implicit; ty_fix; objs }
+      | { ty_name; kind = Ptr _; ty_implicit; ty_fix; objs }
+      | { ty_name; kind = Type; ty_implicit; ty_fix; objs } -> []
+    in
+    let extract_tys (f : Formula.formula) =
+      let get_signature_entry t =
+        match observe t with
+        | Var h -> Signature.lookup_type_decl_op signature h.name
+        | _ -> None
+      in
+      match f with
+      | Formula.Top
+      | Formula.Bottom
+      | Formula.Ctx _
+      | Formula.All _
+      | Formula.Exists _
+      | Formula.Imp _
+      | Formula.And _
+      | Formula.Or _
+      | Formula.Prop _ -> []
+      | Formula.Atm (ctx, tm, ty, ann) ->
+        (match observe (hnorm ty) with
+        | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> []
+        | App (head, args) ->
+          (match get_signature_entry head with
+          | None -> []
+          | Some ty_decl ->
+            get_type_decl_args ty_decl
+            |> List.map2 (fun tm tp -> Formula.Atm (ctx, tm, tp, ann)) args
+            |> List.map (fun x ->
+                   { id = fresh_hyp_name sequent ""; formula = x; tag = Explicit })))
+    in
     let try_match () =
       let support_goal =
         Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) sequent.goal
+      in
+      let extracted_types =
+        List.flatten_map (fun hyp -> extract_tys hyp.formula) sequent.hyps
       in
       List.iter
         (fun h ->
@@ -511,7 +557,7 @@ let search signature sequent =
                      else ()))
             else ()
           | _ -> ())
-        sequent.hyps
+        (sequent.hyps @ extracted_types)
     in
     (* use atm-R to make a reasoning step. *)
     let lf_step () =
