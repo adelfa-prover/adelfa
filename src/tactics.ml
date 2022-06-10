@@ -466,36 +466,16 @@ let search signature sequent =
        Look up the head of that type in the signature.
        Create "invisible" hypotheses for the arguments to the type in the hypothesis
        to the types they are assigned in the signature.*)
-    let get_type_decl_args (decl : Signature.type_decl) : Term.term list =
-      match decl with
-      | { ty_name; kind = Pi (l, _); ty_implicit; ty_fix; objs } -> List.map snd l
-      | { ty_name
-        ; kind = Var _ | DB _ | Lam _ | App _ | Susp _ | Ptr _ | Type
-        ; ty_implicit
-        ; ty_fix
-        ; objs
-        } -> []
-    in
     let extract_tys (f : Formula.formula) =
-      let get_signature_entry t =
-        match observe t with
-        | Var h -> Signature.lookup_type_decl_op signature h.name
-        | DB _ | App _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> None
-      in
       match f with
       | Formula.(Top | Bottom | Ctx _ | All _ | Exists _ | Imp _ | And _ | Or _ | Prop _)
         -> []
       | Formula.Atm (ctx, tm, ty, ann) ->
         (match observe (hnorm ty) with
-        | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> []
-        | App (head, args) ->
-          (match get_signature_entry head with
-          | None -> []
-          | Some ty_decl ->
-            get_type_decl_args ty_decl
-            |> List.map2 (fun tm tp -> Formula.Atm (ctx, tm, tp, ann)) args
-            |> List.map (fun x ->
-                   { id = fresh_hyp_name sequent ""; formula = x; tag = Explicit })))
+        | App (head, args) when is_var Constant (observe (hnorm head)) ->
+          decompose_kinding signature [] ctx ty
+          |> List.map (fun x -> Sequent.make_hyp sequent x)
+        | App _ | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> [])
     in
     let try_match () =
       let support_goal =
