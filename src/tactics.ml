@@ -406,47 +406,36 @@ let search signature sequent =
        explicit bindings, so this check is focused on the formation of the LF types in a context expression. *)
     let rec check_context used g =
       let hyp_ctxexprs =
-        List.map
+        List.filter_map
           (fun x ->
-            let g =
-              match x.formula with
-              | Formula.Atm (g, _, _, _) -> g
-              | _ -> bugf "Expected atomic formula"
-            in
-            g)
-          (List.filter
-             (fun x ->
-               match x.Sequent.formula with
-               | Formula.Atm _ -> true
-               | _ -> false)
-             sequent.Sequent.hyps)
+            match x.Sequent.formula with
+            | Formula.Atm (g, _, _, _) -> Some g
+            | _ -> None)
+          sequent.Sequent.hyps
       in
       let support_g =
         Formula.context_support_sans (Sequent.get_cvar_tys sequent.ctxvars) g
       in
       (* first, attempts to find an assumption formula with g as a prefix of the context expression. *)
-      List.iter
-        (fun hyp_g ->
-          if Context.has_var g = Context.has_var hyp_g
+      let match_with_ctx hyp_g =
+        if Context.has_var g = Context.has_var hyp_g
+        then (
+          let support_hypg =
+            Formula.context_support_sans (Sequent.get_cvar_tys sequent.ctxvars) hyp_g
+          in
+          if List.length support_hypg >= List.length support_g
           then (
-            let support_hypg =
-              Formula.context_support_sans (Sequent.get_cvar_tys sequent.ctxvars) hyp_g
-            in
-            if List.length support_hypg >= List.length support_g
-            then (
-              let support_g_names = List.map term_to_name support_g in
-              support_hypg
-              |> List.permute (List.length support_g)
-              |> List.iter (fun perm ->
-                     let alist = List.combine support_g_names perm in
-                     if Context.context_prefix
-                          (Context.replace_ctx_expr_vars alist g)
-                          hyp_g
-                     then raise Success
-                     else ()))
-            else ())
+            let support_g_names = List.map term_to_name support_g in
+            support_hypg
+            |> List.permute (List.length support_g)
+            |> List.iter (fun perm ->
+                   let alist = List.combine support_g_names perm in
+                   if Context.context_prefix (Context.replace_ctx_expr_vars alist g) hyp_g
+                   then raise Success
+                   else ()))
           else ())
-        hyp_ctxexprs;
+      in
+      List.iter match_with_ctx hyp_ctxexprs;
       (* if matching with assumption context expressions fails, then attempt to check
          the well-formedness explicitly. *)
       match g with
