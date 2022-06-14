@@ -24,16 +24,16 @@ val case : bool -> string -> unit
 val skip : unit -> unit
 val exists : Term.term -> unit
 val undo : unit -> unit
-val search : unit -> unit
+val search : Uterms.depth -> unit -> unit
 val apply : string -> string list -> Uterms.uwith list -> unit
 val assert_thm : Formula.formula -> unit
 val split : unit -> unit
 val left : unit -> unit
 val right : unit -> unit
-val weaken : bool -> string -> Term.term -> unit
+val weaken : Uterms.depth -> bool -> string -> Term.term -> unit
 val permute_ctx : bool -> string -> Context.ctx_expr -> unit
 val strengthen : bool -> string -> unit
-val inst : bool -> string -> Uterms.uwith list -> unit
+val inst : Uterms.depth -> bool -> string -> Uterms.uwith list -> unit
 val prune : string -> unit
 val unfold : string option -> Uterms.uwith list -> unit
 val applydfn : string -> string option -> Uterms.uwith list -> unit

@@ -28,7 +28,7 @@ val make_case : Sequent.sequent -> case
  * base-R, top-R, and bottom-L rules. 
  * Raises Success upon finding a derivarion.
  *)
-val search : Signature.signature -> Sequent.sequent -> unit
+val search : depth:int -> Signature.signature -> Sequent.sequent -> unit
 
 (* Given a sequent and an integer identifying which subformula to
  * induct on, returns an updated sequent with annotations added and
@@ -90,7 +90,8 @@ val left : Formula.formula -> Formula.formula
 val right : Formula.formula -> Formula.formula
 
 val weaken
-  :  Signature.signature
+  :  depth:int
+  -> Signature.signature
   -> Sequent.sequent
   -> Formula.formula
   -> Term.term
@@ -108,7 +109,8 @@ val strengthen : Sequent.cvar_entry list -> Formula.formula -> Formula.formula o
 exception InstTypeError of Formula.formula
 
 val inst
-  :  Signature.signature
+  :  depth:int
+  -> Signature.signature
   -> Sequent.sequent
   -> Formula.formula
   -> (Term.id * Term.term) list

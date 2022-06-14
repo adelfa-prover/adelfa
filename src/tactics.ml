@@ -381,8 +381,8 @@ let satisfies r1 r2 =
                    shown well-formed explicitly
 
 *)
-let search signature sequent =
-  (* checks that the explicit bindings in context expression g are all distinct and are 
+let search ~depth signature sequent =
+  (* checks that the explicit bindings in context expression g are all distinct and are
      restricted from appearing in any instance of any context variable appearing in g. *)
   let check_context_names g =
     let explicit_names = List.map (fun (x, _) -> x.Term.name) (Context.get_explicit g) in
@@ -466,23 +466,27 @@ let search signature sequent =
        Look up the head of that type in the signature.
        Create "invisible" hypotheses for the arguments to the type in the hypothesis
        to the types they are assigned in the signature.*)
-    let extract_tys (f : Formula.formula) =
-      match f with
-      | Formula.(Top | Bottom | Ctx _ | All _ | Exists _ | Imp _ | And _ | Or _ | Prop _)
-        -> []
-      | Formula.Atm (ctx, tm, ty, ann) ->
-        (match observe (hnorm ty) with
-        | App (head, args) when is_var Constant (observe (hnorm head)) ->
-          decompose_kinding signature [] ctx ty
-          |> List.map (fun x -> Sequent.make_hyp sequent x)
-        | App _ | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> [])
+    let rec extract_tys (f : Formula.formula) (depth_left : int) =
+      if depth_left <= 0
+      then []
+      else (
+        match f with
+        | Formula.(
+            Top | Bottom | Ctx _ | All _ | Exists _ | Imp _ | And _ | Or _ | Prop _) -> []
+        | Formula.Atm (ctx, _, ty, _) ->
+          (match observe (hnorm ty) with
+          | App (head, _) when is_var Constant (observe (hnorm head)) ->
+            decompose_kinding signature [] ctx ty
+            |> List.flatten_map (fun f -> f :: extract_tys f (depth_left - 1))
+          | App _ | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> []))
     in
     let try_match () =
       let support_goal =
         Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) sequent.goal
       in
       let extracted_types =
-        List.flatten_map (fun hyp -> extract_tys hyp.formula) sequent.hyps
+        List.flatten_map (fun hyp -> extract_tys hyp.formula depth) sequent.hyps
+        |> List.map (fun f -> Sequent.make_hyp sequent f)
       in
       List.iter
         (fun h ->
@@ -1328,7 +1332,7 @@ let right = function
   | f -> raise (InvalidFormula (f, "Formula not a disjunction."))
 ;;
 
-let weaken lf_sig sequent form t =
+let weaken ~depth lf_sig sequent form t =
   let used = List.filter (fun (_, t) -> Term.is_var Term.Nominal t) sequent.vars in
   match form with
   | Formula.Atm (g, _, _, _) ->
@@ -1345,7 +1349,7 @@ let weaken lf_sig sequent form t =
            Sequent.assign_sequent sequent save_seq;
            Term.set_bind_state bind_state;
            sequent.Sequent.goal <- g;
-           search lf_sig sequent
+           search ~depth lf_sig sequent
          with
         | Success -> solve_goals goals)
     in
@@ -1419,7 +1423,7 @@ exception InstTypeError of Formula.formula
 
 (* currently we assume that only one instantiation is given.
    This has been checked in the prover before calling this tactic. *)
-let inst lf_sig sequent form subst =
+let inst ~depth lf_sig sequent form subst =
   match form, subst with
   | Formula.Atm (g, m, a, _), [ (n, t) ] ->
     (* split the context g based on location on n into g1,n:b,g2.
@@ -1432,7 +1436,7 @@ let inst lf_sig sequent form subst =
     (try
        Term.set_bind_state bind_state;
        sequent.Sequent.goal <- to_prove;
-       search lf_sig sequent;
+       search ~depth lf_sig sequent;
        raise (InstTypeError to_prove)
      with
     | Success ->
@@ -1449,7 +1453,7 @@ let inst lf_sig sequent form subst =
       let m' = Term.replace_term_vars ~tag:Term.Nominal subst m in
       let a' = Term.replace_term_vars ~tag:Term.Nominal subst a in
       Formula.Atm (g', m', a', Formula.None))
-  | _, _ -> bugf "Foo"
+  | _, _ -> bugf "Expected atomic formula with list of pairs in instantiation"
 ;;
 
 (* Prune will identify dependencies which are impossible given the restriction

@@ -45,6 +45,10 @@ type uwith =
   | Cws of id * uctx
   | Vws of id * uterm
 
+type depth =
+  | DefaultDepth
+  | WithDepth of int
+
 val is_cws : uwith -> bool
 val unwrap_cws : uwith -> id * uctx
 val is_vws : uwith -> bool
@@ -53,7 +57,7 @@ val unwrap_vws : uwith -> id * uterm
 type command =
   | Skip
   | Undo
-  | Search
+  | Search of depth
   | Ind of int
   | Apply of clearable * clearable list * uwith list
   | Case of clearable
@@ -64,10 +68,10 @@ type command =
   | Intros
   | Assert of uformula
   | Abort
-  | Weaken of clearable * uterm
+  | Weaken of clearable * uterm * depth
   | PermuteCtx of clearable * uctx
   | Strengthen of clearable
-  | Inst of clearable * uwith list
+  | Inst of clearable * uwith list * depth
   | Prune of id
   | Unfold of id option * uwith list
   | AppDfn of id * id option * uwith list

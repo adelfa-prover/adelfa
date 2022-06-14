@@ -244,7 +244,9 @@ command:
   | EXISTS term DOT
     { Uterms.Exists($2) }
   | SEARCH DOT
-    { Uterms.Search }
+    { Uterms.Search(Uterms.DefaultDepth) }
+  | SEARCH NUM DOT
+    { Uterms.Search(Uterms.WithDepth($2)) }
   | SPLIT DOT
     { Uterms.Split }
   | LEFT DOT
@@ -260,13 +262,17 @@ command:
   | UNDO DOT
     { Uterms.Undo }
   | WEAKEN clearable WITH term DOT
-      { Uterms.Weaken($2, $4) }
+      { Uterms.Weaken($2, $4, Uterms.DefaultDepth) }
+  | WEAKEN clearable WITH term NUM DOT
+      { Uterms.Weaken($2, $4, Uterms.WithDepth($5)) }
   | PERMUTECTX clearable TO context_expr DOT 
       { Uterms.PermuteCtx($2, $4) }
   | STRENGTHEN clearable DOT
       { Uterms.Strengthen($2) }
   | INST clearable WITH id EQ term DOT
-      { Uterms.Inst($2, [Uterms.Vws($4,$6)]) }
+      { Uterms.Inst($2, [Uterms.Vws($4,$6)], Uterms.DefaultDepth) }
+  | INST clearable WITH id EQ term NUM DOT
+      { Uterms.Inst($2, [Uterms.Vws($4,$6)], Uterms.WithDepth($7)) }
   | PRUNE hyp DOT
       { Uterms.Prune($2) }
   | UNFOLD hyp WITH withs DOT

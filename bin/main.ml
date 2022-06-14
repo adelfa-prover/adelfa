@@ -144,7 +144,7 @@ let process_proof () =
   | Uterms.Abort -> raise End_of_file
   | Uterms.Skip -> Prover.skip ()
   | Uterms.Undo -> Prover.undo ()
-  | Uterms.Search -> Prover.search ()
+  | Uterms.Search depth -> Prover.search depth ()
   | Uterms.Ind i ->
     (try Prover.induction i with
     | Tactics.InvalidFormula (_, str) -> prerr_endline str)
@@ -218,7 +218,7 @@ let process_proof () =
         uform
     in
     Prover.assert_thm form
-  | Uterms.Weaken (clear, utm) ->
+  | Uterms.Weaken (clear, utm, depth) ->
     let nvars =
       List.filter
         (fun (_, t) -> Term.is_var Term.Nominal t)
@@ -240,8 +240,8 @@ let process_proof () =
         utm
     in
     (match clear with
-    | Uterms.Keep name -> Prover.weaken false name t
-    | Uterms.Remove name -> Prover.weaken true name t)
+    | Uterms.Keep name -> Prover.weaken depth false name t
+    | Uterms.Remove name -> Prover.weaken depth true name t)
   | Uterms.PermuteCtx (clear, uctx) ->
     let nvars =
       List.filter
@@ -271,10 +271,10 @@ let process_proof () =
     (match clear with
     | Uterms.Keep name -> Prover.strengthen false name
     | Uterms.Remove name -> Prover.strengthen true name)
-  | Uterms.Inst (clear, uwiths) ->
+  | Uterms.Inst (clear, uwiths, depth) ->
     (match clear with
-    | Uterms.Keep name -> Prover.inst false name uwiths
-    | Uterms.Remove name -> Prover.inst true name uwiths)
+    | Uterms.Keep name -> Prover.inst depth false name uwiths
+    | Uterms.Remove name -> Prover.inst depth true name uwiths)
   | Uterms.Prune id -> Prover.prune id
   | Uterms.Unfold (hypnameop, withs) -> Prover.unfold hypnameop withs
   | Uterms.AppDfn (defname, hypnameop, withs) -> Prover.applydfn defname hypnameop withs

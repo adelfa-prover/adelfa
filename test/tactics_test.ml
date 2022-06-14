@@ -641,7 +641,7 @@ let search_tests =
          let f = atm Context.Nil x tm in
          let seq = Sequent.make_sequent_from_goal ~form:f () in
          Sequent.add_hyp seq ~name:"H1" f;
-         assert_raises Tactics.Success (fun () -> search eval_sig seq))
+         assert_raises Tactics.Success (fun () -> search ~depth:5 eval_sig seq))
        ; ("Should apply LF proof steps"
          >:: fun () ->
          let x = const "x" ity in
@@ -653,7 +653,7 @@ let search_tests =
              (Term.pi [ term_to_var x, ty; term_to_var y, ty ] ty)
          in
          let seq = Sequent.make_sequent_from_goal ~form:f () in
-         assert_raises Tactics.Success (fun () -> search eval_sig seq))
+         assert_raises Tactics.Success (fun () -> search ~depth:5 eval_sig seq))
        ; ("Should permute nominal constants"
          >:: fun () ->
          let n1 = var Nominal "n1" 3 ity in
@@ -662,7 +662,7 @@ let search_tests =
          Sequent.add_var seq (term_to_pair n1);
          Sequent.add_var seq (term_to_pair n2);
          Sequent.add_hyp seq ~name:"H1" (atm Context.Nil n2 tm);
-         assert_raises Tactics.Success (fun () -> search eval_sig seq))
+         assert_raises Tactics.Success (fun () -> search ~depth:5 eval_sig seq))
        ; ("Permutation of nominals in context"
          >:: fun () ->
          let n1 = var Nominal "n1" 3 ity in
@@ -675,7 +675,7 @@ let search_tests =
          Sequent.add_var seq (term_to_pair n2);
          Sequent.add_var seq (term_to_pair x);
          Sequent.add_hyp seq ~name:"H1" hyp;
-         assert_raises Tactics.Success (fun () -> search eval_sig seq))
+         assert_raises Tactics.Success (fun () -> search ~depth:5 eval_sig seq))
        ; ("Able to extract typing information from signature"
          >:: fun () ->
          let d = var Eigen "D" 0 ity in
@@ -687,7 +687,7 @@ let search_tests =
          Sequent.add_var seq (term_to_pair t);
          Sequent.add_var seq (term_to_pair e);
          Sequent.add_hyp seq ~name:"H1" (atm Context.Nil d (Term.app typeof [ e; t ]));
-         assert_raises Tactics.Success (fun () -> search eval_sig seq))
+         assert_raises Tactics.Success (fun () -> search ~depth:5 eval_sig seq))
        ; ("Extracted types do not weaken into a ctx"
          >:: fun () ->
          let d = var Eigen "D" 0 ity in
@@ -700,7 +700,7 @@ let search_tests =
          Sequent.add_var seq (term_to_pair t);
          Sequent.add_var seq (term_to_pair e);
          Sequent.add_hyp seq ~name:"H1" (atm Context.Nil d (Term.app typeof [ e; t ]));
-         assert_equal () (search eval_sig seq))
+         assert_equal () (search ~depth:5 eval_sig seq))
        ; ("Extracted types do not strengthen out of a ctx"
          >:: fun () ->
          let d = var Eigen "D" 0 ity in
@@ -709,11 +709,24 @@ let search_tests =
          let n1 = var Nominal "n1" 3 ity in
          let f = atm Context.Nil t ty in
          let seq = Sequent.make_sequent_from_goal ~form:f () in
+         let g = Context.Ctx (Context.Nil, (term_to_var n1, tm)) in
          Sequent.add_var seq (term_to_pair d);
          Sequent.add_var seq (term_to_pair t);
          Sequent.add_var seq (term_to_pair e);
-         Sequent.add_hyp seq ~name:"H1" (atm (Context.Ctx (Context.Nil, (term_to_var n1, tm))) d (Term.app typeof [ e; t ]));
-         assert_equal () (search eval_sig seq))
+         Sequent.add_hyp seq ~name:"H1" (atm g d (Term.app typeof [ e; t ]));
+         assert_equal () (search ~depth:5 eval_sig seq))
+       ; ("Doesn't extract types when depth set to 0"
+         >:: fun () ->
+         let d = var Eigen "D" 0 ity in
+         let t = var Eigen "T" 0 ity in
+         let e = var Eigen "E" 0 ity in
+         let f = atm Context.Nil t ty in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         Sequent.add_var seq (term_to_pair d);
+         Sequent.add_var seq (term_to_pair t);
+         Sequent.add_var seq (term_to_pair e);
+         Sequent.add_hyp seq ~name:"H1" (atm Context.Nil d (Term.app typeof [ e; t ]));
+         assert_equal () (search ~depth:0 eval_sig seq))
        ]
 ;;
 
@@ -732,7 +745,7 @@ let inst_tests =
          Sequent.add_var seq (term_to_pair t);
          Sequent.add_hyp seq ~name:"H1" f1;
          Sequent.add_hyp seq ~name:"H2" f2;
-         assert_pprint_equal "{T : tm}" (inst eval_sig seq f2 [ "n", t ]))
+         assert_pprint_equal "{T : tm}" (inst ~depth:5 eval_sig seq f2 [ "n", t ]))
        ; ("Instantiation in context and types"
          >:: fun () ->
          let n1 = var Nominal "n1" 3 ity in
@@ -755,7 +768,7 @@ let inst_tests =
          Sequent.add_hyp seq ~name:"H2" f2;
          assert_pprint_equal
            "{n2:arrow T T |- E : eval T T}"
-           (inst eval_sig seq f2 [ "n1", t ]))
+           (inst ~depth:5 eval_sig seq f2 [ "n1", t ]))
        ; ("Instantiation must be of the right LF type"
          >:: fun () ->
          let n = var Nominal "n" 3 ity in
@@ -769,7 +782,7 @@ let inst_tests =
          Sequent.add_hyp seq ~name:"H2" f2;
          assert_raises
            (Tactics.InstTypeError (atm Context.Nil t tm))
-           (fun () -> inst eval_sig seq f2 [ "n", t ]))
+           (fun () -> inst ~depth:5 eval_sig seq f2 [ "n", t ]))
        ]
 ;;
 

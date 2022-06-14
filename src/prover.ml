@@ -26,6 +26,15 @@ let clear_schemas () = schemas := []
 (* Raises Not_found if schema of given name is not in the schema list *)
 let lookup_schema id = List.assoc id !schemas
 
+(* How deep to extract types from hypotheses *)
+let search_depth = ref 5
+
+let depth_or_default depth =
+  match depth with
+  | Uterms.DefaultDepth -> !search_depth
+  | Uterms.WithDepth d -> d
+;;
+
 (* 3. The available lemmas *)
 let lemmas : (string * Formula.formula) list ref = ref []
 let add_lemma id f = lemmas := (id, f) :: !lemmas
@@ -255,12 +264,13 @@ let skip () =
   next_subgoal ()
 ;;
 
-let search () =
+let search depth () =
   let _ = save_undo_state () in
+  let depth = depth_or_default depth in
   match sequent.goal with
   | Formula.Atm _ | Formula.Prop _ ->
     (try
-       Tactics.search !lf_sig sequent;
+       Tactics.search ~depth !lf_sig sequent;
        undo ();
        prerr_endline "Search failed."
      with
@@ -545,11 +555,12 @@ let right () =
     undo ()
 ;;
 
-let weaken remove id ty =
+let weaken depth remove id ty =
   save_undo_state ();
   try
+    let depth = depth_or_default depth in
     let hyp = (Sequent.get_hyp sequent id).formula in
-    Tactics.weaken !lf_sig sequent hyp ty;
+    Tactics.weaken ~depth !lf_sig sequent hyp ty;
     prerr_endline "weakening failed.";
     undo ()
   with
@@ -638,7 +649,7 @@ let strengthen remove name =
 
 exception InstError of string
 
-let inst_aux name withs =
+let inst_aux depth name withs =
   let nvars = List.filter (fun (_, t) -> Term.is_var Term.Nominal t) sequent.vars in
   let evars = List.filter (fun (_, t) -> Term.is_var Term.Eigen t) sequent.vars in
   let evar_ctx = List.map (fun (_, t) -> Term.get_id t, ref (Some t)) evars in
@@ -672,17 +683,18 @@ let inst_aux name withs =
       else raise (InstError ("`" ^ id ^ "' is not an instantiable name."))
   in
   let typed_withs = List.map check_withs withs in
-  Tactics.inst !lf_sig sequent form typed_withs
+  let depth = depth_or_default depth in
+  Tactics.inst ~depth !lf_sig sequent form typed_withs
 ;;
 
-let inst remove name withs =
+let inst depth remove name withs =
   save_undo_state ();
   try
     let _ =
       if List.length withs > 1 || List.length withs <= 0
       then raise (InstError "Exactly one instantiation must be provided.")
     in
-    let form' = inst_aux name withs in
+    let form' = inst_aux depth name withs in
     if remove then Sequent.remove_hyp sequent name;
     Sequent.add_hyp sequent form'
   with

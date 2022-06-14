@@ -434,12 +434,24 @@ let rec pr_udefs ppf = function
 ;;
 
 let rec pr_command ppf = function
-  | Uterms.Weaken (name, utm) ->
+  | Uterms.Weaken (name, utm, DefaultDepth) ->
     Format.fprintf ppf "@[<4>weaken %a with %a.@]" pr_clearable name pr_uterm utm
+  | Uterms.Weaken (name, utm, WithDepth i) ->
+    Format.fprintf
+      ppf
+      "@[<4>weaken %a with %a %a.@]"
+      pr_clearable
+      name
+      pr_uterm
+      utm
+      pr_str
+      (string_of_int i)
   | Uterms.Abort -> pr_str ppf "abort."
   | Uterms.Skip -> pr_str ppf "skip."
   | Uterms.Undo -> pr_str ppf "undo."
-  | Uterms.Search -> pr_str ppf "search."
+  | Uterms.Search DefaultDepth -> pr_str ppf "search."
+  | Uterms.Search (WithDepth i) ->
+    Format.fprintf ppf "search %a." pr_str (string_of_int i)
   | Uterms.Ind i -> Format.fprintf ppf "induction on %a." pr_str (string_of_int i)
   | Uterms.Apply (name, args, []) ->
     Format.fprintf ppf "@[<4>apply %a %a.@]" pr_clearable name pr_args args
@@ -463,8 +475,18 @@ let rec pr_command ppf = function
   | Uterms.PermuteCtx (name, uctx) ->
     Format.fprintf ppf "@[<4>ctxpermute %a to %a.@]" pr_clearable name pr_uctxtm uctx
   | Uterms.Strengthen name -> Format.fprintf ppf "strengthen %a." pr_clearable name
-  | Uterms.Inst (name, withs) ->
+  | Uterms.Inst (name, withs, DefaultDepth) ->
     Format.fprintf ppf "@[<4>inst %a with %a.@]" pr_clearable name pr_withs withs
+  | Uterms.Inst (name, withs, WithDepth i) ->
+    Format.fprintf
+      ppf
+      "@[<4>inst %a with %a %a.@]"
+      pr_clearable
+      name
+      pr_withs
+      withs
+      pr_str
+      (string_of_int i)
   | Uterms.Prune id -> Format.fprintf ppf "prune %a." pr_str id
   | Uterms.Unfold (None, []) -> pr_str ppf "unfold."
   | Uterms.Unfold (Some hid, []) -> Format.fprintf ppf "unfold %a." pr_str hid
