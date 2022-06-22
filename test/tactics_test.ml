@@ -628,6 +628,9 @@ let exists_tests =
        ]
 ;;
 
+let assert_search_success search_func = assert_raises Tactics.Success search_func
+let assert_search_fail search_func = assert_equal () (search_func ())
+
 let search_tests =
   "Search"
   >::: [ (* True is not an atomic formula. *)
@@ -687,7 +690,7 @@ let search_tests =
          Sequent.add_var seq (term_to_pair t);
          Sequent.add_var seq (term_to_pair e);
          Sequent.add_hyp seq ~name:"H1" (atm Context.Nil d (Term.app typeof [ e; t ]));
-         assert_raises Tactics.Success (fun () -> search ~depth:5 eval_sig seq))
+         assert_search_success (fun () -> search ~depth:5 eval_sig seq))
        ; ("Extracted types do not weaken into a ctx"
          >:: fun () ->
          let d = var Eigen "D" 0 ity in
@@ -700,7 +703,7 @@ let search_tests =
          Sequent.add_var seq (term_to_pair t);
          Sequent.add_var seq (term_to_pair e);
          Sequent.add_hyp seq ~name:"H1" (atm Context.Nil d (Term.app typeof [ e; t ]));
-         assert_equal () (search ~depth:5 eval_sig seq))
+         assert_search_fail (fun () -> search ~depth:5 eval_sig seq))
        ; ("Extracted types do not strengthen out of a ctx"
          >:: fun () ->
          let d = var Eigen "D" 0 ity in
@@ -714,7 +717,7 @@ let search_tests =
          Sequent.add_var seq (term_to_pair t);
          Sequent.add_var seq (term_to_pair e);
          Sequent.add_hyp seq ~name:"H1" (atm g d (Term.app typeof [ e; t ]));
-         assert_equal () (search ~depth:5 eval_sig seq))
+         assert_search_fail (fun () -> search ~depth:5 eval_sig seq))
        ; ("Doesn't extract types when depth set to 0"
          >:: fun () ->
          let d = var Eigen "D" 0 ity in
@@ -726,7 +729,43 @@ let search_tests =
          Sequent.add_var seq (term_to_pair t);
          Sequent.add_var seq (term_to_pair e);
          Sequent.add_hyp seq ~name:"H1" (atm Context.Nil d (Term.app typeof [ e; t ]));
-         assert_equal () (search ~depth:0 eval_sig seq))
+         assert_search_fail (fun () -> search ~depth:0 eval_sig seq))
+       ; ("Extracts types from terms one deep from sig"
+         >:: fun () ->
+         let e1 = var Eigen "E1" 0 ity in
+         let e2 = var Eigen "E2" 0 ity in
+         let f = atm Context.Nil e1 tm in
+         let h1 = atm Context.Nil (Term.app Test_helper.app [ e1; e2 ]) tm in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         List.iter (fun x -> term_to_pair x |> Sequent.add_var seq) [ e1; e2 ];
+         Sequent.add_hyp seq ~name:"H1" h1;
+         assert_search_success (fun () -> search ~depth:5 eval_sig seq))
+       ; ("Extracts types from terms multiple deep from sig"
+         >:: fun () ->
+         let e1 = var Eigen "E1" 0 ity in
+         let e2 = var Eigen "E2" 0 ity in
+         let e3 = var Eigen "E3" 0 ity in
+         let f = atm Context.Nil e1 tm in
+         let h1 =
+           atm
+             Context.Nil
+             (Term.app Test_helper.app [ e3; Term.app Test_helper.app [ e1; e2 ] ])
+             tm
+         in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         List.iter (fun x -> term_to_pair x |> Sequent.add_var seq) [ e1; e2; e3 ];
+         Sequent.add_hyp seq ~name:"H1" h1;
+         assert_search_success (fun () -> search ~depth:5 eval_sig seq))
+       ; ("Doesn't extract types when depth is 0"
+         >:: fun () ->
+         let e1 = var Eigen "E1" 0 ity in
+         let e2 = var Eigen "E2" 0 ity in
+         let f = atm Context.Nil e1 tm in
+         let h1 = atm Context.Nil (Term.app Test_helper.app [ e1; e2 ]) tm in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         List.iter (fun x -> term_to_pair x |> Sequent.add_var seq) [ e1; e2 ];
+         Sequent.add_hyp seq ~name:"H1" h1;
+         assert_search_fail (fun () -> search ~depth:0 eval_sig seq))
        ]
 ;;
 

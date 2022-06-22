@@ -364,22 +364,39 @@ let satisfies r1 r2 =
   | _ -> true
 ;;
 
+let decompose_app_form g ann args bndrs body =
+  let rec mk_fm args bndrs =
+    match args, bndrs with
+    | [], [] -> []
+    | [ arg ], bndrs when List.length bndrs > 1 ->
+      [ Formula.Atm (g, arg, pi bndrs body, ann) ]
+    | arg :: args', (v, ty) :: bndrs' ->
+      Formula.Atm (g, arg, ty, ann)
+      :: mk_fm
+           args'
+           (List.map (fun (b, ty) -> b, Term.replace_term_vars [ v.name, arg ] ty) bndrs')
+    | [], _ | _, [] -> bugf "Expected two have same number of args as binders"
+  in
+  mk_fm args bndrs
+;;
+
 (* Search:
    assumption is that the current goal formula is atomic, or a defined proposition.
    raises Success exception if current goal is determined valid by search.
 
    procedure:
      1) once at outset check the nominal constants in explicit part of context
-   - no duplicate binding for name
-   - all explicit bindings must be restricted from appearing in context variables
-     2) then being the search loop attempting to complete derivation
+          - no duplicate binding for name
+          - all explicit bindings must be restricted from appearing in context variables
+     2) Extract all typing information from all hypotheses and add them to the
+        assumption set
+     3) then being the search loop attempting to complete derivation
           a) normalize the goal formula (i.e. apply Pi-R rule)
           b) check for match in assumption set (i.e. apply id rule)
           c) decompose typing judgement (i.e. apply atm-R rule)
-   - for leaves perform check of context formation
-                   must either be the prefix of some context expression from an assumption or
-                   shown well-formed explicitly
-
+               - for leaves perform check of context formation
+                 must either be the prefix of some context expression from an assumption or
+                 shown well-formed explicitly
 *)
 let search ~depth signature sequent =
   (* checks that the explicit bindings in context expression g are all distinct and are
@@ -399,6 +416,77 @@ let search ~depth signature sequent =
         explicit_names
     else true
   in
+  (* Find a type with applications in the type.
+     Look up the head of that type in the signature.
+     Create judgements for the arguments to the type in the assumption
+     set to the types they are assigned in the signature. *)
+  let extract_tys_from_ty (f : Formula.formula) =
+    match f with
+    | Formula.(Top | Bottom | Ctx _ | All _ | Exists _ | Imp _ | And _ | Or _ | Prop _) ->
+      []
+    | Formula.Atm (ctx, _, ty, _) ->
+      (match observe (hnorm ty) with
+      | App (head, _) when is_var Constant (observe (hnorm head)) ->
+        decompose_kinding signature [] ctx ty
+      | App _ | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> [])
+  in
+  let extract_tys_from_tm (f : Formula.formula) =
+    let decompose_app g ann args tm =
+      match observe (Term.hnorm tm) with
+      | Term.Pi (bndrs, body) -> decompose_app_form g ann args bndrs body
+      | App _ | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Type -> []
+    in
+    match f with
+    | Formula.(Top | Bottom | Ctx _ | All _ | Exists _ | Imp _ | And _ | Or _ | Prop _) ->
+      []
+    | Formula.Atm (g, m, _, a) ->
+      (match observe (hnorm m) with
+      | App (h, args) ->
+        (match observe (hnorm h) with
+        | Term.Var v when v.tag = Term.Constant ->
+          (Signature.lookup_obj_decl signature v.name).Signature.typ
+          |> decompose_app g a args
+        | Term.Var v when v.tag = Term.Nominal ->
+          List.assoc v (Context.ctxexpr_to_ctx (Sequent.get_cvar_tys sequent.ctxvars) g)
+          |> decompose_app g a args
+        | _ -> [])
+      | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> [])
+  in
+  (* Given a list of formulas, extracts all typing information we can infer from them,
+     up to the depth set by the user *)
+  let rec extract_all_tys depth_left formulas =
+    if depth_left <= 0
+    then formulas
+    else (
+      let new_formulas =
+        formulas
+        |> List.flatten_map (fun f -> f :: extract_tys_from_tm f)
+        |> List.flatten_map (fun f -> f :: extract_tys_from_ty f)
+        |> List.unique ~cmp:Formula.eq
+      in
+      (* Stop early if we haven't extracted any new information *)
+      if List.length new_formulas = List.length formulas
+      then new_formulas
+      else extract_all_tys (depth_left - 1) new_formulas)
+  in
+  (*
+  let extracted_tms =
+    sequent.hyps
+    |> List.flatten_map (fun hyp -> extract_tys_from_tm hyp.formula depth)
+    |> List.map (fun f -> Sequent.make_hyp sequent f)
+  in
+  let extracted_types =
+    sequent.hyps @ extracted_tms
+    |> List.flatten_map (fun hyp -> extract_tys_from_ty hyp.formula depth)
+    |> List.map (fun f -> Sequent.make_hyp sequent f)
+  in
+  *)
+  let extracted_info =
+    sequent.hyps
+    |> List.map (fun hyp -> hyp.formula)
+    |> List.unique ~cmp:Formula.eq
+    |> extract_all_tys depth
+  in
   (* aux function does the meat of this function, searching for derivations of each subgoal in list. *)
   let rec search_aux (subgoals : (unit -> unit) list) =
     (* checks that the context g will be a well-formed LF context for any instance of the sequent.
@@ -407,11 +495,11 @@ let search ~depth signature sequent =
     let rec check_context used g =
       let hyp_ctxexprs =
         List.filter_map
-          (fun x ->
-            match x.Sequent.formula with
+          (fun hyp ->
+            match hyp.formula with
             | Formula.Atm (g, _, _, _) -> Some g
             | _ -> None)
-          sequent.Sequent.hyps
+          sequent.hyps
       in
       let support_g =
         Formula.context_support_sans (Sequent.get_cvar_tys sequent.ctxvars) g
@@ -462,107 +550,57 @@ let search ~depth signature sequent =
       sequent.goal <- goal'
     in
     (* attempt to apply id proof step by matching with some hypothesis *)
-    (* Find a type with applications in the type.
-       Look up the head of that type in the signature.
-       Create "invisible" hypotheses for the arguments to the type in the hypothesis
-       to the types they are assigned in the signature.*)
-    let rec extract_tys (f : Formula.formula) (depth_left : int) =
-      if depth_left <= 0
-      then []
-      else (
-        match f with
-        | Formula.(
-            Top | Bottom | Ctx _ | All _ | Exists _ | Imp _ | And _ | Or _ | Prop _) -> []
-        | Formula.Atm (ctx, _, ty, _) ->
-          (match observe (hnorm ty) with
-          | App (head, _) when is_var Constant (observe (hnorm head)) ->
-            decompose_kinding signature [] ctx ty
-            |> List.flatten_map (fun f -> f :: extract_tys f (depth_left - 1))
-          | App _ | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> []))
-    in
     let try_match () =
       let support_goal =
         Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) sequent.goal
       in
-      let extracted_types =
-        List.flatten_map (fun hyp -> extract_tys hyp.formula depth) sequent.hyps
-        |> List.map (fun f -> Sequent.make_hyp sequent f)
-      in
-      List.iter
-        (fun h ->
-          let f = h.formula in
-          (* try each permutation of nominals in assumption formula*)
-          match f with
-          | Formula.Atm (_, _, _, ann) ->
-            if satisfies ann (Formula.formula_to_annotation sequent.goal)
-            then (
-              let support_hyp =
-                Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) f
-              in
-              if List.length support_hyp = List.length support_goal
-              then (
-                let support_hyp_names = List.map term_to_name support_hyp in
-                support_goal
-                |> List.permute (List.length support_hyp)
-                |> List.iter (fun perm ->
-                       let alist = List.combine support_hyp_names perm in
-                       (* let _ = print_endline ("search matching formula: "^(Print.string_of_formula (Formula.replace_formula_vars alist (Formula.copy_formula f)))^"\nto formula: "^(Print.string_of_formula sequent.goal)) in *)
-                       if Formula.eq
-                            (Formula.replace_formula_vars alist (Formula.copy_formula f))
-                            sequent.goal
-                       then raise Success
-                       else ()))
-              else ())
-            else ()
-          | Formula.Prop _ ->
-            let support_hyp =
-              Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) f
-            in
-            if List.length support_hyp = List.length support_goal
-            then (
-              let support_hyp_names = List.map term_to_name support_hyp in
-              support_goal
-              |> List.permute (List.length support_hyp)
-              |> List.iter (fun perm ->
-                     let alist = List.combine support_hyp_names perm in
-                     (* let _ = print_endline ("search matching formula: "^(Print.string_of_formula (Formula.replace_formula_vars alist (Formula.copy_formula f)))^"\nto formula: "^(Print.string_of_formula sequent.goal)) in *)
-                     if Formula.eq
-                          (Formula.replace_formula_vars alist (Formula.copy_formula f))
-                          sequent.goal
-                     then raise Success
-                     else ()))
-            else ()
-          | _ -> ())
-        (sequent.hyps @ extracted_types)
+      extracted_info
+      |> List.iter (fun f ->
+             (* try each permutation of nominals in assumption formula*)
+             match f with
+             | Formula.Atm (_, _, _, ann)
+               when satisfies ann (Formula.formula_to_annotation sequent.goal) ->
+               let support_hyp =
+                 Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) f
+               in
+               if List.length support_hyp = List.length support_goal
+               then (
+                 let support_hyp_names = List.map term_to_name support_hyp in
+                 support_goal
+                 |> List.permute (List.length support_hyp)
+                 |> List.iter (fun perm ->
+                        let alist = List.combine support_hyp_names perm in
+                        if Formula.eq
+                             (Formula.replace_formula_vars alist (Formula.copy_formula f))
+                             sequent.goal
+                        then raise Success
+                        else ()))
+               else ()
+             | Formula.Prop _ ->
+               let support_hyp =
+                 Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) f
+               in
+               if List.length support_hyp = List.length support_goal
+               then (
+                 let support_hyp_names = List.map term_to_name support_hyp in
+                 support_goal
+                 |> List.permute (List.length support_hyp)
+                 |> List.iter (fun perm ->
+                        let alist = List.combine support_hyp_names perm in
+                        if Formula.eq
+                             (Formula.replace_formula_vars alist (Formula.copy_formula f))
+                             sequent.goal
+                        then raise Success
+                        else ()))
+               else ()
+             | _ -> ())
     in
     (* use atm-R to make a reasoning step. *)
     let lf_step () =
       (* function for constructing the subgoals which might be generated by this step. *)
       let make_subgoals g ann args bndrs body =
-        let rec mk_sg args bndrs =
-          match args, bndrs with
-          | [], [] -> []
-          | [ arg ], bndrs when List.length bndrs > 1 ->
-            (* arg : pi(bndrs,body) *)
-            let subgoal =
-              let _ = Sequent.cp_sequent sequent in
-              fun () -> sequent.goal <- Formula.Atm (g, arg, pi bndrs body, ann)
-            in
-            [ subgoal ]
-          | arg :: args', (v, ty) :: bndrs' ->
-            let subgoal =
-              let _ = Sequent.cp_sequent sequent in
-              fun () -> sequent.goal <- Formula.Atm (g, arg, ty, ann)
-            in
-            subgoal
-            :: mk_sg
-                 args'
-                 (List.map
-                    (fun (b, ty) -> b, Term.replace_term_vars [ v.name, arg ] ty)
-                    bndrs')
-          | [], _ | _, [] -> bugf "Expected two have same number of args as binders"
-        in
-        mk_sg args bndrs
+        decompose_app_form g ann args bndrs body
+        |> List.map (fun f () -> sequent.goal <- f)
       in
       (* Note: Since this is analysis is always performed after normalization we 
                are assured that the type of the judgement is atomic and the head of the 
