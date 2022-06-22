@@ -66,7 +66,8 @@
 %token APPLY IND CASE SEARCH TO ON INTROS ASSERT WITH PRUNE
 %token SKIP ABORT UNDO LEFT RIGHT WEAKEN PERMUTECTX STRENGTHEN INST
 %token SPLIT KEEP SPECIFICATION SEMICOLON
-%token THEOREM SCHEMA DEFINE
+%token THEOREM SCHEMA DEFINE SET
+%token DEPTH
 %token QUIT
 %token COLON RARROW CTX FORALL EXISTS STAR AT BY
 %token OR AND
@@ -120,7 +121,18 @@ id:
   | QUIT          { "Quit" }
   | DEFINE        { "Define" }
   | BY            { "by" }
-                  
+  | SET           { "Set" }
+  | DEPTH         { "depth" }
+
+setting:
+  | DEPTH NUM { Uterms.Depth ($2) }
+
+setting_list:
+  | setting COMMA setting_list
+    { $1::$3 }
+  | setting { [ $1 ] }
+
+
 id_list:
   | loc_id
     { [(pos 0, deloc_id $1)] }
@@ -405,6 +417,8 @@ top_command:
     { Uterms.Schema(deloc_id $2, $4) }
   | SPECIFICATION QSTRING DOT
     { Uterms.Specification($2) }
+  | SET setting_list DOT
+    { Uterms.Set($2) }
   | QUIT DOT
     { Uterms.Quit }       
   | EOF

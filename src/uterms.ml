@@ -73,6 +73,9 @@ type depth =
   | DefaultDepth
   | WithDepth of int
 
+type setting =
+  | Depth of int
+
 let is_cws = function
   | Cws _ -> true
   | _ -> false
@@ -123,6 +126,7 @@ type top_command =
   | Specification of string
   | Quit
   | Define of aid * udef list
+  | Set of setting list
 
 type mode =
   | Plus

@@ -49,6 +49,9 @@ type depth =
   | DefaultDepth
   | WithDepth of int
 
+type setting =
+  | Depth of int
+
 val is_cws : uwith -> bool
 val unwrap_cws : uwith -> id * uctx
 val is_vws : uwith -> bool
@@ -82,6 +85,7 @@ type top_command =
   | Specification of string
   | Quit
   | Define of aid * udef list
+  | Set of setting list
 
 type sig_decl =
   | Const of id * uterm

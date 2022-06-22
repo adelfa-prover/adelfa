@@ -35,6 +35,11 @@ let depth_or_default depth =
   | Uterms.WithDepth d -> d
 ;;
 
+let set_setting s =
+  match s with
+  | Uterms.Depth v -> search_depth := v
+;;
+
 (* 3. The available lemmas *)
 let lemmas : (string * Formula.formula) list ref = ref []
 let add_lemma id f = lemmas := (id, f) :: !lemmas

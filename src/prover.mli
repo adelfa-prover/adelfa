@@ -1,5 +1,6 @@
 exception ProofCompleted
 
+val set_setting : Uterms.setting -> unit
 val lf_sig : Signature.signature ref
 val set_sig : Signature.signature -> unit
 val clear_sig : unit -> unit

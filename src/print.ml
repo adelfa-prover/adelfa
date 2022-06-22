@@ -552,6 +552,15 @@ and pr_locids ppf = function
   | [] -> ()
   | [ (_, id) ] -> Format.fprintf ppf "%a" pr_str id
   | (_, id) :: locids -> Format.fprintf ppf "%a@,@ %a" pr_str id pr_locids locids
+
+and pr_setting ppf = function
+  | Uterms.Depth v -> Format.fprintf ppf "depth %a" pr_str (string_of_int v)
+
+and pr_settings ppf settings =
+  match settings with
+  | [] -> ()
+  | [ v ] -> Format.fprintf ppf "%a" pr_setting v
+  | s :: tl -> Format.fprintf ppf "%a, %a" pr_setting s pr_settings tl
 ;;
 
 let pr_topcommand ppf = function
@@ -564,6 +573,7 @@ let pr_topcommand ppf = function
   | Uterms.Quit -> pr_str ppf "Quit."
   | Uterms.Define (aid, defs) ->
     Format.fprintf ppf "@[<4>Define@ %a@ by\n%a.@]" pr_aid aid pr_udefs defs
+  | Uterms.Set settings -> Format.fprintf ppf "@[<4>Set@ %a@.@]" pr_settings settings
 ;;
 
 let rec pr_subst ppf = function
