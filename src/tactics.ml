@@ -380,42 +380,7 @@ let decompose_app_form g ann args bndrs body =
   mk_fm args bndrs
 ;;
 
-(* Search:
-   assumption is that the current goal formula is atomic, or a defined proposition.
-   raises Success exception if current goal is determined valid by search.
-
-   procedure:
-     1) once at outset check the nominal constants in explicit part of context
-          - no duplicate binding for name
-          - all explicit bindings must be restricted from appearing in context variables
-     2) Extract all typing information from all hypotheses and add them to the
-        assumption set
-     3) then being the search loop attempting to complete derivation
-          a) normalize the goal formula (i.e. apply Pi-R rule)
-          b) check for match in assumption set (i.e. apply id rule)
-          c) decompose typing judgement (i.e. apply atm-R rule)
-               - for leaves perform check of context formation
-                 must either be the prefix of some context expression from an assumption or
-                 shown well-formed explicitly
-*)
-let search ~depth signature sequent =
-  (* checks that the explicit bindings in context expression g are all distinct and are
-     restricted from appearing in any instance of any context variable appearing in g. *)
-  let check_context_names g =
-    let explicit_names = List.map (fun (x, _) -> x.Term.name) (Context.get_explicit g) in
-    List.is_unique explicit_names
-    &&
-    if Context.has_var g
-    then
-      List.for_all
-        (fun x ->
-          List.mem
-            x
-            (Sequent.get_ctxvar_restricted
-               (Sequent.ctxvar_lookup sequent.ctxvars (Context.get_ctx_var g))))
-        explicit_names
-    else true
-  in
+let extract_ty_info signature sequent depth formulas =
   (* Find a type with applications in the type.
      Look up the head of that type in the signature.
      Create judgements for the arguments to the type in the assumption
@@ -452,10 +417,8 @@ let search ~depth signature sequent =
         | _ -> [])
       | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> [])
   in
-  (* Given a list of formulas, extracts all typing information we can infer from them,
-     up to the depth set by the user *)
-  let rec extract_all_tys depth_left formulas =
-    if depth_left <= 0
+  let rec aux depth formulas =
+    if depth <= 0
     then formulas
     else (
       let new_formulas =
@@ -467,25 +430,52 @@ let search ~depth signature sequent =
       (* Stop early if we haven't extracted any new information *)
       if List.length new_formulas = List.length formulas
       then new_formulas
-      else extract_all_tys (depth_left - 1) new_formulas)
+      else aux (depth - 1) new_formulas)
   in
-  (*
-  let extracted_tms =
-    sequent.hyps
-    |> List.flatten_map (fun hyp -> extract_tys_from_tm hyp.formula depth)
-    |> List.map (fun f -> Sequent.make_hyp sequent f)
+  aux depth formulas
+;;
+
+(* Search:
+   assumption is that the current goal formula is atomic, or a defined proposition.
+   raises Success exception if current goal is determined valid by search.
+
+   procedure:
+     1) once at outset check the nominal constants in explicit part of context
+          - no duplicate binding for name
+          - all explicit bindings must be restricted from appearing in context variables
+     2) Extract all typing information from all hypotheses and add them to the
+        assumption set
+     3) then being the search loop attempting to complete derivation
+          a) normalize the goal formula (i.e. apply Pi-R rule)
+          b) check for match in assumption set (i.e. apply id rule)
+          c) decompose typing judgement (i.e. apply atm-R rule)
+               - for leaves perform check of context formation
+                 must either be the prefix of some context expression from an assumption or
+                 shown well-formed explicitly
+*)
+let search ~depth signature sequent =
+  (* checks that the explicit bindings in context expression g are all distinct and are
+     restricted from appearing in any instance of any context variable appearing in g. *)
+  let check_context_names g =
+    let explicit_names = List.map (fun (x, _) -> x.Term.name) (Context.get_explicit g) in
+    List.is_unique explicit_names
+    &&
+    if Context.has_var g
+    then
+      List.for_all
+        (fun x ->
+          List.mem
+            x
+            (Sequent.get_ctxvar_restricted
+               (Sequent.ctxvar_lookup sequent.ctxvars (Context.get_ctx_var g))))
+        explicit_names
+    else true
   in
-  let extracted_types =
-    sequent.hyps @ extracted_tms
-    |> List.flatten_map (fun hyp -> extract_tys_from_ty hyp.formula depth)
-    |> List.map (fun f -> Sequent.make_hyp sequent f)
-  in
-  *)
-  let extracted_info =
+  let formulas =
     sequent.hyps
     |> List.map (fun hyp -> hyp.formula)
     |> List.unique ~cmp:Formula.eq
-    |> extract_all_tys depth
+    |> extract_ty_info signature sequent depth
   in
   (* aux function does the meat of this function, searching for derivations of each subgoal in list. *)
   let rec search_aux (subgoals : (unit -> unit) list) =
@@ -554,7 +544,7 @@ let search ~depth signature sequent =
       let support_goal =
         Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) sequent.goal
       in
-      extracted_info
+      formulas
       |> List.iter (fun f ->
              (* try each permutation of nominals in assumption formula*)
              match f with
