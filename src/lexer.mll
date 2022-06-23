@@ -44,7 +44,7 @@
     "by",            BY ;
 
     "Set",           SET ;
-    "depth",         DEPTH ;
+    "search_depth",  SEARCHDEPTH ;
   ] ;;
 
   let incrline lexbuf =

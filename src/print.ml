@@ -554,7 +554,7 @@ and pr_locids ppf = function
   | (_, id) :: locids -> Format.fprintf ppf "%a@,@ %a" pr_str id pr_locids locids
 
 and pr_setting ppf = function
-  | Uterms.Depth v -> Format.fprintf ppf "depth %a" pr_str (string_of_int v)
+  | Uterms.SearchDepth v -> Format.fprintf ppf "search_depth %a" pr_str (string_of_int v)
 
 and pr_settings ppf settings =
   match settings with

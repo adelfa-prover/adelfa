@@ -37,7 +37,7 @@ let depth_or_default depth =
 
 let set_setting s =
   match s with
-  | Uterms.Depth v -> search_depth := v
+  | Uterms.SearchDepth v -> search_depth := v
 ;;
 
 (* 3. The available lemmas *)

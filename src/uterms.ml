@@ -74,7 +74,7 @@ type depth =
   | WithDepth of int
 
 type setting =
-  | Depth of int
+  | SearchDepth of int
 
 let is_cws = function
   | Cws _ -> true
