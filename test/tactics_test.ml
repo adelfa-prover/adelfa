@@ -628,6 +628,118 @@ let exists_tests =
        ]
 ;;
 
+let extract_tests =
+  "Extract Types"
+  >::: [ ("Able to extract typing information from signature"
+         >:: fun () ->
+         let d = var Eigen "D" 0 ity in
+         let t = var Eigen "T" 0 ity in
+         let e = var Eigen "E" 0 ity in
+         let f = atm Context.Nil d (Term.app typeof [ e; t ]) in
+         let expected_form = atm Context.Nil t ty in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         Sequent.add_var seq (term_to_pair d);
+         Sequent.add_var seq (term_to_pair t);
+         Sequent.add_var seq (term_to_pair e);
+         extract_ty_info eval_sig seq 5 [ f ]
+         |> List.mem expected_form
+         |> assert_bool "Not able to extract type")
+       ; ("Extracted types do not weaken into a ctx"
+         >:: fun () ->
+         let d = var Eigen "D" 0 ity in
+         let t = var Eigen "T" 0 ity in
+         let e = var Eigen "E" 0 ity in
+         let n1 = var Nominal "n1" 3 ity in
+         let f = atm Context.Nil d (Term.app typeof [ e; t ]) in
+         let expected_form = atm (Context.Ctx (Context.Nil, (term_to_var n1, tm))) t ty in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         Sequent.add_var seq (term_to_pair d);
+         Sequent.add_var seq (term_to_pair t);
+         Sequent.add_var seq (term_to_pair e);
+         extract_ty_info eval_sig seq 5 [ f ]
+         |> List.mem expected_form
+         |> not
+         |> assert_bool "Extraction weakens into contexts")
+       ; ("Extracted types do not strengthen out of a ctx"
+         >:: fun () ->
+         let d = var Eigen "D" 0 ity in
+         let t = var Eigen "T" 0 ity in
+         let e = var Eigen "E" 0 ity in
+         let n1 = var Nominal "n1" 3 ity in
+         let g = Context.Ctx (Context.Nil, (term_to_var n1, tm)) in
+         let f = atm g d (Term.app typeof [ e; t ]) in
+         let expected_form = atm Context.Nil t ty in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         Sequent.add_var seq (term_to_pair d);
+         Sequent.add_var seq (term_to_pair t);
+         Sequent.add_var seq (term_to_pair e);
+         extract_ty_info eval_sig seq 5 [ f ]
+         |> List.mem expected_form
+         |> not
+         |> assert_bool "Extraction strengthens into contexts")
+       ; ("Doesn't extract types from type when depth set to 0"
+         >:: fun () ->
+         let d = var Eigen "D" 0 ity in
+         let t = var Eigen "T" 0 ity in
+         let e = var Eigen "E" 0 ity in
+         let f = atm Context.Nil d (Term.app typeof [ e; t ]) in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         Sequent.add_var seq (term_to_pair d);
+         Sequent.add_var seq (term_to_pair t);
+         Sequent.add_var seq (term_to_pair e);
+         extract_ty_info eval_sig seq 0 [ f ]
+         |> List.equal Formula.eq [ f ]
+         |> assert_bool "Performs extraction when depth is 0")
+       ; ("Doesn't extract types from term when depth is 0"
+         >:: fun () ->
+         let e1 = var Eigen "E1" 0 ity in
+         let e2 = var Eigen "E2" 0 ity in
+         let f = atm Context.Nil (Term.app Test_helper.app [ e1; e2 ]) tm in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         List.iter (fun x -> term_to_pair x |> Sequent.add_var seq) [ e1; e2 ];
+         extract_ty_info eval_sig seq 0 [ f ]
+         |> List.equal Formula.eq [ f ]
+         |> assert_bool "Performs extraction when depth is 0")
+       ; ("Extracts types from terms one deep from sig"
+         >:: fun () ->
+         let e1 = var Eigen "E1" 0 ity in
+         let e2 = var Eigen "E2" 0 ity in
+         let f = atm Context.Nil (Term.app Test_helper.app [ e1; e2 ]) tm in
+         let expected_form = atm Context.Nil e1 tm in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         List.iter (fun x -> term_to_pair x |> Sequent.add_var seq) [ e1; e2 ];
+         extract_ty_info eval_sig seq 5 [ f ]
+         |> List.mem expected_form
+         |> assert_bool "Extraction doesn't work on terms at depth 1")
+       ; ("Extracts types from terms multiple deep from sig"
+         >:: fun () ->
+         let e1 = var Eigen "E1" 0 ity in
+         let e2 = var Eigen "E2" 0 ity in
+         let e3 = var Eigen "E3" 0 ity in
+         let f =
+           atm
+             Context.Nil
+             (Term.app Test_helper.app [ e3; Term.app Test_helper.app [ e1; e2 ] ])
+             tm
+         in
+         let expected_form = atm Context.Nil e1 tm in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         List.iter (fun x -> term_to_pair x |> Sequent.add_var seq) [ e1; e2; e3 ];
+         extract_ty_info eval_sig seq 5 [ f ]
+         |> List.mem expected_form
+         |> assert_bool "Extraction doesn't work on terms at depth greater than 1")
+       ; ("Extracting types returns only unique formulas"
+         >:: fun () ->
+         let e = var Eigen "E" 0 ity in
+         let f = atm Context.Nil e ty in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         Sequent.add_var seq (term_to_pair e);
+         extract_ty_info eval_sig seq 5 [ f; f ]
+         |> List.equal Formula.eq [ f ]
+         |> assert_bool "Returns duplicate formulas")
+       ]
+;;
+
 let assert_search_success search_func = assert_raises Tactics.Success search_func
 let assert_search_fail search_func = assert_equal () (search_func ())
 
@@ -808,6 +920,7 @@ let inst_tests =
          assert_pprint_equal
            "{n2:arrow T T |- E : eval T T}"
            (inst ~depth:5 eval_sig seq f2 [ "n1", t ]))
+       ; ("Extraction from type to term works" >:: fun () -> ())
        ; ("Instantiation must be of the right LF type"
          >:: fun () ->
          let n = var Nominal "n" 3 ity in
@@ -826,5 +939,6 @@ let inst_tests =
 ;;
 
 let tests =
-  "Tactics" >::: [ case_tests; apply_tests; exists_tests; search_tests; inst_tests ]
+  "Tactics"
+  >::: [ case_tests; apply_tests; exists_tests; extract_tests; search_tests; inst_tests ]
 ;;

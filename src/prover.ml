@@ -11,7 +11,19 @@ exception ProofCompleted
     4. The current goal
     5. The current (stack) of subgoals
     6. The available definitions
+    7. The depth to search
 **)
+
+type prover_settings = { mutable search_depth : int }
+
+type prover_state =
+  { sequent : Sequent.sequent
+  ; subgoals : (unit -> unit) list
+  ; bind_state : Term.bind_state
+  ; term_var_count : int
+  ; ctx_var_count : int
+  ; settings : prover_settings
+  }
 
 (* 1. The currently loaded LF signature *)
 let lf_sig = ref Signature.empty
@@ -27,17 +39,13 @@ let clear_schemas () = schemas := []
 let lookup_schema id = List.assoc id !schemas
 
 (* How deep to extract types from hypotheses *)
-let search_depth = ref 5
+let settings = { search_depth = 5 }
+let copy_settings () = { search_depth = settings.search_depth }
 
 let depth_or_default depth =
   match depth with
-  | Uterms.DefaultDepth -> !search_depth
+  | Uterms.DefaultDepth -> settings.search_depth
   | Uterms.WithDepth d -> d
-;;
-
-let set_setting s =
-  match s with
-  | Uterms.SearchDepth v -> search_depth := v
 ;;
 
 (* 3. The available lemmas *)
@@ -97,22 +105,38 @@ let get_propty_lst () = List.map (fun (x, (y, _)) -> x, y) !dfns
 let undo_stack = ref []
 
 let state_snapshot () =
-  ( copy_sequent ()
-  , !subgoals
-  , Term.get_bind_state ()
-  , Term.get_varcount ()
-  , Context.get_varcount () )
-;;
-
-let state_reset (seq, sgs, tbs, tvc, cvc) =
-  set_sequent seq;
-  subgoals := sgs;
-  Term.set_bind_state tbs;
-  Term.set_varcount tvc;
-  Context.set_varcount cvc
+  { sequent = copy_sequent ()
+  ; subgoals = !subgoals
+  ; bind_state = Term.get_bind_state ()
+  ; term_var_count = Term.get_varcount ()
+  ; ctx_var_count = Context.get_varcount ()
+  ; settings = copy_settings ()
+  }
 ;;
 
 let save_undo_state () = undo_stack := state_snapshot () :: !undo_stack
+
+let change_settings sets =
+  let aux setting =
+    match setting with
+    | Uterms.SearchDepth v -> settings.search_depth <- v
+  in
+  save_undo_state ();
+  List.iter aux sets
+;;
+
+let set_setting_state { search_depth = d } = settings.search_depth <- d
+
+let state_reset
+    { sequent; subgoals = sgs; bind_state; term_var_count; ctx_var_count; settings }
+  =
+  set_sequent sequent;
+  subgoals := sgs;
+  Term.set_bind_state bind_state;
+  Term.set_varcount term_var_count;
+  Context.set_varcount ctx_var_count;
+  set_setting_state settings
+;;
 
 let reset_prover =
   let empty_bind_state = Term.get_bind_state () in

@@ -1,6 +1,17 @@
 exception ProofCompleted
 
-val set_setting : Uterms.setting -> unit
+type prover_settings = { mutable search_depth : int }
+
+type prover_state =
+  { sequent : Sequent.sequent
+  ; subgoals : (unit -> unit) list
+  ; bind_state : Term.bind_state
+  ; term_var_count : int
+  ; ctx_var_count : int
+  ; settings : prover_settings
+  }
+
+val change_settings : Uterms.setting list -> unit
 val lf_sig : Signature.signature ref
 val set_sig : Signature.signature -> unit
 val clear_sig : unit -> unit

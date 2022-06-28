@@ -73,8 +73,7 @@ type depth =
   | DefaultDepth
   | WithDepth of int
 
-type setting =
-  | SearchDepth of int
+type setting = SearchDepth of int
 
 let is_cws = function
   | Cws _ -> true
@@ -127,23 +126,6 @@ type top_command =
   | Quit
   | Define of aid * udef list
   | Set of setting list
-
-type mode =
-  | Plus
-  | Star
-  | Minus
-
-type placeholder = int
-
-type mform =
-  | True
-  | Exists of (id * uterm option) list * mform
-  | Forall of (id * uterm option) list * mform
-  | ForallI of (id * uterm option) list * mform
-  | ForallG of placeholder
-
-type callpat = id * id option list
-type order = placeholder
 
 type sig_decl =
   | Const of id * uterm

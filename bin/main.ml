@@ -365,7 +365,7 @@ let process () =
     in
     Prover.add_definition dfn;
     ()
-  | Uterms.Set settings -> List.iter (fun s -> Prover.set_setting s) settings
+  | Uterms.Set settings -> Prover.change_settings settings
   | Uterms.Define ((_, None), _) -> bugf "Expected to defined some type");
   if !interactive then flush stdout;
   if !Globals.annotate then fprintf !out "</pre>%!";

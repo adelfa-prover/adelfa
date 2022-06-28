@@ -24,6 +24,13 @@ type case =
 
 val make_case : Sequent.sequent -> case
 
+val extract_ty_info
+  :  Signature.signature
+  -> Sequent.sequent
+  -> int
+  -> Formula.formula list
+  -> Formula.formula list
+
 (* Given a sequent, searches for derivation using id, atm-R, pi-R,
  * base-R, top-R, and bottom-L rules. 
  * Raises Success upon finding a derivarion.
