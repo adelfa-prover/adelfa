@@ -737,6 +737,117 @@ let extract_tests =
          extract_ty_info eval_sig seq 5 [ f; f ]
          |> List.equal Formula.eq [ f ]
          |> assert_bool "Returns duplicate formulas")
+       ; ("Extraction alternates between terms and types - starting with types"
+         >:: fun () ->
+         (* Given a new type declaration [foo: tm -> Type]
+            and formula {D: foo (app e1 e2)}, the type extraction
+            should firstly give {app e1 e2 : tm} then term extraction
+            should give {e1: tm}. Will fail if term-type extraction doesn't
+            alternate properly *)
+         let foo = const "foo" iity in
+         let new_ty =
+           Signature.ty_dec
+             "foo"
+             (Term.pi [ term_to_var (const ~ts:2 "e" ity), tm ] Term.Type)
+             0
+             (Signature.Prefix 0)
+             []
+         in
+         let signature = Signature.add_type_decl eval_sig new_ty in
+         let e1 = var Eigen "e1" 0 ity in
+         let e2 = var Eigen "e2" 0 ity in
+         let a = Term.app Test_helper.app [ e1; e2 ] in
+         let d = var Eigen "D" 0 ity in
+         let f = atm Context.Nil d (Term.app foo [ a ]) in
+         let expected_form = atm Context.Nil e1 tm in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         List.iter (fun x -> term_to_pair x |> Sequent.add_var seq) [ e1; e2; d ];
+         extract_ty_info signature seq 5 [ f ]
+         |> List.mem expected_form
+         |> assert_bool "Does not extract multiple deep")
+       ; ("Extraction raises success when it finds something not well formed"
+         >:: fun () ->
+         (* Given a new type declaration [foo: tm -> Type]
+            an obj [bar : tm -> foo -> tm]
+            and formula {bar (app e1 e2) (foo (app e1 e2)) : tm}, the type extraction
+            will find that foo is not in the signature as an object. This indicates
+            that it's not a well formed atomic term and as such the proof is vacuously true
+          *)
+         let foo = const "foo" iity in
+         let new_ty =
+           Signature.ty_dec
+             "foo"
+             (Term.pi [ term_to_var (const ~ts:2 "e" ity), tm ] Term.Type)
+             0
+             (Signature.Prefix 0)
+             []
+         in
+         let bar = const "bar" iiity in
+         let signature = Signature.add_type_decl eval_sig new_ty in
+         let new_obj =
+           let x = const ~ts:2 "x" ity in
+           Signature.obj_dec
+             "bar"
+             (Term.pi
+                [ term_to_var x, tm
+                ; term_to_var (const ~ts:2 "y" ity), Term.app foo [ x ]
+                ]
+                tm)
+             0
+             (Signature.Prefix 0)
+         in
+         let signature = Signature.add_obj_decl signature new_obj in
+         let e1 = var Eigen "e1" 0 ity in
+         let e2 = var Eigen "e2" 0 ity in
+         let a = Term.app Test_helper.app [ e1; e2 ] in
+         let b = Term.app foo [ a ] in
+         let f = atm Context.Nil (Term.app bar [ a; b ]) tm in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         List.iter (fun x -> term_to_pair x |> Sequent.add_var seq) [ e1; e2 ];
+         assert_raises Tactics.Success (fun () -> extract_ty_info signature seq 5 [ f ]))
+       ; ("Extraction substitutes for dependent types correctly"
+         (* Given a new type declaration [foo: tm -> Type]
+            an obj [bar : pi x: tm . pi y: foo x . tm]
+            and formula {bar (app e1 e2) D : tm}, the type extraction will need to determine
+            that D is of type (foo x) and correctly substitute x for (app e1 e2) to give
+            a new judgement of the form {D: foo (app e1 e2)}
+          *)
+         >:: fun () ->
+         let foo = const "foo" iity in
+         let new_ty =
+           Signature.ty_dec
+             "foo"
+             (Term.pi [ term_to_var (const ~ts:2 "e" ity), tm ] Term.Type)
+             0
+             (Signature.Prefix 0)
+             []
+         in
+         let bar = const "bar" iiity in
+         let d = var Eigen "D" 0 ity in
+         let signature = Signature.add_type_decl eval_sig new_ty in
+         let new_obj =
+           let x = const ~ts:2 "x" ity in
+           Signature.obj_dec
+             "bar"
+             (Term.pi
+                [ term_to_var x, tm
+                ; term_to_var (const ~ts:2 "y" ity), Term.app foo [ x ]
+                ]
+                tm)
+             0
+             (Signature.Prefix 0)
+         in
+         let signature = Signature.add_obj_decl signature new_obj in
+         let e1 = var Eigen "e1" 0 ity in
+         let e2 = var Eigen "e2" 0 ity in
+         let a = Term.app Test_helper.app [ e1; e2 ] in
+         let f = atm Context.Nil (Term.app bar [ a; d ]) tm in
+         let expected = atm Context.Nil d (Term.app foo [ a ]) in
+         let seq = Sequent.make_sequent_from_goal ~form:f () in
+         List.iter (fun x -> term_to_pair x |> Sequent.add_var seq) [ e1; e2 ];
+         extract_ty_info signature seq 5 [ f ]
+         |> List.mem expected
+         |> assert_bool "Doesn't substitute dependencies in types")
        ]
 ;;
 

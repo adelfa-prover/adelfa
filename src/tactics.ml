@@ -409,8 +409,11 @@ let extract_ty_info signature sequent depth formulas =
       | App (h, args) ->
         (match observe (hnorm h) with
         | Term.Var v when v.tag = Term.Constant ->
-          (Signature.lookup_obj_decl signature v.name).Signature.typ
-          |> decompose_app g a args
+          (try
+             (Signature.lookup_obj_decl signature v.name).Signature.typ
+             |> decompose_app g a args
+           with
+          | Not_found -> raise Success)
         | Term.Var v when v.tag = Term.Nominal ->
           List.assoc v (Context.ctxexpr_to_ctx (Sequent.get_cvar_tys sequent.ctxvars) g)
           |> decompose_app g a args
