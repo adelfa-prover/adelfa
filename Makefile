@@ -3,14 +3,14 @@ default : main
 
 .PHONY: main
 main:
-	@dune build @install
+	@dune build @install --release
 
 .PHONY: debug
 debug:
 	@dune build bin/ --profile release
 
 .PHONY: install
-install :
+install: main
 	@dune install
 
 .PHONY: tar
@@ -19,7 +19,7 @@ tar :
 
 .PHONY: test
 test:
-	@dune exec test/test.exe --profile release
+	@dune runtest --release
 
 .PHONY: clean
 clean:
