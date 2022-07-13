@@ -68,7 +68,7 @@ type command =
   | Left
   | Right
   | Intros
-  | Assert of uformula
+  | Assert of uformula * depth
   | Abort
   | Weaken of clearable * uterm * depth
   | PermuteCtx of clearable * uctx

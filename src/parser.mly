@@ -248,7 +248,9 @@ command:
   | APPLY clearable WITH withs DOT
     { Uterms.Apply($2, [], $4) }
   | ASSERT formula DOT
-    { Uterms.Assert($2) }
+    { Uterms.Assert($2, Uterms.DefaultDepth) }
+  | ASSERT formula NUM DOT
+    { Uterms.Assert($2, Uterms.WithDepth($3)) }
   | CASE hyp DOT
     { Uterms.Case(Uterms.Remove $2) }
   | CASE hyp LPAREN KEEP RPAREN DOT

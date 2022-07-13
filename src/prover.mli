@@ -38,7 +38,7 @@ val exists : Term.term -> unit
 val undo : unit -> unit
 val search : Uterms.depth -> unit -> unit
 val apply : string -> string list -> Uterms.uwith list -> unit
-val assert_thm : Formula.formula -> unit
+val assert_thm : Uterms.depth -> Formula.formula -> unit
 val split : unit -> unit
 val left : unit -> unit
 val right : unit -> unit

@@ -518,8 +518,9 @@ let apply name args uws =
     undo ()
 ;;
 
-let assert_thm f =
+let assert_thm depth f =
   save_undo_state ();
+  let depth = depth_or_default depth in
   let subgoal =
     let saved_sequent = copy_sequent () in
     let bind_state = Term.get_bind_state () in
@@ -538,7 +539,7 @@ let assert_thm f =
   sequent.goal <- f;
   match sequent.goal with
   | Formula.Atm _ | Formula.Prop _ ->
-    (try Tactics.search ~depth:5 !lf_sig sequent with
+    (try Tactics.search ~depth !lf_sig sequent with
     | Tactics.Success -> next_subgoal ())
   | Formula.Top -> next_subgoal ()
   | _ ->

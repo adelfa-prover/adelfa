@@ -192,7 +192,7 @@ let process_proof () =
   | Uterms.Left -> Prover.left ()
   | Uterms.Right -> Prover.right ()
   | Uterms.Intros -> Prover.intros ()
-  | Uterms.Assert uform ->
+  | Uterms.Assert (uform, depth) ->
     (* weak type inf. on formula. then call Prover.cut *)
     let nvars =
       List.filter
@@ -217,7 +217,7 @@ let process_proof () =
         nvar_ctx
         uform
     in
-    Prover.assert_thm form
+    Prover.assert_thm depth form
   | Uterms.Weaken (clear, utm, depth) ->
     let nvars =
       List.filter

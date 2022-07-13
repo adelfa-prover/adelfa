@@ -471,7 +471,8 @@ let rec pr_command ppf = function
   | Uterms.Left -> pr_str ppf "left."
   | Uterms.Right -> pr_str ppf "right."
   | Uterms.Intros -> pr_str ppf "intros."
-  | Uterms.Assert uform -> Format.fprintf ppf "@[<4>assert %a.@]" pr_uform uform
+  | Uterms.Assert (uform, DefaultDepth) -> Format.fprintf ppf "@[<4>assert %a.@]" pr_uform uform
+  | Uterms.Assert (uform, WithDepth i) -> Format.fprintf ppf "@[<4>assert %a %a.@]" pr_uform uform pr_str (string_of_int i)
   | Uterms.PermuteCtx (name, uctx) ->
     Format.fprintf ppf "@[<4>ctxpermute %a to %a.@]" pr_clearable name pr_uctxtm uctx
   | Uterms.Strengthen name -> Format.fprintf ppf "strengthen %a." pr_clearable name
