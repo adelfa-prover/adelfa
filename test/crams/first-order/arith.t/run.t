@@ -86,18 +86,6 @@
   Subgoal z_nat:
   
   H1:ctx G:c. {G |- z : nat} => False
-  
-  ==================================
-  {z : nat}
-  
-  Subgoal z_nat is:
-   False
-  
-  z_nat>> search.
-  
-  Subgoal z_nat:
-  
-  H1:ctx G:c. {G |- z : nat} => False
   H2:{z : nat}
   
   ==================================
@@ -1081,75 +1069,6 @@
    exists N3, exists D, {D : plus z N2 N3}
   
   plus_func.1>> assert {N3 : nat}.
-  
-  Subgoal plus_func.1:
-  
-  Vars: D:o, N3:o, x:o, N2:o
-  IH:
-      forall N1, forall N2,
-        {N1 : nat}* => {N2 : nat} => exists N3, exists D, {D : plus N1 N2 N3}
-  H2:{N2 : nat}
-  H3:{x : nat}*
-  H4:{D : plus x N2 N3}
-  
-  ==================================
-  {N3 : nat}
-  
-  Subgoal plus_func.1 is:
-   {plus_s x N2 N3 D : plus (s x) N2 (s N3)}
-  
-  Subgoal plus_func.2 is:
-   exists N3, exists D, {D : plus z N2 N3}
-  
-  plus_func.1>> cases H4.
-  
-  Subgoal plus_func.1.1:
-  
-  Vars: P:o, N4:o, N6:o, N2:o
-  IH:
-      forall N1, forall N2,
-        {N1 : nat}* => {N2 : nat} => exists N3, exists D, {D : plus N1 N2 N3}
-  H2:{N2 : nat}
-  H3:{s N4 : nat}*
-  H5:{N4 : nat}
-  H6:{N2 : nat}
-  H7:{N6 : nat}
-  H8:{P : plus N4 N2 N6}
-  
-  ==================================
-  {s N6 : nat}
-  
-  Subgoal plus_func.1.2 is:
-   {N3 : nat}
-  
-  Subgoal plus_func.1 is:
-   {plus_s x N2 N3 D : plus (s x) N2 (s N3)}
-  
-  Subgoal plus_func.2 is:
-   exists N3, exists D, {D : plus z N2 N3}
-  
-  plus_func.1.1>> search.
-  
-  Subgoal plus_func.1.2:
-  
-  Vars: N3:o
-  IH:
-      forall N1, forall N2,
-        {N1 : nat}* => {N2 : nat} => exists N3, exists D, {D : plus N1 N2 N3}
-  H2:{N3 : nat}
-  H3:{z : nat}*
-  H5:{N3 : nat}
-  
-  ==================================
-  {N3 : nat}
-  
-  Subgoal plus_func.1 is:
-   {plus_s x N2 N3 D : plus (s x) N2 (s N3)}
-  
-  Subgoal plus_func.2 is:
-   exists N3, exists D, {D : plus z N2 N3}
-  
-  plus_func.1.2>> search.
   
   Subgoal plus_func.1:
   

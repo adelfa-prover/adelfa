@@ -24,15 +24,7 @@ induction on 3. intros. case H3.
   %case 1: of_abs
     case H4.
     assert {G, n1:tm, n2:of n1 T3 |- T4 : ty}.
-      weaken H5 with tm.
-      weaken H6 with tm.
-      weaken H14 with (of n7 T3).
-      search.
     assert {G, n1:tm, n2:of n1 T3 |- T5 : ty}.
-      weaken H9 with tm.
-      weaken H10 with tm.
-      weaken H15 with (of n7 T3).
-      search.
     apply IH to H13 H14 H8 H12 with (G = G, n1:tm, n2:of n1 T3).
     case H15.
     exists (refl (arr T3 T4)). search.
@@ -40,9 +32,7 @@ induction on 3. intros. case H3.
   %case 2: of_app
     case H4.
     assert {G |- (arr T3 T1) : ty}.
-      search.
     assert {G |- (arr T4 T2) : ty}.
-      search.
     apply IH to H17 H18 H9 H15.
     case H19.
     exists (refl T2). search.

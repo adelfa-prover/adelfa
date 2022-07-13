@@ -13,7 +13,6 @@ Theorem no_plus_one : forall M1 M2 D, {D:plus (s M1) M2 M1} => false.
 Theorem z_nat : (ctx G:c, {G |- z : nat} => false) => false.
 intros.
 assert { z : nat } .
-    search.
 apply H1 to H2.
 case H3.
 
@@ -75,7 +74,7 @@ Theorem plus_func : forall N1 N2, {N1:nat} => {N2:nat} =>
   apply IH to H3 H2 with N1 = x, N2 = N2.
   exists (s N3).
   exists plus_s x N2 N3 D.
-  assert {N3 : nat}. case H4. search. search.
+  assert {N3 : nat}.
   search.
   % nil case.
   exists N2.

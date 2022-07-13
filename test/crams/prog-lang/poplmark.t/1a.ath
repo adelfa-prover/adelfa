@@ -154,9 +154,7 @@ induction on 1. intros.
       assert {L, n:ty, n1:var n |- D3 : sub T3 T1}.
         weaken H14 with ty. weaken H25 with (var n13). search.
       assert {L, n:ty, n1:var n |- n : ty}.
-        search.
       assert {L, n:ty, n1:var n |- n1 : var n}.
-        search.
       apply H20 to H26 H27 H25 H9 with (L135 = L, n:ty, n1:var n), X = n, M = (S2 n), N = (T5 n), P = T3, DV = n1, D1 = D3, D2 = a2 n n1.
           prune H28.
     %%%use transitivity based on T2 (H22) to derive (sub (S2 n) (T4 n))
