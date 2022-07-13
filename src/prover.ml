@@ -535,7 +535,14 @@ let assert_thm f =
       add_hyp sequent f
   in
   add_subgoals [ subgoal ];
-  sequent.goal <- f
+  sequent.goal <- f;
+  match sequent.goal with
+  | Formula.Atm _ | Formula.Prop _ ->
+    (try Tactics.search ~depth:5 !lf_sig sequent with
+    | Tactics.Success -> next_subgoal ())
+  | Formula.Top -> next_subgoal ()
+  | _ ->
+    if List.exists (fun h -> h.formula = Formula.Bottom) sequent.hyps then next_subgoal ()
 ;;
 
 let split () =

@@ -24,6 +24,9 @@ type case =
 
 val make_case : Sequent.sequent -> case
 
+(** [extract_ty_info signature sequent depth formulas] extracts typing
+    judgements that we may infer from [formulas] in [sequent] under [signature]
+    up to [depth]. *)
 val extract_ty_info
   :  Signature.signature
   -> Sequent.sequent
