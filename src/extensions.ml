@@ -133,8 +133,8 @@ module List = struct
       | [] -> None
       | head :: tail ->
         (match f head with
-        | Some v -> Some v
-        | None -> aux tail)
+         | Some v -> Some v
+         | None -> aux tail)
     in
     aux list
   ;;
@@ -204,6 +204,15 @@ module List = struct
     match alist with
     | [] -> []
     | (nk, nv) :: rest -> spin [] nk [ nv ] rest
+  ;;
+
+  let index_of ?(cmp = ( = )) v l =
+    let rec aux l =
+      match l with
+      | [] -> invalid_arg "value not in list"
+      | x :: xs -> if cmp x v then 0 else 1 + aux xs
+    in
+    aux l
   ;;
 
   let max list =
@@ -306,6 +315,14 @@ module List = struct
     | x :: xs, y :: ys, z :: zs -> (x, y, z) :: combine3 xs ys zs
     | _ -> raise (Invalid_argument "List.combine3")
   ;;
+
+  let rec combine_shortest l1 l2 =
+    match l1, l2 with
+    | [], _ | _, [] -> []
+    | x :: xs, y :: ys -> (x, y) :: combine_shortest xs ys
+  ;;
+
+  let subset l1 l2 = List.for_all (fun v -> List.mem v l2) l1
 end
 
 module Hashtbl = struct
@@ -332,5 +349,31 @@ module Either = struct
     let left x (l, r) = x :: l, r in
     let right x (l, r) = l, x :: r in
     List.fold_right (either left right) eithers ([], [])
+  ;;
+end
+
+module Seq = struct
+  include Seq
+
+  let rec distribute elt (seq : 'a Seq.t) : 'a Seq.t Seq.t =
+    match Seq.uncons seq with
+    | None -> Seq.return elt |> Seq.return
+    | Some (head, tail) ->
+      Seq.cons
+        (Seq.cons elt seq)
+        (Seq.map (fun x -> Seq.cons head x) (distribute elt tail))
+  ;;
+
+  (* Generate all permutations of all n element subsets of the sequence *)
+  let rec permute (n:int) (seq : 'a Seq.t) =
+    if n = 0
+    then Seq.return Seq.empty
+    else (
+      match Seq.uncons seq with
+      | None -> Seq.empty
+      | Some (head, rest) ->
+        let with_head = Seq.flat_map (distribute head) (permute (n - 1) rest) in
+        let without_head = permute n rest in
+        Seq.append with_head without_head)
   ;;
 end

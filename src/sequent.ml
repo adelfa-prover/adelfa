@@ -85,6 +85,22 @@ let remove_ctxvar sequent v =
 ;;
 
 let get_ctxvar_restricted (_, rstrct, _) = !rstrct
+let get_assoc_ctxvar_restricted (id, rstrct, _) = id, !rstrct
+let get_assoc_ctxvars_restricted entries = List.map get_assoc_ctxvar_restricted entries
+
+let replace_assoc_ctxvars_restricted alist entries =
+  let alist = List.map (fun (v, t) -> v, Term.term_to_name t) alist in
+  let rec aux entry =
+    match entry with
+    | [] -> []
+    | x :: xs ->
+      (match List.assoc_opt x alist with
+       | None -> x :: aux xs
+       | Some x' -> x' :: aux xs)
+  in
+  List.map (fun (v, vars) -> v, aux vars) entries
+;;
+
 let get_ctxvar_id (id, _, _) = id
 let get_ctxvar_ty (_, _, ctxty) = ctxty
 
@@ -188,31 +204,29 @@ let norm_atom sequent formula =
     match formula with
     | Formula.Atm (g, m, a, ann) ->
       (match Term.observe (Term.hnorm a) with
-      | Term.Pi ((v, typ) :: bndrs, body) ->
-        (* for each binder introduce new name n, raise relevant eigenvariables over n,
+       | Term.Pi ((v, typ) :: bndrs, body) ->
+         (* for each binder introduce new name n, raise relevant eigenvariables over n,
              then move into context and apply term component to this n. *)
-        let used = get_nominals sequent in
-        let name, _ = Term.fresh_wrt ~ts:2 Nominal "n" v.Term.ty used in
-        let _ = add_var sequent (Term.term_to_pair name) in
-        let g' =
-          if Context.has_var g
-          then (
-            let _ =
-              restrict_in
-                (ctxvar_lookup sequent.ctxvars (Context.get_ctx_var g))
-                [ Term.get_id name ]
-            in
-            ());
-          Context.Ctx (g, (Term.term_to_var name, typ))
-        in
-        let m' = Term.app m [ Term.eta_expand name ] in
-        let a' =
-          Term.replace_term_vars
-            [ v.Term.name, Term.eta_expand name ]
-            (Term.pi bndrs body)
-        in
-        aux (Formula.atm ~ann g' m' a')
-      | _ -> formula)
+         let used = get_nominals sequent in
+         let name, _ = Term.fresh_wrt ~ts:2 Nominal "n" v.Term.ty used in
+         let _ = add_var sequent (Term.term_to_pair name) in
+         if Context.has_var g
+         then (
+           let _ =
+             restrict_in
+               (ctxvar_lookup sequent.ctxvars (Context.get_ctx_var g))
+               [ Term.get_id name ]
+           in
+           ());
+         let g' = Context.Ctx (g, (Term.term_to_var name, typ)) in
+         let m' = Term.app m [ Term.eta_expand name ] in
+         let a' =
+           Term.replace_term_vars
+             [ v.Term.name, Term.eta_expand name ]
+             (Term.pi bndrs body)
+         in
+         aux (Formula.atm ~ann g' m' a')
+       | _ -> formula)
     | _ -> formula
   in
   aux formula

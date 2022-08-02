@@ -45,8 +45,7 @@ val search : depth:int -> Signature.signature -> Sequent.sequent -> unit
  * inductive hypothesis in the assumptions.
  * Raises InvalidFormula if the identified subformula is not atomic.
  *)
-val reset_ind_count : unit -> unit
-val ind : Sequent.sequent -> int -> unit
+val ind : Sequent.sequent -> int -> int -> unit
 
 (* Given a sequent and a name identifying an assumption formula,
  * of the sequent this will perform case analysis on the 

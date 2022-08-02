@@ -56,24 +56,29 @@ and check_type sign (ctx : Term.lftyctx) tm ty =
   | Lam ([], body) -> check_type sign ctx body ty
   | Lam (bndrs, body) ->
     (match ty with
-    | Pi (tybndrs, tybody) ->
-      (match bndrs, tybndrs with
-      | [], [] -> check_type sign ctx body tybody
-      | (tmv, tmty) :: tmbndrs', (tyv, tyty) :: tybndrs' ->
-        (* substitute a new nominal for both and keep checking under extended context *)
-        let n, _ =
-          Term.fresh_wrt ~ts:4 Nominal "n" tmty (List.map (fun (v, ty) -> v.name, ty) ctx)
-        in
-        let tm' = replace_term_vars [ tmv, n ] (Lam (tmbndrs', body)) in
-        let ty' = replace_term_vars [ tyv.name, n ] (Pi (tybndrs', tybody)) in
-        check_type sign ((Term.term_to_var n, tyty) :: ctx) tm' ty'
-      | _ ->
-        (* couldn't happen when terms are weakly well formed. *)
-        assert false)
-    | App _ | Var _ ->
-      (* couldn't happen when terms are weakly well formed. *)
-      assert false
-    | _ -> raise (NotLFType ty))
+     | Pi (tybndrs, tybody) ->
+       (match bndrs, tybndrs with
+        | [], [] -> check_type sign ctx body tybody
+        | (tmv, tmty) :: tmbndrs', (tyv, tyty) :: tybndrs' ->
+          (* substitute a new nominal for both and keep checking under extended context *)
+          let n, _ =
+            Term.fresh_wrt
+              ~ts:4
+              Nominal
+              "n"
+              tmty
+              (List.map (fun (v, ty) -> v.name, ty) ctx)
+          in
+          let tm' = replace_term_vars [ tmv, n ] (Lam (tmbndrs', body)) in
+          let ty' = replace_term_vars [ tyv.name, n ] (Pi (tybndrs', tybody)) in
+          check_type sign ((Term.term_to_var n, tyty) :: ctx) tm' ty'
+        | _ ->
+          (* couldn't happen when terms are weakly well formed. *)
+          assert false)
+     | App _ | Var _ ->
+       (* couldn't happen when terms are weakly well formed. *)
+       assert false
+     | _ -> raise (NotLFType ty))
   | _ -> bugf "Unexpected term when checking type"
 ;;
 
@@ -106,10 +111,10 @@ let of_schema nvars ctxvars ctx (id, schema) =
         in
         let gen_block =
           List.init (List.length entries) (fun i ->
-              ( fst (List.nth block i)
-              , Term.replace_term_vars
-                  (List.take (i - 1) nominal_subst @ var_subst)
-                  (snd (List.nth entries i)) ))
+            ( fst (List.nth block i)
+            , Term.replace_term_vars
+                (List.take (i - 1) nominal_subst @ var_subst)
+                (snd (List.nth entries i)) ))
         in
         try
           List.iter2

@@ -101,8 +101,8 @@ module Make (P : Param) = struct
     | [] -> true
     | t :: rargs ->
       (match observe t with
-      | Var v' when v = v' -> false
-      | _ -> unique_var v rargs)
+       | Var v' when v = v' -> false
+       | _ -> unique_var v rargs)
   ;;
 
   (* Check if a bound variable appears in a list of term *)
@@ -111,8 +111,8 @@ module Make (P : Param) = struct
     | [] -> true
     | t :: rargs ->
       (match observe t with
-      | DB j when n = j -> false
-      | _ -> unique_bv n rargs)
+       | DB j when n = j -> false
+       | _ -> unique_bv n rargs)
   ;;
 
   (* Added: will check if the eta-normal form of the list meets Llambda requirements *)
@@ -123,13 +123,13 @@ module Make (P : Param) = struct
       | [] -> true, []
       | t :: ts ->
         (match observe t with
-        | Var v when constant v.tag && v.ts > fts && unique_var v ts ->
-          let res, l' = aux ts in
-          res, Var v :: l'
-        | DB i when unique_bv i ts ->
-          let res, l' = aux ts in
-          res, DB i :: l'
-        | _ -> false, l)
+         | Var v when constant v.tag && v.ts > fts && unique_var v ts ->
+           let res, l' = aux ts in
+           res, Var v :: l'
+         | DB i when unique_bv i ts ->
+           let res, l' = aux ts in
+           res, DB i :: l'
+         | _ -> false, l)
     in
     aux (List.map eta_normalize l)
   ;;
@@ -151,8 +151,8 @@ module Make (P : Param) = struct
     | [] -> 0
     | t :: q ->
       (match observe (eta_normalize t) with
-      | DB j when i = j -> n
-      | _ -> bvindex i q (n - 1))
+       | DB j when i = j -> n
+       | _ -> bvindex i q (n - 1))
   ;;
 
   (** [cindex c l n] return a nonzero index iff the constant [c]
@@ -164,8 +164,8 @@ module Make (P : Param) = struct
     | [] -> 0
     | t :: q ->
       (match observe (eta_normalize t) with
-      | Var c' when c = c' -> n
-      | _ -> cindex c q (n - 1))
+       | Var c' when c = c' -> n
+       | _ -> cindex c q (n - 1))
   ;;
 
   (** Given a flexible term [v1 a11 ... a1n] and another term of the form
@@ -234,13 +234,13 @@ module Make (P : Param) = struct
       | [] -> false, [], []
       | t :: tl ->
         (match observe t with
-        | DB _ -> raise_var tl (n - 1)
-        | Var c when constant c.tag ->
-          let raised, inds, consts = raise_var tl (n - 1) in
-          if c.ts <= ts2
-          then true, db (n + lev) :: inds, t :: consts
-          else raised, inds, consts
-        | _ -> assert false)
+         | DB _ -> raise_var tl (n - 1)
+         | Var c when constant c.tag ->
+           let raised, inds, consts = raise_var tl (n - 1) in
+           if c.ts <= ts2
+           then true, db (n + lev) :: inds, t :: consts
+           else raised, inds, consts
+         | _ -> assert false)
     in
     (*  [prune args n] "prunes" those items in [args] that are not
       bound by an embedded abstraction and that do not appear in
@@ -255,22 +255,22 @@ module Make (P : Param) = struct
       | [], 0 -> false, [], []
       | t :: q, n ->
         (match observe t with
-        | DB i ->
-          let pruned, inds1, inds2 = prune q (n - 1) in
-          if i > lev
-          then (
-            let j = bvindex (i - lev) a1 l1 in
-            if j = 0
-            then true, inds1, inds2
-            else pruned, db (j + lev) :: inds1, db n :: inds2)
-          else pruned, t :: inds1, db n :: inds2
-        | Var v when constant v.tag ->
-          let pruned, inds1, inds2 = prune q (n - 1) in
-          let j = cindex v a1 l1 in
-          if j = 0
-          then true, inds1, inds2
-          else pruned, db (j + lev) :: inds1, db n :: inds2
-        | _ -> assert false)
+         | DB i ->
+           let pruned, inds1, inds2 = prune q (n - 1) in
+           if i > lev
+           then (
+             let j = bvindex (i - lev) a1 l1 in
+             if j = 0
+             then true, inds1, inds2
+             else pruned, db (j + lev) :: inds1, db n :: inds2)
+           else pruned, t :: inds1, db n :: inds2
+         | Var v when constant v.tag ->
+           let pruned, inds1, inds2 = prune q (n - 1) in
+           let j = cindex v a1 l1 in
+           if j = 0
+           then true, inds1, inds2
+           else pruned, db (j + lev) :: inds1, db n :: inds2
+         | _ -> assert false)
       | _ -> assert false
     in
     (*  Relevant to the case when [ts1 > ts2]. In this case,
@@ -287,25 +287,25 @@ module Make (P : Param) = struct
       | [], 0 -> false, [], []
       | a :: q, n ->
         (match observe a with
-        | DB i ->
-          let pruned, inds1, inds2 = prune_and_raise q (n - 1) in
-          if i > lev
-          then (
-            let j = bvindex (i - lev) a1 l1 in
-            if j = 0
-            then true, inds1, inds2
-            else pruned, db (j + lev) :: inds1, db n :: inds2)
-          else pruned, a :: inds1, db n :: inds2
-        | Var v when constant v.tag ->
-          let pruned, inds1, inds2 = prune_and_raise q (n - 1) in
-          if v.ts <= ts1
-          then pruned, a :: inds1, db n :: inds2
-          else (
-            let i = cindex v a1 l1 in
-            if i = 0
-            then true, inds1, inds2
-            else pruned, db (i + lev) :: inds1, db n :: inds2)
-        | _ -> assert false)
+         | DB i ->
+           let pruned, inds1, inds2 = prune_and_raise q (n - 1) in
+           if i > lev
+           then (
+             let j = bvindex (i - lev) a1 l1 in
+             if j = 0
+             then true, inds1, inds2
+             else pruned, db (j + lev) :: inds1, db n :: inds2)
+           else pruned, a :: inds1, db n :: inds2
+         | Var v when constant v.tag ->
+           let pruned, inds1, inds2 = prune_and_raise q (n - 1) in
+           if v.ts <= ts1
+           then pruned, a :: inds1, db n :: inds2
+           else (
+             let i = cindex v a1 l1 in
+             if i = 0
+             then true, inds1, inds2
+             else pruned, db (i + lev) :: inds1, db n :: inds2)
+         | _ -> assert false)
       | _ -> assert false
     in
     if ts1 < ts2
@@ -334,14 +334,14 @@ module Make (P : Param) = struct
     | [], [] -> []
     | [], t :: q ->
       (match observe t with
-      | DB i when i = j -> db bl :: prune_same_var [] q (j - 1) (bl - 1)
-      | _ -> prune_same_var [] q (j - 1) (bl - 1))
+       | DB i when i = j -> db bl :: prune_same_var [] q (j - 1) (bl - 1)
+       | _ -> prune_same_var [] q (j - 1) (bl - 1))
     | t1 :: a1, t2 :: a2 ->
       (match observe t1, observe t2 with
-      | Var v1, Var v2 when v1 = v2 && constant v1.tag ->
-        db bl :: prune_same_var a1 a2 j (bl - 1)
-      | DB i1, DB i2 when i1 + j = i2 -> db bl :: prune_same_var a1 a2 j (bl - 1)
-      | _ -> prune_same_var a1 a2 j (bl - 1))
+       | Var v1, Var v2 when v1 = v2 && constant v1.tag ->
+         db bl :: prune_same_var a1 a2 j (bl - 1)
+       | DB i1, DB i2 when i1 + j = i2 -> db bl :: prune_same_var a1 a2 j (bl - 1)
+       | _ -> prune_same_var a1 a2 j (bl - 1))
     | _ -> assert false
   ;;
 
@@ -406,12 +406,12 @@ module Make (P : Param) = struct
         | _ -> false
       in
       (match observe h with
-      | Var v1 when variable v1.tag && v2.ts <= v1.ts && List.for_all pruneable ts ->
-        let ids = gen_binder_ids (List.length ts) in
-        let tys = List.map (tc tyctx) ts in
-        bind h (lambda (List.combine ids tys) t2);
-        true
-      | _ -> false)
+       | Var v1 when variable v1.tag && v2.ts <= v1.ts && List.for_all pruneable ts ->
+         let ids = gen_binder_ids (List.length ts) in
+         let tys = List.map (tc tyctx) ts in
+         bind h (lambda (List.combine ids tys) t2);
+         true
+       | _ -> false)
     | Var v1, Var v2 when variable v1.tag && v1.ts > v2.ts ->
       bind t1 t2;
       true
@@ -491,41 +491,41 @@ module Make (P : Param) = struct
           (nested_subst (List.rev_append idtys tyctx) t (lev + List.length idtys))
       | App (h2, a2) ->
         (match observe h2 with
-        | Var hv2 when constant hv2.tag ->
-          let h2' = nested_subst tyctx h2 lev in
-          let a2' = List.map (fun x -> nested_subst tyctx (hnorm x) lev) a2 in
-          app h2' a2'
-        | DB _ ->
-          let h2' = nested_subst tyctx h2 lev in
-          let a2' = List.map (fun x -> nested_subst tyctx (hnorm x) lev) a2 in
-          app h2' a2'
-        | Var hv2 when variable hv2.tag ->
-          if eq h2 h1 then raise (UnifyError NotLLambda);
-          let res, a2 = check_flex_args a2 hv2.ts in
-          if res
-          then (
-            let changed, a1', a2' = raise_and_invert ts1 hv2.ts a1 a2 lev in
-            if changed
-            then (
-              let a2ids = gen_binder_ids (List.length a2) in
-              let a2binds = List.map (tc tyctx) a2 in
-              let a2ctx = List.combine a2ids a2binds in
-              let a2'tys = List.map (tc (List.rev_append a2ctx tyctx)) a2' in
-              let (Type.Ty (h2tys, bty)) = tc tyctx h2 in
-              let ty = Type.Ty (a2'tys @ List.drop (List.length a2) h2tys, bty) in
-              let h' = named_fresh hv1.name (min ts1 hv2.ts) ty in
-              bind h2 (lambda a2ctx (app h' a2'));
-              app h' a1')
-            else if ts1 < hv2.ts
-            then (
-              let ty = tc tyctx h2 in
-              let h' = named_fresh hv1.name ts1 ty in
-              bind h2 h';
-              app h' a1')
-            else app h2 a1')
-          else make_non_llambda_subst hv1 a1 c
-        | Var _ -> failwith "logic variable on the left (1)"
-        | _ -> assert false)
+         | Var hv2 when constant hv2.tag ->
+           let h2' = nested_subst tyctx h2 lev in
+           let a2' = List.map (fun x -> nested_subst tyctx (hnorm x) lev) a2 in
+           app h2' a2'
+         | DB _ ->
+           let h2' = nested_subst tyctx h2 lev in
+           let a2' = List.map (fun x -> nested_subst tyctx (hnorm x) lev) a2 in
+           app h2' a2'
+         | Var hv2 when variable hv2.tag ->
+           if eq h2 h1 then raise (UnifyError NotLLambda);
+           let res, a2 = check_flex_args a2 hv2.ts in
+           if res
+           then (
+             let changed, a1', a2' = raise_and_invert ts1 hv2.ts a1 a2 lev in
+             if changed
+             then (
+               let a2ids = gen_binder_ids (List.length a2) in
+               let a2binds = List.map (tc tyctx) a2 in
+               let a2ctx = List.combine a2ids a2binds in
+               let a2'tys = List.map (tc (List.rev_append a2ctx tyctx)) a2' in
+               let (Type.Ty (h2tys, bty)) = tc tyctx h2 in
+               let ty = Type.Ty (a2'tys @ List.drop (List.length a2) h2tys, bty) in
+               let h' = named_fresh hv1.name (min ts1 hv2.ts) ty in
+               bind h2 (lambda a2ctx (app h' a2'));
+               app h' a1')
+             else if ts1 < hv2.ts
+             then (
+               let ty = tc tyctx h2 in
+               let h' = named_fresh hv1.name ts1 ty in
+               bind h2 h';
+               app h' a1')
+             else app h2 a1')
+           else make_non_llambda_subst hv1 a1 c
+         | Var _ -> failwith "logic variable on the left (1)"
+         | _ -> assert false)
       | Var _ -> failwith "logic variable on the left (2)"
       | _ -> assert false
     in
@@ -556,27 +556,27 @@ module Make (P : Param) = struct
           t2)
       | App (h2, a2) ->
         (match observe h2 with
-        | Var hv2 when eq h1 h2 ->
-          (* [h1] being instantiatable, no need to check it for [h2] *)
-          let res, a2 = check_flex_args a2 hv2.ts in
-          if res
-          then (
-            let bindlen = n + lev in
-            if bindlen = List.length a2
-            then (
-              let args = prune_same_var a1 a2 lev bindlen in
-              let a2ids = gen_binder_ids bindlen in
-              let a2binds = List.map (tc tyctx) a2 in
-              let a2ctx = List.combine a2ids a2binds in
-              let args_ty = List.map (tc (List.rev_append a2ctx tyctx)) args in
-              let (Type.Ty (h1tys, bty)) = tc tyctx h1 in
-              let ty = Type.Ty (args_ty @ List.drop bindlen h1tys, bty) in
-              let h1' = named_fresh hv1.name ts1 ty in
-              app h1' args)
-            else assert false (* fail TypesMismatch *))
-          else make_non_llambda_subst hv1 a1 t2
-        | App _ | Lam _ | Var _ | DB _ -> nested_subst tyctx t2 lev
-        | Susp _ | Ptr _ | Type | Pi _ -> assert false)
+         | Var hv2 when eq h1 h2 ->
+           (* [h1] being instantiatable, no need to check it for [h2] *)
+           let res, a2 = check_flex_args a2 hv2.ts in
+           if res
+           then (
+             let bindlen = n + lev in
+             if bindlen = List.length a2
+             then (
+               let args = prune_same_var a1 a2 lev bindlen in
+               let a2ids = gen_binder_ids bindlen in
+               let a2binds = List.map (tc tyctx) a2 in
+               let a2ctx = List.combine a2ids a2binds in
+               let args_ty = List.map (tc (List.rev_append a2ctx tyctx)) args in
+               let (Type.Ty (h1tys, bty)) = tc tyctx h1 in
+               let ty = Type.Ty (args_ty @ List.drop bindlen h1tys, bty) in
+               let h1' = named_fresh hv1.name ts1 ty in
+               app h1' args)
+             else assert false (* fail TypesMismatch *))
+           else make_non_llambda_subst hv1 a1 t2
+         | App _ | Lam _ | Var _ | DB _ -> nested_subst tyctx t2 lev
+         | Susp _ | Ptr _ | Type | Pi _ -> assert false)
       | Ptr _ -> assert false
       | _ -> nested_subst tyctx t2 lev
     in
@@ -619,25 +619,25 @@ module Make (P : Param) = struct
       bind h1 (makesubst tyctx h1 t2 a1 n)
     | Var v1, App (h2, a2) when constant v1.tag ->
       (match observe h2 with
-      | Var v2 when constant v2.tag ->
-        if eq h1 h2 then unify_list tyctx a1 a2 else fail (ConstClash (h1, h2))
-      | DB _ -> fail (ConstClash (h1, h2))
-      | Var hv2 when variable hv2.tag ->
-        let m = List.length a2 in
-        bind h2 (makesubst tyctx h2 t1 a2 m)
-      | Var v when not (variable v.tag || constant v.tag) ->
-        failwith "logic variable on the left (5)"
-      | _ -> assert false)
+       | Var v2 when constant v2.tag ->
+         if eq h1 h2 then unify_list tyctx a1 a2 else fail (ConstClash (h1, h2))
+       | DB _ -> fail (ConstClash (h1, h2))
+       | Var hv2 when variable hv2.tag ->
+         let m = List.length a2 in
+         bind h2 (makesubst tyctx h2 t1 a2 m)
+       | Var v when not (variable v.tag || constant v.tag) ->
+         failwith "logic variable on the left (5)"
+       | _ -> assert false)
     | DB n1, App (h2, a2) ->
       (match observe h2 with
-      | DB n2 when n1 == n2 -> unify_list tyctx a1 a2
-      | Var v when variable v.tag ->
-        let m = List.length a2 in
-        bind h2 (makesubst tyctx h2 t1 a2 m)
-      | Var v when constant v.tag -> fail (ConstClash (h1, h2))
-      | Var v when not (variable v.tag || constant v.tag) ->
-        failwith "logic variable on the left (5)"
-      | _ -> assert false)
+       | DB n2 when n1 == n2 -> unify_list tyctx a1 a2
+       | Var v when variable v.tag ->
+         let m = List.length a2 in
+         bind h2 (makesubst tyctx h2 t1 a2 m)
+       | Var v when constant v.tag -> fail (ConstClash (h1, h2))
+       | Var v when not (variable v.tag || constant v.tag) ->
+         failwith "logic variable on the left (5)"
+       | _ -> assert false)
     | Lam _, _ | _, Lam _ | Ptr _, _ | _, Ptr _ | Susp _, _ | _, Susp _ -> assert false
     | Var v, _ when not (variable v.tag || constant v.tag) ->
       failwith "logic variable on the left (6)"
@@ -708,17 +708,17 @@ module Make (P : Param) = struct
       (* Check for a special case of asymmetric unification outside of LLambda *)
       | App (h1, a1), App (h2, a2) ->
         (match observe h1, observe h2 with
-        | Var v1, _ when variable v1.tag ->
-          let res, a1' = check_flex_args (List.map hnorm a1) v1.ts in
-          if res
-          then unify_app_term tyctx h1 a1' t1 t2
-          else unify_app_term tyctx h1 a1 t1 t2
-        | _, Var v2 when variable v2.tag ->
-          let res, a2' = check_flex_args (List.map hnorm a2) v2.ts in
-          if res
-          then unify_app_term tyctx h2 a2' t2 t1
-          else unify_app_term tyctx h1 a1 t1 t2
-        | _ -> unify_app_term tyctx h1 a1 t1 t2)
+         | Var v1, _ when variable v1.tag ->
+           let res, a1' = check_flex_args (List.map hnorm a1) v1.ts in
+           if res
+           then unify_app_term tyctx h1 a1' t1 t2
+           else unify_app_term tyctx h1 a1 t1 t2
+         | _, Var v2 when variable v2.tag ->
+           let res, a2' = check_flex_args (List.map hnorm a2) v2.ts in
+           if res
+           then unify_app_term tyctx h2 a2' t2 t1
+           else unify_app_term tyctx h1 a1 t1 t2
+         | _ -> unify_app_term tyctx h1 a1 t1 t2)
       | App (h1, a1), _ -> unify_app_term tyctx h1 a1 t1 t2
       | _, App (h2, a2) -> unify_app_term tyctx h2 a2 t2 t1
       | DB i1, DB i2 -> if i1 <> i2 then fail (ConstClash (t1, t2))
@@ -849,23 +849,23 @@ let try_with_state ~fail f =
 
 let try_right_unify ?(used = []) t1 t2 =
   try_with_state ~fail:false (fun () ->
-      right_unify ~used t1 t2;
-      true)
+    right_unify ~used t1 t2;
+    true)
 ;;
 
 let try_right_unify_cpairs t1 t2 =
   try_with_state ~fail:None (fun () ->
-      let cpairs = ref [] in
-      let cpairs_handler x y = cpairs := (x, y) :: !cpairs in
-      let module RightCpairs =
-        Make (struct
-          let instantiatable = Logic
-          let constant_like = Eigen
-          let handler = cpairs_handler
-        end)
-      in
-      RightCpairs.pattern_unify ~used:[] t1 t2;
-      Some !cpairs)
+    let cpairs = ref [] in
+    let cpairs_handler x y = cpairs := (x, y) :: !cpairs in
+    let module RightCpairs =
+      Make (struct
+        let instantiatable = Logic
+        let constant_like = Eigen
+        let handler = cpairs_handler
+      end)
+    in
+    RightCpairs.pattern_unify ~used:[] t1 t2;
+    Some !cpairs)
 ;;
 
 let try_left_unify_cpairs ~used t1 t2 =

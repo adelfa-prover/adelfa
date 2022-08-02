@@ -1,5 +1,5 @@
 %Admissibility of cut
-
+%
 Specification "cut.lf".
 
 Schema c :=
@@ -20,7 +20,7 @@ induction on 1. intros. case H1(keep).
     search.
   %case 3: andL
     apply IH to H5 with (G = G, n1:hyp A1, n2:hyp B1), A = A, B = B, D = D1 n1 n2.
-    ctxpermute H7 to G, n3:hyp A, n1:hyp A1, n2:hyp B1. 
+    ctxpermute H7 to G, n3:hyp A, n1:hyp A1, n2:hyp B1.
     exists ([x] andL A1 B1 B ([y][z] D' z y n x) D2).
     case H4(keep). weaken H2 with (hyp A). weaken H3 with (hyp A). weaken H6 with (hyp A).
     weaken H10 with (hyp A).
@@ -67,10 +67,10 @@ induction on 1. intros. case H1(keep).
         weaken H4 with (hyp (A n)). weaken H5 with (hyp (A n)). weaken H6 with (hyp (B n)). search.
       %case 4.2: right((B n))
         weaken H5 with (hyp (A n)). weaken H6 with (hyp (B n)). search.
-      
 
-Theorem cut : ctx G:c, forall A B D1 D2: o -> o, 
- {A : proptm} => {G |- D1 : conc A} => {G |- [x] D2 x : {x:hyp A} conc B} => 
+
+Theorem cut : ctx G:c, forall A B D1 D2: o -> o,
+ {A : proptm} => {G |- D1 : conc A} => {G |- [x] D2 x : {x:hyp A} conc B} =>
    exists D3, {G |- D3 : conc B}.
 induction on 1. induction on 3. intros.
 case H3(keep).
@@ -78,30 +78,30 @@ case H3(keep).
     ctxpermute H6 to G, n1:hyp B1, n:hyp A.
     strengthen H4. strengthen H5. weaken H2 with (hyp B1).
     apply IH1 to H1 H10 H7 with (G = G, n2:hyp B1), A = A, B = B2, D1 = D1, D2 = ([x]D x n2).
-    exists (impR B1 B2 ([x:o] D3 n3 x n1 n)). search.
+    exists (impR B1 B2 ([x:o] D3 x n1 n)). search.
   %case 2: impL
     case H9(keep).
       %case 2.1: essential case
         case H1(keep). apply imp_inv to H2.
         apply IH1 to H1 H2 H7 with (G = G), A = (imp A2 A3), B = A2, D1 = D1, D2 = D3.
-        apply IH to H10 H13 H12 with (G = G), A = A2, B = A3, D1 = D2 n3 n2 n1 n, D2 = ([x] D' n1 n x).
+        apply IH to H10 H13 H12 with (G = G), A = A2, B = A3, D1 = D2 n2 n1 n, D2 = ([x] D' n1 n x).
         ctxpermute H8 to G, n1:hyp A3, n: hyp (imp A2 A3).
         strengthen H5. weaken H2 with (hyp A3).
         apply IH1 to H1 H17 H15 with (G = G, n1:hyp A3), A = (imp A2 A3), B = B, D1 = D1, D2 = [x] D4 x n1.
-        apply IH to H11 H14 H18 with (G = G), A = A3, B = B, D1 = D5 n4 n3 n2 n1 n, D2 = [x] D6 n6 n5 n4 n3 n2 x n.
-        exists D7 n7 n6 n5 n4 n3 n2 n1 n. search.
+        apply IH to H11 H14 H18 with (G = G), A = A3, B = B, D1 = D5 n2 n1 n, D2 = [x] D6 n3 n2 x n.
+        exists D7 n3 n2 n1 n. search.
       %case 2.2: commutative case
         apply IH1 to H1 H2 H7 with (G = G), A = (A n2), B = A3 n2, D1 = D1 n2, D2 = [x] D3 n2 x.
         ctxpermute H8 to G, n1:hyp (A4 n2), n:hyp (A n2).
         strengthen H5. weaken H2 with (hyp (A4 n2)).
         apply IH1 to H1 H13 H11 with (G = G, n1:hyp (A4 n2)), A = (A n2), B = (B n2), D1 = (D1 n2), D2 = [x] D4 n2 x n1.
         strengthen H4. strengthen H5. strengthen H6.
-        exists (impL (A3 n2) (A4 n2) (B n2) (D2 n3 n2 n1 n) ([x]D5 n5 n4 n3 n2 x n) n2). search.    
-  %case 3: andR 
+        exists (impL (A3 n2) (A4 n2) (B n2) (D2 n2 n1 n) ([x]D5 n3 n2 x n) n2). search.
+  %case 3: andR
     apply IH1 to H1 H2 H6 with A = A, B = B1, D1 = D1, D2 = D3.
     apply IH1 to H1 H2 H7 with A = A, B = B2, D1 = D1, D2 = D4.
     strengthen H4. strengthen H5.
-    exists (andR B1 B2 (D2 n1 n) (D5 n2 n1 n)). search.
+    exists (andR B1 B2 (D2 n) (D5 n)). search.
   %case 4: andL
     case H8(keep).
       %case 4.1: essential case
@@ -113,13 +113,14 @@ case H3(keep).
           weaken H2 with (hyp A2). weaken H16 with (hyp A2). weaken H17 with (hyp A3).
           search.
         apply IH1 to H1 H15 H14 with (G = G, n1:hyp A2, n2:hyp A3), A = (and A2 A3), B = B, D1 = D1, D2 = [x] D3 x n1 n2.
-        assert {G, n3: hyp A2 |- D4 n2 n1 n : conc A3}.
-          strengthen H4. weaken H13 with (hyp A2). search.
+        assert {G |- [x] D4 n2 n1 n : {x: hyp A2} conc A3}.
+          strengthen H4.
+          weaken H13 with (hyp A2). search.
       %%%%Check this out more for possible naming issue
-        apply IH to H10 H17 H16 with (G = G, n:hyp A2), A = A3, B = B, D1 = (D4 n1 n2 n3), D2 = [x] D5 n1 x n n2.
+        apply IH to H10 H17 H16 with (G = G, n1:hyp A2), A = A3, B = B, D2 = [x] D5 x n1 n.
       %%%%
-        apply IH to H9 H12 H18 with (G = G), A = A2, B = B, D1 = D2 n2 n1 n, D2 = [x] D6 n1 n2 n3 n4 x.
-        exists D7 n1 n2 n3 n4 n5 n6. search.
+        apply IH to H9 H12 H18.
+        exists D7 n3 n2 n1 n. search.
       %case 4.2: commutative case
         ctxpermute H7 to G, n1:hyp (A3 n3), n2:hyp (A4 n3), n:hyp (A n3).
         assert {G, n1:hyp (A3 n3), n2:hyp (A4 n3) |- D1 n3 : conc (A n3)}.
@@ -127,7 +128,7 @@ case H3(keep).
           weaken H2 with (hyp (A3 n3)). weaken H11 with (hyp (A3 n3)). weaken H12 with (hyp (A4 n3)).
           search.
         apply IH1 to H1 H10 H9 with (G = G, n1:hyp (A3 n3), n2:hyp (A4 n3)), A = (A n3), B = (B n3), D1 = (D1 n3), D2 = [x] D3 n3 x n1 n2.
-        exists (andL (A3 n3) (A4 n3) (B n3) ([x][y] D2 n4 n3 y x n) n3).
+        exists (andL (A3 n3) (A4 n3) (B n3) ([x][y] D2 n3 y x n) n3).
         strengthen H4. strengthen H5. strengthen H6. search.
   %case 5: topR
     exists topR. search.

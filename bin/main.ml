@@ -147,7 +147,7 @@ let process_proof () =
   | Uterms.Search depth -> Prover.search depth ()
   | Uterms.Ind i ->
     (try Prover.induction i with
-    | Tactics.InvalidFormula (_, str) -> prerr_endline str)
+     | Tactics.InvalidFormula (_, str) -> prerr_endline str)
   | Uterms.Apply (Uterms.Keep name, args, withs)
   | Uterms.Apply (Uterms.Remove name, args, withs) ->
     (* we don't currently remove hyps so treat the same *)
@@ -175,19 +175,19 @@ let process_proof () =
         (Prover.get_sequent ()).Sequent.vars
     in
     (match (Prover.get_sequent ()).goal with
-    | Formula.Exists ((_, ty) :: _, _) ->
-      let term, _ =
-        Translate.trans_term
-          !Prover.lf_sig
-          (List.map (fun (id, t) -> id, ref (Some t)) evars)
-          []
-          (List.map (fun (id, t) -> id, ref (Some t)) nvars)
-          []
-          (Some ty)
-          utm
-      in
-      Prover.exists term
-    | _ -> prerr_endline "Goal formula not existential")
+     | Formula.Exists ((_, ty) :: _, _) ->
+       let term, _ =
+         Translate.trans_term
+           !Prover.lf_sig
+           (List.map (fun (id, t) -> id, ref (Some t)) evars)
+           []
+           (List.map (fun (id, t) -> id, ref (Some t)) nvars)
+           []
+           (Some ty)
+           utm
+       in
+       Prover.exists term
+     | _ -> prerr_endline "Goal formula not existential")
   | Uterms.Split -> Prover.split ()
   | Uterms.Left -> Prover.left ()
   | Uterms.Right -> Prover.right ()
@@ -240,8 +240,8 @@ let process_proof () =
         utm
     in
     (match clear with
-    | Uterms.Keep name -> Prover.weaken depth false name t
-    | Uterms.Remove name -> Prover.weaken depth true name t)
+     | Uterms.Keep name -> Prover.weaken depth false name t
+     | Uterms.Remove name -> Prover.weaken depth true name t)
   | Uterms.PermuteCtx (clear, uctx) ->
     let nvars =
       List.filter
@@ -265,16 +265,16 @@ let process_proof () =
         uctx
     in
     (match clear with
-    | Uterms.Keep name -> Prover.permute_ctx false name g
-    | Uterms.Remove name -> Prover.permute_ctx true name g)
+     | Uterms.Keep name -> Prover.permute_ctx false name g
+     | Uterms.Remove name -> Prover.permute_ctx true name g)
   | Uterms.Strengthen clear ->
     (match clear with
-    | Uterms.Keep name -> Prover.strengthen false name
-    | Uterms.Remove name -> Prover.strengthen true name)
+     | Uterms.Keep name -> Prover.strengthen false name
+     | Uterms.Remove name -> Prover.strengthen true name)
   | Uterms.Inst (clear, uwiths, depth) ->
     (match clear with
-    | Uterms.Keep name -> Prover.inst depth false name uwiths
-    | Uterms.Remove name -> Prover.inst depth true name uwiths)
+     | Uterms.Keep name -> Prover.inst depth false name uwiths
+     | Uterms.Remove name -> Prover.inst depth true name uwiths)
   | Uterms.Prune id -> Prover.prune id
   | Uterms.Unfold (hypnameop, withs) -> Prover.unfold hypnameop withs
   | Uterms.AppDfn (defname, hypnameop, withs) -> Prover.applydfn defname hypnameop withs
@@ -287,17 +287,17 @@ let rec proof_loop () =
        process_proof ();
        Sequent.normalize_hyps (Prover.get_sequent ())
      with
-    | Parsing.Parse_error ->
-      eprintf "Syntax error%s.\n%!" (position !lexbuf);
-      Lexing.flush_input !lexbuf;
-      interactive_or_exit ()
-    | Translate.TypingError e ->
-      eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
-      eprintf "%s.\n%!" (Translate.explain_error e);
-      interactive_or_exit ()
-    | Failure s ->
-      eprintf "Failure:%s\n%!" s;
-      interactive_or_exit ());
+     | Parsing.Parse_error ->
+       eprintf "Syntax error%s.\n%!" (position !lexbuf);
+       Lexing.flush_input !lexbuf;
+       interactive_or_exit ()
+     | Translate.TypingError e ->
+       eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
+       eprintf "%s.\n%!" (Translate.explain_error e);
+       interactive_or_exit ()
+     | Failure s ->
+       eprintf "Failure:%s\n%!" s;
+       interactive_or_exit ());
     Prover.display_state ();
     proof_loop ()
   done
@@ -321,52 +321,52 @@ let process () =
     let pre, post = if !Globals.annotate then "<b>", "</b>" else "", "" in
     fprintf !out "%s%s%s\n%!" pre (Print.string_of_topcommand input) post);
   (match input with
-  | Uterms.Theorem (name, uthm) ->
-    let theorem =
-      Translate.trans_formula
-        !Prover.lf_sig
-        !Prover.schemas
-        (Prover.get_propty_lst ())
-        []
-        []
-        []
-        []
-        uthm
-    in
-    Prover.set_sequent (Sequent.make_sequent_from_goal ~name ~form:theorem ());
-    (try
-       Prover.display_state ();
-       proof_loop ()
-     with
-    | Prover.ProofCompleted ->
-      print_endline "Proof Completed!";
-      Prover.add_lemma name theorem
-    | End_of_file ->
-      print_endline "Proof Aborted.";
-      Prover.reset_prover ());
-    ()
-  | Uterms.Schema (name, uschema) ->
-    let schema = Translate.trans_schema !Prover.lf_sig uschema in
-    Prover.add_schema name schema;
-    ()
-  | Uterms.Specification fid ->
-    read_spec fid;
-    ()
-  | Quit -> raise End_of_file
-  | Uterms.Define ((id, Some ty), udefs) ->
-    let dfn =
-      Translate.trans_dfn
-        !Prover.lf_sig
-        !Prover.schemas
-        (Prover.get_propty_lst ())
-        id
-        ty
-        udefs
-    in
-    Prover.add_definition dfn;
-    ()
-  | Uterms.Set settings -> Prover.change_settings settings
-  | Uterms.Define ((_, None), _) -> bugf "Expected to defined some type");
+   | Uterms.Theorem (name, uthm) ->
+     let theorem =
+       Translate.trans_formula
+         !Prover.lf_sig
+         !Prover.schemas
+         (Prover.get_propty_lst ())
+         []
+         []
+         []
+         []
+         uthm
+     in
+     Prover.set_sequent (Sequent.make_sequent_from_goal ~name ~form:theorem ());
+     (try
+        Prover.display_state ();
+        proof_loop ()
+      with
+      | Prover.ProofCompleted ->
+        print_endline "Proof Completed!";
+        Prover.add_lemma name theorem
+      | End_of_file ->
+        print_endline "Proof Aborted.";
+        Prover.reset_prover ());
+     ()
+   | Uterms.Schema (name, uschema) ->
+     let schema = Translate.trans_schema !Prover.lf_sig uschema in
+     Prover.add_schema name schema;
+     ()
+   | Uterms.Specification fid ->
+     read_spec fid;
+     ()
+   | Quit -> raise End_of_file
+   | Uterms.Define ((id, Some ty), udefs) ->
+     let dfn =
+       Translate.trans_dfn
+         !Prover.lf_sig
+         !Prover.schemas
+         (Prover.get_propty_lst ())
+         id
+         ty
+         udefs
+     in
+     Prover.add_definition dfn;
+     ()
+   | Uterms.Set settings -> Prover.change_settings settings
+   | Uterms.Define ((_, None), _) -> bugf "Expected to defined some type");
   if !interactive then flush stdout;
   if !Globals.annotate then fprintf !out "</pre>%!";
   fprintf !out "\n%!"
@@ -376,21 +376,21 @@ let rec top_loop () =
   while true do
     reset_if_interactive ();
     (try process () with
-    | Sys_error s ->
-      eprintf "Error:\n%!";
-      eprintf "%s\n%!" s;
-      interactive_or_exit ()
-    | Parsing.Parse_error ->
-      eprintf "Syntax error%s.\n%!" (position !lexbuf);
-      Lexing.flush_input !lexbuf;
-      interactive_or_exit ()
-    | Translate.TypingError e ->
-      eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
-      eprintf "%s.\n%!" (Translate.explain_error e);
-      interactive_or_exit ()
-    | Failure s ->
-      eprintf "Failure:%s\n%!" s;
-      interactive_or_exit ());
+     | Sys_error s ->
+       eprintf "Error:\n%!";
+       eprintf "%s\n%!" s;
+       interactive_or_exit ()
+     | Parsing.Parse_error ->
+       eprintf "Syntax error%s.\n%!" (position !lexbuf);
+       Lexing.flush_input !lexbuf;
+       interactive_or_exit ()
+     | Translate.TypingError e ->
+       eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
+       eprintf "%s.\n%!" (Translate.explain_error e);
+       interactive_or_exit ()
+     | Failure s ->
+       eprintf "Failure:%s\n%!" s;
+       interactive_or_exit ());
     top_loop ()
   done
 ;;

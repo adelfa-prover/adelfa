@@ -17,34 +17,34 @@ type ctx_expr =
   | Ctx of ctx_expr * entry
 
 let var_eq v1 v2 = v1 = v2
+let entry_eq (v1, t1) (v2, t2) = var_eq v1 v2 && Term.eq t1 t2
 
 let rec eq g1 g2 =
   match g1, g2 with
   | Nil, Nil -> true
   | Var v1, Var v2 -> var_eq v1 v2
-  | Ctx (g1', (v1, t1)), Ctx (g2', (v2, t2)) -> v1 = v2 && Term.eq t1 t2 && eq g1' g2'
+  | Ctx (g1', e1), Ctx (g2', e2) -> eq g1' g2' && entry_eq e1 e2
   | _, _ -> false
 ;;
 
-let entry_eq (v1, t1) (v2, t2) = var_eq v1 v2 && Term.eq t1 t2
 let ctx_var s = s
 let ctx_var_eq x y = x = y
 
-(* checks if there is a context variable in
-   the given context expression.
-   Returns true if there is, false otherwise. *)
 let rec has_var = function
   | Nil -> false
   | Var _ -> true
   | Ctx (c, _) -> has_var c
 ;;
 
-(* given a context expression containing a context
-   variable, returns the context variable. *)
 let rec get_ctx_var = function
   | Var v -> v
   | Ctx (c, _) -> get_ctx_var c
-  | _ -> assert false
+  | Nil -> raise (Invalid_argument "No ctx variable in context")
+;;
+
+let get_ctx_var_opt g =
+  try Some (get_ctx_var g) with
+  | Invalid_argument _ -> None
 ;;
 
 let rec append_context ctx es =
@@ -73,8 +73,6 @@ let replace_ctx_expr_vars ?tag alist ctx =
   aux ctx
 ;;
 
-(* returns the list of unique context variables appearing 
-   in the given context expressions. *)
 let get_used_ctxvars ctxs =
   let rec aux ctxs =
     match ctxs with
@@ -110,14 +108,11 @@ let fresh_wrt name used =
 ;;
 
 (* context types *)
-(* The blocks in the list are ordered from earliest in the context to latest. *)
 type block = entry list
 type ctx_typ = CtxTy of string * block list
 
 let ctx_typ ?(blocks = []) ~id () = CtxTy (id, blocks)
 
-(* given a substitution for term variables, make the substitution
-   within the given context type *)
 let replace_ctx_typ_vars ?tag alist (CtxTy (id, blocks)) =
   CtxTy
     ( id
@@ -127,13 +122,11 @@ let replace_ctx_typ_vars ?tag alist (CtxTy (id, blocks)) =
 ;;
 
 (* context schemas *)
+
 type wctx = (Term.id * Type.ty) list
 type block_schema = B of wctx * entry list
 type ctx_schema = block_schema list
 
-(* Given a context variable context will convert a given
-   context expression into a context that can be used in
-   type checking. *)
 let rec ctxexpr_to_ctx ctxvars e =
   match e with
   | Nil -> []
@@ -143,17 +136,15 @@ let rec ctxexpr_to_ctx ctxvars e =
   | Ctx (e', (v, ty)) -> (v, ty) :: ctxexpr_to_ctx ctxvars e'
 ;;
 
-(* given a context expression, apply the given substitution
-   to the context variable, if there is one *)
-let rec replace_ctx_vars alist ctx =
-  let aux ctx =
+let replace_ctx_vars alist ctx =
+  let rec aux ctx =
     match ctx with
     | Nil -> Nil
-    | Ctx (ctx', (v, tm)) -> Ctx (replace_ctx_vars alist ctx', (v, tm))
+    | Ctx (ctx', (v, tm)) -> Ctx (aux ctx', (v, tm))
     | Var id ->
       (match List.assoc_opt id alist with
-      | Some c -> c
-      | None -> Var id)
+       | Some c -> c
+       | None -> Var id)
   in
   aux ctx
 ;;
@@ -178,9 +169,6 @@ let find_var_refs ctxvars tag ctx =
   List.unique (aux ctx)
 ;;
 
-(* returns the explicit part of a context as a list.
-   The last item added to the context will be the first
-   item in the returned list. *)
 let rec get_explicit = function
   | Nil -> []
   | Var _ -> []
@@ -217,7 +205,7 @@ let split_ctx g n =
     match g with
     | Ctx (g', (n1, a1)) when n1.name = n -> g', a1, List.rev g2
     | Ctx (g', e) -> find g' (e :: g2)
-    | _ -> assert false
+    | _ -> raise (Invalid_argument "n must be in the explicit context")
   in
   find g []
 ;;

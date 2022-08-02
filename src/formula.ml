@@ -41,7 +41,7 @@ let rec eq f1 f2 =
          cvars2
        && eq f1 f2
      with
-    | Invalid_argument _ -> false)
+     | Invalid_argument _ -> false)
   | All (vars1, f1), All (vars2, f2) | Exists (vars1, f1), Exists (vars2, f2) ->
     (try
        List.fold_left2
@@ -51,12 +51,12 @@ let rec eq f1 f2 =
          vars2
        && eq f1 f2
      with
-    | Invalid_argument _ -> false)
+     | Invalid_argument _ -> false)
   | Imp (l1, r1), Imp (l2, r2) | And (l1, r1), And (l2, r2) | Or (l1, r1), Or (l2, r2) ->
     eq l1 l2 && eq r1 r2
   | Prop (p1, args1), Prop (p2, args2) ->
     (try p1 = p2 && List.for_all2 (fun x y -> Term.eq x y) args1 args2 with
-    | Invalid_argument _ -> false)
+     | Invalid_argument _ -> false)
   | _, _ -> false
 ;;
 
@@ -144,7 +144,7 @@ and collect_terms_ctx ctxvars = function
 
 let term_support t = Term.find_var_refs Nominal [ t ]
 let term_list_support l = Term.find_var_refs Nominal l
-let context_support ctxvars c = find_var_refs ctxvars Nominal c
+let context_support ctxvars c = Context.find_var_refs ctxvars Nominal c
 
 let formula_support ctxvars f =
   let rec aux = function
@@ -175,12 +175,9 @@ let get_formula_used_ctxvars f =
 
 let formula_support_sans ctxvars f =
   let supp = formula_support ctxvars f in
-  match get_formula_used_ctxvars f with
-  | [] -> supp
-  | [ v ] -> List.minus supp (context_support ctxvars (Context.Var v))
-  | cvars ->
-    let csupp = List.map (fun v -> context_support ctxvars (Context.Var v)) cvars in
-    List.minus supp (List.flatten csupp)
+  get_formula_used_ctxvars f
+  |> List.flatten_map (fun v -> context_support ctxvars (Context.Var v))
+  |> List.minus supp
 ;;
 
 let context_support_sans ctxvars g =
@@ -287,10 +284,10 @@ let rec replace_formula_vars_rename ~used alist t =
       (* the current substitution can proceed. *)
       let used', vs', alist' = rename_sub used subst_free vs in
       (match alist' with
-      | [] -> forall vs (aux alist f)
-      | _ ->
-        let f' = replace_formula_vars_rename ~used:used' alist' f in
-        forall vs' (aux alist f'))
+       | [] -> forall vs (aux alist f)
+       | _ ->
+         let f' = replace_formula_vars_rename ~used:used' alist' f in
+         forall vs' (aux alist f'))
     | Exists (vs, f) ->
       let alist = List.remove_assocs (List.map fst vs) alist in
       let subst_free =
@@ -298,10 +295,10 @@ let rec replace_formula_vars_rename ~used alist t =
       in
       let used', vs', alist' = rename_sub used subst_free vs in
       (match alist' with
-      | [] -> exists vs (aux alist f)
-      | _ ->
-        let f' = replace_formula_vars_rename ~used:used' alist' f in
-        exists vs' (aux alist f'))
+       | [] -> exists vs (aux alist f)
+       | _ ->
+         let f' = replace_formula_vars_rename ~used:used' alist' f in
+         exists vs' (aux alist f'))
     | Ctx (cvars, f) -> ctx cvars (aux alist f)
     | Prop (p, tmlst) -> prop p (List.map (term_aux alist) tmlst)
   in
@@ -337,16 +334,16 @@ let rec norm f =
   | Or (l, r) -> Or (norm l, norm r)
   | Ctx (gs, f') ->
     (match norm f' with
-    | Ctx (gs', f'') -> ctx (gs @ gs') f''
-    | f'' -> ctx gs f'')
+     | Ctx (gs', f'') -> ctx (gs @ gs') f''
+     | f'' -> ctx gs f'')
   | All (vs, f') ->
     (match norm f' with
-    | All (vs', f'') -> forall (vs @ vs') f''
-    | f'' -> forall vs f'')
+     | All (vs', f'') -> forall (vs @ vs') f''
+     | f'' -> forall vs f'')
   | Exists (vs, f') ->
     (match norm f' with
-    | Exists (vs', f'') -> exists (vs @ vs') f''
-    | f'' -> exists vs f'')
+     | Exists (vs', f'') -> exists (vs @ vs') f''
+     | f'' -> exists vs f'')
 ;;
 
 (* Apply the given context variable substitution 

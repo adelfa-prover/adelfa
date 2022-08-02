@@ -8,6 +8,7 @@ type prover_state =
   ; bind_state : Term.bind_state
   ; term_var_count : int
   ; ctx_var_count : int
+  ; ind_count : int
   ; settings : prover_settings
   }
 
@@ -26,6 +27,7 @@ val add_definition : Definition.dfn -> unit
 val clear_definitions : unit -> unit
 val lookup_definition : string -> Definition.def list
 val get_propty_lst : unit -> (string * Type.ty) list
+val get_ind_count : unit -> int
 val set_sequent : Sequent.sequent -> unit
 val get_sequent : unit -> Sequent.sequent
 val display_state : unit -> unit

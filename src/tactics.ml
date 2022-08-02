@@ -8,13 +8,13 @@ open Extensions
 exception InvalidFormula of Formula.formula * string
 exception InvalidTerm of term
 
-(* When a given name is invalid i.e. does not refer to a hypothesis in 
+(* When a given name is invalid i.e. does not refer to a hypothesis in
  * the current sequent.
  * string is the invalid name. *)
 exception InvalidName of string
 exception NotLlambda
 
-(* Used to indicate that a goal is solved by case analysis 
+(* Used to indicate that a goal is solved by case analysis
  * constructing no subcases. *)
 exception NoCases
 
@@ -86,7 +86,7 @@ let freshen_type ~used ?(support = []) = function
 ;;
 
 (* freshens a block schema using new raised eigenvariables for the schema
-   variables. Does not choose new names for entry items. 
+   variables. Does not choose new names for entry items.
 
    Returns the new block's entry list.*)
 (*
@@ -119,40 +119,66 @@ let freshen_ctx_bindings ctx_vars bindings form =
   new_vars, new_form
 ;;
 
-(* given a context variable context, the new context variables
-   (the ones which may get substitutions) and two context
-   expressions, determines if g2 is an instance of g1.
-   Returns the context variable substitution that
-   matches the context expressions if it is an instance
-   and None otherwise. *)
-let context_instance schemas nvars ctxvar_ctx bound_ctxvars g1 g2 =
-  (* print_endline ("Checking context\n"^(Print.string_of_ctxexpr g2)^"\nis an instance of context\n"^(Print.string_of_ctxexpr g1)); *)
-  let rec aux g1 g2 =
-    match g1, g2 with
+(* Checks if two context formulas can be made equivalent. [g_seq] is the context
+   expression that is universally quantified throughout. [g_form] can be
+   existentially quantified. If it is a logical variable, check if we may
+   instantiate it with some context expression to make it equivalent to [g].
+
+   If we may instantiate [g_form] with some expression to make it an instance of
+   [g_seq], then return the substitution which performs that operation. If
+   [g_form] cannot be made into an instance of [g_seq] then return [None]
+
+   This method assumes that the permutation to the nominals has been applied to
+   the expressions and their related association lists prior - and therefore
+   does not consider them.
+*)
+let context_instance
+  (schemas : (Context.ctx_var * Context.block_schema list) list)
+  (nvars : (id * term) list)
+  (ctxvar_ctx_seq : (Context.ctx_var * Context.ctx_typ) list)
+  (ctxvar_ctx_form : (Context.ctx_var * Context.ctx_typ) list)
+  (g_form : Context.ctx_expr)
+  (g_seq : Context.ctx_expr)
+  : (id * Context.ctx_expr) list option
+  =
+  let can_instantiate_to_var v_form v_seq =
+    (* ensure v_form logical *)
+    if List.mem_assoc v_form ctxvar_ctx_form
+    then (
+      let (Context.CtxTy (schema_seq, _)) = List.assoc v_seq ctxvar_ctx_seq in
+      let (Context.CtxTy (schema_logic, _)) = List.assoc v_form ctxvar_ctx_form in
+      schema_seq = schema_logic)
+    else false
+  in
+  let can_instantiate_to_expr v_form g_seq =
+    match List.assoc_opt v_form ctxvar_ctx_form with
+    | None ->
+      (* v_form is universally quantified, but maybe could be extended to
+         include more instances of the schema if we retroactively weaken the
+         formulas which first instantiated the context variable. *)
+      false
+    | Some (Context.CtxTy (schema_form_name, _)) ->
+      let schema_form = List.assoc schema_form_name schemas in
+      Typing.of_schema nvars ctxvar_ctx_seq g_seq (schema_form_name, schema_form)
+  in
+  let rec aux g_form g_seq =
+    match g_form, g_seq with
     | Context.Nil, Context.Nil -> Some []
-    | Context.Var v1, Context.Var v2 when v1 = v2 -> Some []
-    | Context.Var v, g2 ->
-      let ctxty = List.assoc_opt v (ctxvar_ctx @ bound_ctxvars) in
-      if Option.is_some ctxty
-      then (
-        let s =
-          let ctxty' = Option.get ctxty in
-          match ctxty' with
-          | Context.CtxTy (s, []) -> s
-          | _ -> bugf "Expected a context type"
-        in
-        let schema = List.assoc s schemas in
-        if Typing.of_schema nvars (ctxvar_ctx @ bound_ctxvars) g2 (s, schema)
-        then Some [ v, g2 ]
-        else None)
+    | Context.Var v_form, Context.Var v_seq when v_form = v_seq -> Some []
+    | Context.Var v_form, Context.Var v_seq ->
+      if can_instantiate_to_var v_form v_seq
+      then Some [ v_form, Context.Var v_seq ]
       else None
+    | Context.Var v_form, g_seq ->
+      (* See if we can instantiate v_form to g_seq *)
+      if can_instantiate_to_expr v_form g_seq then Some [ v_form, g_seq ] else None
     | Context.Ctx (g1', (n1, ty1)), Context.Ctx (g2', (n2, ty2)) ->
       if n1 = n2
       then if Unify.try_right_unify ~used:nvars ty1 ty2 then aux g1' g2' else None
       else None
     | _, _ -> None
   in
-  aux g1 g2
+  aux g_form g_seq
 ;;
 
 (* Given a context variable context, determines
@@ -161,7 +187,7 @@ let context_instance schemas nvars ctxvar_ctx bound_ctxvars g1 g2 =
    (i.e. we can instantiate eigenvariables in f1
     s.t. it is equal to f2)
    Returns an option which contains the context variable
-   substitution that makes the formulas equal if it is 
+   substitution that makes the formulas equal if it is
    an instance and None otherwise.
 *)
 let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
@@ -172,8 +198,8 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
     | Formula.Or (f1l, f1r), Formula.Or (f2l, f2r)
     | Formula.And (f1l, f1r), Formula.And (f2l, f2r) ->
       (match inst f1l f2l with
-      | Some subst -> inst (Formula.replace_ctx_vars subst f1r) f2r
-      | None -> None)
+       | Some subst -> inst (Formula.replace_ctx_vars subst f1r) f2r
+       | None -> None)
     | Formula.Ctx (bndrs1, f1'), Formula.Ctx (bndrs2, f2') ->
       if List.length bndrs1 != List.length bndrs2
       then None
@@ -214,92 +240,97 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
   inst f1 f2
 ;;
 
-(* TODO(Chase): The List.permute is not sustainable as far as I can tell. The
-   number of nominals I'm getting in proofs causes too many permutations to
-   be generated, causing a stack overflow. Maybe we could move to a [Stream]
-   instead of a list?*)
+(** [g1] is universal and [g2] could be either univ or exist, depending on if its var
+    is in [bound_ctxvar_ctx] *)
+let generate_partial_perm f1 f2 added ctxvar_ctx bound_ctxvar_ctx =
+  let ctx_var_compat g1 g2 =
+    match Context.get_ctx_var_opt g1, Context.get_ctx_var_opt g2 with
+    | Some v1, Some v2 ->
+      let (Context.CtxTy (schema1, _)) = List.assoc v1 ctxvar_ctx in
+      let schema2 =
+        match List.assoc_opt v2 bound_ctxvar_ctx with
+        | Some (Context.CtxTy (schema2, _)) -> schema2
+        | None ->
+          let (Context.CtxTy (schema2, _)) = List.assoc v2 ctxvar_ctx in
+          schema2
+      in
+      schema2 = schema1
+    | Some _, None -> false
+    | None, _ -> true
+  in
+  let added_dom = List.map fst added in
+  let added_rng = List.map snd added in
+  let rec aux g1 g2 =
+    match g1, g2 with
+    | Context.Ctx (g1', (n1, _)), Context.Ctx (g2', (n2, _)) ->
+      (match List.mem n1 added_dom, List.mem (Term.var_to_term n2) added_rng with
+       | true, true -> aux g1' g2'
+       | false, false -> (n1, Term.var_to_term n2) :: aux g1' g2'
+       | _ -> raise (Unify.UnifyFailure Unify.Generic))
+    | _ -> []
+  in
+  match f1, f2 with
+  | Formula.Atm (g1, _, _, _), Formula.Atm (g2, _, _, _) ->
+    if ctx_var_compat g1 g2
+    then aux g1 g2 @ added
+    else raise (Unify.UnifyFailure Unify.Generic)
+  | _ -> added
+;;
+
 (* Try to unify t1 and t2 under permutations of nominal constants.
    For each successful unification, call sc.
    t1 may contain logic variables, t2 is ground                    *)
-let all_meta_right_permute_unify ~sc schemas nvars ctxvar_ctx new_ctxvar_ctx t1 t2 =
-  (*  print_endline ("Matching formula "^(Print.string_of_formula t2)^" to formula "^(Print.string_of_formula t1)); *)
+let all_meta_right_permute_unify
+  ~sc
+  (schemas : (Context.ctx_var * Context.block_schema list) list)
+  (nvars : (Term.id * Term.term) list)
+  (ctxvar_ctx : (Context.ctx_var * Context.ctx_typ) list)
+  (new_ctxvar_ctx : (Context.ctx_var * Context.ctx_typ) list)
+  (perm : (var * term) list)
+  (t1 : Formula.formula)
+  (t2 : Formula.formula)
+  =
   (* We exclude names from context variable blocks in the permutation
      as these are maintained across the sequent and so cannot be renamed within
      a formula *)
-  let support_t1 = Formula.formula_support_sans (new_ctxvar_ctx @ ctxvar_ctx) t1 in
-  let support_t2 = Formula.formula_support_sans (new_ctxvar_ctx @ ctxvar_ctx) t2 in
-  if List.length support_t1 < List.length support_t2
-  then (* Ground term cannot have more nominals than logic term *)
-    ()
-  else (
-    let support_t2_names = List.map term_to_name support_t2 in
-    support_t1
-    |> List.permute (List.length support_t2)
-    |> List.iter
-         (Term.unwind_state (fun perm_support_t1 ->
-              let alist = List.combine support_t2_names perm_support_t1 in
-              (* NOTE TO MK: Do I need to check types at all in the permutation? *)
-              try
-                let subst =
-                  formula_instance
-                    schemas
-                    nvars
-                    (List.map
-                       (fun (s, cty) -> s, Context.replace_ctx_typ_vars alist cty)
-                       ctxvar_ctx)
-                    new_ctxvar_ctx
-                    t1
-                    (Formula.replace_formula_vars alist t2)
-                in
-                if Option.is_some subst then sc (subst, Term.get_bind_state ())
-              with
-              | Unify.UnifyFailure _ -> ())))
+  (* Generate a partial permutation that is a mapping between the explicit
+     portion of the formulas contexts. *)
+  let perm = generate_partial_perm t2 t1 perm ctxvar_ctx new_ctxvar_ctx in
+  let ctx_var_ctxs = new_ctxvar_ctx @ ctxvar_ctx in
+  (* Get all nominals to consider permuting *)
+  let support_t1 = Formula.formula_support_sans ctx_var_ctxs t1 in
+  let support_t2 = Formula.formula_support_sans ctx_var_ctxs t2 in
+  let support_t1 = support_t1 @ support_t2 |> List.unique in
+  (* Remove any items which have already been assigned a mapping
+     in the partial permutation. *)
+  let support_t1 = List.minus support_t1 (List.map snd perm) in
+  let support_t2 =
+    List.minus support_t2 (List.map (fun (v, _) -> Term.var_to_term v) perm)
+  in
+  let support_t2_names = List.map term_to_name support_t2 in
+  let perm_names = List.map (fun (v, t) -> v.Term.name, t) perm in
+  Seq.permute (List.length support_t2) (List.to_seq support_t1)
+  |> Seq.iter
+       (Term.unwind_state (fun perm_support_t1 ->
+          let alist = List.combine support_t2_names (List.of_seq perm_support_t1) in
+          let alist = perm_names @ alist in
+          (* NOTE TO MK: Do I need to check types at all in the permutation? *)
+          try
+            let subst =
+              formula_instance
+                schemas
+                nvars
+                (List.map
+                   (fun (s, cty) -> s, Context.replace_ctx_typ_vars alist cty)
+                   ctxvar_ctx)
+                new_ctxvar_ctx
+                t1
+                (Formula.replace_formula_vars alist t2)
+            in
+            if Option.is_some subst then sc (subst, Term.get_bind_state ())
+          with
+          | Unify.UnifyFailure _ -> ()))
 ;;
-
-(* like all_meta_right_permute_unify but only attempts to unify the two context expressions. *)
-(* Commenting this out because it's not used
-let all_meta_right_permute_unify_ctxexpr ~sc schemas nvars ctxvar_ctx new_ctxvar_ctx g1 g2
-  =
-  let support_g1 = Formula.context_support_sans (new_ctxvar_ctx @ ctxvar_ctx) g1 in
-  let support_g2 = Formula.context_support_sans (new_ctxvar_ctx @ ctxvar_ctx) g2 in
-  if List.length support_g1 < List.length support_g2
-  then (* Ground term cannot have more nominals than logic term *)
-    ()
-  else (
-    let support_g2_names = List.map term_to_name support_g2 in
-    support_g1
-    |> List.permute (List.length support_g2)
-    |> List.iter
-         (Term.unwind_state (fun perm_support_g1 ->
-              let alist = List.combine support_g2_names perm_support_g1 in
-              (* NOTE TO MK: Do I need to check types at all in the permutation? *)
-              try
-                let subst =
-                  context_instance
-                    schemas
-                    nvars
-                    (List.map
-                       (fun (s, cty) -> s, Context.replace_ctx_typ_vars alist cty)
-                       ctxvar_ctx)
-                    new_ctxvar_ctx
-                    g1
-                    (Context.replace_ctx_expr_vars alist g2)
-                in
-                if Option.is_some subst then sc (subst, Term.get_bind_state ())
-              with
-              | Unify.UnifyFailure _ -> ())))
-;;
-*)
-
-(* determines if f2 is an instance of formula f1.
-   Allowed to instantiate the eigenvariables in f1 but not
-   those in f2. *)
-(* Commenting this out because it's not used
-let instance_of nvars ctxvar_ctx f1 f2 =
-  let f1' = Formula.copy_formula f1 in
-  all_meta_right_permute_unify ~sc:(fun _ -> raise Success) [] nvars ctxvar_ctx [] f1' f2
-;;
-*)
 
 (* Given an LF signature, a context expression, and a type
    this function computes
@@ -391,9 +422,9 @@ let extract_ty_info signature sequent depth formulas =
       []
     | Formula.Atm (ctx, _, ty, _) ->
       (match observe (hnorm ty) with
-      | App (head, _) when is_var Constant (observe (hnorm head)) ->
-        decompose_kinding signature [] ctx ty
-      | App _ | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> [])
+       | App (head, _) when is_var Constant (observe (hnorm head)) ->
+         decompose_kinding signature [] ctx ty
+       | App _ | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> [])
   in
   let extract_tys_from_tm (f : Formula.formula) =
     let decompose_app g ann args tm =
@@ -406,19 +437,19 @@ let extract_ty_info signature sequent depth formulas =
       []
     | Formula.Atm (g, m, _, a) ->
       (match observe (hnorm m) with
-      | App (h, args) ->
-        (match observe (hnorm h) with
-        | Term.Var v when v.tag = Term.Constant ->
-          (try
-             (Signature.lookup_obj_decl signature v.name).Signature.typ
-             |> decompose_app g a args
-           with
-          | Not_found -> raise Success)
-        | Term.Var v when v.tag = Term.Nominal ->
-          List.assoc v (Context.ctxexpr_to_ctx (Sequent.get_cvar_tys sequent.ctxvars) g)
-          |> decompose_app g a args
-        | _ -> [])
-      | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> [])
+       | App (h, args) ->
+         (match observe (hnorm h) with
+          | Term.Var v when v.tag = Term.Constant ->
+            (try
+               (Signature.lookup_obj_decl signature v.name).Signature.typ
+               |> decompose_app g a args
+             with
+             | Not_found -> raise Success)
+          | Term.Var v when v.tag = Term.Nominal ->
+            List.assoc v (Context.ctxexpr_to_ctx (Sequent.get_cvar_tys sequent.ctxvars) g)
+            |> decompose_app g a args
+          | _ -> [])
+       | Var _ | DB _ | Lam _ | Susp _ | Ptr _ | Pi _ | Type -> [])
   in
   let rec aux depth formulas =
     if depth <= 0
@@ -467,10 +498,10 @@ let search ~depth signature sequent =
     then
       List.for_all
         (fun x ->
-          List.mem
-            x
-            (Sequent.get_ctxvar_restricted
-               (Sequent.ctxvar_lookup sequent.ctxvars (Context.get_ctx_var g))))
+          Context.get_ctx_var g
+          |> Sequent.ctxvar_lookup sequent.ctxvars
+          |> Sequent.get_ctxvar_restricted
+          |> List.mem x)
         explicit_names
     else true
   in
@@ -510,10 +541,10 @@ let search ~depth signature sequent =
             support_hypg
             |> List.permute (List.length support_g)
             |> List.iter (fun perm ->
-                   let alist = List.combine support_g_names perm in
-                   if Context.context_prefix (Context.replace_ctx_expr_vars alist g) hyp_g
-                   then raise Success
-                   else ()))
+                 let alist = List.combine support_g_names perm in
+                 if Context.context_prefix (Context.replace_ctx_expr_vars alist g) hyp_g
+                 then raise Success
+                 else ()))
           else ())
       in
       List.iter match_with_ctx hyp_ctxexprs;
@@ -534,8 +565,8 @@ let search ~depth signature sequent =
                   sequent.Sequent.goal <- f)
                 subgoals)
          with
-        | Success -> check_context used g'
-        | _ -> ())
+         | Success -> check_context used g'
+         | _ -> ())
     in
     (* put goal formula into normal form *)
     let norm () =
@@ -549,44 +580,44 @@ let search ~depth signature sequent =
       in
       formulas
       |> List.iter (fun f ->
-             (* try each permutation of nominals in assumption formula*)
-             match f with
-             | Formula.Atm (_, _, _, ann)
-               when satisfies ann (Formula.formula_to_annotation sequent.goal) ->
-               let support_hyp =
-                 Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) f
-               in
-               if List.length support_hyp = List.length support_goal
-               then (
-                 let support_hyp_names = List.map term_to_name support_hyp in
-                 support_goal
-                 |> List.permute (List.length support_hyp)
-                 |> List.iter (fun perm ->
-                        let alist = List.combine support_hyp_names perm in
-                        if Formula.eq
-                             (Formula.replace_formula_vars alist (Formula.copy_formula f))
-                             sequent.goal
-                        then raise Success
-                        else ()))
-               else ()
-             | Formula.Prop _ ->
-               let support_hyp =
-                 Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) f
-               in
-               if List.length support_hyp = List.length support_goal
-               then (
-                 let support_hyp_names = List.map term_to_name support_hyp in
-                 support_goal
-                 |> List.permute (List.length support_hyp)
-                 |> List.iter (fun perm ->
-                        let alist = List.combine support_hyp_names perm in
-                        if Formula.eq
-                             (Formula.replace_formula_vars alist (Formula.copy_formula f))
-                             sequent.goal
-                        then raise Success
-                        else ()))
-               else ()
-             | _ -> ())
+           (* try each permutation of nominals in assumption formula*)
+           match f with
+           | Formula.Atm (_, _, _, ann)
+             when satisfies ann (Formula.formula_to_annotation sequent.goal) ->
+             let support_hyp =
+               Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) f
+             in
+             if List.length support_hyp = List.length support_goal
+             then (
+               let support_hyp_names = List.map term_to_name support_hyp in
+               support_goal
+               |> List.permute (List.length support_hyp)
+               |> List.iter (fun perm ->
+                    let alist = List.combine support_hyp_names perm in
+                    if Formula.eq
+                         (Formula.replace_formula_vars alist (Formula.copy_formula f))
+                         sequent.goal
+                    then raise Success
+                    else ()))
+             else ()
+           | Formula.Prop _ ->
+             let support_hyp =
+               Formula.formula_support_sans (Sequent.get_cvar_tys sequent.ctxvars) f
+             in
+             if List.length support_hyp = List.length support_goal
+             then (
+               let support_hyp_names = List.map term_to_name support_hyp in
+               support_goal
+               |> List.permute (List.length support_hyp)
+               |> List.iter (fun perm ->
+                    let alist = List.combine support_hyp_names perm in
+                    if Formula.eq
+                         (Formula.replace_formula_vars alist (Formula.copy_formula f))
+                         sequent.goal
+                    then raise Success
+                    else ()))
+             else ()
+           | _ -> ())
     in
     (* use atm-R to make a reasoning step. *)
     let lf_step () =
@@ -595,8 +626,8 @@ let search ~depth signature sequent =
         decompose_app_form g ann args bndrs body
         |> List.map (fun f () -> sequent.goal <- f)
       in
-      (* Note: Since this is analysis is always performed after normalization we 
-               are assured that the type of the judgement is atomic and the head of the 
+      (* Note: Since this is analysis is always performed after normalization we
+               are assured that the type of the judgement is atomic and the head of the
                term component of the judgement is a variable or an application term. *)
       let g, m, a, ann =
         match sequent.goal with
@@ -633,8 +664,8 @@ let search ~depth signature sequent =
                g
            else ()
          with
-        | Success -> raise Success
-        | _ -> ())
+         | Success -> raise Success
+         | _ -> ())
       | Term.App (h, args) ->
         (* will raise exception if does not match, which is correct behavior
            as goals with terms that do not match this structure (i.e. head is a term variable)
@@ -669,8 +700,8 @@ let search ~depth signature sequent =
              else ()
            | _ -> ()
          with
-        | Success -> raise Success
-        | _ -> ())
+         | Success -> raise Success
+         | _ -> ())
       | _ -> ()
     in
     match subgoals with
@@ -682,8 +713,8 @@ let search ~depth signature sequent =
          try_match ();
          lf_step ()
        with
-      | Success -> search_aux tl
-      | _ -> ())
+       | Success -> search_aux tl
+       | _ -> ())
   in
   match sequent.goal with
   | Formula.Atm (g, _, _, _) ->
@@ -693,20 +724,12 @@ let search ~depth signature sequent =
 ;;
 
 (* Given a sequent and an integer identifying which subformula to
- * induct on, returns an updated sequent with annotations added and 
+ * induct on, returns an updated sequent with annotations added and
  * inductive hypothesis in the assumptions.
  * Raises InvalidFormula if the identified subformula is not atomic.
  *)
-let ind_count = ref 0
 
-let get_ind_count () =
-  let _ = ind_count := 1 + !ind_count in
-  !ind_count
-;;
-
-let reset_ind_count () = ind_count := 0
-
-let ind sequent i =
+let ind sequent i n =
   let rec mk_ih form i =
     match form with
     | Formula.Imp (l, r) when i = 1 ->
@@ -714,10 +737,9 @@ let ind sequent i =
         match f with
         | Formula.Atm (g, m, a, ann) ->
           if ann = Formula.None
-          then (
-            let num = get_ind_count () in
-            ( Formula.Imp (Formula.Atm (g, m, a, Formula.LT num), r)
-            , Formula.Imp (Formula.Atm (g, m, a, Formula.EQ num), r) ))
+          then
+            ( Formula.Imp (Formula.Atm (g, m, a, Formula.LT n), r)
+            , Formula.Imp (Formula.Atm (g, m, a, Formula.EQ n), r) )
           else
             raise (InvalidFormula (sequent.goal, "Cannot induct on annotated formulas."))
         | _ ->
@@ -746,7 +768,7 @@ let ind sequent i =
   sequent.goal <- goal
 ;;
 
-(* adds a new instance of block schema bl_schm at position j in the 
+(* adds a new instance of block schema bl_schm at position j in the
    explicit blocks in tycvar using nominal constants names for the
    bound variables and identifies the i-th entry in this new block
    instance.
@@ -764,12 +786,12 @@ let ind sequent i =
 
    returns the tuple
     <(N U names;Psij' U Psij'';Xij'; Omega[thetaj'] ---> F[thetaj']),
-       ni:Ai[thetaj'']> 
+       ni:Ai[thetaj'']>
    where
    - Nj is the collection of nominal constants assigned types in
       (G1,...,Gj)
    - Psij' is a version of Psi raised over {n1,...,nk}\N, and
-      thetaj' is the associated raising substitution 
+      thetaj' is the associated raising substitution
    - Psij'' is a version of {x1:a1,...,xn:an} raised over
       usable U Nj U {n1,...,nk}
       with new variables chosen to be distinct from those in Psij',
@@ -780,17 +802,17 @@ let ind sequent i =
          {Gamma|NGamma:C[G1[thetaj'];...;Gj[thetaj'];G;G{j+1}[thetaj'];...;Gn[thetaj']]}*)
 (* Possible raising optimization:
      in Psij' we might check which variables in Psi have a rigid
-     occurence in G1,...,Gj and avoid raising these variables because 
+     occurence in G1,...,Gj and avoid raising these variables because
      such dependencies would be ill-formed. *)
 let addBlock
-    (seq : Sequent.sequent)
-    (tycvar : Sequent.cvar_entry)
-    (bl_schm : Context.block_schema)
-    (names : Term.term list)
-    (usable : Term.term list)
-    (j : int)
-    (i : int)
-    : Sequent.sequent * Term.term * Term.term
+  (seq : Sequent.sequent)
+  (tycvar : Sequent.cvar_entry)
+  (bl_schm : Context.block_schema)
+  (names : Term.term list)
+  (usable : Term.term list)
+  (j : int)
+  (i : int)
+  : Sequent.sequent * Term.term * Term.term
   =
   let seq = Sequent.cp_sequent seq in
   (* generating raised eigenvariable context and raising substitution *)
@@ -856,10 +878,10 @@ let addBlock
    names and away from prohibited.
  *)
 let rec namesLists
-    (atys : Type.ty list)
-    (names : Term.term list)
-    (prohibited : Term.term list)
-    : Term.term list list
+  (atys : Type.ty list)
+  (names : Term.term list)
+  (prohibited : Term.term list)
+  : Term.term list list
   =
   match atys with
   | [] -> [ [] ]
@@ -905,11 +927,11 @@ let rec namesLists
    - usable is the collection of nominal constants (N \ NGamma \ prohibited)
  *)
 let allBlocks
-    (seq : Sequent.sequent)
-    (g : Context.ctx_expr)
-    (tycvar : Sequent.cvar_entry)
-    (bl_schm : Context.block_schema)
-    : (Sequent.sequent * Term.term * Term.term) list
+  (seq : Sequent.sequent)
+  (g : Context.ctx_expr)
+  (tycvar : Sequent.cvar_entry)
+  (bl_schm : Context.block_schema)
+  : (Sequent.sequent * Term.term * Term.term) list
   =
   let (Context.B (_, entries)) = bl_schm in
   let entry_atys = List.map (fun (v, _) -> v.ty) entries in
@@ -928,7 +950,7 @@ let allBlocks
       prohibited
   in
   (* for each location in the block list j
-         0 to 
+         0 to
            (let CtxTy(schema, blocks) = Sequent.get_ctxvar_ty tycvar in
             List.length blocks)
      for every list of names in namelsts names,
@@ -940,17 +962,15 @@ let allBlocks
   let (Context.CtxTy (_, blocks)) = Sequent.get_ctxvar_ty tycvar in
   let js = List.range 0 (List.length blocks) in
   let is = List.range 0 (List.length entries - 1) in
-  List.map
+  List.flatten_map
     (fun j ->
-      List.map
+      List.flatten_map
         (fun names ->
           List.map
             (fun i -> addBlock seq tycvar bl_schm names (List.minus usable names) j i)
             is)
-        namelsts
-      |> List.flatten)
+        namelsts)
     js
-  |> List.flatten
 ;;
 
 (* implicitHeads returns all (sequent, head) tuples for matching with
@@ -972,7 +992,7 @@ let allBlocks
    - tycvar = Gamma|NGamma:C[G1,...,Gn]
  *)
 let implicitHeads seq schemas (g : Context.ctx_expr)
-    : (Sequent.sequent * Term.term * Term.term) list
+  : (Sequent.sequent * Term.term * Term.term) list
   =
   let gamma = Context.get_ctx_var g in
   let tycvar = Sequent.ctxvar_lookup seq.ctxvars gamma in
@@ -1012,7 +1032,7 @@ let heads lf_sig schemas seq g =
    Auumes that the given formula atomic formula and that it actually
    appears as an assumption in the given sequent.
 
-   Note that the unification procedure we use returns at most one 
+   Note that the unification procedure we use returns at most one
    unifier, so either an empty (non-unifiable) or a singleton list is
    returned. *)
 let makeCases form seq (h : Term.term) typ : case list =
@@ -1029,29 +1049,29 @@ let makeCases form seq (h : Term.term) typ : case list =
     (match
        Unify.try_left_unify_list_cpairs ~used:seq.Sequent.vars [ genty; gentm ] [ a; m ]
      with
-    | Some [] ->
-      Formula.get_formula_used (Sequent.get_cvar_tys seq.ctxvars) form
-      @ Formula.get_formula_used_nominals (Sequent.get_cvar_tys seq.ctxvars) form
-      |> List.iter (fun (_, t) -> Sequent.add_var seq (term_to_pair t));
-      let new_hyps =
-        List.map2
-          (fun t ty -> Formula.Atm (g, t, ty, Formula.reduce_inductive_annotation ann))
-          new_tms
-          new_lftys
-      in
-      List.iter (Sequent.add_hyp seq) new_hyps;
-      let case = make_case seq in
-      Sequent.assign_sequent seq save_seq;
-      Term.set_bind_state bind_state;
-      [ case ]
-    | None ->
-      Sequent.assign_sequent seq save_seq;
-      Term.set_bind_state bind_state;
-      []
-    | _ ->
-      Sequent.assign_sequent seq save_seq;
-      Term.set_bind_state bind_state;
-      raise NotLlambda)
+     | Some [] ->
+       Formula.get_formula_used (Sequent.get_cvar_tys seq.ctxvars) form
+       @ Formula.get_formula_used_nominals (Sequent.get_cvar_tys seq.ctxvars) form
+       |> List.iter (fun (_, t) -> Sequent.add_var seq (term_to_pair t));
+       let new_hyps =
+         List.map2
+           (fun t ty -> Formula.Atm (g, t, ty, Formula.reduce_inductive_annotation ann))
+           new_tms
+           new_lftys
+       in
+       List.iter (Sequent.add_hyp seq) new_hyps;
+       let case = make_case seq in
+       Sequent.assign_sequent seq save_seq;
+       Term.set_bind_state bind_state;
+       [ case ]
+     | None ->
+       Sequent.assign_sequent seq save_seq;
+       Term.set_bind_state bind_state;
+       []
+     | _ ->
+       Sequent.assign_sequent seq save_seq;
+       Term.set_bind_state bind_state;
+       raise NotLlambda)
   | _ -> bugf "Expected atomic formula when making cases"
 ;;
 
@@ -1059,7 +1079,7 @@ let makeCases form seq (h : Term.term) typ : case list =
  * of the sequent this will perform case analysis on the
  * identified subgoal and will return the updated sequent and list
  * of new subgoals if any.
- * Raises InvalidName if the name provided does not match a hypothesis 
+ * Raises InvalidName if the name provided does not match a hypothesis
  * in the sequent.
  * Raises InvalidFormula if the identified assumption is not atomic
  * with a base type.
@@ -1082,13 +1102,13 @@ let cases lf_sig schemas seq id : case list =
       v.name
     | App (h, _) ->
       (match Term.norm h with
-      | Var v when v.tag = Constant ->
-        ignore @@ Signature.lookup_type_decl lf_sig v.name;
-        v.name
-      | _ ->
-        raise
-          (InvalidFormula
-             (hyp.formula, "Atomic formula must have a base type typing judgment.")))
+       | Var v when v.tag = Constant ->
+         ignore @@ Signature.lookup_type_decl lf_sig v.name;
+         v.name
+       | _ ->
+         raise
+           (InvalidFormula
+              (hyp.formula, "Atomic formula must have a base type typing judgment.")))
     | _ ->
       raise
         (InvalidFormula
@@ -1110,7 +1130,7 @@ let cases lf_sig schemas seq id : case list =
 ;;
 
 (* Given a sequent and a term, checks that the term is weakly well
- * formed of the appropriate weak type and then instantiates the 
+ * formed of the appropriate weak type and then instantiates the
  * goal formula with that term and returns the updated sequent.
  * Raises InvalidTerm if the term is not weakly well typed.
  *)
@@ -1163,7 +1183,88 @@ let rec map_args f t =
   | _ -> []
 ;;
 
-let apply_arrow schemas sequent nvars ctxvar_ctx bound_ctxvars form args =
+(* Normalizes [form] by removing pi abstractions until it is a typing judgement.
+   Each pi binding is replaced by a new nominal variable, but this nominal is not added
+   to the sequent's variables - as a permutation must map to it and after this permutation
+   the variable will be removed via this operation happening in another derivation of the
+   =>L rule.
+
+   Returns the normalized formula and the nominals that were added to the context via removing
+   the pi abstractions. This list is in reverse order - where the first element is the last nominal
+   in the context.
+ *)
+let normalize_atomic_formula nvars form =
+  let nvars = ref nvars in
+  let rec aux (form : Formula.formula) added =
+    match form with
+    | Formula.Atm (g, m, a, ann) ->
+      (match Term.observe (Term.hnorm a) with
+       | Term.Pi ((v, typ) :: bndrs, body) ->
+         (* for each binder introduce new name n, raise relevant eigenvariables over n,
+             then move into context and apply term component to this n. *)
+         let name, _ = Term.fresh_wrt ~ts:2 Nominal "n" v.Term.ty !nvars in
+         let _ = nvars := Term.term_to_pair name :: !nvars in
+         let g' = Context.Ctx (g, (Term.term_to_var name, typ)) in
+         let m' = Term.app m [ Term.eta_expand name ] in
+         let a' =
+           Term.replace_term_vars
+             [ v.Term.name, Term.eta_expand name ]
+             (Term.pi bndrs body)
+         in
+         aux (Formula.atm ~ann g' m' a') (name :: added)
+       | _ -> form, added)
+    | _ -> form, added
+  in
+  aux form []
+;;
+
+(* Given some formula [f] and the nominals that replace the pi abstractions in another
+   formula, generate a substitution for the formula's explicit portion which is restricted
+   to these nominals - otherwise raise a unify failure. *)
+let generate_subst f added restrictions =
+  let is_valid_perm g added alist restrictions =
+    let restriction_check vars r = List.for_all (fun v -> List.mem v r) vars in
+    let unique_check l =
+      let src = List.map fst l in
+      let dst = List.map snd l in
+      List.length src = List.length (List.unique src)
+      && List.length dst = List.length (List.unique dst)
+    in
+    let only_restricted =
+      if Context.has_var g
+      then
+        restriction_check
+          (List.map (fun (v, _) -> v.Term.name) alist)
+          (List.assoc (Context.get_ctx_var g) restrictions)
+      else true
+    in
+    let all_mapped = List.length added = List.length alist in
+    let all_unique = unique_check alist in
+    only_restricted && all_unique && all_mapped
+  in
+  let types_valid ctx_entries =
+    List.fold_left
+      (fun used_vars (v, tm) ->
+        let tms = Term.find_vars Nominal [ tm ] in
+        if List.exists (fun tm_var -> List.mem tm_var used_vars) tms
+        then raise (Unify.UnifyFailure Unify.Generic)
+        else v :: used_vars)
+      []
+      ctx_entries
+  in
+  match f with
+  | Formula.Atm (g, _, _, _) ->
+    let ctx = Context.get_explicit g in
+    let ctx_vars = List.map fst ctx in
+    let perm = List.combine_shortest ctx_vars added |> List.rev in
+    let _ = types_valid ctx in
+    if is_valid_perm g added perm restrictions
+    then perm
+    else raise (Unify.UnifyFailure Unify.Generic)
+  | _ -> []
+;;
+
+let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
   let () =
     check_restrictions
       (map_args Formula.formula_to_annotation form)
@@ -1187,11 +1288,12 @@ let apply_arrow schemas sequent nvars ctxvar_ctx bound_ctxvars form args =
                    ~ts:1
                    exists
                    body)
-            | _ -> Sequent.norm_atom sequent f
+            | _ -> normalize_atomic_formula nvars f
           in
-          let left = norm left in
+          let left, added = norm left in
+          let subst = generate_subst arg added xi_seq in
           (* check if left has annotation & ensure arg
-               can satisfy it *)
+             can satisfy it *)
           if satisfies
                (Formula.formula_to_annotation arg)
                (Formula.formula_to_annotation left)
@@ -1205,15 +1307,16 @@ let apply_arrow schemas sequent nvars ctxvar_ctx bound_ctxvars form args =
                 nvars
                 ctxvar_ctx
                 bound_ctxvars
+                subst
                 left
                 arg
             with
             | Success -> ());
           (match !res with
-          | Some ctx_subst, bind_state ->
-            Term.set_bind_state bind_state;
-            Formula.replace_ctx_vars ctx_subst right
-          | None, _ -> raise (Unify.UnifyFailure Unify.Generic))
+           | Some ctx_subst, bind_state ->
+             Term.set_bind_state bind_state;
+             Formula.replace_ctx_vars ctx_subst right
+           | None, _ -> raise (Unify.UnifyFailure Unify.Generic))
         | _ -> failwith "Too few implications in application")
       form
       args
@@ -1233,10 +1336,10 @@ let apply schemas sequent formula args =
     let nvars = List.filter (fun (_, t) -> is_var Nominal t) sequent.vars in
     apply_arrow
       schemas
-      sequent
       nvars
       (Sequent.get_cvar_tys sequent.ctxvars)
       new_ctxvars
+      (Sequent.get_assoc_ctxvars_restricted sequent.ctxvars)
       (freshen_nameless_bindings ~support:(List.map snd nvars) ~ts:1 foralls body')
       args
   in
@@ -1382,7 +1485,7 @@ let weaken ~depth lf_sig sequent form t =
            sequent.Sequent.goal <- g;
            search ~depth lf_sig sequent
          with
-        | Success -> solve_goals goals)
+         | Success -> solve_goals goals)
     in
     solve_goals (decompose_kinding lf_sig used g t)
   | _ -> raise (InvalidFormula (form, "Formula must be atomic to weaken."))
@@ -1470,20 +1573,20 @@ let inst ~depth lf_sig sequent form subst =
        search ~depth lf_sig sequent;
        raise (InstTypeError to_prove)
      with
-    | Success ->
-      let _ =
-        Sequent.assign_sequent sequent save_seq;
-        Term.set_bind_state bind_state
-      in
-      let g2' =
-        List.map
-          (fun (id, ty) -> id, Term.replace_term_vars ~tag:Term.Nominal subst ty)
-          g2
-      in
-      let g' = Context.append_context g1 g2' in
-      let m' = Term.replace_term_vars ~tag:Term.Nominal subst m in
-      let a' = Term.replace_term_vars ~tag:Term.Nominal subst a in
-      Formula.Atm (g', m', a', Formula.None))
+     | Success ->
+       let _ =
+         Sequent.assign_sequent sequent save_seq;
+         Term.set_bind_state bind_state
+       in
+       let g2' =
+         List.map
+           (fun (id, ty) -> id, Term.replace_term_vars ~tag:Term.Nominal subst ty)
+           g2
+       in
+       let g' = Context.append_context g1 g2' in
+       let m' = Term.replace_term_vars ~tag:Term.Nominal subst m in
+       let a' = Term.replace_term_vars ~tag:Term.Nominal subst a in
+       Formula.Atm (g', m', a', Formula.None))
   | _, _ -> bugf "Expected atomic formula with list of pairs in instantiation"
 ;;
 

@@ -260,7 +260,7 @@ let apply_tests =
            ]
          in
          assert_raises (Failure "Inductive restriction violated") (fun () ->
-             apply_with [] seq f args (vwiths, [])))
+           apply_with [] seq f args (vwiths, [])))
        ; ("Improperly restricted (2)"
          >:: fun () ->
          let a = var Eigen "A" 0 ity in
@@ -313,7 +313,7 @@ let apply_tests =
            ]
          in
          assert_raises (Failure "Inductive restriction violated") (fun () ->
-             apply_with [] seq f args (vwiths, [])))
+           apply_with [] seq f args (vwiths, [])))
        ; ("Properly double restricted"
          >:: fun () ->
          let a = var Eigen "A" 0 ity in
@@ -420,7 +420,7 @@ let apply_tests =
            ]
          in
          assert_raises (Failure "Inductive restriction violated") (fun () ->
-             apply_with [] seq f args (vwiths, [])))
+           apply_with [] seq f args (vwiths, [])))
        ; ("Improperly double restricted (2)"
          >:: fun () ->
          let a = var Eigen "A" 0 ity in
@@ -470,7 +470,7 @@ let apply_tests =
            ]
          in
          assert_raises (Failure "Inductive restriction violated") (fun () ->
-             apply_with [] seq f args (vwiths, [])))
+           apply_with [] seq f args (vwiths, [])))
        ; ("Failure to unify"
          >:: fun () ->
          let a = var Eigen "A" 0 ity in
@@ -601,6 +601,163 @@ let apply_tests =
              raise (Unify.UnifyFailure e)
          in
          assert_pprint_equal "exists P3, {L, n1:hyp B |- P3 : conc C}" f_res)
+       ; ("Cannot instantiate ctx var multiple times"
+         >:: fun () ->
+         let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
+         let g = Context.ctx_var "G" in
+         let g1 = Context.ctx_var "G1" in
+         let g2 = Context.ctx_var "G2" in
+         let e1 = var Eigen "E1" 0 ity in
+         let e2 = var Eigen "E2" 0 ity in
+         let e3 = var Eigen "E3" 0 ity in
+         let e4 = var Eigen "E4" 0 ity in
+         let e5 = var Eigen "E5" 0 ity in
+         List.iter
+           (fun v -> Term.term_to_pair v |> Sequent.add_var seq)
+           [ e1; e2; e3; e4; e5 ];
+         List.iter
+           (fun g -> Sequent.add_ctxvar seq g (Context.CtxTy ("c", [])))
+           [ g; g1; g2 ];
+         let f =
+           ctx
+             [ "G", "c" ]
+             (forall
+                [ "E1", ity; "E2", ity ]
+                (imp
+                   (atm (Context.Var g) e1 tm)
+                   (imp
+                      (atm (Context.Var g) e2 tm)
+                      (Formula.exists [ "E3", ity ] (atm (Context.Var g) e3 tm)))))
+         in
+         let args = [ atm (Context.Var g1) e4 tm; atm (Context.Var g2) e5 tm ] in
+         let schemas = List.map (fun v -> v, []) [ g; g1; g2 ] in
+         assert_raises (Unify.UnifyFailure Unify.Generic) (fun () ->
+           Tactics.apply schemas seq f args))
+       ; ("Is able to instantiate ctx var with repetitions of schema"
+         >:: fun () ->
+         let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
+         let x = const "x" ity in
+         let n = nominal_var "n" ity in
+         let g = Context.ctx_var "G" in
+         let g1 = Context.ctx_var "G1" in
+         let e1 = var Eigen "E1" 0 ity in
+         let e2 = var Eigen "E2" 0 ity in
+         let e3 = var Eigen "E3" 0 ity in
+         List.iter (fun v -> Term.term_to_pair v |> Sequent.add_var seq) [ e3; n ];
+         List.iter (fun g -> Sequent.add_ctxvar seq g (Context.CtxTy ("c", []))) [ g1 ];
+         let f =
+           ctx
+             [ "G", "c" ]
+             (forall
+                [ "E1", ity ]
+                (imp
+                   (atm (Context.Var g) e1 tm)
+                   (Formula.exists [ "E2", ity ] (atm (Context.Var g) e2 tm))))
+         in
+         let args = [ atm (Context.Ctx (Context.Var g1, (term_to_var n, tm))) e3 tm ] in
+         let schemas = [ "c", [ Context.B ([], [ term_to_var x, tm ]) ] ] in
+         assert_formula_equal
+           (Formula.exists
+              [ "E2", ity ]
+              (atm (Context.Ctx (Context.Var g1, (term_to_var n, tm))) e2 tm))
+           (Tactics.apply schemas seq f args))
+       ; ("Does not instantiate context multiple times"
+         >:: fun () ->
+         let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
+         let g = Context.ctx_var "G" in
+         let g1 = Context.ctx_var "G1" in
+         let g2 = Context.ctx_var "G2" in
+         let e1 = var Eigen "E1" 0 ity in
+         let e2 = var Eigen "E2" 0 ity in
+         let e3 = var Eigen "E3" 0 ity in
+         let u1 = var Eigen "U1" 0 ity in
+         let u2 = var Eigen "U2" 0 ity in
+         List.iter (fun v -> Term.term_to_pair v |> Sequent.add_var seq) [ u1; u2 ];
+         List.iter
+           (fun g -> Sequent.add_ctxvar seq g (Context.CtxTy ("c", [])))
+           [ g1; g2 ];
+         let f =
+           ctx
+             [ "G", "c" ]
+             (forall
+                [ "E1", ity; "E2", ity ]
+                (imp
+                   (atm (Context.Var g) e1 tm)
+                   (imp
+                      (atm (Context.Var g) e2 tm)
+                      (Formula.exists [ "E3", ity ] (atm (Context.Var g) e3 tm)))))
+         in
+         let args = [ atm (Context.Var g1) u1 tm; atm (Context.Var g2) u2 tm ] in
+         let args = List.map (fun f -> Formula.norm f) args in
+         let schemas = [ "c", [] ] in
+         assert_raises (Unify.UnifyFailure Unify.Generic) (fun () ->
+           Tactics.apply schemas seq f args))
+       ; ("Matches abstractions in antecedent"
+         >:: fun () ->
+         let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
+         let x = const "x" ity in
+         let y = const "y" ity in
+         let g = Context.ctx_var "G" in
+         let g1 = Context.ctx_var "G1" in
+         let e1 = var Eigen "E1" 0 iity in
+         let e2 = var Eigen "E2" 0 ity in
+         let u1 = var Eigen "U1" 0 iity in
+         List.iter (fun v -> Term.term_to_pair v |> Sequent.add_var seq) [ u1 ];
+         List.iter (fun g -> Sequent.add_ctxvar seq g (Context.CtxTy ("c", []))) [ g1 ];
+         let f =
+           ctx
+             [ "G", "c" ]
+             (forall
+                [ "E1", iity ]
+                (imp
+                   (atm
+                      (Context.Var g)
+                      (abstract "x" ity (Term.app e1 [ x ]))
+                      (pi [ term_to_var x, tm ] tm))
+                   (Formula.exists [ "E2", ity ] (atm (Context.Var g) e2 tm))))
+         in
+         let args =
+           [ atm
+               (Context.Var g1)
+               (abstract "y" ity (Term.app u1 [ y ]))
+               (pi [ term_to_var y, tm ] tm)
+           ]
+         in
+         let args = List.map (fun f -> Sequent.norm_atom seq f) args in
+         let schemas = [ "c", [] ] in
+         assert_equal
+           (Formula.exists [ "E2", ity ] (atm (Context.Var g1) e2 tm))
+           (Tactics.apply schemas seq f args))
+       ; ("Allows antecedent to have less nominals than argument"
+         >:: fun () ->
+         let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
+         let z = const "z" ity in
+         let x = const "x" ity in
+         let y = const "y" ity in
+         let n = nominal_var "n" ity in
+         let g = Context.ctx_var "G" in
+         let g1 = Context.ctx_var "G1" in
+         let e2 = var Eigen "E2" 0 ity in
+         let u1 = var Eigen "U1" 0 iity in
+         List.iter (fun v -> Term.term_to_pair v |> Sequent.add_var seq) [ u1 ];
+         List.iter (fun g -> Sequent.add_ctxvar seq g (Context.CtxTy ("c", []))) [ g1 ];
+         let f =
+           ctx
+             [ "G", "c" ]
+             (imp
+                (atm (Context.Var g) z tm)
+                (Formula.exists [ "E2", ity ] (atm (Context.Var g) e2 tm)))
+         in
+         let args =
+           [ atm (Context.Var g1) (abstract "y" ity z) (pi [ term_to_var y, tm ] tm) ]
+         in
+         let args = List.map (fun f -> Sequent.norm_atom seq f) args in
+         let schemas = [ "c", [ Context.B ([], [ term_to_var x, tm ]) ] ] in
+         assert_equal
+           (Formula.exists
+              [ "E2", ity ]
+              (atm (Context.Ctx (Context.Var g1, (term_to_var n, tm))) e2 tm))
+           (Tactics.apply schemas seq f args))
        ]
 ;;
 

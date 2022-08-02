@@ -24,25 +24,10 @@
     else
       (Parsing.rhs_start_pos i, Parsing.rhs_end_pos i)
 
-  let predefined id =
-    UConst(pos 0, id)
-
-  let binop id t1 t2 =
-    UApp(pos 0, UApp(pos 0, predefined id, t1), t2)
-
   let nested_app head args =
     List.fold_left
       (fun h a -> UApp((fst (get_pos h), snd (get_pos a)), h, a))
       head args
-
-  let nominal_constant_re = Str.regexp "n[0-9]+"
-  let is_illegal_constant k =
-    Str.string_match nominal_constant_re k 0
-
-  let check_legal_var vid vnum =
-    if is_illegal_constant vid then
-      error_report ~pos:(Parsing.rhs_start_pos vnum)
-        "Invalid bound variable %S.@\nIdentifiers matching n[0-9]+ are reserved for nominal constants." vid
 
   let deloc_id (_,id) =
     (* if is_illegal_constant id then *)
@@ -50,8 +35,6 @@
     (*     "Invalid bound variable %S.@\nIdentifiers matching n[0-9]+ are reserved for nominal constants." *)
     (*     id ; *)
     id
-
-  let deloc_id_ty (lid, ty) = (deloc_id lid, ty)
 
   let check_legal_idterm = function
     | Uterms.UConst _ -> ()

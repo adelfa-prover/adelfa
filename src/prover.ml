@@ -11,7 +11,8 @@ exception ProofCompleted
     4. The current goal
     5. The current (stack) of subgoals
     6. The available definitions
-    7. The depth to search
+    7. The current settings
+    8. The induction count
 **)
 
 type prover_settings = { mutable search_depth : int }
@@ -22,6 +23,7 @@ type prover_state =
   ; bind_state : Term.bind_state
   ; term_var_count : int
   ; ctx_var_count : int
+  ; ind_count : int
   ; settings : prover_settings
   }
 
@@ -37,16 +39,6 @@ let clear_schemas () = schemas := []
 
 (* Raises Not_found if schema of given name is not in the schema list *)
 let lookup_schema id = List.assoc id !schemas
-
-(* How deep to extract types from hypotheses *)
-let settings = { search_depth = 5 }
-let copy_settings () = { search_depth = settings.search_depth }
-
-let depth_or_default depth =
-  match depth with
-  | Uterms.DefaultDepth -> settings.search_depth
-  | Uterms.WithDepth d -> d
-;;
 
 (* 3. The available lemmas *)
 let lemmas : (string * Formula.formula) list ref = ref []
@@ -104,12 +96,36 @@ let lookup_definition id = snd (List.assoc id !dfns)
 let get_propty_lst () = List.map (fun (x, (y, _)) -> x, y) !dfns
 let undo_stack = ref []
 
+(* 7. The current settings *)
+(* How deep to extract types from hypotheses  *)
+let settings = { search_depth = 5 }
+let copy_settings () = { search_depth = settings.search_depth }
+
+let depth_or_default depth =
+  match depth with
+  | Uterms.DefaultDepth -> settings.search_depth
+  | Uterms.WithDepth d -> d
+;;
+
+let set_setting_state { search_depth = d } = settings.search_depth <- d
+
+(* 8. Induction count *)
+let ind_count = ref 0
+
+let get_ind_count () =
+  let _ = ind_count := 1 + !ind_count in
+  !ind_count
+;;
+
+let reset_ind_count () = ind_count := 0
+
 let state_snapshot () =
   { sequent = copy_sequent ()
   ; subgoals = !subgoals
   ; bind_state = Term.get_bind_state ()
   ; term_var_count = Term.get_varcount ()
   ; ctx_var_count = Context.get_varcount ()
+  ; ind_count = !ind_count
   ; settings = copy_settings ()
   }
 ;;
@@ -125,16 +141,22 @@ let change_settings sets =
   List.iter aux sets
 ;;
 
-let set_setting_state { search_depth = d } = settings.search_depth <- d
-
 let state_reset
-    { sequent; subgoals = sgs; bind_state; term_var_count; ctx_var_count; settings }
+  { sequent
+  ; subgoals = sgs
+  ; bind_state
+  ; term_var_count
+  ; ctx_var_count
+  ; ind_count = n
+  ; settings
+  }
   =
   set_sequent sequent;
   subgoals := sgs;
   Term.set_bind_state bind_state;
   Term.set_varcount term_var_count;
   Context.set_varcount ctx_var_count;
+  ind_count := n;
   set_setting_state settings
 ;;
 
@@ -145,7 +167,7 @@ let reset_prover =
     set_sequent empty_seq;
     undo_stack := [];
     subgoals := [];
-    Tactics.reset_ind_count ();
+    reset_ind_count ();
     Term.set_bind_state empty_bind_state;
     Term.reset_varcount ();
     Context.reset_varcount ()
@@ -194,7 +216,7 @@ let undo () =
 
 let induction i =
   save_undo_state ();
-  try Tactics.ind sequent i with
+  try Tactics.ind sequent i (get_ind_count ()) with
   | e ->
     undo ();
     raise e
@@ -259,10 +281,10 @@ let case remove hyp =
         ]
     | Formula.Atm _ ->
       (match Tactics.cases !lf_sig !schemas sequent hyp with
-      | [] -> next_subgoal ()
-      | cases ->
-        add_subgoals (List.map (case_to_subgoal remove hyp) cases);
-        next_subgoal ())
+       | [] -> next_subgoal ()
+       | cases ->
+         add_subgoals (List.map (case_to_subgoal remove hyp) cases);
+         next_subgoal ())
     | _ -> ()
   with
   | Tactics.NotLlambda ->
@@ -303,7 +325,7 @@ let search depth () =
        undo ();
        prerr_endline "Search failed."
      with
-    | Tactics.Success -> next_subgoal ())
+     | Tactics.Success -> next_subgoal ())
   | Formula.Top -> next_subgoal ()
   | _ ->
     if List.exists (fun h -> h.formula = Formula.Bottom) sequent.hyps
@@ -475,8 +497,8 @@ let find_by_name name =
   | Some form -> form
   | None ->
     (try (Sequent.get_hyp sequent name).Sequent.formula with
-    | Not_found ->
-      raise (ApplyFailure ("Formula `" ^ name ^ "' not found in lemmas or assumption.")))
+     | Not_found ->
+       raise (ApplyFailure ("Formula `" ^ name ^ "' not found in lemmas or assumption.")))
 ;;
 
 let apply_form f forms uws =
@@ -540,7 +562,7 @@ let assert_thm depth f =
   match sequent.goal with
   | Formula.Atm _ | Formula.Prop _ ->
     (try Tactics.search ~depth !lf_sig sequent with
-    | Tactics.Success -> next_subgoal ())
+     | Tactics.Success -> next_subgoal ())
   | Formula.Top -> next_subgoal ()
   | _ ->
     if List.exists (fun h -> h.formula = Formula.Bottom) sequent.hyps then next_subgoal ()
@@ -671,7 +693,7 @@ let strengthen remove name =
       then (
         Sequent.add_hyp sequent (Option.get f_op);
         if remove then Sequent.remove_hyp sequent name)
-      else undo ()
+      else ()
     | Formula.Atm _ ->
       prerr_endline "Strengthening can only be performed on explicit context items.";
       undo ()
@@ -790,9 +812,9 @@ let unfold hypop uwiths =
              let f_def = Formula.forall tyctx (Formula.imp f1 f2) in
              apply_form f_def [ f ] uwiths
            with
-          | _ ->
-            undo ();
-            try_each defs')
+           | _ ->
+             undo ();
+             try_each defs')
         | [] -> raise (ApplyFailure "No clauses of definition match.")
       in
       try_each defs
@@ -823,9 +845,9 @@ let applydfn defname hypnameop uwiths =
              let f_def = Formula.forall tyctx (Formula.imp f2 f1) in
              apply_form f_def [ f ] uwiths
            with
-          | _ ->
-            undo ();
-            try_each defs')
+           | _ ->
+             undo ();
+             try_each defs')
         | [] -> raise (ApplyFailure "No clauses of definition match.")
       in
       try_each defs

@@ -21,6 +21,14 @@ tar :
 test:
 	@dune runtest --release
 
+.PHONY: fmt
+fmt:
+	@dune build @fmt
+
+.PHONY: doc
+doc:
+	@dune build @doc-private
+
 .PHONY: clean
 clean:
 	@dune clean

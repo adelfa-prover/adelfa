@@ -138,61 +138,61 @@ let rec hnorm term =
   | App (t, args) ->
     let t = hnorm t in
     (match observe t with
-    | Lam (idtys, t) ->
-      let n = List.length idtys in
-      let e, n', args' = make_env n args in
-      let ol = List.length e in
-      if n' > 0
-      then hnorm (susp (lambda (List.drop (n - n') idtys) t) ol 0 e)
-      else hnorm (app (susp t ol 0 e) args')
-    (* Do we actually need to treat this differently from an *)
-    (* abstraction? besides considering the LF types. *)
-    | Pi (lfidtys, t) ->
-      (* should be ok to assume that number of args is less
+     | Lam (idtys, t) ->
+       let n = List.length idtys in
+       let e, n', args' = make_env n args in
+       let ol = List.length e in
+       if n' > 0
+       then hnorm (susp (lambda (List.drop (n - n') idtys) t) ol 0 e)
+       else hnorm (app (susp t ol 0 e) args')
+     (* Do we actually need to treat this differently from an *)
+     (* abstraction? besides considering the LF types. *)
+     | Pi (lfidtys, t) ->
+       (* should be ok to assume that number of args is less
                    than pi-bound variables *)
-      let n = List.length args in
-      let alist = List.map2 (fun (v, _) a -> v.name, a) (List.take n lfidtys) args in
-      pi
-        (List.map (fun (v, ty) -> v, replace_term_vars alist ty) (List.drop n lfidtys))
-        (hnorm (replace_term_vars alist t))
-    (* | Pi(lfidtys,t) -> *)
-    (*    let n = List.length lfidtys in *)
-    (*    let e, n', args' = make_env n args in *)
-    (*    let ol = List.length e in *)
-    (*    if n' > 0 *)
-    (*    then hnorm (susp (pi (List.drop (n-n') lfidtys) t) ol 0 e)  *)
-    (*    else hnorm (app (susp t ol 0 e) args')  *)
-    | _ -> app t args)
+       let n = List.length args in
+       let alist = List.map2 (fun (v, _) a -> v.name, a) (List.take n lfidtys) args in
+       pi
+         (List.map (fun (v, ty) -> v, replace_term_vars alist ty) (List.drop n lfidtys))
+         (hnorm (replace_term_vars alist t))
+     (* | Pi(lfidtys,t) -> *)
+     (*    let n = List.length lfidtys in *)
+     (*    let e, n', args' = make_env n args in *)
+     (*    let ol = List.length e in *)
+     (*    if n' > 0 *)
+     (*    then hnorm (susp (pi (List.drop (n-n') lfidtys) t) ol 0 e)  *)
+     (*    else hnorm (app (susp t ol 0 e) args')  *)
+     | _ -> app t args)
   | Susp (t, ol, nl, e) ->
     let t = hnorm t in
     (match observe t with
-    | Var _ | Type -> t
-    | DB i ->
-      if i > ol
-      then (* The index points to something outside the suspension *)
-        db (i - ol + nl)
-      else (
-        (* The index has to be substituted for [e]'s [i]th element *)
-        match List.nth e (i - 1) with
-        | Dum l -> db (nl - l)
-        | Binding (t, l) -> hnorm (susp t 0 (nl - l) []))
-    | Lam (idtys, t) ->
-      let n = List.length idtys in
-      lambda idtys (hnorm (susp t (ol + n) (nl + n) (add_dummies e n nl)))
-    | Pi (lfidtys, t) ->
-      let n = List.length lfidtys in
-      (* need to apply within the types of bound variables as well *)
-      let lfidtys' =
-        List.mapi
-          (fun i (v, tm) -> v, hnorm (susp tm (ol + i) (nl + i) (add_dummies e i nl)))
-          lfidtys
-      in
-      pi lfidtys' (hnorm (susp t (ol + n) (nl + n) (add_dummies e n nl)))
-    | App (t, args) ->
-      let wrap x = susp x ol nl e in
-      hnorm (app (wrap t) (List.map wrap args))
-    | Susp _ -> assert false
-    | Ptr _ -> assert false)
+     | Var _ | Type -> t
+     | DB i ->
+       if i > ol
+       then (* The index points to something outside the suspension *)
+         db (i - ol + nl)
+       else (
+         (* The index has to be substituted for [e]'s [i]th element *)
+         match List.nth e (i - 1) with
+         | Dum l -> db (nl - l)
+         | Binding (t, l) -> hnorm (susp t 0 (nl - l) []))
+     | Lam (idtys, t) ->
+       let n = List.length idtys in
+       lambda idtys (hnorm (susp t (ol + n) (nl + n) (add_dummies e n nl)))
+     | Pi (lfidtys, t) ->
+       let n = List.length lfidtys in
+       (* need to apply within the types of bound variables as well *)
+       let lfidtys' =
+         List.mapi
+           (fun i (v, tm) -> v, hnorm (susp tm (ol + i) (nl + i) (add_dummies e i nl)))
+           lfidtys
+       in
+       pi lfidtys' (hnorm (susp t (ol + n) (nl + n) (add_dummies e n nl)))
+     | App (t, args) ->
+       let wrap x = susp x ol nl e in
+       hnorm (app (wrap t) (List.map wrap args))
+     | Susp _ -> assert false
+     | Ptr _ -> assert false)
   | Ptr _ -> assert false
 
 (* This replacement assumes that binding issues like name capture are *)
@@ -242,7 +242,7 @@ let rec eta_normalize t =
                 let bndr' = List.nth (List.rev idtys) i in
                 bndr' = bndr && acc
               with
-             | _ -> false)
+              | _ -> false)
            | _ -> false)
          true
          (List.take n idtys)
@@ -416,8 +416,8 @@ let get_var_ty t =
   | Var v -> v.ty
   | Lam _ ->
     (match eta_normalize t with
-    | Var v -> v.ty
-    | _ -> exit 1)
+     | Var v -> v.ty
+     | _ -> exit 1)
   | _ -> assert false
 ;;
 
@@ -456,14 +456,14 @@ let rec eta_expand t =
   match observe (hnorm t) with
   | Var v ->
     (match v.ty with
-    | Type.Ty ([], _) -> t
-    | Type.Ty (tyargs, _) ->
-      let bvars = List.map (fresh ~tag:Constant ~ts:2) tyargs in
-      List.fold_right2
-        (fun name ty btm -> abstract (get_hd_id name) ty btm)
-        bvars
-        tyargs
-        (app t (List.map eta_expand bvars)))
+     | Type.Ty ([], _) -> t
+     | Type.Ty (tyargs, _) ->
+       let bvars = List.map (fresh ~tag:Constant ~ts:2) tyargs in
+       List.fold_right2
+         (fun name ty btm -> abstract (get_hd_id name) ty btm)
+         bvars
+         tyargs
+         (app t (List.map eta_expand bvars)))
   | Lam (tyctx, body) -> lambda tyctx (eta_expand body)
   | App (h, tms) -> app (eta_expand h) (List.map eta_expand tms)
   | DB _ -> t
@@ -530,10 +530,10 @@ let rec tc (tyctx : tyctx) t =
   | App (h, args) ->
     let arg_tys = List.map (tc tyctx) args in
     (match tc tyctx h with
-    | Ty (tys, bty) ->
-      let n = List.length arg_tys in
-      assert (List.take n tys = arg_tys);
-      Ty (List.drop n tys, bty))
+     | Ty (tys, bty) ->
+       let n = List.length arg_tys in
+       assert (List.take n tys = arg_tys);
+       Ty (List.drop n tys, bty))
   | Lam (idtys, t) -> tyarrow (get_ctx_tys idtys) (tc (List.rev_append idtys tyctx) t)
   | _ -> assert false
 ;;
@@ -544,9 +544,9 @@ let rec erase t =
   match observe (hnorm t) with
   | Pi (tys, t) ->
     (match erase t with
-    | Ty (tys', bty) ->
-      let tys = List.map (fun x -> erase (snd x)) tys in
-      Ty (tys @ tys', bty))
+     | Ty (tys', bty) ->
+       let tys = List.map (fun x -> erase (snd x)) tys in
+       Ty (tys @ tys', bty))
   | Var v when v.tag = Constant -> oty
   | App _ -> oty
   | Type -> oty

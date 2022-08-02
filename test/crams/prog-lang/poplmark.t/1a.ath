@@ -41,11 +41,11 @@ induction on 4. intros. case H4.
         prune H7.
     case H7.
     weaken H6 with (var n2).
-    ctxpermute H12 to L,n2:ty,n7:var n2,n:bound X S, n1:bound_var X S n DV.
-    weaken H1 with ty. weaken H14 with (var n8).
-    weaken H2 with ty. weaken H16 with (var n10).
-    weaken H3 with ty. weaken H18 with (var n12).
-    apply IH to H15 H17 H19 H13 with (L = L,n2:ty,n7:var n2), S = S, X = X, DV = DV, T = [x][y] F y x n2.
+    ctxpermute H12 to L,n2:ty,n5:var n2,n:bound X S, n1:bound_var X S n DV.
+    weaken H1 with ty. weaken H14 with (var n6).
+    weaken H2 with ty. weaken H16 with (var n8).
+    weaken H3 with ty. weaken H18 with (var n10).
+    apply IH to H15 H17 H19 H13.
         prune H20.
     case H20.
     exists all T3 ([z3]F2 z3). exists refl_ty X S DV ([x][y]all T3 ([z3]F2 z3)).
@@ -105,7 +105,7 @@ intros. apply sub__ty to H3. case H5.
 apply ty_strengthening to H1 H7 H2 H4. case H8.
 strengthen H12. strengthen H13.
 weaken H1 with (bound X P). weaken H6 with (bound X P). weaken H2 with (bound X P).
-weaken H14 with (bound X P). weaken H18 with (bound_var X P n9 DV).
+weaken H14 with (bound X P). weaken H18 with (bound_var X P n7 DV).
 search.
 
 Theorem narrow_var : ctx L:c, forall S Q X P D T: o -> o -> o DV,
@@ -117,7 +117,7 @@ intros. apply sub__ty to H3. case H5.
 apply var_strengthening to H1 H7 H2 H4. case H8.
 strengthen H13. strengthen H14.
 weaken H1 with (bound X P). weaken H6 with (bound X P). weaken H2 with (bound X P).
-weaken H15 with (bound X P). weaken H19 with (bound_var X P n9 DV).
+weaken H15 with (bound X P). weaken H19 with (bound_var X P n7 DV).
 search.
 
 Theorem trans_and_narrow' :
@@ -224,31 +224,31 @@ split.
           search.
       %%%Showing P is a subtype of Q in the weakened context
       assert {L, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2 |- D1 : sub P Q}.
-          weaken H5 with ty. weaken H15 with (var n12). 
-          strengthen H9. strengthen H17. weaken H18 with ty. weaken H19 with (var n14).
-          weaken H16 with (bound n12 N1).
-          weaken H20 with (bound n14 N1).
-          weaken H21 with (bound_var n12 N1 n16 n13).
+          weaken H5 with ty. weaken H15 with (var n10).
+          strengthen H9. strengthen H17. weaken H18 with ty. weaken H19 with (var n12).
+          weaken H16 with (bound n10 N1).
+          weaken H20 with (bound n12 N1).
+          weaken H21 with (bound_var n10 N1 n14 n11).
           search.
       %%%weakening the assumptions for X and DV
       assert {L, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2 |- X : ty}.
-        weaken H3 with ty. weaken H16 with (var n12).
+        weaken H3 with ty. weaken H16 with (var n10).
         strengthen H9. strengthen H18.
-        weaken H19 with ty. weaken H20 with (var n14). weaken H21 with (bound n14 N1).
-        weaken H17 with (bound n12 N1). weaken H23 with (bound_var n12 N1 n17 n13).
+        weaken H19 with ty. weaken H20 with (var n12). weaken H21 with (bound n12 N1).
+        weaken H17 with (bound n10 N1). weaken H23 with (bound_var n10 N1 n15 n11).
         search.
       assert {L, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2 |- DV : var X}.
-        weaken H4 with ty. weaken H17 with (var n12).
+        weaken H4 with ty. weaken H17 with (var n10).
         strengthen H9. strengthen H19.
-        weaken H20 with ty. weaken H21 with (var n14). weaken H22 with (bound n14 N1).
-        weaken H18 with (bound n12 N1). weaken H24 with (bound_var n12 N1 n17 n13).
+        weaken H20 with ty. weaken H21 with (var n12). weaken H22 with (bound n12 N1).
+        weaken H18 with (bound n10 N1). weaken H24 with (bound_var n10 N1 n15 n11).
         search.
       %%%use narrowing on the derivation of (sub (M2 n) (N2 n))
       apply IH1 to H16 H17 H15 H14 with (L = L, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2), X = X, M = (M2 n), N = (N2 n), P = P, D1 = D1, D2 = [x][y] a2 y x n n2 n1 n3, DV = DV.
           prune H18.
           
       %%%permute back context
-      ctxpermute H18 to L,n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2.
+      ctxpermute H18 to L,n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2.
       %%%will also need derivations that M1, N1, M2 and N2 are well formed types
       %%%under the narrowed context
       apply sub__ty to H13. case H20.
@@ -282,7 +282,7 @@ split.
             apply sub__ty to H6. case H18.
             strengthen H19. strengthen H21. strengthen H10. strengthen H23.
             weaken H24 with (bound M P). weaken H22 with (bound M P). weaken H16 with (bound M P).
-            weaken H5 with (bound M P). weaken H28 with (bound_var M P n9 DV).
+            weaken H5 with (bound M P). weaken H28 with (bound_var M P n7 DV).
             search.
           %%%applying transitivity
           apply H2 to H15 H14 with (L = L, n:bound M P, n1:bound_var M P n DV), S = P, T = N, D1 = D1, D2 = D4 n n1.
@@ -291,12 +291,12 @@ split.
           assert {L, n:bound M P, n1:bound_var M P n DV |- M : ty}.
             apply sub__ty to H5. case H20.
             weaken H21 with (bound M P). weaken H4 with (bound M P).
-            weaken H3 with (bound M P). weaken H25 with (bound_var M P n8 DV).
+            weaken H3 with (bound M P). weaken H25 with (bound_var M P n6 DV).
             search.
           assert {L, n:bound M P, n1:bound_var M P n DV |- DV : var M}.
             apply sub__ty to H5. case H21.
             weaken H22 with (bound M P). weaken H3 with (bound M P).
-            weaken H4 with (bound M P). weaken H26 with (bound_var M P n8 DV).
+            weaken H4 with (bound M P). weaken H26 with (bound_var M P n6 DV).
             search.
           exists ([x][y] sa-trans-tvar P N M DV x y (D3 y x)).
           search.
@@ -327,7 +327,7 @@ split.
           assert {L, n:bound N P, n1:bound_var N P n DV |- P : ty}.
             apply sub__ty to H5. case H14.
             strengthen H12. strengthen H13.
-            weaken H15 with (bound N P). weaken H19 with (bound_var N P n10 DV).
+            weaken H15 with (bound N P). weaken H19 with (bound_var N P n6 DV).
             search.
           exists ([x][y] sa-refl-tvar P N DV x y). search.
         %case 4.2: from new context variable block, full block

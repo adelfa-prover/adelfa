@@ -132,43 +132,43 @@ let trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
       else raise (TypingError (unknownconstant pos id))
     | ULam (pos, (idpos, id, tyopt), tm) ->
       (match ty with
-      | Type.Ty (argty :: args, bty) ->
-        if Option.is_some tyopt && not (Type.eq argty (Option.get tyopt))
-        then raise (TypingError (typemismatch pos (Option.get tyopt) argty));
-        let tm', nvar_ctx' =
-          trans_match
-            nvar_ctx
-            ((id, ref (Some (Term.const ~ts:2 id argty))) :: bvar_ctx)
-            (Type.Ty (args, bty))
-            tm
-        in
-        Term.abstract id argty tm', nvar_ctx'
-      | _ when Option.is_none tyopt -> raise (TypingError (notype idpos id))
-      | _ ->
-        raise (TypingError (typemismatch pos (Type.tyarrow [ Option.get tyopt ] ty) ty)))
+       | Type.Ty (argty :: args, bty) ->
+         if Option.is_some tyopt && not (Type.eq argty (Option.get tyopt))
+         then raise (TypingError (typemismatch pos (Option.get tyopt) argty));
+         let tm', nvar_ctx' =
+           trans_match
+             nvar_ctx
+             ((id, ref (Some (Term.const ~ts:2 id argty))) :: bvar_ctx)
+             (Type.Ty (args, bty))
+             tm
+         in
+         Term.abstract id argty tm', nvar_ctx'
+       | _ when Option.is_none tyopt -> raise (TypingError (notype idpos id))
+       | _ ->
+         raise (TypingError (typemismatch pos (Type.tyarrow [ Option.get tyopt ] ty) ty)))
     | UPi (pos, (_, id), typ, tm) ->
       (match ty with
-      | Type.Ty ([], "o") ->
-        let ty', nvar_ctx' = trans_match nvar_ctx bvar_ctx Type.oty typ in
-        let aty = Term.erase ty' in
-        let tm', nvar_ctx'' =
-          trans_match
-            nvar_ctx'
-            ((id, ref (Some (Term.const ~ts:2 id aty))) :: bvar_ctx)
-            Type.oty
-            tm
-        in
-        Term.pi [ Term.term_to_var (Term.const ~ts:2 id aty), ty' ] tm', nvar_ctx''
-      | _ -> raise (TypingError (typemismatch pos Type.oty ty)))
+       | Type.Ty ([], "o") ->
+         let ty', nvar_ctx' = trans_match nvar_ctx bvar_ctx Type.oty typ in
+         let aty = Term.erase ty' in
+         let tm', nvar_ctx'' =
+           trans_match
+             nvar_ctx'
+             ((id, ref (Some (Term.const ~ts:2 id aty))) :: bvar_ctx)
+             Type.oty
+             tm
+         in
+         Term.pi [ Term.term_to_var (Term.const ~ts:2 id aty), ty' ] tm', nvar_ctx''
+       | _ -> raise (TypingError (typemismatch pos Type.oty ty)))
     | UApp (pos, tm1, tm2) ->
       let tm1', Type.Ty (args, bty), nvar_ctx' = trans_get nvar_ctx bvar_ctx tm1 in
       (match args with
-      | argty :: args' ->
-        let tm2', nvar_ctx'' = trans_match nvar_ctx' bvar_ctx argty tm2 in
-        if Type.eq ty (Type.Ty (args', bty))
-        then Term.app tm1' [ tm2' ], nvar_ctx''
-        else raise (TypingError (typemismatch pos ty (Type.Ty (args', bty))))
-      | [] -> raise (TypingError (toomanyargs pos)))
+       | argty :: args' ->
+         let tm2', nvar_ctx'' = trans_match nvar_ctx' bvar_ctx argty tm2 in
+         if Type.eq ty (Type.Ty (args', bty))
+         then Term.app tm1' [ tm2' ], nvar_ctx''
+         else raise (TypingError (typemismatch pos ty (Type.Ty (args', bty))))
+       | [] -> raise (TypingError (toomanyargs pos)))
     | UType _ -> Term.Type, nvar_ctx
   and trans_get nvar_ctx bvar_ctx = function
     | UConst (pos, id) when List.mem_assoc id bvar_ctx ->
@@ -234,10 +234,10 @@ let trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
     | UApp (pos, tm1, tm2) ->
       let tm1', arrty, nvar_ctx' = trans_get nvar_ctx bvar_ctx tm1 in
       (match arrty with
-      | Type.Ty (argty :: args, bty) ->
-        let tm2', nvar_ctx'' = trans_match nvar_ctx' bvar_ctx argty tm2 in
-        Term.app tm1' [ tm2' ], Type.Ty (args, bty), nvar_ctx''
-      | _ -> raise (TypingError (toomanyargs pos)))
+       | Type.Ty (argty :: args, bty) ->
+         let tm2', nvar_ctx'' = trans_match nvar_ctx' bvar_ctx argty tm2 in
+         Term.app tm1' [ tm2' ], Type.Ty (args, bty), nvar_ctx''
+       | _ -> raise (TypingError (toomanyargs pos)))
     | UType _ -> Term.Type, Type.oty, nvar_ctx
   in
   match ty_opt with
@@ -277,8 +277,8 @@ let rec trans_ctx lf_sig evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx = function
        ( Context.Ctx (ctx, (Term.term_to_var (Term.nominal_var name (Term.erase tm)), tm))
        , nvar_ctx'' )
      with
-    | Assert_failure _ ->
-      raise (TypingError (unknownconstant (Uterms.get_pos utm) (Term.get_ty_head tm))))
+     | Assert_failure _ ->
+       raise (TypingError (unknownconstant (Uterms.get_pos utm) (Term.get_ty_head tm))))
 ;;
 
 let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx formula =
@@ -471,12 +471,12 @@ let trans_schema lf_sig ublock_schemas =
 ;;
 
 let trans_dfn
-    (lf_sig : Signature.signature)
-    (schemas : (string * Context.ctx_schema) list)
-    (dfns : (string * Type.ty) list)
-    (name : Term.id)
-    (ty : Type.ty)
-    (udefs : Uterms.udef list)
+  (lf_sig : Signature.signature)
+  (schemas : (string * Context.ctx_schema) list)
+  (dfns : (string * Type.ty) list)
+  (name : Term.id)
+  (ty : Type.ty)
+  (udefs : Uterms.udef list)
   =
   let trans_def (ufleft, ufright) =
     match ufleft with
@@ -491,9 +491,9 @@ let trans_dfn
         Uterms.extract_unbound_uform [] ufleft @ Uterms.extract_unbound_uform [] ufright
         |> List.unique
         |> List.remove_all (fun id ->
-               List.mem_assoc id dfns'
-               || Signature.is_obj lf_sig id
-               || Signature.is_type lf_sig id)
+             List.mem_assoc id dfns'
+             || Signature.is_obj lf_sig id
+             || Signature.is_type lf_sig id)
       in
       let new_nominal_ctx, new_logicvar_ctx =
         let regexp = Str.regexp "n[']*[0-9]*" in
