@@ -256,8 +256,6 @@ command:
     { Uterms.Skip }
   | ABORT DOT
     { Uterms.Abort }
-  | UNDO DOT
-    { Uterms.Undo }
   | WEAKEN clearable WITH term DOT
       { Uterms.Weaken($2, $4, Uterms.DefaultDepth) }
   | WEAKEN clearable WITH term NUM DOT
@@ -288,6 +286,8 @@ command:
       { Uterms.AppDfn($2,Some $4, []) }
   | APPDFN id DOT
       { Uterms.AppDfn($2, None, []) }
+  | common_command
+      { Uterms.Common($1) }
 
 ctxbinding:
   | loc_id COLON loc_id
@@ -402,11 +402,15 @@ top_command:
     { Uterms.Schema(deloc_id $2, $4) }
   | SPECIFICATION QSTRING DOT
     { Uterms.Specification($2) }
-  | SET setting_list DOT
-    { Uterms.Set($2) }
   | QUIT DOT
     { Uterms.Quit }       
   | EOF
-    { raise End_of_file }      
-                             
-                             
+    { raise End_of_file }
+  | common_command
+    { Uterms.TopCommon($1) }
+
+common_command:
+  | SET setting_list DOT
+    { Uterms.Set($2) }
+  | UNDO DOT
+    { Uterms.Undo }

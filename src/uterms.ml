@@ -97,9 +97,12 @@ let unwrap_vws uw =
   | Cws _ -> bugf "Expected with term when unwrapping"
 ;;
 
+type common_command =
+  | Undo
+  | Set of setting list
+
 type command =
   | Skip
-  | Undo
   | Search of depth
   | Ind of int
   | Apply of clearable * clearable list * uwith list
@@ -118,6 +121,7 @@ type command =
   | Prune of id
   | Unfold of id option * uwith list
   | AppDfn of id * id option * uwith list
+  | Common of common_command
 
 type top_command =
   | Theorem of id * uformula
@@ -125,7 +129,7 @@ type top_command =
   | Specification of string
   | Quit
   | Define of aid * udef list
-  | Set of setting list
+  | TopCommon of common_command
 
 type sig_decl =
   | Const of id * uterm

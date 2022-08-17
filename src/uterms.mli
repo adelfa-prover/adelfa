@@ -56,9 +56,13 @@ val unwrap_cws : uwith -> id * uctx
 val is_vws : uwith -> bool
 val unwrap_vws : uwith -> id * uterm
 
+
+type common_command =
+  | Undo
+  | Set of setting list
+
 type command =
   | Skip
-  | Undo
   | Search of depth
   | Ind of int
   | Apply of clearable * clearable list * uwith list
@@ -77,6 +81,7 @@ type command =
   | Prune of id
   | Unfold of id option * uwith list
   | AppDfn of id * id option * uwith list
+  | Common of common_command
 
 type top_command =
   | Theorem of id * uformula
@@ -84,7 +89,7 @@ type top_command =
   | Specification of string
   | Quit
   | Define of aid * udef list
-  | Set of setting list
+  | TopCommon of common_command
 
 type sig_decl =
   | Const of id * uterm
