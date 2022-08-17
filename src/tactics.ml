@@ -133,7 +133,7 @@ let freshen_ctx_bindings ctx_vars bindings form =
    does not consider them.
 *)
 let context_instance
-  (schemas : (Context.ctx_var * Context.block_schema list) list)
+  (schemas : (Context.ctx_var, Context.block_schema list) Hashtbl.t)
   (nvars : (id * term) list)
   (ctxvar_ctx_seq : (Context.ctx_var * Context.ctx_typ) list)
   (ctxvar_ctx_form : (Context.ctx_var * Context.ctx_typ) list)
@@ -158,7 +158,7 @@ let context_instance
          formulas which first instantiated the context variable. *)
       false
     | Some (Context.CtxTy (schema_form_name, _)) ->
-      let schema_form = List.assoc schema_form_name schemas in
+      let schema_form = Hashtbl.find schemas schema_form_name in
       Typing.of_schema nvars ctxvar_ctx_seq g_seq (schema_form_name, schema_form)
   in
   let rec aux g_form g_seq =
@@ -282,7 +282,7 @@ let generate_partial_perm f1 f2 added ctxvar_ctx bound_ctxvar_ctx =
    t1 may contain logic variables, t2 is ground                    *)
 let all_meta_right_permute_unify
   ~sc
-  (schemas : (Context.ctx_var * Context.block_schema list) list)
+  (schemas : (Context.ctx_var, Context.block_schema list) Hashtbl.t)
   (nvars : (Term.id * Term.term) list)
   (ctxvar_ctx : (Context.ctx_var * Context.ctx_typ) list)
   (new_ctxvar_ctx : (Context.ctx_var * Context.ctx_typ) list)
@@ -997,7 +997,7 @@ let implicitHeads seq schemas (g : Context.ctx_expr)
   let gamma = Context.get_ctx_var g in
   let tycvar = Sequent.ctxvar_lookup seq.ctxvars gamma in
   let (Context.CtxTy (schema, _)) = Sequent.get_ctxvar_ty tycvar in
-  let block_schemas = List.assoc schema schemas in
+  let block_schemas = Hashtbl.find schemas schema in
   List.map (allBlocks seq g tycvar) block_schemas |> List.flatten
 ;;
 
@@ -1126,7 +1126,7 @@ let cases lf_sig schemas seq id : case list =
     (*         Term.set_bind_state bind_state in *)
     case
   in
-  List.map per_head case_heads |> List.flatten
+  List.flatten_map per_head case_heads
 ;;
 
 (* Given a sequent and a term, checks that the term is weakly well

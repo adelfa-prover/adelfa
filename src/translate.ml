@@ -350,7 +350,7 @@ let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx 
       let process_locid (pos, id, schema) =
         let cvar = Context.ctx_var id in
         try
-          let _ = List.assoc schema schemas in
+          let _ = Hashtbl.find schemas schema in
           cvar, ref [], Context.ctx_typ ~id:schema ()
         with
         | Not_found -> raise (TypingError (badschema pos schema))
@@ -472,7 +472,7 @@ let trans_schema lf_sig ublock_schemas =
 
 let trans_dfn
   (lf_sig : Signature.signature)
-  (schemas : (string * Context.ctx_schema) list)
+  (schemas : (string, Context.ctx_schema) Hashtbl.t)
   (dfns : (string * Type.ty) list)
   (name : Term.id)
   (ty : Type.ty)

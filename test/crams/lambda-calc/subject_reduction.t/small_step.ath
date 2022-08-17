@@ -36,12 +36,10 @@ Theorem subject_reduction_wsscbv : ctx Gamma:c, forall M1 M2 T D1 D2,
   %QUESTION: Shouldn't prune work in this scenario?
   prune H14.
   exists of_app (lam T1 R) M4 T D4 D5 (D1 n).
-  assert {Gamma |- M4 : tm}. case H14. search. search. search. search.
-  search.
+  assert {Gamma |- M4 : tm}. search.
 
   % app1 case.
   case H1.
   apply IH to H11 H6.
   exists of_app M4 N T U D1 a2.
-  assert {Gamma |- M4 : tm}. case H13. search. search. search.
-  search.
+  assert {Gamma |- M4 : tm}. search.

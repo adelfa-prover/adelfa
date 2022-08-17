@@ -433,6 +433,20 @@ let rec pr_udefs ppf = function
   | def :: defs -> Format.fprintf ppf "%a;\n%a" pr_udef def pr_udefs defs
 ;;
 
+let rec pr_common ppf = function
+  | Uterms.Undo -> pr_str ppf "undo."
+  | Uterms.Set settings -> Format.fprintf ppf "@[<4>Set@ %a@.@]" pr_settings settings
+
+and pr_setting ppf = function
+  | Uterms.SearchDepth v -> Format.fprintf ppf "search_depth %a" pr_str (string_of_int v)
+
+and pr_settings ppf settings =
+  match settings with
+  | [] -> ()
+  | [ v ] -> Format.fprintf ppf "%a" pr_setting v
+  | s :: tl -> Format.fprintf ppf "%a, %a" pr_setting s pr_settings tl
+;;
+
 let rec pr_command ppf = function
   | Uterms.Weaken (name, utm, DefaultDepth) ->
     Format.fprintf ppf "@[<4>weaken %a with %a.@]" pr_clearable name pr_uterm utm
@@ -448,7 +462,6 @@ let rec pr_command ppf = function
       (string_of_int i)
   | Uterms.Abort -> pr_str ppf "abort."
   | Uterms.Skip -> pr_str ppf "skip."
-  | Uterms.Undo -> pr_str ppf "undo."
   | Uterms.Search DefaultDepth -> pr_str ppf "search."
   | Uterms.Search (WithDepth i) ->
     Format.fprintf ppf "search %a." pr_str (string_of_int i)
@@ -512,6 +525,7 @@ let rec pr_command ppf = function
       hid
       pr_withs
       withs
+  | Uterms.Common c -> pr_common ppf c
 
 and pr_clearable ppf = function
   | Keep id | Remove id -> pr_str ppf id
@@ -555,15 +569,6 @@ and pr_locids ppf = function
   | [] -> ()
   | [ (_, id) ] -> Format.fprintf ppf "%a" pr_str id
   | (_, id) :: locids -> Format.fprintf ppf "%a@,@ %a" pr_str id pr_locids locids
-
-and pr_setting ppf = function
-  | Uterms.SearchDepth v -> Format.fprintf ppf "search_depth %a" pr_str (string_of_int v)
-
-and pr_settings ppf settings =
-  match settings with
-  | [] -> ()
-  | [ v ] -> Format.fprintf ppf "%a" pr_setting v
-  | s :: tl -> Format.fprintf ppf "%a, %a" pr_setting s pr_settings tl
 ;;
 
 let pr_topcommand ppf = function
@@ -576,7 +581,7 @@ let pr_topcommand ppf = function
   | Uterms.Quit -> pr_str ppf "Quit."
   | Uterms.Define (aid, defs) ->
     Format.fprintf ppf "@[<4>Define@ %a@ by\n%a.@]" pr_aid aid pr_udefs defs
-  | Uterms.Set settings -> Format.fprintf ppf "@[<4>Set@ %a@.@]" pr_settings settings
+  | Uterms.TopCommon c -> pr_common ppf c
 ;;
 
 let rec pr_subst ppf = function

@@ -1,7 +1,7 @@
 Help message should display when the `--help` flag is given
 
   $ adelfa --help
-  Usage: main [options]
+  Usage: adelfa [options]
   options are: 
     -i  Specifies a file from which to read input.
     --input  Specifies a file from which to read input.

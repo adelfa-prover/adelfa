@@ -3,7 +3,13 @@ open Test_helper
 
 let tests =
   "tests"
-  >::: [ Etanorm_test.tests; Unify_test.tests; Tactics_test.tests; Prover_test.tests ]
+  >::: [ Etanorm_test.tests
+       ; Unify_test.tests
+       ; Tactics_test.tests
+       ; Prover_test.tests
+       ; Sequent_test.tests
+       ; State_test.tests
+       ]
 ;;
 
 let tests = extract_tests [] tests

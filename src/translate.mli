@@ -36,7 +36,7 @@ val trans_term
 
 val trans_formula
   :  Signature.signature
-  -> (string * Context.ctx_schema) list
+  -> (string, Context.ctx_schema) Hashtbl.t
   -> (string * Type.ty) list
   -> (Term.id * Term.term option ref) list
   -> (Term.id * Term.term option ref) list
@@ -58,9 +58,9 @@ val trans_schema : Signature.signature -> Uterms.uschema -> Context.ctx_schema
 
 val trans_dfn
   :  Signature.signature
-  -> (string * Context.ctx_schema) list
+  -> (string, Context.ctx_schema) Hashtbl.t
   -> (string * Type.ty) list
   -> Term.id
   -> Type.ty
   -> Uterms.udef list
-  -> Definition.dfn
+  -> string * Definition.dfn

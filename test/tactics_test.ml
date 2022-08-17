@@ -19,7 +19,7 @@ let case_tests =
          let term = atm Context.Nil p (Term.app eval [ a; b ]) in
          let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
          Sequent.add_hyp seq ~name:"H1" term;
-         match cases eval_sig [] seq "H1" with
+         match cases eval_sig (Hashtbl.create 1) seq "H1" with
          | [ case1; case2 ] ->
            set_bind_state case1.bind_state_case;
            assert_pprint_equal "{eval_abs A : eval (abs A) (abs A)}" term;
@@ -106,7 +106,7 @@ let apply_tests =
            ; "P2", p5
            ]
          in
-         let f_res = apply_with [] seq f args (vwiths, []) in
+         let f_res = apply_with (Hashtbl.create 1) seq f args (vwiths, []) in
          assert_pprint_equal "exists P3, {P3 : typeof (abs R) (arrow S T)}" f_res)
        ; ("Properly restricted"
          >:: fun () ->
@@ -158,7 +158,7 @@ let apply_tests =
            ; "P2", p5
            ]
          in
-         let f_res = apply_with [] seq f args (vwiths, []) in
+         let f_res = apply_with (Hashtbl.create 1) seq f args (vwiths, []) in
          assert_pprint_equal "exists P3, {P3 : typeof (abs R) (arrow S T)}" f_res)
        ; ("Needlessly restricted"
          >:: fun () ->
@@ -210,7 +210,7 @@ let apply_tests =
            ; "P2", p5
            ]
          in
-         let f_res = apply_with [] seq f args (vwiths, []) in
+         let f_res = apply_with (Hashtbl.create 1) seq f args (vwiths, []) in
          assert_pprint_equal "exists P3, {P3 : typeof (abs R) (arrow S T)}" f_res)
        ; ("Improperly restricted"
          >:: fun () ->
@@ -260,7 +260,7 @@ let apply_tests =
            ]
          in
          assert_raises (Failure "Inductive restriction violated") (fun () ->
-           apply_with [] seq f args (vwiths, [])))
+           apply_with (Hashtbl.create 1) seq f args (vwiths, [])))
        ; ("Improperly restricted (2)"
          >:: fun () ->
          let a = var Eigen "A" 0 ity in
@@ -313,7 +313,7 @@ let apply_tests =
            ]
          in
          assert_raises (Failure "Inductive restriction violated") (fun () ->
-           apply_with [] seq f args (vwiths, [])))
+           apply_with (Hashtbl.create 1) seq f args (vwiths, [])))
        ; ("Properly double restricted"
          >:: fun () ->
          let a = var Eigen "A" 0 ity in
@@ -365,7 +365,7 @@ let apply_tests =
            ; "P2", p5
            ]
          in
-         let f_res = apply_with [] seq f args (vwiths, []) in
+         let f_res = apply_with (Hashtbl.create 1) seq f args (vwiths, []) in
          assert_pprint_equal "exists P3, {P3 : typeof (abs R) (arrow S T)}" f_res)
        ; ("Improperly double restricted"
          >:: fun () ->
@@ -420,7 +420,7 @@ let apply_tests =
            ]
          in
          assert_raises (Failure "Inductive restriction violated") (fun () ->
-           apply_with [] seq f args (vwiths, [])))
+           apply_with (Hashtbl.create 1) seq f args (vwiths, [])))
        ; ("Improperly double restricted (2)"
          >:: fun () ->
          let a = var Eigen "A" 0 ity in
@@ -470,7 +470,7 @@ let apply_tests =
            ]
          in
          assert_raises (Failure "Inductive restriction violated") (fun () ->
-           apply_with [] seq f args (vwiths, [])))
+           apply_with (Hashtbl.create 1) seq f args (vwiths, [])))
        ; ("Failure to unify"
          >:: fun () ->
          let a = var Eigen "A" 0 ity in
@@ -514,7 +514,7 @@ let apply_tests =
              ; "P2", p5
              ]
            in
-           let _ = apply_with [] seq f args (vwiths, []) in
+           let _ = apply_with (Hashtbl.create 1) seq f args (vwiths, []) in
            assert_failure "Expected unification failure"
          with
          | Unify.UnifyFailure Unify.Generic -> ())
@@ -594,7 +594,8 @@ let apply_tests =
              let cwiths =
                [ "E", Context.Ctx (Context.Var l, (term_to_var n1, Term.app hyp [ b ])) ]
              in
-             apply_with [ "c", schema ] seq f args (vwiths, cwiths)
+             let tbl = List.to_seq [ "c", schema ] |> Hashtbl.of_seq in
+             apply_with tbl seq f args (vwiths, cwiths)
            with
            | Unify.UnifyFailure e ->
              print_endline (Unify.explain_failure e);
@@ -630,7 +631,9 @@ let apply_tests =
                       (Formula.exists [ "E3", ity ] (atm (Context.Var g) e3 tm)))))
          in
          let args = [ atm (Context.Var g1) e4 tm; atm (Context.Var g2) e5 tm ] in
-         let schemas = List.map (fun v -> v, []) [ g; g1; g2 ] in
+         let schemas =
+           List.map (fun v -> v, []) [ g; g1; g2 ] |> List.to_seq |> Hashtbl.of_seq
+         in
          assert_raises (Unify.UnifyFailure Unify.Generic) (fun () ->
            Tactics.apply schemas seq f args))
        ; ("Is able to instantiate ctx var with repetitions of schema"
@@ -655,7 +658,11 @@ let apply_tests =
                    (Formula.exists [ "E2", ity ] (atm (Context.Var g) e2 tm))))
          in
          let args = [ atm (Context.Ctx (Context.Var g1, (term_to_var n, tm))) e3 tm ] in
-         let schemas = [ "c", [ Context.B ([], [ term_to_var x, tm ]) ] ] in
+         let schemas =
+           [ "c", [ Context.B ([], [ term_to_var x, tm ]) ] ]
+           |> List.to_seq
+           |> Hashtbl.of_seq
+         in
          assert_formula_equal
            (Formula.exists
               [ "E2", ity ]
@@ -689,7 +696,7 @@ let apply_tests =
          in
          let args = [ atm (Context.Var g1) u1 tm; atm (Context.Var g2) u2 tm ] in
          let args = List.map (fun f -> Formula.norm f) args in
-         let schemas = [ "c", [] ] in
+         let schemas = [ "c", [] ] |> List.to_seq |> Hashtbl.of_seq in
          assert_raises (Unify.UnifyFailure Unify.Generic) (fun () ->
            Tactics.apply schemas seq f args))
        ; ("Matches abstractions in antecedent"
@@ -724,7 +731,7 @@ let apply_tests =
            ]
          in
          let args = List.map (fun f -> Sequent.norm_atom seq f) args in
-         let schemas = [ "c", [] ] in
+         let schemas = [ "c", [] ] |> List.to_seq |> Hashtbl.of_seq in
          assert_equal
            (Formula.exists [ "E2", ity ] (atm (Context.Var g1) e2 tm))
            (Tactics.apply schemas seq f args))
@@ -752,7 +759,11 @@ let apply_tests =
            [ atm (Context.Var g1) (abstract "y" ity z) (pi [ term_to_var y, tm ] tm) ]
          in
          let args = List.map (fun f -> Sequent.norm_atom seq f) args in
-         let schemas = [ "c", [ Context.B ([], [ term_to_var x, tm ]) ] ] in
+         let schemas =
+           [ "c", [ Context.B ([], [ term_to_var x, tm ]) ] ]
+           |> List.to_seq
+           |> Hashtbl.of_seq
+         in
          assert_equal
            (Formula.exists
               [ "E2", ity ]

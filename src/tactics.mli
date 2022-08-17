@@ -56,7 +56,7 @@ val ind : Sequent.sequent -> int -> int -> unit
  *)
 val cases
   :  Signature.signature
-  -> (string * Context.ctx_schema) list
+  -> (string, Context.ctx_schema) Hashtbl.t
   -> Sequent.sequent
   -> string
   -> case list
@@ -73,14 +73,14 @@ val exists : Sequent.sequent -> Term.term -> unit
  * instantiations for universal and context quantifiers)
  * and adds the resulting formula to the sequent. *)
 val apply
-  :  (string * Context.ctx_schema) list
+  :  (string, Context.ctx_schema) Hashtbl.t
   -> Sequent.sequent
   -> Formula.formula
   -> Formula.formula list
   -> Formula.formula
 
 val apply_with
-  :  (string * Context.ctx_schema) list
+  :  (string, Context.ctx_schema) Hashtbl.t
   -> Sequent.sequent
   -> Formula.formula
   -> Formula.formula list

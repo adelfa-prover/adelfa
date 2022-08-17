@@ -56,7 +56,6 @@ val unwrap_cws : uwith -> id * uctx
 val is_vws : uwith -> bool
 val unwrap_vws : uwith -> id * uterm
 
-
 type common_command =
   | Undo
   | Set of setting list

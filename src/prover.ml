@@ -1,5 +1,6 @@
 open Sequent
 open Extensions
+module H = Hashtbl
 
 (* exception to indicate that a proof is completed (no more subgoals) *)
 exception ProofCompleted
@@ -17,55 +18,58 @@ exception ProofCompleted
 
 type prover_settings = { mutable search_depth : int }
 
-type prover_state =
-  { sequent : Sequent.sequent
-  ; subgoals : (unit -> unit) list
-  ; bind_state : Term.bind_state
-  ; term_var_count : int
-  ; ctx_var_count : int
-  ; ind_count : int
-  ; settings : prover_settings
-  }
-
 (* 1. The currently loaded LF signature *)
-let lf_sig = ref Signature.empty
+let lf_sig = State.rref Signature.empty
 let clear_sig () = lf_sig := Signature.empty
 let set_sig s = lf_sig := s
+let has_sig () = !lf_sig = Signature.empty |> not
 
 (* 2. The available context schemas *)
-let schemas : (string * Context.ctx_schema) list ref = ref []
-let add_schema id s = schemas := (id, s) :: !schemas
-let clear_schemas () = schemas := []
+let schemas : (string, Context.ctx_schema) H.t = State.table ()
 
 (* Raises Not_found if schema of given name is not in the schema list *)
-let lookup_schema id = List.assoc id !schemas
+let lookup_schema id = H.find schemas id
 
-(* 3. The available lemmas *)
-let lemmas : (string * Formula.formula) list ref = ref []
-let add_lemma id f = lemmas := (id, f) :: !lemmas
-let clear_lemmas () = lemmas := []
-let lookup_lemma id = List.assoc id !lemmas
-
-(* 4. The current goal. *)
-let sequent =
-  { vars = []
-  ; ctxvars = []
-  ; hyps = []
-  ; goal = Formula.Top
-  ; count = 0
-  ; name = "dummy"
-  ; next_subgoal_id = 1
-  }
+let add_schema id s =
+  if H.mem schemas id
+  then Format.eprintf "Warning: overriding existing schema named %S@." id;
+  H.replace schemas id s
 ;;
 
-let copy_sequent () = cp_sequent sequent
-let set_sequent other = assign_sequent sequent other
+(* 3. The available lemmas *)
+let lemmas : (string, Formula.formula) H.t = State.table ()
+let lookup_lemma id = H.find lemmas id
+
+let add_lemma id f =
+  if H.mem lemmas id
+  then Format.eprintf "Warning: overriding existing lemma named %S@." id;
+  H.replace lemmas id f
+;;
+
+let sequent =
+  State.make
+    ~copy:cp_sequent
+    ~assign:assign_sequent
+    { vars = []
+    ; ctxvars = []
+    ; hyps = []
+    ; goal = Formula.Top
+    ; count = 0
+    ; name = "dummy"
+    ; next_subgoal_id = 1
+    }
+;;
+
 let get_sequent () = sequent
+let set_sequent other = assign_sequent sequent other
+let copy_sequent () = cp_sequent sequent
 
 (* 5. The current stack of subgoals. *)
-let subgoals : (unit -> unit) list ref = ref []
+type subgoal = unit -> unit
 
-let add_subgoals (new_subgoals : (unit -> unit) list) =
+let subgoals : subgoal list ref = State.rref []
+
+let add_subgoals (new_subgoals : subgoal list) =
   let extend_name sequent i =
     if sequent.name = ""
     then sequent.name <- string_of_int i
@@ -89,17 +93,24 @@ let add_subgoals (new_subgoals : (unit -> unit) list) =
 ;;
 
 (* 6. The available definitions *)
-let dfns : Definition.dfn list ref = ref []
-let add_definition dfn = dfns := dfn :: !dfns
-let clear_definitions () = dfns := []
-let lookup_definition id = snd (List.assoc id !dfns)
-let get_propty_lst () = List.map (fun (x, (y, _)) -> x, y) !dfns
-let undo_stack = ref []
+let dfns : (string, Definition.dfn) H.t = State.table ()
+let lookup_definition id = H.find dfns id |> snd
+let get_propty_lst () = H.to_seq dfns |> Seq.map (fun (x, (y, _)) -> x, y) |> List.of_seq
+
+let add_definition (id, dfn) =
+  if H.mem dfns id
+  then Format.eprintf "Warning: overriding existing definition named %S@." id;
+  H.replace dfns id dfn
+;;
 
 (* 7. The current settings *)
 (* How deep to extract types from hypotheses  *)
-let settings = { search_depth = 5 }
-let copy_settings () = { search_depth = settings.search_depth }
+let copy_settings ss = { search_depth = ss.search_depth }
+let set_setting_state s1 s2 = s1.search_depth <- s2.search_depth
+
+let settings =
+  State.make ~copy:copy_settings ~assign:set_setting_state { search_depth = 5 }
+;;
 
 let depth_or_default depth =
   match depth with
@@ -107,10 +118,8 @@ let depth_or_default depth =
   | Uterms.WithDepth d -> d
 ;;
 
-let set_setting_state { search_depth = d } = settings.search_depth <- d
-
 (* 8. Induction count *)
-let ind_count = ref 0
+let ind_count = State.rref 0
 
 let get_ind_count () =
   let _ = ind_count := 1 + !ind_count in
@@ -119,45 +128,12 @@ let get_ind_count () =
 
 let reset_ind_count () = ind_count := 0
 
-let state_snapshot () =
-  { sequent = copy_sequent ()
-  ; subgoals = !subgoals
-  ; bind_state = Term.get_bind_state ()
-  ; term_var_count = Term.get_varcount ()
-  ; ctx_var_count = Context.get_varcount ()
-  ; ind_count = !ind_count
-  ; settings = copy_settings ()
-  }
-;;
-
-let save_undo_state () = undo_stack := state_snapshot () :: !undo_stack
-
 let change_settings sets =
   let aux setting =
     match setting with
     | Uterms.SearchDepth v -> settings.search_depth <- v
   in
-  save_undo_state ();
   List.iter aux sets
-;;
-
-let state_reset
-  { sequent
-  ; subgoals = sgs
-  ; bind_state
-  ; term_var_count
-  ; ctx_var_count
-  ; ind_count = n
-  ; settings
-  }
-  =
-  set_sequent sequent;
-  subgoals := sgs;
-  Term.set_bind_state bind_state;
-  Term.set_varcount term_var_count;
-  Context.set_varcount ctx_var_count;
-  ind_count := n;
-  set_setting_state settings
 ;;
 
 let reset_prover =
@@ -165,7 +141,6 @@ let reset_prover =
   let empty_seq = copy_sequent () in
   fun () ->
     set_sequent empty_seq;
-    undo_stack := [];
     subgoals := [];
     reset_ind_count ();
     Term.set_bind_state empty_bind_state;
@@ -186,9 +161,9 @@ let next_subgoal () =
 ;;
 
 let display_state () =
-  print_endline "";
+  let snapshot = State.snapshot () in
+  (*let bind_state = Term.get_bind_state () in*)
   Print.print_sequent sequent;
-  let snapshot, undo_state = state_snapshot (), !undo_stack in
   List.iter
     (fun subgoal ->
       subgoal ();
@@ -199,58 +174,39 @@ let display_state () =
         Print.pr_formula
         sequent.goal)
     !subgoals;
-  state_reset snapshot;
-  undo_stack := undo_state
+  State.reload snapshot
 ;;
 
-(* print_endline ("Number Subgoals: "^(string_of_int (List.length (!subgoals)))^"\n\n") *)
-
-(* not fully implemented undo function yet *)
-let undo () =
-  match !undo_stack with
-  | snapshot :: rest ->
-    state_reset snapshot;
-    undo_stack := rest
-  | [] -> prerr_endline "Nothing left to undo"
-;;
+(*Term.set_bind_state bind_state*)
 
 let induction i =
-  save_undo_state ();
   try Tactics.ind sequent i (get_ind_count ()) with
-  | e ->
-    undo ();
-    raise e
+  | e -> raise e
 ;;
 
 let intros () =
-  save_undo_state ();
   try Tactics.intros sequent with
-  | e ->
-    undo ();
-    raise e
+  | e -> raise e
 ;;
 
-let case_to_subgoal remove h_name case =
-  let saved_sequent = copy_sequent () in
-  fun () ->
-    (* set_sequent saved_sequent; *)
-    saved_sequent.vars <- case.Tactics.vars_case;
-    saved_sequent.ctxvars <- case.Tactics.ctxvars_case;
-    saved_sequent.hyps <- case.Tactics.hyps_case;
-    saved_sequent.goal <- case.Tactics.goal_case;
-    saved_sequent.count <- case.Tactics.count_case;
-    saved_sequent.name <- case.Tactics.name_case;
-    saved_sequent.next_subgoal_id <- case.Tactics.next_subgoal_id_case;
-    if remove then Sequent.remove_hyp saved_sequent h_name;
-    Term.set_bind_state case.Tactics.bind_state_case;
-    set_sequent saved_sequent
+let case_to_subgoal remove h_name case : subgoal =
+ fun () ->
+  sequent.vars <- case.Tactics.vars_case;
+  sequent.ctxvars <- case.Tactics.ctxvars_case;
+  sequent.hyps <- case.Tactics.hyps_case;
+  sequent.goal <- case.Tactics.goal_case;
+  sequent.count <- case.Tactics.count_case;
+  sequent.name <- case.Tactics.name_case;
+  sequent.next_subgoal_id <- case.Tactics.next_subgoal_id_case;
+  if remove then Sequent.remove_hyp sequent h_name;
+  Term.set_bind_state case.Tactics.bind_state_case;
+  set_sequent sequent
 ;;
 
 (* the unification for first case is modifying the sequent.
   need to make a true copy where the vars are different or
   find another way to reset so we can try next unification *)
 let case remove hyp =
-  save_undo_state ();
   try
     match (Sequent.get_hyp sequent hyp).formula with
     | Formula.Bottom -> next_subgoal ()
@@ -280,59 +236,43 @@ let case remove hyp =
             Term.set_bind_state bind_state)
         ]
     | Formula.Atm _ ->
-      (match Tactics.cases !lf_sig !schemas sequent hyp with
+      (match Tactics.cases !lf_sig schemas sequent hyp with
        | [] -> next_subgoal ()
        | cases ->
          add_subgoals (List.map (case_to_subgoal remove hyp) cases);
          next_subgoal ())
     | _ -> ()
   with
-  | Tactics.NotLlambda ->
-    prerr_endline "cases failed: not llambda";
-    undo ()
-  | Not_found ->
-    prerr_endline ("No assumption of name `" ^ hyp ^ "'.");
-    undo ()
+  | Tactics.NotLlambda -> failwith "cases failed: not llambda"
+  | Not_found -> failwithf "No assumption of name `%s'." hyp
 ;;
 
 let exists tm =
-  save_undo_state ();
   try Tactics.exists sequent tm with
   | Typing.TypeError (exp, got) ->
-    prerr_endline
-      ("Type Error: Expected type\n"
-      ^ Print.string_of_ty exp
-      ^ "\nbut found type\n"
-      ^ Print.string_of_ty got);
-    undo ()
-  | Tactics.InvalidTerm _ ->
-    prerr_endline "Bad term";
-    undo ()
+    failwithf
+      "Type Error: Expected type\n%s\nbut found type\n%s"
+      (Print.string_of_ty exp)
+      (Print.string_of_ty got)
+  | Tactics.InvalidTerm _ -> failwith "Bad term"
 ;;
 
-let skip () =
-  save_undo_state ();
-  next_subgoal ()
-;;
+let skip () = next_subgoal ()
 
 let search depth () =
-  let _ = save_undo_state () in
   let depth = depth_or_default depth in
   match sequent.goal with
   | Formula.Atm _ | Formula.Prop _ ->
     (try
        Tactics.search ~depth !lf_sig sequent;
-       undo ();
-       prerr_endline "Search failed."
+       failwith "Search failed."
      with
      | Tactics.Success -> next_subgoal ())
   | Formula.Top -> next_subgoal ()
   | _ ->
     if List.exists (fun h -> h.formula = Formula.Bottom) sequent.hyps
     then next_subgoal ()
-    else (
-      prerr_endline "Cannot apply search to goal formula of this structure.";
-      undo ())
+    else failwith "Cannot apply search to goal formula of this structure."
 ;;
 
 let toplevel_bindings form =
@@ -493,7 +433,7 @@ let ensure_no_uninst_ctxvariable ctxvarctx f =
 ;;
 
 let find_by_name name =
-  match List.assoc_opt name !lemmas with
+  match H.find_opt lemmas name with
   | Some form -> form
   | None ->
     (try (Sequent.get_hyp sequent name).Sequent.formula with
@@ -510,7 +450,7 @@ let apply_form f forms uws =
   in
   (* let f' = freshen_formula_names (Formula.copy_formula f) withs in *)
   (* let res_f = Tactics.apply_with !schemas sequent f' forms withs in *)
-  let res_f = Tactics.apply_with !schemas sequent f forms withs in
+  let res_f = Tactics.apply_with schemas sequent f forms withs in
   let () =
     ensure_no_uninst_ctxvariable (Sequent.get_cvar_tys sequent.Sequent.ctxvars) res_f
   in
@@ -521,7 +461,6 @@ let apply_form f forms uws =
 ;;
 
 let apply name args uws =
-  save_undo_state ();
   try
     let f = find_by_name name in
     let forms = List.map find_by_name args in
@@ -529,19 +468,12 @@ let apply name args uws =
     Sequent.add_hyp sequent res_f;
     Sequent.normalize_hyps sequent
   with
-  | Unify.UnifyFailure e ->
-    prerr_endline (Unify.explain_failure e);
-    undo ()
-  | ApplyFailure str ->
-    prerr_endline str;
-    undo ()
-  | Failure e ->
-    prerr_endline e;
-    undo ()
+  | Unify.UnifyFailure e -> failwith (Unify.explain_failure e)
+  | ApplyFailure str -> failwith str
+  | Failure e -> failwith e
 ;;
 
 let assert_thm depth f =
-  save_undo_state ();
   let depth = depth_or_default depth in
   let subgoal =
     let saved_sequent = copy_sequent () in
@@ -569,7 +501,6 @@ let assert_thm depth f =
 ;;
 
 let split () =
-  save_undo_state ();
   try
     let g1, g2 = Tactics.split sequent.goal in
     let seq = copy_sequent () in
@@ -587,48 +518,34 @@ let split () =
           Term.set_bind_state bind_state)
       ]
   with
-  | Tactics.InvalidFormula (_, str) ->
-    prerr_endline str;
-    undo ()
+  | Tactics.InvalidFormula (_, str) -> failwith str
 ;;
 
 let left () =
-  save_undo_state ();
   try
     let l = Tactics.left sequent.goal in
     sequent.goal <- l
   with
-  | Tactics.InvalidFormula (_, str) ->
-    prerr_endline str;
-    undo ()
+  | Tactics.InvalidFormula (_, str) -> failwith str
 ;;
 
 let right () =
-  save_undo_state ();
   try
     let r = Tactics.right sequent.goal in
     sequent.goal <- r
   with
-  | Tactics.InvalidFormula (_, str) ->
-    prerr_endline str;
-    undo ()
+  | Tactics.InvalidFormula (_, str) -> failwithf "Invalid formula:\n%s" str
 ;;
 
 let weaken depth remove id ty =
-  save_undo_state ();
   try
     let depth = depth_or_default depth in
     let hyp = (Sequent.get_hyp sequent id).formula in
     Tactics.weaken ~depth !lf_sig sequent hyp ty;
-    prerr_endline "weakening failed.";
-    undo ()
+    failwith "Weakening failed."
   with
-  | Not_found ->
-    prerr_endline ("No assumption of name `" ^ id ^ "'.");
-    undo ()
-  | Tactics.InvalidFormula (_, str) ->
-    prerr_endline str;
-    undo ()
+  | Not_found -> failwithf "No assumption of name `%s'\n." id
+  | Tactics.InvalidFormula (_, str) -> failwithf "Invalid formula:\n%s" str
   | Tactics.Success ->
     let g, a, m, ann =
       let f = (Sequent.get_hyp sequent id).formula in
@@ -657,17 +574,13 @@ let weaken depth remove id ty =
     Sequent.add_hyp
       sequent
       (Formula.atm ~ann (Context.Ctx (g, (Term.term_to_var nvar, ty))) a m)
-  | Tactics.InvalidName id ->
-    prerr_endline ("`" ^ id ^ "' is not a valid type constant.");
-    undo ()
+  | Tactics.InvalidName id -> failwithf "`%s' is not a valid type constant." id
   | Tactics.InvalidTerm t ->
     prerr_endline "Given expression is not a type.";
-    undo ();
     raise (Tactics.InvalidTerm t)
 ;;
 
 let permute_ctx remove hyp_name ctx_expr =
-  save_undo_state ();
   try
     let form = (Sequent.get_hyp sequent hyp_name).formula in
     let form' = Tactics.permute_ctx form ctx_expr in
@@ -675,35 +588,25 @@ let permute_ctx remove hyp_name ctx_expr =
     then Sequent.replace_hyp sequent hyp_name form'
     else Sequent.add_hyp sequent form'
   with
-  | Not_found ->
-    prerr_endline ("No hyp of name `" ^ hyp_name ^ "' found.");
-    undo ()
+  | Not_found -> failwithf "No hyp of name `%s' found." hyp_name
   | Tactics.InvalidCtxPermutation str ->
-    prerr_endline ("Error: Not a valid context permutation.\n" ^ str);
-    undo ()
+    failwithf "Not a valid context permutation.\n%s" str
 ;;
 
 let strengthen remove name =
-  save_undo_state ();
   try
     match (Sequent.get_hyp sequent name).formula with
     | Formula.Atm (Context.Ctx _, _, _, _) as f ->
-      let f_op = Tactics.strengthen sequent.ctxvars f in
-      if Option.is_some f_op
-      then (
-        Sequent.add_hyp sequent (Option.get f_op);
-        if remove then Sequent.remove_hyp sequent name)
-      else ()
+      (match Tactics.strengthen sequent.ctxvars f with
+       | Some f_op ->
+         Sequent.add_hyp sequent f_op;
+         if remove then Sequent.remove_hyp sequent name
+       | None -> ())
     | Formula.Atm _ ->
-      prerr_endline "Strengthening can only be performed on explicit context items.";
-      undo ()
-    | _ ->
-      prerr_endline "Strengthening can only be performed on atomic formulas.";
-      undo ()
+      failwith "Strengthening can only be performed on explicit context items."
+    | _ -> failwith "Strengthening can only be performed on atomic formulas."
   with
-  | Not_found ->
-    prerr_endline ("No hyp of name `" ^ name ^ "' found.");
-    undo ()
+  | Not_found -> failwithf "No hyp of name `%s' found." name
 ;;
 
 exception InstError of string
@@ -747,7 +650,6 @@ let inst_aux depth name withs =
 ;;
 
 let inst depth remove name withs =
-  save_undo_state ();
   try
     let _ =
       if List.length withs > 1 || List.length withs <= 0
@@ -757,16 +659,12 @@ let inst depth remove name withs =
     if remove then Sequent.remove_hyp sequent name;
     Sequent.add_hyp sequent form'
   with
-  | InstError str ->
-    prerr_endline ("Error: " ^ str);
-    undo ()
+  | InstError str -> failwith str
   | Tactics.InstTypeError f ->
-    prerr_endline ("Error: Unable to derive formula:\n    " ^ Print.string_of_formula f);
-    undo ()
+    failwithf "Unable to derive formula:\n%s" (Print.string_of_formula f)
 ;;
 
 let prune name =
-  save_undo_state ();
   let check_term = function
     | Term.App (head, args) ->
       let norm_args = List.map Term.eta_normalize args in
@@ -780,14 +678,11 @@ let prune name =
     match f with
     | Formula.Atm (_, m, _, _) when check_term (Term.norm m) -> Tactics.prune sequent f
     | _ ->
-      prerr_endline
+      failwith
         "Pruning formulas must be of the form {G |- X n1 ... nm : A} with n1,...,nm \
-         distinct.";
-      undo ()
+         distinct."
   with
-  | Not_found ->
-    prerr_endline ("No hyp of name `" ^ name ^ "' found.");
-    undo ()
+  | Not_found -> failwithf "No hyp of name `%s' found." name
 ;;
 
 (* to fill in *)
@@ -799,21 +694,19 @@ let unfold hypop uwiths =
     let defs =
       match f with
       | Formula.Prop (p, _) -> lookup_definition p
-      | _ ->
-        save_undo_state ();
-        raise (ApplyFailure "Only proposition formulas can be unfolded.")
+      | _ -> raise (ApplyFailure "Only proposition formulas can be unfolded.")
     in
     (* for each clause of the definition, construct the formula and try applying *)
     let f' =
       let rec try_each = function
         | (_, tyctx, f1, f2) :: defs' ->
+          let pristine = State.snapshot () in
           (try
-             save_undo_state ();
              let f_def = Formula.forall tyctx (Formula.imp f1 f2) in
              apply_form f_def [ f ] uwiths
            with
            | _ ->
-             undo ();
+             State.reload pristine;
              try_each defs')
         | [] -> raise (ApplyFailure "No clauses of definition match.")
       in
@@ -823,9 +716,7 @@ let unfold hypop uwiths =
     then Sequent.replace_hyp sequent (Option.get hypop) f'
     else sequent.goal <- f'
   with
-  | ApplyFailure str ->
-    prerr_endline str;
-    undo ()
+  | ApplyFailure str -> failwith str
 ;;
 
 let applydfn defname hypnameop uwiths =
@@ -840,13 +731,13 @@ let applydfn defname hypnameop uwiths =
     let f' =
       let rec try_each = function
         | (_, tyctx, f1, f2) :: defs' ->
+          let pristine = State.snapshot () in
           (try
-             save_undo_state ();
              let f_def = Formula.forall tyctx (Formula.imp f2 f1) in
              apply_form f_def [ f ] uwiths
            with
            | _ ->
-             undo ();
+             State.reload pristine;
              try_each defs')
         | [] -> raise (ApplyFailure "No clauses of definition match.")
       in
@@ -856,7 +747,5 @@ let applydfn defname hypnameop uwiths =
     then Sequent.replace_hyp sequent (Option.get hypnameop) f'
     else sequent.goal <- f'
   with
-  | ApplyFailure str ->
-    prerr_endline str;
-    undo ()
+  | ApplyFailure str -> failwith str
 ;;

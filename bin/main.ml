@@ -2,13 +2,24 @@
 open Extensions
 open Printf
 
+type proof_info =
+  { name : string
+  ; theorem : Formula.formula
+  }
+
+type proof_level =
+  | TopLevel
+  | ProofLevel of proof_info
+
+let interaction_level = State.rref TopLevel
+let proof_steps = State.rref 0
 let welcome_message = "Welcome!"
 let exit_message = "Goodbye!"
 let interactive = ref true
 let out = ref stdout
 let switch_to_interactive = ref false
 let lexbuf = ref (Lexing.from_channel stdin)
-let count = ref 0
+let count = State.rref 0
 let inputFile = ref ""
 
 let perform_switch_to_interactive () =
@@ -33,16 +44,13 @@ let reset_if_interactive () =
       <- { !lexbuf.lex_curr_p with pos_cnum = 0; pos_bol = 0; pos_lnum = 1 }
 ;;
 
-(* Lexing.flush_input !lexbuf; *)
-
 let position_range (p1, p2) =
   let file = p1.Lexing.pos_fname in
   let line = p1.Lexing.pos_lnum in
   let char1 = p1.Lexing.pos_cnum - p1.Lexing.pos_bol in
   let char2 = p2.Lexing.pos_cnum - p1.Lexing.pos_bol in
   if file = ""
-  then (* "" *)
-    sprintf ": line %d, characters %d-%d" line char1 char2
+  then sprintf ": line %d, characters %d-%d" line char1 char2
   else sprintf ": file %s, line %d, characters %d-%d" file line char1 char2
 ;;
 
@@ -52,9 +60,7 @@ let position lexbuf =
   let line = curr.Lexing.pos_lnum in
   let char = curr.Lexing.pos_cnum - curr.Lexing.pos_bol in
   if file = ""
-  then
-    (* "" (\* lexbuf information is rarely accurate at the toplevel *\) *)
-    sprintf ": line %d, character %d" line char
+  then sprintf ": line %d, character %d" line char
   else sprintf ": file %s, line %d, character %d" file line char
 ;;
 
@@ -74,10 +80,10 @@ let checkInput () =
     lexbuf := Lexing.from_channel (open_in !inputFile);
     !lexbuf.Lexing.lex_curr_p
       <- { !lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = !inputFile })
-  else failwith ("Error: Invalid input file: `" ^ !inputFile ^ "'.")
+  else failwithf "Error: Invalid input file: `%s'." !inputFile
 ;;
 
-let usageMsg = "Usage: main [options]\n" ^ "options are: "
+let usageMsg = "Usage: adelfa [options]\noptions are: "
 
 let specList =
   [ "-i", Arg.String setInputFile, " Specifies a file from which to read input."
@@ -100,6 +106,8 @@ let print_proof_prompt () =
 ;;
 
 let read_spec filename =
+  if Prover.has_sig ()
+  then failwithf "Specification file already given. Not reading `%s'" filename;
   let inchan = open_in filename in
   let lexbuf = Lexing.from_channel inchan in
   try
@@ -123,6 +131,12 @@ let read_spec filename =
     ()
 ;;
 
+let handle_common v =
+  match v with
+  | Uterms.Undo -> State.Undo.back 2
+  | Uterms.Set s -> Prover.change_settings s
+;;
+
 (* process proof tactics for deriving the current theorem.
    Read from a file or stdin *)
 let process_proof () =
@@ -143,7 +157,6 @@ let process_proof () =
   match input with
   | Uterms.Abort -> raise End_of_file
   | Uterms.Skip -> Prover.skip ()
-  | Uterms.Undo -> Prover.undo ()
   | Uterms.Search depth -> Prover.search depth ()
   | Uterms.Ind i ->
     (try Prover.induction i with
@@ -209,7 +222,7 @@ let process_proof () =
     let form =
       Translate.trans_formula
         !Prover.lf_sig
-        !Prover.schemas
+        Prover.schemas
         (Prover.get_propty_lst ())
         evar_ctx
         []
@@ -278,34 +291,12 @@ let process_proof () =
   | Uterms.Prune id -> Prover.prune id
   | Uterms.Unfold (hypnameop, withs) -> Prover.unfold hypnameop withs
   | Uterms.AppDfn (defname, hypnameop, withs) -> Prover.applydfn defname hypnameop withs
-;;
-
-let rec proof_loop () =
-  while true do
-    reset_if_interactive ();
-    (try
-       process_proof ();
-       Sequent.normalize_hyps (Prover.get_sequent ())
-     with
-     | Parsing.Parse_error ->
-       eprintf "Syntax error%s.\n%!" (position !lexbuf);
-       Lexing.flush_input !lexbuf;
-       interactive_or_exit ()
-     | Translate.TypingError e ->
-       eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
-       eprintf "%s.\n%!" (Translate.explain_error e);
-       interactive_or_exit ()
-     | Failure s ->
-       eprintf "Failure:%s\n%!" s;
-       interactive_or_exit ());
-    Prover.display_state ();
-    proof_loop ()
-  done
+  | Uterms.Common v -> handle_common v
 ;;
 
 (* Process toplevel commands;
    either from file or interactive *)
-let process () =
+let process_top_level () =
   (* parse top-level command from stdin, or file *)
   (* if no LF signature loaded, error on any other commands *)
   (* if a theorem is stated, enter proof construction *)
@@ -325,7 +316,7 @@ let process () =
      let theorem =
        Translate.trans_formula
          !Prover.lf_sig
-         !Prover.schemas
+         Prover.schemas
          (Prover.get_propty_lst ())
          []
          []
@@ -334,64 +325,78 @@ let process () =
          uthm
      in
      Prover.set_sequent (Sequent.make_sequent_from_goal ~name ~form:theorem ());
-     (try
-        Prover.display_state ();
-        proof_loop ()
-      with
-      | Prover.ProofCompleted ->
-        print_endline "Proof Completed!";
-        Prover.add_lemma name theorem
-      | End_of_file ->
-        print_endline "Proof Aborted.";
-        Prover.reset_prover ());
-     ()
+     proof_steps := 0;
+     interaction_level := ProofLevel { name; theorem }
    | Uterms.Schema (name, uschema) ->
      let schema = Translate.trans_schema !Prover.lf_sig uschema in
-     Prover.add_schema name schema;
-     ()
-   | Uterms.Specification fid ->
-     read_spec fid;
-     ()
+     Prover.add_schema name schema
+   | Uterms.Specification fid -> read_spec fid
    | Quit -> raise End_of_file
    | Uterms.Define ((id, Some ty), udefs) ->
      let dfn =
        Translate.trans_dfn
          !Prover.lf_sig
-         !Prover.schemas
+         Prover.schemas
          (Prover.get_propty_lst ())
          id
          ty
          udefs
      in
-     Prover.add_definition dfn;
-     ()
-   | Uterms.Set settings -> Prover.change_settings settings
-   | Uterms.Define ((_, None), _) -> bugf "Expected to defined some type");
+     Prover.add_definition dfn
+   | Uterms.Define ((_, None), _) -> bugf "Expected to defined some type"
+   | Uterms.TopCommon v -> handle_common v);
   if !interactive then flush stdout;
   if !Globals.annotate then fprintf !out "</pre>%!";
   fprintf !out "\n%!"
 ;;
 
-let rec top_loop () =
+let process () =
+  match !interaction_level with
+  | TopLevel -> process_top_level ()
+  | ProofLevel { name; theorem } ->
+    incr proof_steps;
+    (try
+       Prover.display_state ();
+       process_proof ();
+       Sequent.normalize_hyps (Prover.get_sequent ())
+     with
+     | Prover.ProofCompleted ->
+       print_endline "Proof Completed!";
+       Prover.add_lemma name theorem;
+       interaction_level := TopLevel
+     | End_of_file ->
+       print_endline "Proof Aborted.";
+       (* Have to also undo the Theorem statement *)
+       State.Undo.back (!proof_steps + 1);
+       Prover.reset_prover ();
+       interaction_level := TopLevel);
+    fprintf !out "\n%!"
+;;
+
+let top_loop () =
   while true do
+    State.Undo.push ();
     reset_if_interactive ();
-    (try process () with
-     | Sys_error s ->
-       eprintf "Error:\n%!";
-       eprintf "%s\n%!" s;
-       interactive_or_exit ()
-     | Parsing.Parse_error ->
-       eprintf "Syntax error%s.\n%!" (position !lexbuf);
-       Lexing.flush_input !lexbuf;
-       interactive_or_exit ()
-     | Translate.TypingError e ->
-       eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
-       eprintf "%s.\n%!" (Translate.explain_error e);
-       interactive_or_exit ()
-     | Failure s ->
-       eprintf "Failure:%s\n%!" s;
-       interactive_or_exit ());
-    top_loop ()
+    try process () with
+    | Sys_error s ->
+      eprintf "Error:\n%!";
+      eprintf "%s\n%!" s;
+      State.Undo.undo ();
+      interactive_or_exit ()
+    | Parsing.Parse_error ->
+      eprintf "Syntax error%s.\n%!" (position !lexbuf);
+      Lexing.flush_input !lexbuf;
+      State.Undo.undo ();
+      interactive_or_exit ()
+    | Translate.TypingError e ->
+      eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
+      eprintf "%s.\n%!" (Translate.explain_error e);
+      State.Undo.undo ();
+      interactive_or_exit ()
+    | Failure s ->
+      eprintf "Error: %s\n%!" s;
+      State.Undo.undo ();
+      interactive_or_exit ()
   done
 ;;
 

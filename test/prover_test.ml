@@ -67,4 +67,28 @@ let assert_tests =
        ]
 ;;
 
+let state_tests =
+  "State"
+  >::: [ ("Snapshotting replaces sequent"
+         >:: fun () ->
+         let s = Sequent.make_sequent_from_goal ~form:Bottom () in
+         Prover.set_sequent s;
+         let old = State.snapshot () in
+         (Prover.get_sequent ()).goal <- Top;
+         assert_formula_equal (Prover.get_sequent ()).goal Top;
+         State.reload old;
+         assert_formula_equal (Prover.get_sequent ()).goal Bottom)
+       ; ("Snapshotting and setting a new sequent restores old one"
+         >:: fun () ->
+         let s = Sequent.make_sequent_from_goal ~form:Bottom () in
+         let s' = Sequent.make_sequent_from_goal ~form:Top () in
+         Prover.set_sequent s;
+         let old = State.snapshot () in
+         Prover.set_sequent s';
+         assert_formula_equal (Prover.get_sequent ()).goal Top;
+         State.reload old;
+         assert_formula_equal (Prover.get_sequent ()).goal Bottom)
+       ]
+;;
+
 let tests = "Prover" >::: [ assert_tests ]

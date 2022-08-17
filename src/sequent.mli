@@ -76,3 +76,4 @@ val normalize_formula : sequent -> string -> Formula.formula -> unit
 val normalize_hyps : sequent -> unit
 val make_sequent_from_goal : ?name:string -> form:Formula.formula -> unit -> sequent
 val replace_seq_vars : (Term.id * Term.term) list -> sequent -> unit
+val eq : sequent -> sequent -> bool

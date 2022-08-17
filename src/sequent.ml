@@ -301,3 +301,18 @@ let make_sequent_from_goal ?(name = "") ~form:goal () =
   ; next_subgoal_id = 1
   }
 ;;
+
+let eq sq1 sq2 =
+  let hyp_forms1 = List.map (fun h -> h.formula) sq1.hyps in
+  let hyp_forms2 = List.map (fun h -> h.formula) sq2.hyps in
+  List.for_all2 (fun (v1, t1) (v2, t2) -> v1 = v2 && Term.eq t1 t2) sq1.vars sq2.vars
+  && List.for_all2
+       (fun (v1, _, _) (v2, _, _) -> Context.ctx_var_eq v1 v2)
+       sq1.ctxvars
+       sq2.ctxvars
+  && List.for_all2 Formula.eq hyp_forms1 hyp_forms2
+  && Formula.eq sq1.goal sq2.goal
+  && sq1.count = sq2.count
+  && sq1.name = sq2.name
+  && sq1.next_subgoal_id = sq2.next_subgoal_id
+;;

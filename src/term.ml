@@ -289,8 +289,8 @@ let rec is_kind tm =
 (* bind_state is a list of (var, old_value, new_value) *)
 type bind_state = (ptr * in_ptr * term) list
 
-let bind_state : bind_state ref = ref []
-let bind_len = ref 0
+let bind_state : bind_state ref = State.rref []
+let bind_len = State.rref 0
 
 let rec deref = function
   | Ptr { contents = T t } -> deref t
@@ -326,6 +326,13 @@ let set_bind_state state =
   clear_bind_state ();
   List.iter (fun (v, _, nv) -> bind (Ptr v) nv) (List.rev state)
 ;;
+
+let () =
+  State.add_hook ~time:BeforeReload (fun () ->
+    List.iter (fun (v, ov, _) -> v := ov) !bind_state)
+;;
+
+let () = State.add_hook ~time:AfterReload (fun () -> set_bind_state !bind_state)
 
 (* Scoped bind state is more efficient than regular bind state, but it
    must always be used in a lexically scoped fashion. The unwind_state
@@ -433,7 +440,7 @@ let prefix = function
   | Nominal -> "n"
 ;;
 
-let varcount = ref 1
+let varcount = State.rref 1
 let reset_varcount () = varcount := 1
 let get_varcount () = !varcount
 let set_varcount i = varcount := i

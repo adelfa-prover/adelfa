@@ -365,7 +365,7 @@ module Seq = struct
   ;;
 
   (* Generate all permutations of all n element subsets of the sequence *)
-  let rec permute (n:int) (seq : 'a Seq.t) =
+  let rec permute (n : int) (seq : 'a Seq.t) =
     if n = 0
     then Seq.return Seq.empty
     else (

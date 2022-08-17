@@ -2,29 +2,17 @@ exception ProofCompleted
 
 type prover_settings = { mutable search_depth : int }
 
-type prover_state =
-  { sequent : Sequent.sequent
-  ; subgoals : (unit -> unit) list
-  ; bind_state : Term.bind_state
-  ; term_var_count : int
-  ; ctx_var_count : int
-  ; ind_count : int
-  ; settings : prover_settings
-  }
-
 val change_settings : Uterms.setting list -> unit
 val lf_sig : Signature.signature ref
 val set_sig : Signature.signature -> unit
 val clear_sig : unit -> unit
-val schemas : (string * Context.ctx_schema) list ref
+val has_sig : unit -> bool
+val schemas : (string, Context.ctx_schema) Hashtbl.t
 val add_schema : string -> Context.ctx_schema -> unit
-val clear_schemas : unit -> unit
 val lookup_schema : string -> Context.ctx_schema
 val add_lemma : string -> Formula.formula -> unit
-val clear_lemmas : unit -> unit
 val lookup_lemma : string -> Formula.formula
-val add_definition : Definition.dfn -> unit
-val clear_definitions : unit -> unit
+val add_definition : string * Definition.dfn -> unit
 val lookup_definition : string -> Definition.def list
 val get_propty_lst : unit -> (string * Type.ty) list
 val get_ind_count : unit -> int
@@ -37,7 +25,6 @@ val intros : unit -> unit
 val case : bool -> string -> unit
 val skip : unit -> unit
 val exists : Term.term -> unit
-val undo : unit -> unit
 val search : Uterms.depth -> unit -> unit
 val apply : string -> string list -> Uterms.uwith list -> unit
 val assert_thm : Uterms.depth -> Formula.formula -> unit
