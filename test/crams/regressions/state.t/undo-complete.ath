@@ -1,0 +1,11 @@
+Specification "stlc.lf".
+
+Theorem undo-complete-formula : forall X,
+  {X: tm} => exists E, {E : tm}.
+intros.
+exists empty.
+search.
+% Proof done, using undo enters the proof again
+undo.
+% are able to redo the search and finish it
+search.

@@ -1,0 +1,10 @@
+Specification "stlc.lf".
+
+Schema c := (x : tm).
+
+undo.
+
+% schema c should no longer be defined, so should fail
+Theorem undid-schema : ctx G:c, forall X,
+  {X: tm} => false.
+

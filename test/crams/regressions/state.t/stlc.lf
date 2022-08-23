@@ -1,0 +1,8 @@
+tp : type.
+arrow : tp -> tp -> tp.
+unit : tp.
+
+tm : type.
+app : tm -> tm -> tm.
+lam : tp -> (tm -> tm) -> tm.
+empty : tm.

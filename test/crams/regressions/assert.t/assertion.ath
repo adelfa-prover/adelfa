@@ -1,0 +1,26 @@
+Specification "stlc.lf".
+
+Theorem new-nominals : forall X,
+  {X : tm} => false.
+intros.
+% Should add n to the sequent
+assert {n:tm |- X: tm}.
+  % introduces _another_ new nominal
+  weaken H1 with tm.
+  % succeeds
+  search.
+% should change from a non-nominal to a nominal
+assert {u : tm -> tm |- X : tm}.
+  % introduces _another_ new nominal
+  weaken H1 with tm -> tm.
+  % succeeds
+  search.
+% doesn't introduce a new nominal if it's already
+% in the sequent.
+assert {n : tp |- X : tm}.
+  weaken H1 with tp.
+  search.
+% introduces a new nominal for more than one new variable
+assert {v : tp -> tp, g: tp -> tp|- X : tm}.
+
+abort.
