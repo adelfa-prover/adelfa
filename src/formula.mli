@@ -54,6 +54,7 @@ val fresh_raised_alist
   -> (Term.id * Type.ty) list
   -> (id * term) list * term list
 
+val collect_vars_ctx : formula -> Term.var list
 val collect_terms : (Context.ctx_var * Context.ctx_typ) list -> formula -> term list
 val replace_formula_vars : (id * term) list -> formula -> formula
 

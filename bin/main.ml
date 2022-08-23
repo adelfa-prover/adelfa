@@ -207,16 +207,9 @@ let process_proof () =
   | Uterms.Intros -> Prover.intros ()
   | Uterms.Assert (uform, depth) ->
     (* weak type inf. on formula. then call Prover.cut *)
-    let nvars =
-      List.filter
-        (fun (_, t) -> Term.is_var Term.Nominal t)
-        (Prover.get_sequent ()).Sequent.vars
-    in
-    let evars =
-      List.filter
-        (fun (_, t) -> Term.is_var Term.Eigen t)
-        (Prover.get_sequent ()).Sequent.vars
-    in
+    let seq_vars = (Prover.get_sequent ()).Sequent.vars in
+    let nvars = List.filter (fun (_, t) -> Term.is_var Term.Nominal t) seq_vars in
+    let evars = List.filter (fun (_, t) -> Term.is_var Term.Eigen t) seq_vars in
     let nvar_ctx = List.map (fun (id, t) -> id, ref (Some t)) nvars in
     let evar_ctx = List.map (fun (id, t) -> id, ref (Some t)) evars in
     let form =
@@ -230,7 +223,30 @@ let process_proof () =
         nvar_ctx
         uform
     in
-    Prover.assert_thm depth form
+    (* Find new variable occurrences and add them to the sequent - replacing
+       them with nominals *)
+    let seq_var_ids =
+      List.filter (fun (_, t) -> Term.is_var Term.Nominal t) seq_vars
+      |> List.map snd
+      |> List.map Term.term_to_var
+    in
+    let new_vars =
+      Formula.collect_vars_ctx form |> List.remove_all (fun t -> List.mem t seq_var_ids)
+    in
+    let new_noms =
+      List.fold_left
+        (fun l v ->
+          let n, _ = Term.fresh_wrt ~ts:3 Term.Nominal "n" v.Term.ty (l @ seq_vars) in
+          (Term.term_to_name n, n) :: l)
+        []
+        new_vars
+    in
+    let alist =
+      List.combine (List.map (fun v -> v.Term.name) new_vars) (List.map snd new_noms)
+    in
+    let form' = Formula.replace_formula_vars alist form in
+    List.iter (fun v -> Sequent.add_var (Prover.get_sequent ()) v) new_noms;
+    Prover.assert_thm depth form'
   | Uterms.Weaken (clear, utm, depth) ->
     let nvars =
       List.filter

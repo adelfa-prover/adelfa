@@ -1471,7 +1471,7 @@ let weaken ~depth lf_sig sequent form t =
   match form with
   | Formula.Atm (g, _, _, _) ->
     (* 1. save current state.
-        2. for each goal formula, set as sequent goal and search. *)
+       2. for each goal formula, set as sequent goal and search. *)
     let save_seq, bind_state = Sequent.cp_sequent sequent, Term.get_bind_state () in
     let rec solve_goals = function
       | [] ->
