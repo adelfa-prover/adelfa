@@ -9,13 +9,10 @@ Theorem app_assoc : forall L1 L2 L3 L23 L4 D1 D2, {D1 : append L2 L3 L23} =>
   exists L12 D3 D4, {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}.
 
   induction on 2. intros.
-  assert {L2 : list}.
-  assert {L3 : list}.
   case H2.
   % append_cons case.
-  apply IH to H1 H9.
-  case H10.
-  assert {L12 : list}.
+  apply IH to H1 H7.
+  case H8.
   exists (cons N L12).
   exists append_cons L5 L2 L12 N D3.
   exists append_cons L12 L3 L7 N D4.
@@ -60,8 +57,6 @@ Theorem rev_app_swap : forall A B a b AB ba D1 D2 D3 D4,
   case H16.
   apply IH to H9 H14 H3 H17.
   exists rev_app_cons N L3 L12 ba D7 D2.
-  assert {L12 : list}.
-  assert {ba : list}.
   search.
   % append_nil case.
   case H2.
@@ -115,7 +110,6 @@ Theorem rev_acc_exists : forall L1 L2, {L1 : list} => {L2 : list} =>
   apply IH to H4 H5.
   exists L3.
   exists rev_acc_cons l L2 L3 n D1.
-  assert {L3 : list}.
   search.
   % rev_acc_nil case.
   exists L2.
@@ -128,11 +122,10 @@ Theorem rev_acc_rev_lem : forall a B AB ba ba2 D1 D2 D3, {D1 : rev_acc a B AB} =
 
   induction on 1. intros. case H1.
   % rev_acc_cons case.
-  assert {ba2 : list}.
   assert exists D4, {D4 : rev_acc (cons N B) L1 ba2}.
   exists rev_acc_cons B L1 ba2 N D3. search.
-  apply IH to H8 H2 H10.
-  case H11.
+  apply IH to H8 H2 H9.
+  case H10.
   exists refl_list ba2.
   search.
   % rev_acc_nil case.
@@ -147,9 +140,8 @@ Theorem rev_acc_rev : forall L1 L2 D1, {D1 : rev_acc L1 nil L2} =>
   assert {L2 : list}.
   assert {nil : list}.
   apply rev_acc_exists to H2 H3.
-  assert {L1 : list}.
   assert exists D3, {D3 : rev_acc nil L1 L1}. exists rev_acc_nil L1. search.
-  apply rev_acc_rev_lem to H1 H4 H6.
-  case H7.
+  apply rev_acc_rev_lem to H1 H4 H5.
+  case H6.
   exists D2.
   search.

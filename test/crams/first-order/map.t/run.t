@@ -232,13 +232,12 @@
   
   >> Theorem map-distrib-append:
       forall  L1 L2 L12 f FL12 FL1 FL2 D1 D2 D3 D4 D5 FL12',
-        {L1 : list} =>
-          {D1 : append L1 L2 L12} =>
-            {D2 : map f L12 FL12} =>
-              {D3 : map f L1 FL1} =>
-                {D4 : map f L2 FL2} =>
-                  {D5 : append FL1 FL2 FL12'} =>
-                    exists  E, {E : eq-list FL12 FL12'}.
+        {D1 : append L1 L2 L12} =>
+          {D2 : map f L12 FL12} =>
+            {D3 : map f L1 FL1} =>
+              {D4 : map f L2 FL2} =>
+                {D5 : append FL1 FL2 FL12'} =>
+                  exists  E, {E : eq-list FL12 FL12'}.
   
   Subgoal map-distrib-append:
   
@@ -247,15 +246,14 @@
   forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
     forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
     forall FL12',
-    {L1 : list} =>
-        {D1 : append L1 L2 L12} =>
-            {D2 : map f L12 FL12} =>
-                {D3 : map f L1 FL1} =>
-                    {D4 : map f L2 FL2} =>
-                        {D5 : append FL1 FL2 FL12'} =>
-                            exists E, {E : eq-list FL12 FL12'}
+    {D1 : append L1 L2 L12} =>
+        {D2 : map f L12 FL12} =>
+            {D3 : map f L1 FL1} =>
+                {D4 : map f L2 FL2} =>
+                    {D5 : append FL1 FL2 FL12'} =>
+                        exists E, {E : eq-list FL12 FL12'}
   
-  map-distrib-append>> induction on 2.
+  map-distrib-append>> induction on 1.
   
   Subgoal map-distrib-append:
   
@@ -263,25 +261,23 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  
-  ==================================
-  forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
-    forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
-    forall FL12',
-    {L1 : list} =>
-        {D1 : append L1 L2 L12}@ =>
+        {D1 : append L1 L2 L12}* =>
             {D2 : map f L12 FL12} =>
                 {D3 : map f L1 FL1} =>
                     {D4 : map f L2 FL2} =>
                         {D5 : append FL1 FL2 FL12'} =>
                             exists E, {E : eq-list FL12 FL12'}
+  
+  ==================================
+  forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
+    forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
+    forall FL12',
+    {D1 : append L1 L2 L12}@ =>
+        {D2 : map f L12 FL12} =>
+            {D3 : map f L1 FL1} =>
+                {D4 : map f L2 FL2} =>
+                    {D5 : append FL1 FL2 FL12'} =>
+                        exists E, {E : eq-list FL12 FL12'}
   
   map-distrib-append>> intros.
   
@@ -293,24 +289,22 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H1:{L1 : list}
-  H2:{D1 : append L1 L2 L12}@
-  H3:{D2 : map f L12 FL12}
-  H4:{D3 : map f L1 FL1}
-  H5:{D4 : map f L2 FL2}
-  H6:{D5 : append FL1 FL2 FL12'}
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H1:{D1 : append L1 L2 L12}@
+  H2:{D2 : map f L12 FL12}
+  H3:{D3 : map f L1 FL1}
+  H4:{D4 : map f L2 FL2}
+  H5:{D5 : append FL1 FL2 FL12'}
   
   ==================================
   exists E, {E : eq-list FL12 FL12'}
   
-  map-distrib-append>> cases H2.
+  map-distrib-append>> cases H1.
   
   Subgoal map-distrib-append.1:
   
@@ -320,23 +314,21 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H1:{cons x l1 : list}
-  H3:{D2 : map f (cons x l3) FL12}
-  H4:{D3 : map f (cons x l1) FL1}
-  H5:{D4 : map f L2 FL2}
-  H6:{D5 : append FL1 FL2 FL12'}
-  H7:{l1 : list}*
-  H8:{L2 : list}*
-  H9:{l3 : list}*
-  H10:{x : nat}*
-  H11:{d : append l1 L2 l3}*
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H2:{D2 : map f (cons x l3) FL12}
+  H3:{D3 : map f (cons x l1) FL1}
+  H4:{D4 : map f L2 FL2}
+  H5:{D5 : append FL1 FL2 FL12'}
+  H6:{l1 : list}*
+  H7:{L2 : list}*
+  H8:{l3 : list}*
+  H9:{x : nat}*
+  H10:{d : append l1 L2 l3}*
   
   ==================================
   exists E, {E : eq-list FL12 FL12'}
@@ -344,7 +336,7 @@
   Subgoal map-distrib-append.2 is:
    exists E, {E : eq-list FL12 FL12'}
   
-  map-distrib-append.1>> cases H3.
+  map-distrib-append.1>> cases H2.
   
   Subgoal map-distrib-append.1:
   
@@ -355,27 +347,25 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H1:{cons x l1 : list}
-  H4:{D3 : map ([x]f1 x) (cons x l1) FL1}
-  H5:{D4 : map ([x]f1 x) L2 FL2}
-  H6:{D5 : append FL1 FL2 FL12'}
-  H7:{l1 : list}*
-  H8:{L2 : list}*
-  H9:{l3 : list}*
-  H10:{x : nat}*
-  H11:{d : append l1 L2 l3}*
-  H12:{n:nat |- f1 n : nat}
-  H13:{l3 : list}
-  H14:{l4 : list}
-  H15:{d1 : map ([x]f1 x) l3 l4}
-  H16:{x : nat}
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H3:{D3 : map ([x]f1 x) (cons x l1) FL1}
+  H4:{D4 : map ([x]f1 x) L2 FL2}
+  H5:{D5 : append FL1 FL2 FL12'}
+  H6:{l1 : list}*
+  H7:{L2 : list}*
+  H8:{l3 : list}*
+  H9:{x : nat}*
+  H10:{d : append l1 L2 l3}*
+  H11:{n:nat |- f1 n : nat}
+  H12:{l3 : list}
+  H13:{l4 : list}
+  H14:{d1 : map ([x]f1 x) l3 l4}
+  H15:{x : nat}
   
   ==================================
   exists E, {E : eq-list (cons (f1 x) l4) FL12'}
@@ -383,7 +373,7 @@
   Subgoal map-distrib-append.2 is:
    exists E, {E : eq-list FL12 FL12'}
   
-  map-distrib-append.1>> cases H4.
+  map-distrib-append.1>> cases H3.
   
   Subgoal map-distrib-append.1:
   
@@ -394,31 +384,29 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H1:{cons x l1 : list}
-  H5:{D4 : map ([x]f1 x) L2 FL2}
-  H6:{D5 : append (cons (f1 x) FL3) FL2 FL12'}
-  H7:{l1 : list}*
-  H8:{L2 : list}*
-  H9:{l3 : list}*
-  H10:{x : nat}*
-  H11:{d : append l1 L2 l3}*
-  H12:{n:nat |- f1 n : nat}
-  H13:{l3 : list}
-  H14:{l4 : list}
-  H15:{d1 : map ([x]f1 x) l3 l4}
-  H16:{x : nat}
-  H17:{n1:nat |- f1 n1 : nat}
-  H18:{l1 : list}
-  H19:{FL3 : list}
-  H20:{D6 : map ([x]f1 x) l1 FL3}
-  H21:{x : nat}
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H4:{D4 : map ([x]f1 x) L2 FL2}
+  H5:{D5 : append (cons (f1 x) FL3) FL2 FL12'}
+  H6:{l1 : list}*
+  H7:{L2 : list}*
+  H8:{l3 : list}*
+  H9:{x : nat}*
+  H10:{d : append l1 L2 l3}*
+  H11:{n:nat |- f1 n : nat}
+  H12:{l3 : list}
+  H13:{l4 : list}
+  H14:{d1 : map ([x]f1 x) l3 l4}
+  H15:{x : nat}
+  H16:{n1:nat |- f1 n1 : nat}
+  H17:{l1 : list}
+  H18:{FL3 : list}
+  H19:{D6 : map ([x]f1 x) l1 FL3}
+  H20:{x : nat}
   
   ==================================
   exists E, {E : eq-list (cons (f1 x) l4) FL12'}
@@ -426,7 +414,7 @@
   Subgoal map-distrib-append.2 is:
    exists E, {E : eq-list FL12 FL12'}
   
-  map-distrib-append.1>> cases H6.
+  map-distrib-append.1>> cases H5.
   
   Subgoal map-distrib-append.1:
   
@@ -437,35 +425,33 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H1:{cons x l1 : list}
-  H5:{D4 : map ([x]f1 x) L2 FL2}
-  H7:{l1 : list}*
-  H8:{L2 : list}*
-  H9:{l3 : list}*
-  H10:{x : nat}*
-  H11:{d : append l1 L2 l3}*
-  H12:{n:nat |- f1 n : nat}
-  H13:{l3 : list}
-  H14:{l4 : list}
-  H15:{d1 : map ([x]f1 x) l3 l4}
-  H16:{x : nat}
-  H17:{n1:nat |- f1 n1 : nat}
-  H18:{l1 : list}
-  H19:{FL3 : list}
-  H20:{D6 : map ([x]f1 x) l1 FL3}
-  H21:{x : nat}
-  H22:{FL3 : list}
-  H23:{FL2 : list}
-  H24:{FL12'1 : list}
-  H25:{f1 x : nat}
-  H26:{D7 : append FL3 FL2 FL12'1}
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H4:{D4 : map ([x]f1 x) L2 FL2}
+  H6:{l1 : list}*
+  H7:{L2 : list}*
+  H8:{l3 : list}*
+  H9:{x : nat}*
+  H10:{d : append l1 L2 l3}*
+  H11:{n:nat |- f1 n : nat}
+  H12:{l3 : list}
+  H13:{l4 : list}
+  H14:{d1 : map ([x]f1 x) l3 l4}
+  H15:{x : nat}
+  H16:{n1:nat |- f1 n1 : nat}
+  H17:{l1 : list}
+  H18:{FL3 : list}
+  H19:{D6 : map ([x]f1 x) l1 FL3}
+  H20:{x : nat}
+  H21:{FL3 : list}
+  H22:{FL2 : list}
+  H23:{FL12'1 : list}
+  H24:{f1 x : nat}
+  H25:{D7 : append FL3 FL2 FL12'1}
   
   ==================================
   exists E, {E : eq-list (cons (f1 x) l4) (cons (f1 x) FL12'1)}
@@ -473,7 +459,7 @@
   Subgoal map-distrib-append.2 is:
    exists E, {E : eq-list FL12 FL12'}
   
-  map-distrib-append.1>> apply IH to H7 H11 H15 H20 H5 H26.
+  map-distrib-append.1>> apply IH to H10 H14 H19 H4 H25.
   
   Subgoal map-distrib-append.1:
   
@@ -484,36 +470,34 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H1:{cons x l1 : list}
-  H5:{D4 : map ([x]f1 x) L2 FL2}
-  H7:{l1 : list}*
-  H8:{L2 : list}*
-  H9:{l3 : list}*
-  H10:{x : nat}*
-  H11:{d : append l1 L2 l3}*
-  H12:{n:nat |- f1 n : nat}
-  H13:{l3 : list}
-  H14:{l4 : list}
-  H15:{d1 : map ([x]f1 x) l3 l4}
-  H16:{x : nat}
-  H17:{n1:nat |- f1 n1 : nat}
-  H18:{l1 : list}
-  H19:{FL3 : list}
-  H20:{D6 : map ([x]f1 x) l1 FL3}
-  H21:{x : nat}
-  H22:{FL3 : list}
-  H23:{FL2 : list}
-  H24:{FL12'1 : list}
-  H25:{f1 x : nat}
-  H26:{D7 : append FL3 FL2 FL12'1}
-  H27:{E n1 n : eq-list l4 FL12'1}
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H4:{D4 : map ([x]f1 x) L2 FL2}
+  H6:{l1 : list}*
+  H7:{L2 : list}*
+  H8:{l3 : list}*
+  H9:{x : nat}*
+  H10:{d : append l1 L2 l3}*
+  H11:{n:nat |- f1 n : nat}
+  H12:{l3 : list}
+  H13:{l4 : list}
+  H14:{d1 : map ([x]f1 x) l3 l4}
+  H15:{x : nat}
+  H16:{n1:nat |- f1 n1 : nat}
+  H17:{l1 : list}
+  H18:{FL3 : list}
+  H19:{D6 : map ([x]f1 x) l1 FL3}
+  H20:{x : nat}
+  H21:{FL3 : list}
+  H22:{FL2 : list}
+  H23:{FL12'1 : list}
+  H24:{f1 x : nat}
+  H25:{D7 : append FL3 FL2 FL12'1}
+  H26:{E n1 n : eq-list l4 FL12'1}
   
   ==================================
   exists E, {E : eq-list (cons (f1 x) l4) (cons (f1 x) FL12'1)}
@@ -532,36 +516,34 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H1:{cons x l1 : list}
-  H5:{D4 : map ([x]f1 x) L2 FL2}
-  H7:{l1 : list}*
-  H8:{L2 : list}*
-  H9:{l3 : list}*
-  H10:{x : nat}*
-  H11:{d : append l1 L2 l3}*
-  H12:{n:nat |- f1 n : nat}
-  H13:{l3 : list}
-  H14:{l4 : list}
-  H15:{d1 : map ([x]f1 x) l3 l4}
-  H16:{x : nat}
-  H17:{n1:nat |- f1 n1 : nat}
-  H18:{l1 : list}
-  H19:{FL3 : list}
-  H20:{D6 : map ([x]f1 x) l1 FL3}
-  H21:{x : nat}
-  H22:{FL3 : list}
-  H23:{FL2 : list}
-  H24:{FL12'1 : list}
-  H25:{f1 x : nat}
-  H26:{D7 : append FL3 FL2 FL12'1}
-  H27:{E n1 n : eq-list l4 FL12'1}
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H4:{D4 : map ([x]f1 x) L2 FL2}
+  H6:{l1 : list}*
+  H7:{L2 : list}*
+  H8:{l3 : list}*
+  H9:{x : nat}*
+  H10:{d : append l1 L2 l3}*
+  H11:{n:nat |- f1 n : nat}
+  H12:{l3 : list}
+  H13:{l4 : list}
+  H14:{d1 : map ([x]f1 x) l3 l4}
+  H15:{x : nat}
+  H16:{n1:nat |- f1 n1 : nat}
+  H17:{l1 : list}
+  H18:{FL3 : list}
+  H19:{D6 : map ([x]f1 x) l1 FL3}
+  H20:{x : nat}
+  H21:{FL3 : list}
+  H22:{FL2 : list}
+  H23:{FL12'1 : list}
+  H24:{f1 x : nat}
+  H25:{D7 : append FL3 FL2 FL12'1}
+  H26:{E n1 n : eq-list l4 FL12'1}
   
   ==================================
   {eq-list-cons l4 FL12'1 (f1 x) (E n1 n) :
@@ -580,50 +562,22 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H1:{nil : list}
-  H3:{D2 : map f L12 FL12}
-  H4:{D3 : map f nil FL1}
-  H5:{D4 : map f L12 FL2}
-  H6:{D5 : append FL1 FL2 FL12'}
-  H7:{L12 : list}*
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H2:{D2 : map f L12 FL12}
+  H3:{D3 : map f nil FL1}
+  H4:{D4 : map f L12 FL2}
+  H5:{D5 : append FL1 FL2 FL12'}
+  H6:{L12 : list}*
   
   ==================================
   exists E, {E : eq-list FL12 FL12'}
   
-  map-distrib-append.2>> cases H1.
-  
-  Subgoal map-distrib-append.2:
-  
-  Vars: FL12':o, D5:o, D4:o, D3:o, D2:o, FL2:o, FL1:o, FL12:o, f:(o) -> o, L12:
-          o
-  IH:
-      forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
-        forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
-        forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H3:{D2 : map f L12 FL12}
-  H4:{D3 : map f nil FL1}
-  H5:{D4 : map f L12 FL2}
-  H6:{D5 : append FL1 FL2 FL12'}
-  H7:{L12 : list}*
-  
-  ==================================
-  exists E, {E : eq-list FL12 FL12'}
-  
-  map-distrib-append.2>> cases H4.
+  map-distrib-append.2>> cases H3.
   
   Subgoal map-distrib-append.2:
   
@@ -633,23 +587,22 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H3:{D2 : map ([x]f1 x) L12 FL12}
-  H5:{D4 : map ([x]f1 x) L12 FL2}
-  H6:{D5 : append nil FL2 FL12'}
-  H7:{L12 : list}*
-  H8:{n:nat |- f1 n : nat}
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H2:{D2 : map ([x]f1 x) L12 FL12}
+  H4:{D4 : map ([x]f1 x) L12 FL2}
+  H5:{D5 : append nil FL2 FL12'}
+  H6:{L12 : list}*
+  H7:{n:nat |- f1 n : nat}
   
   ==================================
   exists E, {E : eq-list FL12 FL12'}
   
-  map-distrib-append.2>> cases H6.
+  map-distrib-append.2>> cases H5.
   
   Subgoal map-distrib-append.2:
   
@@ -659,23 +612,22 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H3:{D2 : map ([x]f1 x) L12 FL12}
-  H5:{D4 : map ([x]f1 x) L12 FL12'}
-  H7:{L12 : list}*
-  H8:{n:nat |- f1 n : nat}
-  H9:{FL12' : list}
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H2:{D2 : map ([x]f1 x) L12 FL12}
+  H4:{D4 : map ([x]f1 x) L12 FL12'}
+  H6:{L12 : list}*
+  H7:{n:nat |- f1 n : nat}
+  H8:{FL12' : list}
   
   ==================================
   exists E, {E : eq-list FL12 FL12'}
   
-  map-distrib-append.2>> apply map-eq to H3 H5.
+  map-distrib-append.2>> apply map-eq to H2 H4.
   
   Subgoal map-distrib-append.2:
   
@@ -685,19 +637,18 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H3:{D2 : map ([x]f1 x) L12 FL12}
-  H5:{D4 : map ([x]f1 x) L12 FL12'}
-  H7:{L12 : list}*
-  H8:{n:nat |- f1 n : nat}
-  H9:{FL12' : list}
-  H10:{E n : eq-list FL12 FL12'}
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H2:{D2 : map ([x]f1 x) L12 FL12}
+  H4:{D4 : map ([x]f1 x) L12 FL12'}
+  H6:{L12 : list}*
+  H7:{n:nat |- f1 n : nat}
+  H8:{FL12' : list}
+  H9:{E n : eq-list FL12 FL12'}
   
   ==================================
   exists E, {E : eq-list FL12 FL12'}
@@ -712,19 +663,18 @@
       forall L1, forall L2, forall L12, forall f, forall FL12, forall FL1,
         forall FL2, forall D1, forall D2, forall D3, forall D4, forall D5,
         forall FL12',
-        {L1 : list} =>
-            {D1 : append L1 L2 L12}* =>
-                {D2 : map f L12 FL12} =>
-                    {D3 : map f L1 FL1} =>
-                        {D4 : map f L2 FL2} =>
-                            {D5 : append FL1 FL2 FL12'} =>
-                                exists E, {E : eq-list FL12 FL12'}
-  H3:{D2 : map ([x]f1 x) L12 FL12}
-  H5:{D4 : map ([x]f1 x) L12 FL12'}
-  H7:{L12 : list}*
-  H8:{n:nat |- f1 n : nat}
-  H9:{FL12' : list}
-  H10:{E n : eq-list FL12 FL12'}
+        {D1 : append L1 L2 L12}* =>
+            {D2 : map f L12 FL12} =>
+                {D3 : map f L1 FL1} =>
+                    {D4 : map f L2 FL2} =>
+                        {D5 : append FL1 FL2 FL12'} =>
+                            exists E, {E : eq-list FL12 FL12'}
+  H2:{D2 : map ([x]f1 x) L12 FL12}
+  H4:{D4 : map ([x]f1 x) L12 FL12'}
+  H6:{L12 : list}*
+  H7:{n:nat |- f1 n : nat}
+  H8:{FL12' : list}
+  H9:{E n : eq-list FL12 FL12'}
   
   ==================================
   {E n : eq-list FL12 FL12'}

@@ -16,38 +16,32 @@ intros. case H1. apply ty_independent to H2. search.
 
 %%% Main lemma which includes context G in the conclusion formula
 Theorem ty_unique_aux : ctx G:c, forall E T1 T2 D1 D2,
-  { G |- T1 : ty} => {G |- T2 : ty} =>
   { G |- D1 : of E T1 } => { G |- D2 : of E T2 } =>
   exists D3, { G |- D3 : eq T1 T2 }.
-induction on 3. intros. case H3.
+induction on 1. intros. case H1 (keep).
 
   %case 1: of_abs
-    case H4.
-    assert {G, n1:tm, n2:of n1 T3 |- T4 : ty}.
-    assert {G, n1:tm, n2:of n1 T3 |- T5 : ty}.
-    apply IH to H13 H14 H8 H12 with (G = G, n1:tm, n2:of n1 T3).
-    case H15.
+    case H2.
+    apply IH to H6 H10.
+    case H11.
     exists (refl (arr T3 T4)). search.
 
   %case 2: of_app
-    case H4.
-    assert {G |- (arr T3 T1) : ty}.
-    assert {G |- (arr T4 T2) : ty}.
-    apply IH to H17 H18 H9 H15.
-    case H19.
+    case H2.
+    apply IH to H7 H13.
+    case H15.
     exists (refl T2). search.
 
   %case 3: context
-    case H4.
+    case H2.
     exists (refl (T2 n n1)). search.
 
 
 %%% Final result is proved by applying the strengthening result to form with a context
 Theorem ty_unique : ctx G:c, forall E T1 T2 D1 D2,
-  { G |- T1 : ty} => {G |- T2 : ty} =>
   { G |- D1 : of E T1 } => { G |- D2 : of E T2 } =>
   exists D3, { D3 : eq T1 T2 }.
-intros. apply ty_unique_aux to H1 H2 H3 H4. apply eq_independent to H5. exists D3. search.
+intros. apply ty_unique_aux to H1 H2. apply eq_independent to H3. exists D3. search.
 
 
 %%% A short proof that a self application term is untypable

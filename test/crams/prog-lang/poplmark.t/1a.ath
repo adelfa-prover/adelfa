@@ -11,17 +11,7 @@ Schema wf :=
   (x:ty).
 
 Theorem sub__ty : ctx L:c, forall D U1 U2, {L |- D : sub U1 U2} => {L |- U1 : ty} /\ {L |- U2 : ty}.
-intros. case H1.
-  %case 1: sa-all
-  split. search. search.
-  %case 2: sa-arrow
-  split. search. search.
-  %case 3: sa-trans-tvar
-  split. search. search.
-  %case 4: sa-refl-tvar
-  split. search. search.
-  %case 5: sa-top
-  split. search. search.
+intros. split. search. search.
 
 %Derivations for types "ty" and "var" cannot depend on assumptions of type
 %"bound" or "bound_var". We show this by inducion on the assumption

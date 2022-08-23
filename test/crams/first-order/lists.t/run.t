@@ -57,47 +57,6 @@
   exists L12, exists D3, exists D4,
     {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   
-  app_assoc>> assert {L2 : list}.
-  
-  Subgoal app_assoc:
-  
-  Vars: D2:o, D1:o, L4:o, L23:o, L3:o, L2:o, L1:o
-  IH:
-      forall L1, forall L2, forall L3, forall L23, forall L4, forall D1,
-        forall D2,
-        {D1 : append L2 L3 L23} =>
-            {D2 : append L1 L23 L4}* =>
-                exists L12, exists D3, exists D4,
-                  {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
-  H1:{D1 : append L2 L3 L23}
-  H2:{D2 : append L1 L23 L4}@
-  H3:{L2 : list}
-  
-  ==================================
-  exists L12, exists D3, exists D4,
-    {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
-  
-  app_assoc>> assert {L3 : list}.
-  
-  Subgoal app_assoc:
-  
-  Vars: D2:o, D1:o, L4:o, L23:o, L3:o, L2:o, L1:o
-  IH:
-      forall L1, forall L2, forall L3, forall L23, forall L4, forall D1,
-        forall D2,
-        {D1 : append L2 L3 L23} =>
-            {D2 : append L1 L23 L4}* =>
-                exists L12, exists D3, exists D4,
-                  {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
-  H1:{D1 : append L2 L3 L23}
-  H2:{D2 : append L1 L23 L4}@
-  H3:{L2 : list}
-  H4:{L3 : list}
-  
-  ==================================
-  exists L12, exists D3, exists D4,
-    {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
-  
   app_assoc>> cases H2.
   
   Subgoal app_assoc.1:
@@ -111,13 +70,11 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L23}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L5 : list}*
-  H6:{L23 : list}*
-  H7:{L7 : list}*
-  H8:{N : nat}*
-  H9:{D : append L5 L23 L7}*
+  H3:{L5 : list}*
+  H4:{L23 : list}*
+  H5:{L7 : list}*
+  H6:{N : nat}*
+  H7:{D : append L5 L23 L7}*
   
   ==================================
   exists L12, exists D3, exists D4,
@@ -127,7 +84,7 @@
    exists L12, exists D3, exists D4,
      {D3 : append nil L2 L12} /\ {D4 : append L12 L3 L4}
   
-  app_assoc.1>> apply IH to H1 H9.
+  app_assoc.1>> apply IH to H1 H7.
   
   Subgoal app_assoc.1:
   
@@ -140,14 +97,12 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L23}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L5 : list}*
-  H6:{L23 : list}*
-  H7:{L7 : list}*
-  H8:{N : nat}*
-  H9:{D : append L5 L23 L7}*
-  H10:{D3 : append L5 L2 L12} /\ {D4 : append L12 L3 L7}
+  H3:{L5 : list}*
+  H4:{L23 : list}*
+  H5:{L7 : list}*
+  H6:{N : nat}*
+  H7:{D : append L5 L23 L7}*
+  H8:{D3 : append L5 L2 L12} /\ {D4 : append L12 L3 L7}
   
   ==================================
   exists L12, exists D3, exists D4,
@@ -157,7 +112,7 @@
    exists L12, exists D3, exists D4,
      {D3 : append nil L2 L12} /\ {D4 : append L12 L3 L4}
   
-  app_assoc.1>> cases H10.
+  app_assoc.1>> cases H8.
   
   Subgoal app_assoc.1:
   
@@ -170,47 +125,13 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L23}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L5 : list}*
-  H6:{L23 : list}*
-  H7:{L7 : list}*
-  H8:{N : nat}*
-  H9:{D : append L5 L23 L7}*
-  H11:{D3 : append L5 L2 L12}
-  H12:{D4 : append L12 L3 L7}
-  
-  ==================================
-  exists L12, exists D3, exists D4,
-    {D3 : append (cons N L5) L2 L12} /\ {D4 : append L12 L3 (cons N L7)}
-  
-  Subgoal app_assoc.2 is:
-   exists L12, exists D3, exists D4,
-     {D3 : append nil L2 L12} /\ {D4 : append L12 L3 L4}
-  
-  app_assoc.1>> assert {L12 : list}.
-  
-  Subgoal app_assoc.1:
-  
-  Vars: D4:o, D3:o, L12:o, D:o, L5:o, N:o, L7:o, D1:o, L23:o, L3:o, L2:o
-  IH:
-      forall L1, forall L2, forall L3, forall L23, forall L4, forall D1,
-        forall D2,
-        {D1 : append L2 L3 L23} =>
-            {D2 : append L1 L23 L4}* =>
-                exists L12, exists D3, exists D4,
-                  {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
-  H1:{D1 : append L2 L3 L23}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L5 : list}*
-  H6:{L23 : list}*
-  H7:{L7 : list}*
-  H8:{N : nat}*
-  H9:{D : append L5 L23 L7}*
-  H11:{D3 : append L5 L2 L12}
-  H12:{D4 : append L12 L3 L7}
-  H13:{L12 : list}
+  H3:{L5 : list}*
+  H4:{L23 : list}*
+  H5:{L7 : list}*
+  H6:{N : nat}*
+  H7:{D : append L5 L23 L7}*
+  H9:{D3 : append L5 L2 L12}
+  H10:{D4 : append L12 L3 L7}
   
   ==================================
   exists L12, exists D3, exists D4,
@@ -233,16 +154,13 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L23}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L5 : list}*
-  H6:{L23 : list}*
-  H7:{L7 : list}*
-  H8:{N : nat}*
-  H9:{D : append L5 L23 L7}*
-  H11:{D3 : append L5 L2 L12}
-  H12:{D4 : append L12 L3 L7}
-  H13:{L12 : list}
+  H3:{L5 : list}*
+  H4:{L23 : list}*
+  H5:{L7 : list}*
+  H6:{N : nat}*
+  H7:{D : append L5 L23 L7}*
+  H9:{D3 : append L5 L2 L12}
+  H10:{D4 : append L12 L3 L7}
   
   ==================================
   exists D3, exists D4,
@@ -266,16 +184,13 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L23}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L5 : list}*
-  H6:{L23 : list}*
-  H7:{L7 : list}*
-  H8:{N : nat}*
-  H9:{D : append L5 L23 L7}*
-  H11:{D3 : append L5 L2 L12}
-  H12:{D4 : append L12 L3 L7}
-  H13:{L12 : list}
+  H3:{L5 : list}*
+  H4:{L23 : list}*
+  H5:{L7 : list}*
+  H6:{N : nat}*
+  H7:{D : append L5 L23 L7}*
+  H9:{D3 : append L5 L2 L12}
+  H10:{D4 : append L12 L3 L7}
   
   ==================================
   exists D4,
@@ -299,16 +214,13 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L23}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L5 : list}*
-  H6:{L23 : list}*
-  H7:{L7 : list}*
-  H8:{N : nat}*
-  H9:{D : append L5 L23 L7}*
-  H11:{D3 : append L5 L2 L12}
-  H12:{D4 : append L12 L3 L7}
-  H13:{L12 : list}
+  H3:{L5 : list}*
+  H4:{L23 : list}*
+  H5:{L7 : list}*
+  H6:{N : nat}*
+  H7:{D : append L5 L23 L7}*
+  H9:{D3 : append L5 L2 L12}
+  H10:{D4 : append L12 L3 L7}
   
   ==================================
   {append_cons L5 L2 L12 N D3 : append (cons N L5) L2 (cons N L12)} /\
@@ -331,16 +243,13 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L23}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L5 : list}*
-  H6:{L23 : list}*
-  H7:{L7 : list}*
-  H8:{N : nat}*
-  H9:{D : append L5 L23 L7}*
-  H11:{D3 : append L5 L2 L12}
-  H12:{D4 : append L12 L3 L7}
-  H13:{L12 : list}
+  H3:{L5 : list}*
+  H4:{L23 : list}*
+  H5:{L7 : list}*
+  H6:{N : nat}*
+  H7:{D : append L5 L23 L7}*
+  H9:{D3 : append L5 L2 L12}
+  H10:{D4 : append L12 L3 L7}
   
   ==================================
   {append_cons L5 L2 L12 N D3 : append (cons N L5) L2 (cons N L12)}
@@ -365,16 +274,13 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L23}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L5 : list}*
-  H6:{L23 : list}*
-  H7:{L7 : list}*
-  H8:{N : nat}*
-  H9:{D : append L5 L23 L7}*
-  H11:{D3 : append L5 L2 L12}
-  H12:{D4 : append L12 L3 L7}
-  H13:{L12 : list}
+  H3:{L5 : list}*
+  H4:{L23 : list}*
+  H5:{L7 : list}*
+  H6:{N : nat}*
+  H7:{D : append L5 L23 L7}*
+  H9:{D3 : append L5 L2 L12}
+  H10:{D4 : append L12 L3 L7}
   
   ==================================
   {append_cons L12 L3 L7 N D4 : append (cons N L12) L3 (cons N L7)}
@@ -396,9 +302,7 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L4}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L4 : list}*
+  H3:{L4 : list}*
   
   ==================================
   exists L12, exists D3, exists D4,
@@ -417,9 +321,7 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L4}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L4 : list}*
+  H3:{L4 : list}*
   
   ==================================
   exists D3, exists D4, {D3 : append nil L2 L2} /\ {D4 : append L2 L3 L4}
@@ -437,9 +339,7 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L4}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L4 : list}*
+  H3:{L4 : list}*
   
   ==================================
   exists D4, {append_nil L2 : append nil L2 L2} /\ {D4 : append L2 L3 L4}
@@ -457,9 +357,7 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L4}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L4 : list}*
+  H3:{L4 : list}*
   
   ==================================
   {append_nil L2 : append nil L2 L2} /\ {D1 : append L2 L3 L4}
@@ -477,9 +375,7 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L4}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L4 : list}*
+  H3:{L4 : list}*
   
   ==================================
   {append_nil L2 : append nil L2 L2}
@@ -500,9 +396,7 @@
                 exists L12, exists D3, exists D4,
                   {D3 : append L1 L2 L12} /\ {D4 : append L12 L3 L4}
   H1:{D1 : append L2 L3 L4}
-  H3:{L2 : list}
-  H4:{L3 : list}
-  H5:{L4 : list}*
+  H3:{L4 : list}*
   
   ==================================
   {D1 : append L2 L3 L4}
@@ -907,81 +801,6 @@
   H17:{D1 : append b B1 L12}
   H18:{D2 : append L12 (cons N nil) ba}
   H19:{D7 : rev_app L3 L12}
-  
-  ==================================
-  {rev_app_cons N L3 L12 ba D7 D2 : rev_app (cons N L3) ba}
-  
-  Subgoal rev_app_swap.2 is:
-   exists D5, {D5 : rev_app AB ba}
-  
-  rev_app_swap.1>> assert {L12 : list}.
-  
-  Subgoal rev_app_swap.1:
-  
-  Vars: D7:o, L12:o, B1:o, D5:o, D6:o, D:o, L1:o, N:o, L3:o, D4:o, D3:o, D2:o,
-          D1:o, ba:o, b:o, a:o, B:o
-  IH:
-      forall A, forall B, forall a, forall b, forall AB, forall ba, forall D1,
-        forall D2, forall D3, forall D4,
-        {D1 : append A B AB}* =>
-            {D2 : rev_app A a} =>
-                {D3 : rev_app B b} =>
-                    {D4 : append b a ba} => exists D5, {D5 : rev_app AB ba}
-  H3:{D3 : rev_app B b}
-  H4:{D4 : append b a ba}
-  H5:{L1 : list}*
-  H6:{B : list}*
-  H7:{L3 : list}*
-  H8:{N : nat}*
-  H9:{D : append L1 B L3}*
-  H10:{N : nat}
-  H11:{L1 : list}
-  H12:{B1 : list}
-  H13:{a : list}
-  H14:{D5 : rev_app L1 B1}
-  H15:{D6 : append B1 (cons N nil) a}
-  H17:{D1 : append b B1 L12}
-  H18:{D2 : append L12 (cons N nil) ba}
-  H19:{D7 : rev_app L3 L12}
-  H20:{L12 : list}
-  
-  ==================================
-  {rev_app_cons N L3 L12 ba D7 D2 : rev_app (cons N L3) ba}
-  
-  Subgoal rev_app_swap.2 is:
-   exists D5, {D5 : rev_app AB ba}
-  
-  rev_app_swap.1>> assert {ba : list}.
-  
-  Subgoal rev_app_swap.1:
-  
-  Vars: D7:o, L12:o, B1:o, D5:o, D6:o, D:o, L1:o, N:o, L3:o, D4:o, D3:o, D2:o,
-          D1:o, ba:o, b:o, a:o, B:o
-  IH:
-      forall A, forall B, forall a, forall b, forall AB, forall ba, forall D1,
-        forall D2, forall D3, forall D4,
-        {D1 : append A B AB}* =>
-            {D2 : rev_app A a} =>
-                {D3 : rev_app B b} =>
-                    {D4 : append b a ba} => exists D5, {D5 : rev_app AB ba}
-  H3:{D3 : rev_app B b}
-  H4:{D4 : append b a ba}
-  H5:{L1 : list}*
-  H6:{B : list}*
-  H7:{L3 : list}*
-  H8:{N : nat}*
-  H9:{D : append L1 B L3}*
-  H10:{N : nat}
-  H11:{L1 : list}
-  H12:{B1 : list}
-  H13:{a : list}
-  H14:{D5 : rev_app L1 B1}
-  H15:{D6 : append B1 (cons N nil) a}
-  H17:{D1 : append b B1 L12}
-  H18:{D2 : append L12 (cons N nil) ba}
-  H19:{D7 : rev_app L3 L12}
-  H20:{L12 : list}
-  H21:{ba : list}
   
   ==================================
   {rev_app_cons N L3 L12 ba D7 D2 : rev_app (cons N L3) ba}
@@ -1729,28 +1548,6 @@
   Subgoal rev_acc_exists.2 is:
    exists L3, exists D1, {D1 : rev_acc nil L2 L3}
   
-  rev_acc_exists.1>> assert {L3 : list}.
-  
-  Subgoal rev_acc_exists.1:
-  
-  Vars: D1:o, L3:o, n:o, l:o, L2:o
-  IH:
-      forall L1, forall L2,
-        {L1 : list}* =>
-            {L2 : list} => exists L3, exists D1, {D1 : rev_acc L1 L2 L3}
-  H2:{L2 : list}
-  H3:{n : nat}*
-  H4:{l : list}*
-  H5:{cons n L2 : list}
-  H6:{D1 : rev_acc l (cons n L2) L3}
-  H7:{L3 : list}
-  
-  ==================================
-  {rev_acc_cons l L2 L3 n D1 : rev_acc (cons n l) L2 L3}
-  
-  Subgoal rev_acc_exists.2 is:
-   exists L3, exists D1, {D1 : rev_acc nil L2 L3}
-  
   rev_acc_exists.1>> search.
   
   Subgoal rev_acc_exists.2:
@@ -1873,32 +1670,6 @@
   Subgoal rev_acc_rev_lem.2 is:
    exists D4, {D4 : eq_list ba ba2}
   
-  rev_acc_rev_lem.1>> assert {ba2 : list}.
-  
-  Subgoal rev_acc_rev_lem.1:
-  
-  Vars: D:o, N:o, L1:o, D3:o, D2:o, ba2:o, ba:o, AB:o, B:o
-  IH:
-      forall a, forall B, forall AB, forall ba, forall ba2, forall D1,
-        forall D2, forall D3,
-        {D1 : rev_acc a B AB}* =>
-            {D2 : rev_acc AB nil ba} =>
-                {D3 : rev_acc B a ba2} => exists D4, {D4 : eq_list ba ba2}
-  H2:{D2 : rev_acc AB nil ba}
-  H3:{D3 : rev_acc B (cons N L1) ba2}
-  H4:{L1 : list}*
-  H5:{B : list}*
-  H6:{AB : list}*
-  H7:{N : nat}*
-  H8:{D : rev_acc L1 (cons N B) AB}*
-  H9:{ba2 : list}
-  
-  ==================================
-  exists D4, {D4 : eq_list ba ba2}
-  
-  Subgoal rev_acc_rev_lem.2 is:
-   exists D4, {D4 : eq_list ba ba2}
-  
   rev_acc_rev_lem.1>> assert exists  D4, {D4 : rev_acc cons N B L1 ba2}.
   
   Subgoal rev_acc_rev_lem.1:
@@ -1917,7 +1688,6 @@
   H6:{AB : list}*
   H7:{N : nat}*
   H8:{D : rev_acc L1 (cons N B) AB}*
-  H9:{ba2 : list}
   
   ==================================
   exists D4, {D4 : rev_acc (cons N B) L1 ba2}
@@ -1946,7 +1716,6 @@
   H6:{AB : list}*
   H7:{N : nat}*
   H8:{D : rev_acc L1 (cons N B) AB}*
-  H9:{ba2 : list}
   
   ==================================
   {rev_acc_cons B L1 ba2 N D3 : rev_acc (cons N B) L1 ba2}
@@ -1975,8 +1744,7 @@
   H6:{AB : list}*
   H7:{N : nat}*
   H8:{D : rev_acc L1 (cons N B) AB}*
-  H9:{ba2 : list}
-  H10:{D4 : rev_acc (cons N B) L1 ba2}
+  H9:{D4 : rev_acc (cons N B) L1 ba2}
   
   ==================================
   exists D4, {D4 : eq_list ba ba2}
@@ -1984,7 +1752,7 @@
   Subgoal rev_acc_rev_lem.2 is:
    exists D4, {D4 : eq_list ba ba2}
   
-  rev_acc_rev_lem.1>> apply IH to H8 H2 H10.
+  rev_acc_rev_lem.1>> apply IH to H8 H2 H9.
   
   Subgoal rev_acc_rev_lem.1:
   
@@ -2002,9 +1770,8 @@
   H6:{AB : list}*
   H7:{N : nat}*
   H8:{D : rev_acc L1 (cons N B) AB}*
-  H9:{ba2 : list}
-  H10:{D4 : rev_acc (cons N B) L1 ba2}
-  H11:{D1 : eq_list ba ba2}
+  H9:{D4 : rev_acc (cons N B) L1 ba2}
+  H10:{D1 : eq_list ba ba2}
   
   ==================================
   exists D4, {D4 : eq_list ba ba2}
@@ -2012,7 +1779,7 @@
   Subgoal rev_acc_rev_lem.2 is:
    exists D4, {D4 : eq_list ba ba2}
   
-  rev_acc_rev_lem.1>> cases H11.
+  rev_acc_rev_lem.1>> cases H10.
   
   Subgoal rev_acc_rev_lem.1:
   
@@ -2030,9 +1797,8 @@
   H6:{AB : list}*
   H7:{N : nat}*
   H8:{D : rev_acc L1 (cons N B) AB}*
-  H9:{ba2 : list}
-  H10:{D4 : rev_acc (cons N B) L1 ba2}
-  H12:{ba2 : list}
+  H9:{D4 : rev_acc (cons N B) L1 ba2}
+  H11:{ba2 : list}
   
   ==================================
   exists D4, {D4 : eq_list ba2 ba2}
@@ -2058,9 +1824,8 @@
   H6:{AB : list}*
   H7:{N : nat}*
   H8:{D : rev_acc L1 (cons N B) AB}*
-  H9:{ba2 : list}
-  H10:{D4 : rev_acc (cons N B) L1 ba2}
-  H12:{ba2 : list}
+  H9:{D4 : rev_acc (cons N B) L1 ba2}
+  H11:{ba2 : list}
   
   ==================================
   {refl_list ba2 : eq_list ba2 ba2}
@@ -2184,20 +1949,6 @@
   ==================================
   exists D2, {D2 : rev_acc L2 nil L1}
   
-  rev_acc_rev>> assert {L1 : list}.
-  
-  Subgoal rev_acc_rev:
-  
-  Vars: D2:o, L3:o, D1:o, L2:o, L1:o
-  H1:{D1 : rev_acc L1 nil L2}
-  H2:{L2 : list}
-  H3:{nil : list}
-  H4:{D2 : rev_acc L2 nil L3}
-  H5:{L1 : list}
-  
-  ==================================
-  exists D2, {D2 : rev_acc L2 nil L1}
-  
   rev_acc_rev>> assert exists  D3, {D3 : rev_acc nil L1 L1}.
   
   Subgoal rev_acc_rev:
@@ -2207,7 +1958,6 @@
   H2:{L2 : list}
   H3:{nil : list}
   H4:{D2 : rev_acc L2 nil L3}
-  H5:{L1 : list}
   
   ==================================
   exists D3, {D3 : rev_acc nil L1 L1}
@@ -2224,7 +1974,6 @@
   H2:{L2 : list}
   H3:{nil : list}
   H4:{D2 : rev_acc L2 nil L3}
-  H5:{L1 : list}
   
   ==================================
   {rev_acc_nil L1 : rev_acc nil L1 L1}
@@ -2241,13 +1990,12 @@
   H2:{L2 : list}
   H3:{nil : list}
   H4:{D2 : rev_acc L2 nil L3}
-  H5:{L1 : list}
-  H6:{D3 : rev_acc nil L1 L1}
+  H5:{D3 : rev_acc nil L1 L1}
   
   ==================================
   exists D2, {D2 : rev_acc L2 nil L1}
   
-  rev_acc_rev>> apply rev_acc_rev_lem to H1 H4 H6.
+  rev_acc_rev>> apply rev_acc_rev_lem to H1 H4 H5.
   
   Subgoal rev_acc_rev:
   
@@ -2256,14 +2004,13 @@
   H2:{L2 : list}
   H3:{nil : list}
   H4:{D2 : rev_acc L2 nil L3}
-  H5:{L1 : list}
-  H6:{D3 : rev_acc nil L1 L1}
-  H7:{D4 : eq_list L3 L1}
+  H5:{D3 : rev_acc nil L1 L1}
+  H6:{D4 : eq_list L3 L1}
   
   ==================================
   exists D2, {D2 : rev_acc L2 nil L1}
   
-  rev_acc_rev>> cases H7.
+  rev_acc_rev>> cases H6.
   
   Subgoal rev_acc_rev:
   
@@ -2272,9 +2019,8 @@
   H2:{L2 : list}
   H3:{nil : list}
   H4:{D2 : rev_acc L2 nil L1}
-  H5:{L1 : list}
-  H6:{D3 : rev_acc nil L1 L1}
-  H8:{L1 : list}
+  H5:{D3 : rev_acc nil L1 L1}
+  H7:{L1 : list}
   
   ==================================
   exists D2, {D2 : rev_acc L2 nil L1}
@@ -2288,9 +2034,8 @@
   H2:{L2 : list}
   H3:{nil : list}
   H4:{D2 : rev_acc L2 nil L1}
-  H5:{L1 : list}
-  H6:{D3 : rev_acc nil L1 L1}
-  H8:{L1 : list}
+  H5:{D3 : rev_acc nil L1 L1}
+  H7:{L1 : list}
   
   ==================================
   {D2 : rev_acc L2 nil L1}
