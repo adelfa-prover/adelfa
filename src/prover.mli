@@ -1,73 +1,73 @@
 exception ProofCompleted
 
-type prover_settings = { mutable search_depth : int }
 (** [prover_settings] stores modifiable preferences the user has. *)
+type prover_settings = { mutable search_depth : int }
 
-val change_settings : Uterms.setting list -> unit
 (** [change_settings sets] will modify the [prover_settings] based on [sets]
     values. The application of settings is done in left-to-right order *)
+val change_settings : Uterms.setting list -> unit
 
-val lf_sig : Signature.signature ref
 (** [lf_sig] the specification file provided to the prover *)
+val lf_sig : Signature.signature ref
 
-val set_sig : Signature.signature -> unit
 (** [set_sig s] replaces the current [lf_sig] with [s] *)
+val set_sig : Signature.signature -> unit
 
-val clear_sig : unit -> unit
 (** [clear_sig] removes any specification provided to the prover *)
+val clear_sig : unit -> unit
 
-val has_sig : unit -> bool
 (** [has_sig] checks if a specification file has already been provided to the
     prover. *)
+val has_sig : unit -> bool
 
-val schemas : (string, Context.ctx_schema) Hashtbl.t
 (** [schemas] a [Hashtbl.t] which stores all the context schemas defined at the
     top level. *)
+val schemas : (string, Context.ctx_schema) Hashtbl.t
 
-val add_schema : string -> Context.ctx_schema -> unit
 (** [add_schma id s] creates an entry in [schemas] for a new context schema.
     Will output a warning message if a context schema with the same idenfier as
     [id] already exists. *)
+val add_schema : string -> Context.ctx_schema -> unit
 
-val lookup_schema : string -> Context.ctx_schema
 (** [lookup_schema id] will return the context schema for [id] within [schemas].
     Raises [Not_found] exception if there is no entry for [id]. *)
+val lookup_schema : string -> Context.ctx_schema
 
-val add_lemma : string -> Formula.formula -> unit
 (** [add_lemma id f] will add a formula [f] to be used in other proofs as a
     lemma with the name [id]. *)
+val add_lemma : string -> Formula.formula -> unit
 
-val lookup_lemma : string -> Formula.formula
 (** [lookup_lemma id] returns the formula for lemma with name [id].
     Raises [Not_found] exception if there is no entry for [id]. *)
+val lookup_lemma : string -> Formula.formula
 
-val add_definition : string * Definition.dfn -> unit
 (** [add_definition (id, dfn) ] adds a definition with identifier [id] to the
     prover's state. *)
+val add_definition : string * Definition.dfn -> unit
 
-val lookup_definition : string -> Definition.def list
 (** [lookup_definition id] Returns the definition corresponding to [id].
     Raises [Not_found] exception if there is no entry for [id]. *)
+val lookup_definition : string -> Definition.def list
 
 val get_propty_lst : unit -> (string * Type.ty) list
 
-val get_ind_count : unit -> int
 (** [get_ind_count] returns the current depth of induction and increments the
     counter. *)
+val get_ind_count : unit -> int
 
-val set_sequent : Sequent.sequent -> unit
 (** [set_sequent other] will replace the current sequent with the values
     from [other]. *)
+val set_sequent : Sequent.sequent -> unit
 
-val get_sequent : unit -> Sequent.sequent
 (** [get_sequent] gives the current sequent in the prover's state. *)
+val get_sequent : unit -> Sequent.sequent
 
-val display_state : unit -> unit
 (** [display_state] prints a formatted output of the sequent's state. *)
+val display_state : unit -> unit
 
-val reset_prover : unit -> unit
 (** [reset_prover] resets all proof state to fresh values in order to prepare
     for another proof. *)
+val reset_prover : unit -> unit
 
 val induction : int -> unit
 val intros : unit -> unit
