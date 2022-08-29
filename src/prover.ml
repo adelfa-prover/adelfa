@@ -179,15 +179,8 @@ let display_state () =
 
 (*Term.set_bind_state bind_state*)
 
-let induction i =
-  try Tactics.ind sequent i (get_ind_count ()) with
-  | e -> raise e
-;;
-
-let intros () =
-  try Tactics.intros sequent with
-  | e -> raise e
-;;
+let induction i = Tactics.ind sequent i (get_ind_count ())
+let intros () = Tactics.intros sequent
 
 let case_to_subgoal remove h_name case : subgoal =
  fun () ->
@@ -265,6 +258,7 @@ let search depth () =
   | Formula.Atm _ | Formula.Prop _ ->
     (try
        Tactics.search ~depth !lf_sig sequent;
+       Format.printf "Unable to find a derivation for:@, %a@," Print.pr_formula sequent.goal;
        failwith "Search failed."
      with
      | Tactics.Success -> next_subgoal ())

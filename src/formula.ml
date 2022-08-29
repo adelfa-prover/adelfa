@@ -128,7 +128,7 @@ let reduce_inductive_annotation r =
 let rec collect_vars_ctx = function
   | Top | Bottom | Prop _ -> []
   | Imp (l, r) | Or (l, r) | And (l, r) -> collect_vars_ctx l @ collect_vars_ctx r
-  | Atm (g, m, a, _) -> Context.get_explicit g |> List.map fst
+  | Atm (g, _, _, _) -> Context.get_explicit g |> List.map fst
   | All (_, f) | Exists (_, f) | Ctx (_, f) -> collect_vars_ctx f
 ;;
 

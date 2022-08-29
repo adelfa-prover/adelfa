@@ -200,7 +200,7 @@ let process_proof () =
            utm
        in
        Prover.exists term
-     | _ -> prerr_endline "Goal formula not existential")
+     | _ -> failwith "Goal formula not existential")
   | Uterms.Split -> Prover.split ()
   | Uterms.Left -> Prover.left ()
   | Uterms.Right -> Prover.right ()
@@ -225,11 +225,7 @@ let process_proof () =
     in
     (* Find new variable occurrences and add them to the sequent - replacing
        them with nominals *)
-    let seq_var_ids =
-      List.filter (fun (_, t) -> Term.is_var Term.Nominal t) seq_vars
-      |> List.map snd
-      |> List.map Term.term_to_var
-    in
+    let seq_var_ids = List.map (fun (_, v) -> Term.term_to_var v) nvars in
     let new_vars =
       Formula.collect_vars_ctx form |> List.remove_all (fun t -> List.mem t seq_var_ids)
     in
@@ -329,6 +325,7 @@ let process_top_level () =
     fprintf !out "%s%s%s\n%!" pre (Print.string_of_topcommand input) post);
   (match input with
    | Uterms.Theorem (name, uthm) ->
+     proof_steps := 0;
      let theorem =
        Translate.trans_formula
          !Prover.lf_sig
@@ -341,7 +338,6 @@ let process_top_level () =
          uthm
      in
      Prover.set_sequent (Sequent.make_sequent_from_goal ~name ~form:theorem ());
-     proof_steps := 0;
      interaction_level := ProofLevel { name; theorem }
    | Uterms.Schema (name, uschema) ->
      let schema = Translate.trans_schema !Prover.lf_sig uschema in
@@ -389,28 +385,29 @@ let process () =
     fprintf !out "\n%!"
 ;;
 
+let explain_error e =
+  match e with
+  | Sys_error s ->
+    eprintf "Error:\n%!";
+    eprintf "%s\n%!" s;
+  | Parsing.Parse_error ->
+    eprintf "Syntax error%s.\n%!" (position !lexbuf);
+    Lexing.flush_input !lexbuf;
+  | Translate.TypingError e ->
+    eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
+    eprintf "%s.\n%!" (Translate.explain_error e);
+  | Failure s ->
+    eprintf "Error: %s\n%!" s;
+  | _ -> raise e
+;;
+
 let top_loop () =
   while true do
     State.Undo.push ();
     reset_if_interactive ();
     try process () with
-    | Sys_error s ->
-      eprintf "Error:\n%!";
-      eprintf "%s\n%!" s;
-      State.Undo.undo ();
-      interactive_or_exit ()
-    | Parsing.Parse_error ->
-      eprintf "Syntax error%s.\n%!" (position !lexbuf);
-      Lexing.flush_input !lexbuf;
-      State.Undo.undo ();
-      interactive_or_exit ()
-    | Translate.TypingError e ->
-      eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
-      eprintf "%s.\n%!" (Translate.explain_error e);
-      State.Undo.undo ();
-      interactive_or_exit ()
-    | Failure s ->
-      eprintf "Error: %s\n%!" s;
+    | e ->
+      explain_error e;
       State.Undo.undo ();
       interactive_or_exit ()
   done
