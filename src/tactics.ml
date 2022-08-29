@@ -1564,24 +1564,22 @@ let inst ~depth lf_sig sequent form subst =
           search for a proof that under g1 the term t has type b.
           if successful replace n with t in g2, m, and a and return the
           updated formula. *)
-    let save_seq, bind_state = Sequent.cp_sequent sequent, Term.get_bind_state () in
+    let pristine = State.snapshot () in
     let g1, b, g2 = Context.split_ctx g n in
     let to_prove = Formula.Atm (g1, t, b, Formula.None) in
     (try
-       Term.set_bind_state bind_state;
+       State.reload pristine;
        sequent.Sequent.goal <- to_prove;
        search ~depth lf_sig sequent;
        raise (InstTypeError to_prove)
      with
      | Success ->
-       let _ =
-         Sequent.assign_sequent sequent save_seq;
-         Term.set_bind_state bind_state
-       in
+       let _ = State.reload pristine in
        let g2' =
          List.map
            (fun (id, ty) -> id, Term.replace_term_vars ~tag:Term.Nominal subst ty)
            g2
+         |> List.rev
        in
        let g' = Context.append_context g1 g2' in
        let m' = Term.replace_term_vars ~tag:Term.Nominal subst m in
