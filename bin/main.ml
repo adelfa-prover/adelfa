@@ -20,7 +20,7 @@ let out = ref stdout
 let switch_to_interactive = ref false
 let lexbuf = ref (Lexing.from_channel stdin)
 let count = State.rref 0
-let inputFile = ref ""
+let inputFile = ref None
 
 let perform_switch_to_interactive () =
   assert !switch_to_interactive;
@@ -65,22 +65,23 @@ let position lexbuf =
 ;;
 
 let setInputFile name =
-  if !inputFile = ""
-  then (
-    inputFile := name;
-    interactive := false)
-  else failwith "Error: More than one input file specified."
+  match !inputFile with
+  | None ->
+    inputFile := Some name;
+    interactive := false
+  | Some _ -> failwith "Error: More than one input file specified."
 ;;
 
 let checkInput () =
-  if !inputFile = "" && !interactive
-  then ()
-  else if Sys.file_exists !inputFile
-  then (
-    lexbuf := Lexing.from_channel (open_in !inputFile);
-    !lexbuf.Lexing.lex_curr_p
-      <- { !lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = !inputFile })
-  else failwithf "Error: Invalid input file: `%s'." !inputFile
+  match !inputFile with
+  | None -> ()
+  | Some fname ->
+    if Sys.file_exists fname
+    then (
+      lexbuf := Lexing.from_channel (open_in fname);
+      !lexbuf.Lexing.lex_curr_p
+        <- { !lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = fname })
+    else failwithf "Error: Invalid input file: `%s'." fname
 ;;
 
 let usageMsg = "Usage: adelfa [options]\noptions are: "
@@ -161,17 +162,16 @@ let process_proof () =
   | Uterms.Ind i ->
     (try Prover.induction i with
      | Tactics.InvalidFormula (_, str) -> prerr_endline str)
-  | Uterms.Apply (Uterms.Keep name, args, withs)
-  | Uterms.Apply (Uterms.Remove name, args, withs) ->
+  | Uterms.Apply ((Uterms.Keep name | Uterms.Remove name), args, withs) ->
     (* we don't currently remove hyps so treat the same *)
-    Prover.apply
-      name
-      (List.map
-         (fun x ->
-           match x with
-           | Uterms.Keep arg | Uterms.Remove arg -> arg)
-         args)
-      withs
+    let args' =
+      List.map
+        (fun x ->
+          match x with
+          | Uterms.Keep arg | Uterms.Remove arg -> arg)
+        args
+    in
+    Prover.apply name args' withs
   | Uterms.Case (Uterms.Keep hyp) -> Prover.case false hyp
   | Uterms.Case (Uterms.Remove hyp) -> Prover.case true hyp
   | Uterms.Exists utm ->
@@ -225,24 +225,7 @@ let process_proof () =
     in
     (* Find new variable occurrences and add them to the sequent - replacing
        them with nominals *)
-    let seq_var_ids = List.map (fun (_, v) -> Term.term_to_var v) nvars in
-    let new_vars =
-      Formula.collect_vars_ctx form |> List.remove_all (fun t -> List.mem t seq_var_ids)
-    in
-    let new_noms =
-      List.fold_left
-        (fun l v ->
-          let n, _ = Term.fresh_wrt ~ts:3 Term.Nominal "n" v.Term.ty (l @ seq_vars) in
-          (Term.term_to_name n, n) :: l)
-        []
-        new_vars
-    in
-    let alist =
-      List.combine (List.map (fun v -> v.Term.name) new_vars) (List.map snd new_noms)
-    in
-    let form' = Formula.replace_formula_vars alist form in
-    List.iter (fun v -> Sequent.add_var (Prover.get_sequent ()) v) new_noms;
-    Prover.assert_thm depth form'
+    Prover.assert_thm depth form
   | Uterms.Weaken (clear, utm, depth) ->
     let nvars =
       List.filter
@@ -268,16 +251,9 @@ let process_proof () =
      | Uterms.Keep name -> Prover.weaken depth false name t
      | Uterms.Remove name -> Prover.weaken depth true name t)
   | Uterms.PermuteCtx (clear, uctx) ->
-    let nvars =
-      List.filter
-        (fun (_, t) -> Term.is_var Term.Nominal t)
-        (Prover.get_sequent ()).Sequent.vars
-    in
-    let evars =
-      List.filter
-        (fun (_, t) -> Term.is_var Term.Eigen t)
-        (Prover.get_sequent ()).Sequent.vars
-    in
+    let seq_vars = (Prover.get_sequent ()).Sequent.vars in
+    let nvars = List.filter (fun (_, t) -> Term.is_var Term.Nominal t) seq_vars in
+    let evars = List.filter (fun (_, t) -> Term.is_var Term.Eigen t) seq_vars in
     let nvar_ctx = List.map (fun (id, t) -> id, ref (Some t)) nvars in
     let evar_ctx = List.map (fun (id, t) -> id, ref (Some t)) evars in
     let g, _ =
@@ -389,15 +365,14 @@ let explain_error e =
   match e with
   | Sys_error s ->
     eprintf "Error:\n%!";
-    eprintf "%s\n%!" s;
+    eprintf "%s\n%!" s
   | Parsing.Parse_error ->
     eprintf "Syntax error%s.\n%!" (position !lexbuf);
-    Lexing.flush_input !lexbuf;
+    Lexing.flush_input !lexbuf
   | Translate.TypingError e ->
     eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
-    eprintf "%s.\n%!" (Translate.explain_error e);
-  | Failure s ->
-    eprintf "Error: %s\n%!" s;
+    eprintf "%s.\n%!" (Translate.explain_error e)
+  | Failure s -> eprintf "Error: %s\n%!" s
   | _ -> raise e
 ;;
 

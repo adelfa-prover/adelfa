@@ -258,7 +258,10 @@ let search depth () =
   | Formula.Atm _ | Formula.Prop _ ->
     (try
        Tactics.search ~depth !lf_sig sequent;
-       Format.printf "Unable to find a derivation for:@, %a@," Print.pr_formula sequent.goal;
+       Format.printf
+         "Unable to find a derivation for:@, %a@,"
+         Print.pr_formula
+         sequent.goal;
        failwith "Search failed."
      with
      | Tactics.Success -> next_subgoal ())
@@ -468,6 +471,24 @@ let apply name args uws =
 ;;
 
 let assert_thm depth f =
+  let nvars = List.filter (fun (_, t) -> Term.is_var Term.Nominal t) sequent.vars in
+  let seq_var_ids = List.map (fun (_, v) -> Term.term_to_var v) nvars in
+  let new_vars =
+    Formula.collect_vars_ctx f |> List.remove_all (fun t -> List.mem t seq_var_ids)
+  in
+  let new_noms =
+    List.fold_left
+      (fun l v ->
+        let n, _ = Term.fresh_wrt ~ts:3 Term.Nominal "n" v.Term.ty (l @ sequent.vars) in
+        (Term.term_to_name n, n) :: l)
+      []
+      new_vars
+  in
+  let alist =
+    List.combine (List.map (fun v -> v.Term.name) new_vars) (List.map snd new_noms)
+  in
+  let f' = Formula.replace_formula_vars alist f in
+  List.iter (fun v -> Sequent.add_var sequent v) new_noms;
   let depth = depth_or_default depth in
   let subgoal =
     let saved_sequent = copy_sequent () in
@@ -481,10 +502,10 @@ let assert_thm depth f =
       sequent.name <- saved_sequent.name;
       sequent.next_subgoal_id <- saved_sequent.next_subgoal_id;
       Term.set_bind_state bind_state;
-      add_hyp sequent f
+      add_hyp sequent f'
   in
   add_subgoals [ subgoal ];
-  sequent.goal <- f;
+  sequent.goal <- f';
   match sequent.goal with
   | Formula.Atm _ | Formula.Prop _ ->
     (try Tactics.search ~depth !lf_sig sequent with
