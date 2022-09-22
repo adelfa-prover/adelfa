@@ -373,6 +373,7 @@ let explain_error e =
     eprintf "Typing error%s.\n%!" (position_range (Translate.get_error_pos e));
     eprintf "%s.\n%!" (Translate.explain_error e)
   | Failure s -> eprintf "Error: %s\n%!" s
+  | Tactics.InvalidTerm t -> ()
   | _ -> raise e
 ;;
 

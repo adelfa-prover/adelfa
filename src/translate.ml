@@ -39,10 +39,12 @@ let get_error_pos = function
 let explain_error = function
   | NoType (_, id) -> "could not determine type for variable " ^ id
   | TypeMismatch (_, expected, got) ->
-    "expected type\n  "
-    ^ Print.string_of_ty expected
-    ^ "\nbut got type\n  "
-    ^ Print.string_of_ty got
+    Format.asprintf
+      "expected type:@ @,%a,@ @,but got type:@ %a"
+      Print.pr_ty
+      expected
+      Print.pr_ty
+      got
   | TooManyArgs _ -> "term applied to too many arguments."
   | BadSchema (_, id) -> "can't find context schema " ^ id
   | BadDefinition (_, id) -> "No definition for " ^ id

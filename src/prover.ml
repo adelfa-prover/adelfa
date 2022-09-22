@@ -32,7 +32,7 @@ let lookup_schema id = H.find schemas id
 
 let add_schema id s =
   if H.mem schemas id
-  then Format.eprintf "Warning: overriding existing schema named %S@." id;
+  then Format.eprintf "Warning: overriding existing schema named `%s'@." id;
   H.replace schemas id s
 ;;
 
@@ -42,7 +42,7 @@ let lookup_lemma id = H.find lemmas id
 
 let add_lemma id f =
   if H.mem lemmas id
-  then Format.eprintf "Warning: overriding existing lemma named %S@." id;
+  then Format.eprintf "Warning: overriding existing lemma named `%s'@." id;
   H.replace lemmas id f
 ;;
 
@@ -99,7 +99,7 @@ let get_propty_lst () = H.to_seq dfns |> Seq.map (fun (x, (y, _)) -> x, y) |> Li
 
 let add_definition (id, dfn) =
   if H.mem dfns id
-  then Format.eprintf "Warning: overriding existing definition named %S@." id;
+  then Format.eprintf "Warning: overriding existing definition named `%s'@." id;
   H.replace dfns id dfn
 ;;
 
@@ -192,8 +192,7 @@ let case_to_subgoal remove h_name case : subgoal =
   sequent.name <- case.Tactics.name_case;
   sequent.next_subgoal_id <- case.Tactics.next_subgoal_id_case;
   if remove then Sequent.remove_hyp sequent h_name;
-  Term.set_bind_state case.Tactics.bind_state_case;
-  set_sequent sequent
+  Term.set_bind_state case.Tactics.bind_state_case
 ;;
 
 (* the unification for first case is modifying the sequent.
@@ -258,11 +257,11 @@ let search depth () =
   | Formula.Atm _ | Formula.Prop _ ->
     (try
        Tactics.search ~depth !lf_sig sequent;
-       Format.printf
-         "Unable to find a derivation for:@, %a@,"
+       Format.asprintf
+         "Search failed. @,Unable to find a derivation for:@, %a@,"
          Print.pr_formula
-         sequent.goal;
-       failwith "Search failed."
+         sequent.goal
+       |> failwith
      with
      | Tactics.Success -> next_subgoal ())
   | Formula.Top -> next_subgoal ()
@@ -398,10 +397,9 @@ let formula_free_logic_vars ctxvars formula =
   in
   let bound_vars, atoms = get_atomic [] formula in
   let logic_vars =
-    List.flatten
-      (List.map (formula_vars_alist Term.Logic (!bound_ctxvars @ ctxvars)) atoms)
+    List.flatten_map (formula_vars_alist Term.Logic (!bound_ctxvars @ ctxvars)) atoms
   in
-  List.filter (fun (id, _) -> not (List.mem id bound_vars)) logic_vars
+  List.remove_all (fun (id, _) -> List.mem id bound_vars) logic_vars
 ;;
 
 (* check the given formula for logic variables. 
@@ -409,7 +407,7 @@ let formula_free_logic_vars ctxvars formula =
    is a member of the context variable context ctxvarctx.*)
 let ensure_no_logic_variable ctxvarctx f =
   let logic_vars = formula_free_logic_vars ctxvarctx f in
-  if logic_vars <> [] then raise (ApplyFailure "Found logic varaible at toplevel.")
+  if logic_vars <> [] then raise (ApplyFailure "Found logic variable at toplevel.")
 ;;
 
 (* ensure that no dummy context variables remain in the formula *)
@@ -471,8 +469,9 @@ let apply name args uws =
 ;;
 
 let assert_thm depth f =
-  let nvars = List.filter (fun (_, t) -> Term.is_var Term.Nominal t) sequent.vars in
-  let seq_var_ids = List.map (fun (_, v) -> Term.term_to_var v) nvars in
+  let seq_var_ids =
+    Sequent.get_nominals sequent |> List.map (fun (_, v) -> Term.term_to_var v)
+  in
   let new_vars =
     Formula.collect_vars_ctx f |> List.remove_all (fun t -> List.mem t seq_var_ids)
   in
@@ -591,8 +590,8 @@ let weaken depth remove id ty =
       (Formula.atm ~ann (Context.Ctx (g, (Term.term_to_var nvar, ty))) a m)
   | Tactics.InvalidName id -> failwithf "`%s' is not a valid type constant." id
   | Tactics.InvalidTerm t ->
-    prerr_endline "Given expression is not a type.";
-    raise (Tactics.InvalidTerm t)
+    Format.asprintf "Given@ expression@ `%a'@ is@ not@ a@ type." (Print.pr_term []) t
+    |> failwith
 ;;
 
 let permute_ctx remove hyp_name ctx_expr =
@@ -657,7 +656,7 @@ let inst_aux depth name withs =
             utm
         in
         id, tm)
-      else raise (InstError ("`" ^ id ^ "' is not an instantiable name."))
+      else raise (InstError (Format.sprintf "`%s' is not an instantiable name." id))
   in
   let typed_withs = List.map check_withs withs in
   let depth = depth_or_default depth in

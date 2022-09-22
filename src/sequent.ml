@@ -81,7 +81,7 @@ let add_ctxvar sequent c ?rstrct:(r = []) t =
 
 let remove_ctxvar sequent v =
   sequent.ctxvars
-    <- List.filter (fun (c, _, _) -> not (Context.ctx_var_eq v c)) sequent.ctxvars
+    <- List.remove_all (fun (c, _, _) -> Context.ctx_var_eq v c) sequent.ctxvars
 ;;
 
 let get_ctxvar_restricted (_, rstrct, _) = !rstrct
