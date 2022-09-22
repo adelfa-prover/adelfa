@@ -3,7 +3,11 @@ default : main
 
 .PHONY: main
 main:
+	@rm -f adelfa
 	@dune build @install --release
+	@cp _build/default/bin/adelfa.exe ./adelfa
+
+all: main
 
 .PHONY: debug
 debug:
@@ -33,3 +37,4 @@ doc:
 clean:
 	@dune clean
 	@rm -f adelfa.tar
+	@rm -f adelfa

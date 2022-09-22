@@ -15,4 +15,4 @@
  (section bin)
  (package adelfa)
  (files
-  (adelfa.bc as adelfa)))
+  (adelfa.exe as adelfa)))
