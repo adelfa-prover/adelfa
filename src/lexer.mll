@@ -42,6 +42,9 @@
     "unfold",        UNFOLD ;
     "applydfn",      APPDFN ;
     "by",            BY ;
+
+    "Set",           SET ;
+    "search_depth",  SEARCHDEPTH ;
   ] ;;
 
   let incrline lexbuf =

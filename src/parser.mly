@@ -24,38 +24,20 @@
     else
       (Parsing.rhs_start_pos i, Parsing.rhs_end_pos i)
 
-  let predefined id =
-    UConst(pos 0, id)
-
-  let binop id t1 t2 =
-    UApp(pos 0, UApp(pos 0, predefined id, t1), t2)
-
   let nested_app head args =
     List.fold_left
       (fun h a -> UApp((fst (get_pos h), snd (get_pos a)), h, a))
       head args
 
-  let nominal_constant_re = Str.regexp "n[0-9]+"
-  exception Illegal
-  let is_illegal_constant k =
-    Str.string_match nominal_constant_re k 0
-
-  let check_legal_var vid vnum =
-    if is_illegal_constant vid then
-      error_report ~pos:(Parsing.rhs_start_pos vnum)
-        "Invalid bound variable %S.@\nIdentifiers matching n[0-9]+ are reserved for nominal cuonstants." vid
-
-  let deloc_id ((pos, _),id) =
+  let deloc_id (_,id) =
     (* if is_illegal_constant id then *)
     (*   error_report ~pos *)
     (*     "Invalid bound variable %S.@\nIdentifiers matching n[0-9]+ are reserved for nominal constants." *)
     (*     id ; *)
     id
 
-  let deloc_id_ty (lid, ty) = (deloc_id lid, ty)
-
   let check_legal_idterm = function
-    | Uterms.UConst(pos,id) -> ()
+    | Uterms.UConst _ -> ()
     | utm ->
        error_report
          ~pos:(snd (Uterms.get_pos utm))
@@ -67,7 +49,8 @@
 %token APPLY IND CASE SEARCH TO ON INTROS ASSERT WITH PRUNE
 %token SKIP ABORT UNDO LEFT RIGHT WEAKEN PERMUTECTX STRENGTHEN INST
 %token SPLIT KEEP SPECIFICATION SEMICOLON
-%token THEOREM SCHEMA DEFINE
+%token THEOREM SCHEMA DEFINE SET
+%token SEARCHDEPTH
 %token QUIT
 %token COLON RARROW CTX FORALL EXISTS STAR AT BY
 %token OR AND
@@ -121,7 +104,18 @@ id:
   | QUIT          { "Quit" }
   | DEFINE        { "Define" }
   | BY            { "by" }
-                  
+  | SET           { "Set" }
+  | SEARCHDEPTH   { "search_depth" }
+
+setting:
+  | SEARCHDEPTH NUM { Uterms.SearchDepth ($2) }
+
+setting_list:
+  | setting COMMA setting_list
+    { $1::$3 }
+  | setting { [ $1 ] }
+
+
 id_list:
   | loc_id
     { [(pos 0, deloc_id $1)] }
@@ -131,7 +125,10 @@ id_list:
 aid:
   | term COLON term
     { check_legal_idterm $1;
-      let Uterms.UConst(pos,id) = $1 in
+      let pos, id = match $1 with
+        | Uterms.UConst (pos, id) -> (pos, id)
+        | _ -> bugf "Expected constant"
+      in
       ((pos,id), $3)
     }
 
@@ -234,7 +231,9 @@ command:
   | APPLY clearable WITH withs DOT
     { Uterms.Apply($2, [], $4) }
   | ASSERT formula DOT
-    { Uterms.Assert($2) }
+    { Uterms.Assert($2, Uterms.DefaultDepth) }
+  | ASSERT formula NUM DOT
+    { Uterms.Assert($2, Uterms.WithDepth($3)) }
   | CASE hyp DOT
     { Uterms.Case(Uterms.Remove $2) }
   | CASE hyp LPAREN KEEP RPAREN DOT
@@ -242,7 +241,9 @@ command:
   | EXISTS term DOT
     { Uterms.Exists($2) }
   | SEARCH DOT
-    { Uterms.Search }
+    { Uterms.Search(Uterms.DefaultDepth) }
+  | SEARCH NUM DOT
+    { Uterms.Search(Uterms.WithDepth($2)) }
   | SPLIT DOT
     { Uterms.Split }
   | LEFT DOT
@@ -255,16 +256,18 @@ command:
     { Uterms.Skip }
   | ABORT DOT
     { Uterms.Abort }
-  | UNDO DOT
-    { Uterms.Undo }
   | WEAKEN clearable WITH term DOT
-      { Uterms.Weaken($2, $4) }
+      { Uterms.Weaken($2, $4, Uterms.DefaultDepth) }
+  | WEAKEN clearable WITH term NUM DOT
+      { Uterms.Weaken($2, $4, Uterms.WithDepth($5)) }
   | PERMUTECTX clearable TO context_expr DOT 
       { Uterms.PermuteCtx($2, $4) }
   | STRENGTHEN clearable DOT
       { Uterms.Strengthen($2) }
   | INST clearable WITH id EQ term DOT
-      { Uterms.Inst($2, [Uterms.Vws($4,$6)]) }
+      { Uterms.Inst($2, [Uterms.Vws($4,$6)], Uterms.DefaultDepth) }
+  | INST clearable WITH id EQ term NUM DOT
+      { Uterms.Inst($2, [Uterms.Vws($4,$6)], Uterms.WithDepth($7)) }
   | PRUNE hyp DOT
       { Uterms.Prune($2) }
   | UNFOLD hyp WITH withs DOT
@@ -283,6 +286,8 @@ command:
       { Uterms.AppDfn($2,Some $4, []) }
   | APPDFN id DOT
       { Uterms.AppDfn($2, None, []) }
+  | common_command
+      { Uterms.Common($1) }
 
 ctxbinding:
   | loc_id COLON loc_id
@@ -400,6 +405,12 @@ top_command:
   | QUIT DOT
     { Uterms.Quit }       
   | EOF
-    { raise End_of_file }      
-                             
-                             
+    { raise End_of_file }
+  | common_command
+    { Uterms.TopCommon($1) }
+
+common_command:
+  | SET setting_list DOT
+    { Uterms.Set($2) }
+  | UNDO DOT
+    { Uterms.Undo }

@@ -1,0 +1,14 @@
+% append signature
+
+nat : type.
+z : nat.
+s : {N:nat} nat.
+
+list : type.
+nil : list.
+cons : {N:nat} {L:list} list.
+
+append : {L1:list} {L2:list} {L3:list} type.
+append-nil : {L:list} append nil L L.
+append-cons : {N:nat} {L1:list} {L2:list} {L12:list} {D:append L1 L2 L12}
+              append (cons N L1) L2 (cons N L12).

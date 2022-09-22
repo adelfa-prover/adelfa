@@ -1,0 +1,9 @@
+Specification "stlc.lf".
+
+Schema c := (x: tm).
+
+Theorem ctxTest : ctx G:c, forall M,
+  {G |- M : tm} => exists N, {G |- N : tm}.
+intros.
+case H1 (keep).
+exists empty. search.

@@ -1,23 +1,24 @@
 To Build:
 =========
-run `make' in this directory to build the system.
-This will produce `adelfa.byte' which can be run to start the system.
+run `make' in this directory to build the system. This will produce
+`_build/default/bin/adelfa.exe' which can be run directly or via `dune exec
+adelfa' to start the system.
 
-Run `make test' to build the unit tests.
-This will produce `test.byte' which will run all the unit tests.
+Run `Make debug' to build a byte code version of the system located at
+`_build/default/bin/adelfa.bc'.
 
+Run `make test' to build the unit tests. This will produce
+and execute `_build/defalt/bin/test.exe'.
 
-Running `make debug' will build Adelfa with files compiled in debug
-mode. To use debug information when running use
-`export OCAMLRUNPARAM=b'.
+Run `make install' to install Adelfa to your system.
 
 Usage:
 ======
-adelfa.byte
+adelfa
 Starts the system. See system_reference.txt for more information about
 using the system.
 
-adelfa.byte -i <filename>
+adelfa -i <filename>
 Specifies <filename> as the file from which to read input. Runs each
 command from the file and then quits the system.
 

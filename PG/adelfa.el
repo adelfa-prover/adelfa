@@ -23,37 +23,11 @@
      (when (string-match "Proof \\(Completed!\\|Aborted\.\\)" string)
        (proof-clean-buffer proof-goals-buffer))))
 
-(defconst adelfa-error-terms
-  '("Error:.*"
-    "\\(Syntax\\|Typing\\|Unification\\|Unknown\\) error"
-    "\\(Cannot apply search to goal formula of this structure\\|Search failed\\)"
-    "Inductive restriction violated"
-    "Unification failure"
-    "Goal formula not existential"
-    "Pruning formulas must.*"
-    "\\(Not enough\\|Too many\\) arguments to apply"
-    "Formula not of valid form for induction"
-    "No assumption of name.*"
-    "Formula not a disjunction"
-    "Unknown context variable.*"
-    "Found logic varaible at toplevel."
-    "weakening failed."
-    "Given expression is not a type"
-    "Invalid formula for instatiation"
-    "Exactly one instantiation must be provided"
-    ".* is not an instantiable name"
-    "No clauses of definition match"
-    "Formula must be atomic to weaken"
-    "Formula not a conjunction"
-    "Formula not a disjunction"
-    "Later contet items cannot depend on later name"
-    "contexts must use the same context variables"
-    "Formula .* not found.*")
-  "Any error response that Adelfa may return to a command.")
+;; (regexp-opt '("Error" "Typing error" "Syntax error"))
 
 (defconst adelfa-error-terms-regexp
-  (mapconcat 'identity
-             adelfa-error-terms "\\|"))
+  "\\(?:\\(?:E\\|\\(?:Syntax\\|Typing\\) e\\)rror\\)"
+  "Any error response that Adelfa may return to a command.")
 
 (proof-easy-config
  'adelfa                                "Adelfa"

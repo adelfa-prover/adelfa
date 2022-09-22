@@ -1,0 +1,5 @@
+Specification "stlc.lf".
+
+% Specifying multiple specification files should throw an error
+
+Specification "stlc.lf".

@@ -1,0 +1,4 @@
+(test
+ (name test)
+ (modes byte)
+ (libraries core ounit2))

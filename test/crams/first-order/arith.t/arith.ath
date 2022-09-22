@@ -1,0 +1,159 @@
+Specification "arith.lf".
+
+Schema c :=
+  (x : nat).
+
+Theorem no_plus_one : forall M1 M2 D, {D:plus (s M1) M2 M1} => false.
+  induction on 1.
+  intros.
+  case H1.
+  apply IH to H5 with M1 = N3, M2 = M2, D = P.
+  search.
+
+Theorem z_nat : (ctx G:c, {G |- z : nat} => false) => false.
+intros.
+assert { z : nat } .
+apply H1 to H2.
+case H3.
+
+Theorem plus_n_z : forall N, {N:nat} => exists D, {D : plus N z N}.
+induction on 1. intros. case H1.
+  %case 1: s x
+  apply IH to H2 with N = x.
+  exists (plus_s x z x D). search.
+  %case 2: z
+  exists (plus_z z). search.
+
+Theorem identity : exists X, {X : nat} => forall Y, {Y : nat} => exists D, {D:mult X Y Y}.
+exists (s z). intros.
+apply plus_n_z to H2.
+exists (mult_s z Y z Y (mult_z Y) D).
+search.
+
+Theorem old_plus_n_s : forall N1, {N1:nat} => forall N2, {N2:nat} => forall N3, {N3:nat} =>
+                   forall D, {D:plus N1 N2 N3} => exists D1, {D1:plus N1 (s N2) (s N3)}.
+induction on 4. intros. case H4.
+  %case 1: plus_s N4 N2 N6 _
+  apply IH to H5.
+  apply H9 to H6.
+  apply H10 to H7.
+  apply H11 to H8.
+  exists plus_s N4 (s N2) (s N6) D1. search.
+  %case 2: plus_z N3.
+  exists plus_z (s N3). search.
+ 
+Theorem plus_n_s : forall N1 N2 N3 D, {D:plus N1 N2 N3} =>
+                   exists D1, {D1:plus N1 (s N2) (s N3)}.
+induction on 1. intros. case H1.
+  %case 1: plus_s
+  apply IH to H5.
+  exists plus_s N4 (s N2) (s N6) D1. search.
+  %case 2: plus_z
+  exists plus_z (s N3). search.
+ 
+Theorem plus_comm : forall N1 N2 N3 D, {D:plus N1 N2 N3} =>
+                    exists D1, {D1:plus N2 N1 N3}.
+induction on 1. intros. case H1.
+  %case 1: plus_s
+  apply IH to H5.
+  apply plus_n_s to H6.
+  exists D2. search.
+  %case 2: plus_z
+  apply plus_n_z to H2.
+  exists D. search.
+
+Theorem plus_s_n : forall N1 N2 N3 D, {D:plus N1 N2 N3} =>
+                   exists D1, {D1:plus (s N1) N2 (s N3)}.
+  intros.
+  exists plus_s N1 N2 N3 D. case H1. search. search.
+ 
+Theorem plus_func : forall N1 N2, {N1:nat} => {N2:nat} =>
+                    exists N3 D, {D:plus N1 N2 N3}.
+  induction on 1. intros. case H1.
+  % suc case.
+  apply IH to H3 H2 with N1 = x, N2 = N2.
+  exists (s N3).
+  exists plus_s x N2 N3 D.
+  assert {N3 : nat}.
+  search.
+  % nil case.
+  exists N2.
+  exists plus_z N2.
+  search.
+
+Theorem plus_func2 : forall N1 N2 N3 N4 D1 D2, {D1:plus N1 N2 N3} => {D2:plus N1 N2 N4}
+                     => exists D, {D : eq N3 N4}.
+  induction on 1. intros. case H1.
+  %case 1: plus_s
+  case H2.
+  apply IH to H6 H10 with N1 = N5, N2 = N2, N3 = N7, N4 = N9, D1 = P, D2 = P1.
+  case H11.
+  exists refl (s N9).
+  search.
+  %case 2: plus_z
+  case H2.
+  exists refl N4.
+  search.
+
+Theorem plus_ident : exists I, forall N, {N:nat} => exists D, {D:plus I N N}.
+  exists z.
+  intros.
+  exists plus_z N.
+  search.
+
+Theorem plus_ident_com : exists I, forall N, {N:nat} => exists D, {D:plus N I N}.
+  exists z.
+  intros.
+  apply plus_n_z to H1.
+  exists D.
+  search.
+
+Theorem mult_ident : exists I, forall N, {N:nat} => exists D, {D:mult I N N}.
+  exists (s z).
+  intros.
+  assert exists D1, {D1 : plus N z N}.
+  apply plus_n_z to H1 with N = N.
+  exists D. search.
+  exists mult_s z N z N (mult_z N) D1.
+  search.
+
+Theorem mult_n_z : forall N, {N:nat} => exists D, {D:mult N z z}.
+  induction on 1. intros. case H1.
+  % suc case.
+  apply IH to H2 with N = x.
+  assert exists D1, {D1 : plus z z z}. exists plus_z z. search.
+  exists mult_s x z z z D D1.
+  search.
+  % nil case.
+  exists mult_z z.
+  search.
+
+Theorem mult_func : forall N1 N2 N3 N4 D1 D2, {D1 : mult N1 N2 N3} => {D2 : mult N1 N2 N4} =>
+  exists D3, {D3 : eq N3 N4}.
+
+  induction on 1. intros. case H1.
+  % suc case.
+  case H2.
+  apply IH to H7 H13 with N1 = N5, N2 = N2, N3 = N7, N4 = N9, D1 = M, D2 = M1.
+  case H15.
+  apply plus_func2 to H8 H14 with N1 = N2, N2 = N9, N3 = N3, N4 = N4, D1 = P, D2 = P1.
+  exists D.
+  search.
+  % nil case.
+  case H2.
+  exists refl z.
+  search.
+
+% Theorem mult_n_s : forall N1 N2 N3 N4 D1 D2, {D1 : mult N1 N2 N3} => {D2 : plus N1 N3 N4} =>
+%   exists D3, {D3 : mult N1 (s N2) N4}.
+% 
+%   induction on 1. intros. case H1.
+%   % suc case.
+%   apply plus_func to H3 H5 with N1 = N5, N2 = N7.
+%   apply IH to H7 H12 with N1 = N5, N2 = N2, N3 = N7, N4 = N1, D1 = D3, D2 = D.
+%   assert {s N2 : nat}. search.
+%   assert {N1 : nat}. case H13. search. search.
+%   apply plus_func to H14 H15 with N1 = (s N2), N2 = N1.
+% 
+% Theorem mult_comm : forall N1 N2 N3 D1, {D1 : mult N1 N2 N3} => exists D2, {D2 : mult N2 N1 N3}.
+%   induction on 1. intros. case H1.

@@ -6,7 +6,7 @@ Theorem Lemma1 : forall L1 L2 L3 L4 D1 D2, {D1 : rev_acc L1 L2 L3} => {D2 : rev_
   induction on 1. intros. case H1.
   % rev_acc_cons case.
   case H2.
-  apply IH to H7 H15 with L1 = L5, L2 = (cons N L2), L3 = L3, L4 = L4, D1 = D, D2 = D3.
+  apply IH to H7 H12.
   exists D1.
   search.
   % rev_acc_nil case.
@@ -20,11 +20,11 @@ Theorem Lemma2 : forall a B AB ba ba2 D1 D2 D3, {D1 : rev_acc a B AB} =>
 
   induction on 1. intros. case H1.
   % rev_acc_cons case.
-  assert {ba2 : list}. case H3. search. search.
+  assert {ba2 : list}.
   assert exists D4, {D4 : rev_acc (cons N B) L1 ba2}.
   exists rev_acc_cons B L1 ba2 N D3. search.
-  apply IH to H8 H2 H13 with a = L1, B = (cons N B), AB = AB, ba = ba, ba2 = ba2, D1 = D, D2 = D2, D3 = D4.
-  case H14.
+  apply IH to H8 H2 H10.
+  case H11.
   exists refl_list ba2.
   search.
   % rev_acc_nil case.
@@ -40,11 +40,10 @@ Theorem Lemma3 : forall L1 L2 L3 D1, {D1 : rev_acc L1 L2 L3} => {L3 : list}.
 Theorem Lemma4 : forall L1 L2, {L1 : list} => {L2 : list} => exists L3 D, {D : rev_acc L1 L2 L3}.
   induction on 1. intros. case H1.
   % rev_acc_cons case.
-  assert {(cons n L2):list}. search.
-  apply IH to H4 H5 with L1 = l, L2 = (cons n L2).
+  assert {(cons n L2):list}.
+  apply IH to H4 H5.
   exists L3.
   exists rev_acc_cons l L2 L3 n D.
-  assert {L3 : list}. case H6. search. search.
   search.
   % rev_acc_nil case.
   exists L2.
@@ -54,10 +53,10 @@ Theorem Lemma4 : forall L1 L2, {L1 : list} => {L2 : list} => exists L3 D, {D : r
 Theorem rev_rev : forall L1 L2 D1, {D1 : rev L1 L2} => exists D2, {D2 : rev L2 L1}.
   intros. case H1.
   apply Lemma3 to H4 with L1 = L1, L2 = nil, L3 = L2, D1 = D.
-  assert {nil : list}. search.
-  apply Lemma4 to H7 H8 with L1 = L2, L2 = nil.
+  assert {nil : list}.
+  apply Lemma4 to H5 H6 with L1 = L2, L2 = nil.
   assert exists D2, {D2 : rev_acc nil L1 L1}. exists rev_acc_nil L1. search.
-  apply Lemma2 to H4 H9 H10 with a = L1, B = nil, AB = L2, ba = L3, ba2 = L1, D1 = D, D2 = D1, D3 = D2.
-  case H11.
+  apply Lemma2 to H4 H7 H8 with a = L1, B = nil, AB = L2, ba = L3, ba2 = L1, D1 = D, D2 = D1, D3 = D2.
+  case H9.
   exists rev_nil_acc L2 L1 D1.
   search.

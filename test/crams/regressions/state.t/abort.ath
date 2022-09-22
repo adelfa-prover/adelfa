@@ -1,0 +1,17 @@
+Specification "stlc.lf".
+
+Schema f := (y: tm).
+
+Theorem abort-test : forall X,
+  {X: tm} => false.
+intros.
+case H1.
+% abort proof resets state to before the theorem was stated
+abort.
+% undo should then removes schema f
+undo.
+
+
+% schema f should no longer be defined, so this should fail
+Theorem undid-schema : ctx G:f, forall X,
+  {X: tm} => false.

@@ -1,91 +1,100 @@
 exception Reported_parse_error
-            
-type id = string
 
+type id = string
 type pos = Lexing.position * Lexing.position
 
 type uterm =
-| UConst of pos * id
-| ULam of pos * (pos * id * Type.ty option) * uterm
-| UPi of pos * (pos * id) * uterm * uterm
-| UApp of pos * uterm * uterm
-| UType of pos
+  | UConst of pos * id
+  | ULam of pos * (pos * id * Type.ty option) * uterm
+  | UPi of pos * (pos * id) * uterm * uterm
+  | UApp of pos * uterm * uterm
+  | UType of pos
 
-val get_const_id : uterm -> id             
+val get_const_id : uterm -> id
 val get_pos : uterm -> pos
 val change_pos : pos -> uterm -> uterm
-val get_hid_and_args : uterm -> (id * (uterm list))
-                                   
-type uctx =
-| UNil of pos
-| UVar of pos * id
-| UCtxTm of pos * uctx * (id * uterm)
+val get_hid_and_args : uterm -> id * uterm list
 
-type aid = id * (Type.ty option)
-    
+type uctx =
+  | UNil of pos
+  | UVar of pos * id
+  | UCtxTm of pos * uctx * (id * uterm)
+
+type aid = id * Type.ty option
+
 type uformula =
-| UTop
-| UBottom
-| UImp of uformula * uformula
-| UOr of uformula * uformula
-| UAnd of uformula * uformula
-| UAll of (pos * aid) list * uformula
-| UExists of (pos * aid) list * uformula
-| UCtx of (pos * id * id) list * uformula
-| UAtm of uctx * uterm * uterm * Formula.annotation
-| UProp of uterm
+  | UTop
+  | UBottom
+  | UImp of uformula * uformula
+  | UOr of uformula * uformula
+  | UAnd of uformula * uformula
+  | UAll of (pos * aid) list * uformula
+  | UExists of (pos * aid) list * uformula
+  | UCtx of (pos * id * id) list * uformula
+  | UAtm of uctx * uterm * uterm * Formula.annotation
+  | UProp of uterm
 
 type uschema = ((pos * id) list * (pos * id * uterm) list) list
-
 type udef = uformula * uformula
-                                                           
+
 type clearable =
-| Keep of id
-| Remove of id
+  | Keep of id
+  | Remove of id
 
 type uwith =
-| Cws of id * uctx
-| Vws of id * uterm
+  | Cws of id * uctx
+  | Vws of id * uterm
+
+type depth =
+  | DefaultDepth
+  | WithDepth of int
+
+type setting = SearchDepth of int
 
 val is_cws : uwith -> bool
-val unwrap_cws : uwith -> (id * uctx)
+val unwrap_cws : uwith -> id * uctx
 val is_vws : uwith -> bool
-val unwrap_vws : uwith -> (id * uterm)
-  
+val unwrap_vws : uwith -> id * uterm
+
+type common_command =
+  | Undo
+  | Set of setting list
+
 type command =
-| Skip
-| Undo
-| Search
-| Ind of int
-| Apply of clearable * clearable list * uwith list
-| Case of clearable
-| Exists of uterm
-| Split  
-| Left 
-| Right
-| Intros
-| Assert of uformula
-| Abort
-| Weaken of clearable * uterm
-| PermuteCtx of clearable * uctx
-| Strengthen of clearable
-| Inst of clearable * uwith list
-| Prune of id
-| Unfold of id option * uwith list
-| AppDfn of id * (id option) * uwith list
-    
+  | Skip
+  | Search of depth
+  | Ind of int
+  | Apply of clearable * clearable list * uwith list
+  | Case of clearable
+  | Exists of uterm
+  | Split
+  | Left
+  | Right
+  | Intros
+  | Assert of uformula * depth
+  | Abort
+  | Weaken of clearable * uterm * depth
+  | PermuteCtx of clearable * uctx
+  | Strengthen of clearable
+  | Inst of clearable * uwith list * depth
+  | Prune of id
+  | Unfold of id option * uwith list
+  | AppDfn of id * id option * uwith list
+  | Common of common_command
+
 type top_command =
-| Theorem of id * uformula
-| Schema of id * uschema
-| Specification of string
-| Quit
-| Define of aid * (udef list)
+  | Theorem of id * uformula
+  | Schema of id * uschema
+  | Specification of string
+  | Quit
+  | Define of aid * udef list
+  | TopCommon of common_command
 
 type sig_decl =
-| Const of id * uterm
-(* | Define of id * uterm option * uterm *)
-(* | Abbrev of id * uterm option * uterm *)
-| Fixity of id * Signature.fixity
+  | Const of id * uterm
+  (* | Define of id * uterm option * uterm *)
+  (* | Abbrev of id * uterm option * uterm *)
+  | Fixity of id * Signature.fixity
 (* | Name of id * id * id option *)
 (* | Query of int * int * id option * uterm *)
 (* | Clause of id * uterm option * uterm *)

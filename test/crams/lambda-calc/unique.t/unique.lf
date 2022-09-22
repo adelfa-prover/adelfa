@@ -1,0 +1,16 @@
+ty : type.
+arr : {T:ty}{U:ty}ty.
+
+tm : type.
+app : {E1:tm}{E2:tm}tm.
+abs : {T:ty}{R:{x:tm}tm}tm.
+
+of : {E:tm}{T:ty}type.
+of_app : {M1:tm}{M2:tm}{T1:ty}{T2:ty}
+          {a1:of M1 (arr T1 T2)} {a2:of M2 T1} of (app M1 M2) T2.
+of_abs : {T1:ty}{T2:ty}{R : {x:tm} tm}
+          {a1:({x:tm}{z:of x T1} of (R x) T2)}
+          of (abs T1 ([x] R x)) (arr T1 T2).
+
+eq : {T:ty}{U:ty}type.
+refl : {T:ty} eq T T.

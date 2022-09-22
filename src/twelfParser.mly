@@ -1,27 +1,5 @@
 %{
-  open Extensions
-  open Uterms
 
-  let error_report ?(pos=Parsing.symbol_start_pos ()) fmt =
-    let open Lexing in
-    let parse_fmt = "@.%s:@\nError: @[" ^^ fmt ^^ "@]@." in
-    let pos_string =
-      if pos == Lexing.dummy_pos then
-        "Unknown position"
-      else
-        Printf.sprintf "File %S, line %d, character %d"
-          pos.pos_fname pos.pos_lnum
-          (pos.pos_cnum - pos.pos_bol + 1)
-    in
-    Format.kfprintf
-      (fun _ -> raise Reported_parse_error)
-      Format.err_formatter parse_fmt pos_string
-
-  let nested_app head args =
-    List.fold_left
-      (fun h a -> UApp((fst (get_pos h), snd (get_pos a)), h, a))
-      head args
-  
   let pos i =
     if i = 0 then
       (Parsing.symbol_start_pos (), Parsing.symbol_end_pos ())

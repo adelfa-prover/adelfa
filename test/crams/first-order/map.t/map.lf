@@ -1,0 +1,20 @@
+nat : type.
+z : nat.
+s : {x: nat} nat.
+
+list : type.
+nil : list.
+cons : {x:nat}{L: list} list.
+
+map : {f:{x:nat}nat}{l1:list}{l2:list} type.
+map-nil : {f:{x:nat}nat} map ([x] f x) nil nil.
+map-cons : {f:{x:nat}nat}{l1:list}{l2:list}{d:map ([x] f x) l1 l2}{e:nat}
+           map ([x] f x) (cons e l1) (cons (f e) l2).
+
+eq-list : {l1:list}{l2:list} type.
+eq-list-nil : eq-list nil nil.
+eq-list-cons : {l1:list}{l2:list}{x:nat}{d:eq-list l1 l2} eq-list (cons x l1) (cons x l2).
+
+append : {l1:list}{l2:list}{l3:list} type.
+append-nil : {l2:list} append nil l2 l2.
+append-cons : {l1:list}{l2:list}{l3:list}{x:nat}{d: append l1 l2 l3} append (cons x l1) l2 (cons x l3).
