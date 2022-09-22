@@ -355,8 +355,13 @@ end
 module Seq = struct
   include Seq
 
+  let uncons s =
+    match s () with
+    | Cons (x, xs) -> Some (x, xs)
+    | Nil -> None
+
   let rec distribute elt (seq : 'a Seq.t) : 'a Seq.t Seq.t =
-    match Seq.uncons seq with
+    match uncons seq with
     | None -> Seq.return elt |> Seq.return
     | Some (head, tail) ->
       Seq.cons
@@ -369,7 +374,7 @@ module Seq = struct
     if n = 0
     then Seq.return Seq.empty
     else (
-      match Seq.uncons seq with
+      match uncons seq with
       | None -> Seq.empty
       | Some (head, rest) ->
         let with_head = Seq.flat_map (distribute head) (permute (n - 1) rest) in
