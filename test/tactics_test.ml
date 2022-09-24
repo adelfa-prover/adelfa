@@ -636,7 +636,7 @@ let apply_tests =
          in
          assert_raises (Unify.UnifyFailure Unify.Generic) (fun () ->
            Tactics.apply schemas seq f args))
-       ; ("Is able to instantiate ctx var with repetitions of schema"
+       ; ("Is able to instantiate ctx var with schema"
          >:: fun () ->
          let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
          let x = const "x" ity in
@@ -648,6 +648,8 @@ let apply_tests =
          let e3 = var Eigen "E3" 0 ity in
          List.iter (fun v -> Term.term_to_pair v |> Sequent.add_var seq) [ e3; n ];
          List.iter (fun g -> Sequent.add_ctxvar seq g (Context.CtxTy ("c", []))) [ g1 ];
+         (* Some lemma, ctx G:c, forall E1:o,
+            {G |- E1 : tm} => exists E2, {G |- E2 : tm} *)
          let f =
            ctx
              [ "G", "c" ]
@@ -657,6 +659,7 @@ let apply_tests =
                    (atm (Context.Var g) e1 tm)
                    (Formula.exists [ "E2", ity ] (atm (Context.Var g) e2 tm))))
          in
+         (* Have formula: {G, n:tm |- E3 : tm} *)
          let args = [ atm (Context.Ctx (Context.Var g1, (term_to_var n, tm))) e3 tm ] in
          let schemas =
            [ "c", [ Context.B ([], [ term_to_var x, tm ]) ] ]
@@ -667,6 +670,54 @@ let apply_tests =
            (Formula.exists
               [ "E2", ity ]
               (atm (Context.Ctx (Context.Var g1, (term_to_var n, tm))) e2 tm))
+           (Tactics.apply schemas seq f args))
+       ; ("Is able to instantiate ctx var with repetitions of schema"
+         >:: fun () ->
+         let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
+         let x = const "x" ity in
+         let n = nominal_var "n" ity in
+         let n1 = nominal_var "n1" ity in
+         let g = Context.ctx_var "G" in
+         let g1 = Context.ctx_var "G1" in
+         let e1 = var Eigen "E1" 0 ity in
+         let e2 = var Eigen "E2" 0 ity in
+         let e3 = var Eigen "E3" 0 ity in
+         List.iter (fun v -> Term.term_to_pair v |> Sequent.add_var seq) [ e3; n; n1 ];
+         List.iter (fun g -> Sequent.add_ctxvar seq g (Context.CtxTy ("c", []))) [ g1 ];
+         (* Some lemma, ctx G:c, forall E1:o,
+            {G |- E1 : tm} => exists E2, {G |- E2 : tm} *)
+         let f =
+           ctx
+             [ "G", "c" ]
+             (forall
+                [ "E1", ity ]
+                (imp
+                   (atm (Context.Var g) e1 tm)
+                   (Formula.exists [ "E2", ity ] (atm (Context.Var g) e2 tm))))
+         in
+         (* Have formula: {G, n:tm, n1:tm |- E3 : tm} *)
+         let args =
+           [ atm
+               (Context.Ctx
+                  (Context.Ctx (Context.Var g1, (term_to_var n, tm)), (term_to_var n1, tm)))
+               e3
+               tm
+           ]
+         in
+         let schemas =
+           [ "c", [ Context.B ([], [ term_to_var x, tm ]) ] ]
+           |> List.to_seq
+           |> Hashtbl.of_seq
+         in
+         assert_formula_equal
+           (Formula.exists
+              [ "E2", ity ]
+              (atm
+                 (Context.Ctx
+                    ( Context.Ctx (Context.Var g1, (term_to_var n1, tm))
+                    , (term_to_var n, tm) ))
+                 e2
+                 tm))
            (Tactics.apply schemas seq f args))
        ; ("Does not instantiate context multiple times"
          >:: fun () ->

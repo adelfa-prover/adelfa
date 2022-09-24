@@ -89,17 +89,16 @@ let of_schema nvars ctxvars ctx (id, schema) =
   let ntys = List.map (fun (_, t) -> Term.get_var_ty t) nvars in
   (* if block is instance of one block schema *)
   let is_block block =
-    let instance (Context.B (vars, entries)) =
+    let is_instance (Context.B (vars, entries)) =
       (* try to end if cannot be a match *)
       if List.length block != List.length entries
       then false
       else (
         (* make fresh logic vars for vars
-       substitute into the types in entries
-       substitute the nominals from the block into types of entries
-       attempt to unify this generalized block instance with the block
-       (not actually unification; only want to instantiate in the entries)
-    *)
+           substitute into the types in entries
+           substitute the nominals from the block into types of entries
+           attempt to unify this generalized block instance with the block
+           (not actually unification; only want to instantiate in the entries) *)
         let var_subst =
           List.map
             (fun (id, ty) ->
@@ -109,12 +108,10 @@ let of_schema nvars ctxvars ctx (id, schema) =
         let nominal_subst =
           List.map2 (fun (n, _) (v, _) -> n.Term.name, Term.var_to_term v) entries block
         in
+        let alist = nominal_subst @ var_subst in
         let gen_block =
-          List.init (List.length entries) (fun i ->
-            ( fst (List.nth block i)
-            , Term.replace_term_vars
-                (List.take (i - 1) nominal_subst @ var_subst)
-                (snd (List.nth entries i)) ))
+          List.map (fun (_, e) -> Term.replace_term_vars alist e) entries
+          |> List.combine (List.map fst block)
         in
         try
           List.iter2
@@ -125,16 +122,16 @@ let of_schema nvars ctxvars ctx (id, schema) =
         with
         | _ -> false)
     in
-    List.fold_left (fun tv bsch -> tv || instance bsch) false schema
+    List.exists is_instance schema
   in
   let rec aux ctx block =
     match ctx with
-    | Context.Nil -> if List.length block = 0 then true else is_block block
+    | Context.Nil -> List.length block = 0 || is_block block
     | Context.Ctx (ctx', (n, ty)) ->
-      if aux ctx' ((n, ty) :: block) then true else is_block block && aux ctx' [ n, ty ]
+      aux ctx' ((n, ty) :: block) || (is_block block && aux ctx' [ n, ty ])
     | Context.Var ctx_id ->
       let (Context.CtxTy (s, _)) = List.assoc ctx_id ctxvars in
-      s = id
+      s = id && (List.length block = 0 || is_block block)
   in
   aux ctx []
 ;;

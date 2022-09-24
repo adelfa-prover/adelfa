@@ -359,6 +359,7 @@ module Seq = struct
     match s () with
     | Cons (x, xs) -> Some (x, xs)
     | Nil -> None
+  ;;
 
   let rec distribute elt (seq : 'a Seq.t) : 'a Seq.t Seq.t =
     match uncons seq with

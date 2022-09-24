@@ -9,6 +9,7 @@ let tests =
        ; Prover_test.tests
        ; Sequent_test.tests
        ; State_test.tests
+       ; Typing_test.tests
        ]
 ;;
 
