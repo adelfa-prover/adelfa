@@ -145,12 +145,12 @@ induction on 1. intros.
         weaken H14 with ty. weaken H25 with (var n13). search.
       assert {L, n:ty, n1:var n |- n : ty}.
       assert {L, n:ty, n1:var n |- n1 : var n}.
-      apply H20 to H26 H27 H25 H9 with (L135 = L, n:ty, n1:var n), X = n, M = (S2 n), N = (T5 n), P = T3, DV = n1, D1 = D3, D2 = a2 n n1.
+      apply H20 to H26 H27 H25 H9.
           prune H28.
     %%%use transitivity based on T2 (H22) to derive (sub (S2 n) (T4 n))
-      apply H22 to H28 H15 with (L81012 = L,n12:ty,n1:var n12, n2:bound n12 T3, n3 :bound_var n12 T3 n2 n1), T = (T4 n12), D1 = D2 n n1 n12 n2 n3, D2 = D4 n12 n1 n2 n3, S = S2 n12.
+      apply H22 to H28 H15.
           prune H29.
-      exists (sa-all S1 ([x] S2 x) T3 ([x] T4 x) (D1 n12) ([w][x][y][z] D5 w z y x)).
+      exists (sa-all S1 ([x] S2 x) T3 ([x] T4 x) (D1 n12) ([w][x][y][z] D5 w y x z)).
       search.
       %case 1.2: sa-trans-tvar
         case H13.

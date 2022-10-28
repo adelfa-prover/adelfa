@@ -180,6 +180,12 @@ let get_formula_used_ctxvars f =
   List.minus used_ctxvars !bound_ctxvars
 ;;
 
+let get_ctx_var_opt f =
+  match f with
+  | Atm (g, _, _, _) -> Context.get_ctx_var_opt g
+  | _ -> None
+;;
+
 let formula_support_sans ctxvars f =
   let supp = formula_support ctxvars f in
   get_formula_used_ctxvars f

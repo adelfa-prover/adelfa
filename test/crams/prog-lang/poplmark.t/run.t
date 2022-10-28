@@ -5375,8 +5375,7 @@
                              {L |- [x][y]D4 x y :
                                {x:bound X P}{y:bound_var X P x DV}sub M N}
   
-  trans_and_narrow'.1.1>> apply H20 to H26 H27 H25 H9 with (L135 = L,n:ty,n1:var n), X = n, M = 
-      S2 n, N = T5 n, P = T3, DV = n1, D1 = D3, D2 = a2 n n1.
+  trans_and_narrow'.1.1>> apply H20 to H26 H27 H25 H9.
   
   Subgoal trans_and_narrow'.1.1:
   
@@ -5490,9 +5489,9 @@
   H26:{L, n:ty, n1:var n |- n : ty}
   H27:{L, n:ty, n1:var n |- n1 : var n}
   H28:
-      {L, n:ty, n1:var n, n13:bound n T3, n14:bound_var n T3 n13 n1 |- 
+      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
         D2 n12 n11 n10 n9 n8 n7 n6 n5 n4 n3 n2 n1 n n13 n14 :
-        sub (S2 n) (T5 n)}
+        sub (S2 n1) (T5 n1)}
   
   ==================================
   exists D3, {L |- D3 : sub (all S1 ([x]S2 x)) (all T3 ([x]T4 x))}
@@ -5641,8 +5640,8 @@
   H26:{L, n:ty, n1:var n |- n : ty}
   H27:{L, n:ty, n1:var n |- n1 : var n}
   H28:
-      {L, n:ty, n1:var n, n13:bound n T3, n14:bound_var n T3 n13 n1 |- 
-        D2 n12 n1 n n13 n14 : sub (S2 n) (T5 n)}
+      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
+        D2 n12 n1 n n13 n14 : sub (S2 n1) (T5 n1)}
   
   ==================================
   exists D3, {L |- D3 : sub (all S1 ([x]S2 x)) (all T3 ([x]T4 x))}
@@ -5686,9 +5685,7 @@
                              {L |- [x][y]D4 x y :
                                {x:bound X P}{y:bound_var X P x DV}sub M N}
   
-  trans_and_narrow'.1.1>> apply H22 to H28 H15 with (L81012 = L,n12:ty,n1:var n12,n2:bound n12 T3,
-      n3:bound_var n12 T3 n2 n1), T = T4 n12, D1 = D2 n n1 n12 n2 n3, D2 =
-      D4 n12 n1 n2 n3, S = S2 n12.
+  trans_and_narrow'.1.1>> apply H22 to H28 H15.
   
   Subgoal trans_and_narrow'.1.1:
   
@@ -5803,10 +5800,10 @@
   H26:{L, n:ty, n1:var n |- n : ty}
   H27:{L, n:ty, n1:var n |- n1 : var n}
   H28:
-      {L, n:ty, n1:var n, n13:bound n T3, n14:bound_var n T3 n13 n1 |- 
-        D2 n12 n1 n n13 n14 : sub (S2 n) (T5 n)}
+      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
+        D2 n12 n1 n n13 n14 : sub (S2 n1) (T5 n1)}
   H29:
-      {L, n12:ty, n1:var n12, n2:bound n12 T3, n3:bound_var n12 T3 n2 n1 |- 
+      {L, n12:ty, n1:var n12, n2:bound n12 T3, n:bound_var n12 T3 n2 n1 |- 
         D5 n14 n13 n12 n11 n10 n9 n8 n7 n6 n5 n4 n3 n2 n1 n :
         sub (S2 n12) (T4 n12)}
   
@@ -5958,11 +5955,11 @@
   H26:{L, n:ty, n1:var n |- n : ty}
   H27:{L, n:ty, n1:var n |- n1 : var n}
   H28:
-      {L, n:ty, n1:var n, n13:bound n T3, n14:bound_var n T3 n13 n1 |- 
-        D2 n12 n1 n n13 n14 : sub (S2 n) (T5 n)}
+      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
+        D2 n12 n1 n n13 n14 : sub (S2 n1) (T5 n1)}
   H29:
-      {L, n12:ty, n1:var n12, n2:bound n12 T3, n3:bound_var n12 T3 n2 n1 |- 
-        D5 n12 n3 n2 n1 : sub (S2 n12) (T4 n12)}
+      {L, n12:ty, n1:var n12, n2:bound n12 T3, n:bound_var n12 T3 n2 n1 |- 
+        D5 n12 n2 n1 n : sub (S2 n12) (T4 n12)}
   
   ==================================
   exists D3, {L |- D3 : sub (all S1 ([x]S2 x)) (all T3 ([x]T4 x))}
@@ -6006,7 +6003,7 @@
                              {L |- [x][y]D4 x y :
                                {x:bound X P}{y:bound_var X P x DV}sub M N}
   
-  trans_and_narrow'.1.1>> exists sa-all S1 ([x]S2 x) T3 ([x]T4 x) D1 n12 ([w][x][y][z]D5 w z y x).
+  trans_and_narrow'.1.1>> exists sa-all S1 ([x]S2 x) T3 ([x]T4 x) D1 n12 ([w][x][y][z]D5 w y x z).
   
   Subgoal trans_and_narrow'.1.1:
   
@@ -6112,14 +6109,14 @@
   H26:{L, n:ty, n1:var n |- n : ty}
   H27:{L, n:ty, n1:var n |- n1 : var n}
   H28:
-      {L, n:ty, n1:var n, n13:bound n T3, n14:bound_var n T3 n13 n1 |- 
-        D2 n12 n1 n n13 n14 : sub (S2 n) (T5 n)}
+      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
+        D2 n12 n1 n n13 n14 : sub (S2 n1) (T5 n1)}
   H29:
-      {L, n12:ty, n1:var n12, n2:bound n12 T3, n3:bound_var n12 T3 n2 n1 |- 
-        D5 n12 n3 n2 n1 : sub (S2 n12) (T4 n12)}
+      {L, n12:ty, n1:var n12, n2:bound n12 T3, n:bound_var n12 T3 n2 n1 |- 
+        D5 n12 n2 n1 n : sub (S2 n12) (T4 n12)}
   
   ==================================
-  {L |- sa-all S1 ([x]S2 x) T3 ([x]T4 x) (D1 n12) ([w][x][y][z]D5 w z y x) :
+  {L |- sa-all S1 ([x]S2 x) T3 ([x]T4 x) (D1 n12) ([w][x][y][z]D5 w y x z) :
     sub (all S1 ([x]S2 x)) (all T3 ([x]T4 x))}
   
   Subgoal trans_and_narrow'.1.2 is:
@@ -6817,22 +6814,22 @@
   H16:{G |- T1 : ty}*
   H17:{G |- T2 : ty}*
   H18:
-      ctx L151820:c.
+      ctx L172022:c.
         forall S, forall T, forall D1, forall D2,
-          {L151820 |- D1 : sub S T1} =>
-              {L151820 |- D2 : sub T1 T} =>
-                  exists D3, {L151820 |- D3 : sub S T}
+          {L172022 |- D1 : sub S T1} =>
+              {L172022 |- D2 : sub T1 T} =>
+                  exists D3, {L172022 |- D3 : sub S T}
           /\
-          ctx L141719:c.
+          ctx L161921:c.
             forall X, forall M, forall N, forall P, forall D1, forall D2,
               forall DV,
-              {L141719 |- X : ty} =>
-                  {L141719 |- DV : var X} =>
-                      {L141719 |- D1 : sub P T1} =>
-                          {L141719 |- [x][y]D2 x y :
+              {L161921 |- X : ty} =>
+                  {L161921 |- DV : var X} =>
+                      {L161921 |- D1 : sub P T1} =>
+                          {L161921 |- [x][y]D2 x y :
                             {x:bound X T1}{y:bound_var X T1 x DV}sub M N} =>
                               exists D4,
-                                {L141719 |- [x][y]D4 x y :
+                                {L161921 |- [x][y]D4 x y :
                                   {x:bound X P}{y:bound_var X P x DV}sub M N}
   
   ==================================
@@ -6923,22 +6920,22 @@
   H16:{G |- T1 : ty}*
   H17:{G |- T2 : ty}*
   H19:
-      ctx L151820:c.
+      ctx L172022:c.
         forall S, forall T, forall D1, forall D2,
-          {L151820 |- D1 : sub S T1} =>
-              {L151820 |- D2 : sub T1 T} =>
-                  exists D3, {L151820 |- D3 : sub S T}
+          {L172022 |- D1 : sub S T1} =>
+              {L172022 |- D2 : sub T1 T} =>
+                  exists D3, {L172022 |- D3 : sub S T}
   H20:
-      ctx L141719:c.
+      ctx L161921:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
-          {L141719 |- X : ty} =>
-              {L141719 |- DV : var X} =>
-                  {L141719 |- D1 : sub P T1} =>
-                      {L141719 |- [x][y]D2 x y :
+          {L161921 |- X : ty} =>
+              {L161921 |- DV : var X} =>
+                  {L161921 |- D1 : sub P T1} =>
+                      {L161921 |- [x][y]D2 x y :
                         {x:bound X T1}{y:bound_var X T1 x DV}sub M N} =>
                           exists D4,
-                            {L141719 |- [x][y]D4 x y :
+                            {L161921 |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
   
   ==================================
@@ -7029,40 +7026,40 @@
   H16:{G |- T1 : ty}*
   H17:{G |- T2 : ty}*
   H19:
-      ctx L151820:c.
+      ctx L172022:c.
         forall S, forall T, forall D1, forall D2,
-          {L151820 |- D1 : sub S T1} =>
-              {L151820 |- D2 : sub T1 T} =>
-                  exists D3, {L151820 |- D3 : sub S T}
+          {L172022 |- D1 : sub S T1} =>
+              {L172022 |- D2 : sub T1 T} =>
+                  exists D3, {L172022 |- D3 : sub S T}
   H20:
-      ctx L141719:c.
+      ctx L161921:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
-          {L141719 |- X : ty} =>
-              {L141719 |- DV : var X} =>
-                  {L141719 |- D1 : sub P T1} =>
-                      {L141719 |- [x][y]D2 x y :
+          {L161921 |- X : ty} =>
+              {L161921 |- DV : var X} =>
+                  {L161921 |- D1 : sub P T1} =>
+                      {L161921 |- [x][y]D2 x y :
                         {x:bound X T1}{y:bound_var X T1 x DV}sub M N} =>
                           exists D4,
-                            {L141719 |- [x][y]D4 x y :
+                            {L161921 |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
   H21:
-      ctx L222527:c.
+      ctx L242729:c.
         forall S, forall T, forall D1, forall D2,
-          {L222527 |- D1 : sub S T2} =>
-              {L222527 |- D2 : sub T2 T} =>
-                  exists D3, {L222527 |- D3 : sub S T}
+          {L242729 |- D1 : sub S T2} =>
+              {L242729 |- D2 : sub T2 T} =>
+                  exists D3, {L242729 |- D3 : sub S T}
           /\
-          ctx L212426:c.
+          ctx L232628:c.
             forall X, forall M, forall N, forall P, forall D1, forall D2,
               forall DV,
-              {L212426 |- X : ty} =>
-                  {L212426 |- DV : var X} =>
-                      {L212426 |- D1 : sub P T2} =>
-                          {L212426 |- [x][y]D2 x y :
+              {L232628 |- X : ty} =>
+                  {L232628 |- DV : var X} =>
+                      {L232628 |- D1 : sub P T2} =>
+                          {L232628 |- [x][y]D2 x y :
                             {x:bound X T2}{y:bound_var X T2 x DV}sub M N} =>
                               exists D4,
-                                {L212426 |- [x][y]D4 x y :
+                                {L232628 |- [x][y]D4 x y :
                                   {x:bound X P}{y:bound_var X P x DV}sub M N}
   
   ==================================
@@ -7153,40 +7150,40 @@
   H16:{G |- T1 : ty}*
   H17:{G |- T2 : ty}*
   H19:
-      ctx L151820:c.
+      ctx L172022:c.
         forall S, forall T, forall D1, forall D2,
-          {L151820 |- D1 : sub S T1} =>
-              {L151820 |- D2 : sub T1 T} =>
-                  exists D3, {L151820 |- D3 : sub S T}
+          {L172022 |- D1 : sub S T1} =>
+              {L172022 |- D2 : sub T1 T} =>
+                  exists D3, {L172022 |- D3 : sub S T}
   H20:
-      ctx L141719:c.
+      ctx L161921:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
-          {L141719 |- X : ty} =>
-              {L141719 |- DV : var X} =>
-                  {L141719 |- D1 : sub P T1} =>
-                      {L141719 |- [x][y]D2 x y :
+          {L161921 |- X : ty} =>
+              {L161921 |- DV : var X} =>
+                  {L161921 |- D1 : sub P T1} =>
+                      {L161921 |- [x][y]D2 x y :
                         {x:bound X T1}{y:bound_var X T1 x DV}sub M N} =>
                           exists D4,
-                            {L141719 |- [x][y]D4 x y :
+                            {L161921 |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
   H22:
-      ctx L222527:c.
+      ctx L242729:c.
         forall S, forall T, forall D1, forall D2,
-          {L222527 |- D1 : sub S T2} =>
-              {L222527 |- D2 : sub T2 T} =>
-                  exists D3, {L222527 |- D3 : sub S T}
+          {L242729 |- D1 : sub S T2} =>
+              {L242729 |- D2 : sub T2 T} =>
+                  exists D3, {L242729 |- D3 : sub S T}
   H23:
-      ctx L212426:c.
+      ctx L232628:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
-          {L212426 |- X : ty} =>
-              {L212426 |- DV : var X} =>
-                  {L212426 |- D1 : sub P T2} =>
-                      {L212426 |- [x][y]D2 x y :
+          {L232628 |- X : ty} =>
+              {L232628 |- DV : var X} =>
+                  {L232628 |- D1 : sub P T2} =>
+                      {L232628 |- [x][y]D2 x y :
                         {x:bound X T2}{y:bound_var X T2 x DV}sub M N} =>
                           exists D4,
-                            {L212426 |- [x][y]D4 x y :
+                            {L232628 |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
   
   ==================================
@@ -7277,40 +7274,40 @@
   H16:{G |- T1 : ty}*
   H17:{G |- T2 : ty}*
   H19:
-      ctx L151820:c.
+      ctx L172022:c.
         forall S, forall T, forall D1, forall D2,
-          {L151820 |- D1 : sub S T1} =>
-              {L151820 |- D2 : sub T1 T} =>
-                  exists D3, {L151820 |- D3 : sub S T}
+          {L172022 |- D1 : sub S T1} =>
+              {L172022 |- D2 : sub T1 T} =>
+                  exists D3, {L172022 |- D3 : sub S T}
   H20:
-      ctx L141719:c.
+      ctx L161921:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
-          {L141719 |- X : ty} =>
-              {L141719 |- DV : var X} =>
-                  {L141719 |- D1 : sub P T1} =>
-                      {L141719 |- [x][y]D2 x y :
+          {L161921 |- X : ty} =>
+              {L161921 |- DV : var X} =>
+                  {L161921 |- D1 : sub P T1} =>
+                      {L161921 |- [x][y]D2 x y :
                         {x:bound X T1}{y:bound_var X T1 x DV}sub M N} =>
                           exists D4,
-                            {L141719 |- [x][y]D4 x y :
+                            {L161921 |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
   H22:
-      ctx L222527:c.
+      ctx L242729:c.
         forall S, forall T, forall D1, forall D2,
-          {L222527 |- D1 : sub S T2} =>
-              {L222527 |- D2 : sub T2 T} =>
-                  exists D3, {L222527 |- D3 : sub S T}
+          {L242729 |- D1 : sub S T2} =>
+              {L242729 |- D2 : sub T2 T} =>
+                  exists D3, {L242729 |- D3 : sub S T}
   H23:
-      ctx L212426:c.
+      ctx L232628:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
-          {L212426 |- X : ty} =>
-              {L212426 |- DV : var X} =>
-                  {L212426 |- D1 : sub P T2} =>
-                      {L212426 |- [x][y]D2 x y :
+          {L232628 |- X : ty} =>
+              {L232628 |- DV : var X} =>
+                  {L232628 |- D1 : sub P T2} =>
+                      {L232628 |- [x][y]D2 x y :
                         {x:bound X T2}{y:bound_var X T2 x DV}sub M N} =>
                           exists D4,
-                            {L212426 |- [x][y]D4 x y :
+                            {L232628 |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
   H24:{L |- D3 : sub T3 S1}
   
@@ -7402,40 +7399,40 @@
   H16:{G |- T1 : ty}*
   H17:{G |- T2 : ty}*
   H19:
-      ctx L151820:c.
+      ctx L172022:c.
         forall S, forall T, forall D1, forall D2,
-          {L151820 |- D1 : sub S T1} =>
-              {L151820 |- D2 : sub T1 T} =>
-                  exists D3, {L151820 |- D3 : sub S T}
+          {L172022 |- D1 : sub S T1} =>
+              {L172022 |- D2 : sub T1 T} =>
+                  exists D3, {L172022 |- D3 : sub S T}
   H20:
-      ctx L141719:c.
+      ctx L161921:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
-          {L141719 |- X : ty} =>
-              {L141719 |- DV : var X} =>
-                  {L141719 |- D1 : sub P T1} =>
-                      {L141719 |- [x][y]D2 x y :
+          {L161921 |- X : ty} =>
+              {L161921 |- DV : var X} =>
+                  {L161921 |- D1 : sub P T1} =>
+                      {L161921 |- [x][y]D2 x y :
                         {x:bound X T1}{y:bound_var X T1 x DV}sub M N} =>
                           exists D4,
-                            {L141719 |- [x][y]D4 x y :
+                            {L161921 |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
   H22:
-      ctx L222527:c.
+      ctx L242729:c.
         forall S, forall T, forall D1, forall D2,
-          {L222527 |- D1 : sub S T2} =>
-              {L222527 |- D2 : sub T2 T} =>
-                  exists D3, {L222527 |- D3 : sub S T}
+          {L242729 |- D1 : sub S T2} =>
+              {L242729 |- D2 : sub T2 T} =>
+                  exists D3, {L242729 |- D3 : sub S T}
   H23:
-      ctx L212426:c.
+      ctx L232628:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
-          {L212426 |- X : ty} =>
-              {L212426 |- DV : var X} =>
-                  {L212426 |- D1 : sub P T2} =>
-                      {L212426 |- [x][y]D2 x y :
+          {L232628 |- X : ty} =>
+              {L232628 |- DV : var X} =>
+                  {L232628 |- D1 : sub P T2} =>
+                      {L232628 |- [x][y]D2 x y :
                         {x:bound X T2}{y:bound_var X T2 x DV}sub M N} =>
                           exists D4,
-                            {L212426 |- [x][y]D4 x y :
+                            {L232628 |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
   H24:{L |- D3 : sub T3 S1}
   H25:{L |- D1 : sub S2 T4}
@@ -7528,40 +7525,40 @@
   H16:{G |- T1 : ty}*
   H17:{G |- T2 : ty}*
   H19:
-      ctx L151820:c.
+      ctx L172022:c.
         forall S, forall T, forall D1, forall D2,
-          {L151820 |- D1 : sub S T1} =>
-              {L151820 |- D2 : sub T1 T} =>
-                  exists D3, {L151820 |- D3 : sub S T}
+          {L172022 |- D1 : sub S T1} =>
+              {L172022 |- D2 : sub T1 T} =>
+                  exists D3, {L172022 |- D3 : sub S T}
   H20:
-      ctx L141719:c.
+      ctx L161921:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
-          {L141719 |- X : ty} =>
-              {L141719 |- DV : var X} =>
-                  {L141719 |- D1 : sub P T1} =>
-                      {L141719 |- [x][y]D2 x y :
+          {L161921 |- X : ty} =>
+              {L161921 |- DV : var X} =>
+                  {L161921 |- D1 : sub P T1} =>
+                      {L161921 |- [x][y]D2 x y :
                         {x:bound X T1}{y:bound_var X T1 x DV}sub M N} =>
                           exists D4,
-                            {L141719 |- [x][y]D4 x y :
+                            {L161921 |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
   H22:
-      ctx L222527:c.
+      ctx L242729:c.
         forall S, forall T, forall D1, forall D2,
-          {L222527 |- D1 : sub S T2} =>
-              {L222527 |- D2 : sub T2 T} =>
-                  exists D3, {L222527 |- D3 : sub S T}
+          {L242729 |- D1 : sub S T2} =>
+              {L242729 |- D2 : sub T2 T} =>
+                  exists D3, {L242729 |- D3 : sub S T}
   H23:
-      ctx L212426:c.
+      ctx L232628:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
-          {L212426 |- X : ty} =>
-              {L212426 |- DV : var X} =>
-                  {L212426 |- D1 : sub P T2} =>
-                      {L212426 |- [x][y]D2 x y :
+          {L232628 |- X : ty} =>
+              {L232628 |- DV : var X} =>
+                  {L232628 |- D1 : sub P T2} =>
+                      {L232628 |- [x][y]D2 x y :
                         {x:bound X T2}{y:bound_var X T2 x DV}sub M N} =>
                           exists D4,
-                            {L212426 |- [x][y]D4 x y :
+                            {L232628 |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
   H24:{L |- D3 : sub T3 S1}
   H25:{L |- D1 : sub S2 T4}

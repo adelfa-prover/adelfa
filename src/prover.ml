@@ -427,8 +427,10 @@ let ensure_no_uninst_ctxvariable ctxvarctx f =
          ^ Print.string_of_formula f))
 ;;
 
+let find_lemma_opt name = H.find_opt lemmas name
+
 let find_by_name name =
-  match H.find_opt lemmas name with
+  match find_lemma_opt name with
   | Some form -> form
   | None ->
     (try (Sequent.get_hyp sequent name).Sequent.formula with
@@ -455,9 +457,40 @@ let apply_form f forms uws =
   res_f
 ;;
 
+(* Generate a substitution for every nominal in [form] to new nominals away from
+   the support set of the sequent. Also modifies the sequent to add the newly
+   inserted variables into its support set.
+
+   @param [form] the formula in which all nominals will be substituted for
+
+   @return the new formula with fresh nominals
+*)
+let freshen_nominals (form : Formula.formula) : Formula.formula =
+  let nominals =
+    Formula.get_formula_used_nominals (Sequent.get_cvar_tys sequent.Sequent.ctxvars) form
+  in
+  let nvars = Sequent.get_nominals sequent in
+  let used = ref nvars in
+  let alist =
+    List.map
+      (fun (id, t) ->
+        let t', used' =
+          Term.fresh_wrt ~ts:2 Term.Nominal "n" (Term.term_to_var t).Term.ty !used
+        in
+        used := used';
+        id, t')
+      nominals
+  in
+  List.iter (Sequent.add_var sequent) (List.map Term.term_to_pair (List.map snd alist));
+  Formula.replace_formula_vars alist form
+;;
+
 let apply name args uws =
   try
-    let f = find_by_name name in
+    let f = match find_lemma_opt name with
+      | Some f -> freshen_nominals f
+      | None -> find_by_name name
+    in
     let forms = List.map find_by_name args in
     let res_f = apply_form f forms uws in
     Sequent.add_hyp sequent res_f;

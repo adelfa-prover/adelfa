@@ -168,6 +168,33 @@ let of_schema_tests =
          in
          of_schema nvars ctx_vars ctx ("c", schemas) |> assert_bool "Should match schema"
          )
+       ; ("Terms quantified by arities are properly raised"
+         >:: fun () ->
+         let gamma = Context.ctx_var "Gamma" in
+         let x = var Constant "X" 0 ity in
+         let y = var Constant "Y" 0 ity in
+         let t = var Logic "T" 0 ity in
+         let t1 = var Eigen "T1" 0 ity in
+         let n = nominal_var "n" ity in
+         let n1 = nominal_var "n1" ity in
+         let n2 = nominal_var "n2" ity in
+         let nvars = [ term_to_name n, n; term_to_name n1, n1; term_to_name n2, n2 ] in
+         (* < Gamma, n: tm, n1: of n T > *)
+         let ctx =
+           Context.Ctx
+             ( Context.Ctx (Context.Var gamma, (term_to_var n, tm))
+             , (term_to_var n1, Term.app typeof [ n; t1 ]) )
+         in
+         let ctx_vars = [ "Gamma", Context.CtxTy ("c", []) ] in
+         (* Schema c := {T}(x:tm, y:of x T) *)
+         let schemas =
+           [ Context.B
+               ( [ "T", ity ]
+               , [ term_to_var x, tm; term_to_var y, Term.app typeof [ x; t ] ] )
+           ]
+         in
+         of_schema nvars ctx_vars ctx ("c", schemas) |> assert_bool "Should match schema"
+         )
        ]
 ;;
 

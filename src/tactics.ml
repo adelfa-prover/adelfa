@@ -139,7 +139,7 @@ let context_instance
   (ctxvar_ctx_form : (Context.ctx_var * Context.ctx_typ) list)
   (g_form : Context.ctx_expr)
   (g_seq : Context.ctx_expr)
-  : (id * Context.ctx_expr) list option
+  : (Context.ctx_var * Context.ctx_expr) list option
   =
   let can_instantiate_to_var v_form v_seq =
     (* ensure v_form logical *)
@@ -240,11 +240,27 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
   inst f1 f2
 ;;
 
-(** [g1] is universal and [g2] could be either univ or exist, depending on if its var
-    is in [bound_ctxvar_ctx] *)
-let generate_partial_perm f1 f2 added ctxvar_ctx bound_ctxvar_ctx =
+(** [generate_partial_perm f1 f2 added ctxvar_ctx bound_ctxvar_ctx] will returns
+    a substitution that represents part of the permutation which is forced to be
+    held if the explicit portions of [f1] and [f2]'s contexts are to match.
+
+    @param f1 is the universally quantified formula, i.e. from the sequent
+
+    @param f2 could be either universally or existentially quantified depending
+      on if it occurs under some bindings.
+
+    @param added represends the abstractions peeled from [f2] in order to
+      normalize it to an atomic form.
+
+    @param ctxvar_ctx the sequent's ctx variable context.
+
+    @param bound_ctxvar_ctx a dummy context variable context to keep track of
+      logical context variables and their set of annotated nominals.
+ *)
+let generate_partial_perm f1 f2 added restricted_set ctxvar_ctx bound_ctxvar_ctx =
   let ctx_var_compat g1 g2 =
     match Context.get_ctx_var_opt g1, Context.get_ctx_var_opt g2 with
+    (* Both have context variables, ensure they are typed by the same schema *)
     | Some v1, Some v2 ->
       let (Context.CtxTy (schema1, _)) = List.assoc v1 ctxvar_ctx in
       let schema2 =
@@ -255,17 +271,26 @@ let generate_partial_perm f1 f2 added ctxvar_ctx bound_ctxvar_ctx =
           schema2
       in
       schema2 = schema1
+    (* The universally quantified formula cannot match if it has an implicit
+       portion while the existentially quantified formula doesn't.*)
     | Some _, None -> false
     | None, _ -> true
   in
   let added_dom = List.map fst added in
-  let added_rng = List.map snd added in
+  let added_rng = List.map (fun (_, t) -> Term.term_to_var t) added in
+  (* Generate a permutation which we know must be there. If  *)
   let rec aux g1 g2 =
     match g1, g2 with
     | Context.Ctx (g1', (n1, _)), Context.Ctx (g2', (n2, _)) ->
-      (match List.mem n1 added_dom, List.mem (Term.var_to_term n2) added_rng with
+      (match List.mem n1 added_dom, List.mem n2 added_rng with
        | true, true -> aux g1' g2'
-       | false, false -> (n1, Term.var_to_term n2) :: aux g1' g2'
+       | false, false ->
+         (* If we can permute the ground term, it must map to the corresponding
+            nominal in the other formula. If we cannot permute it, it will never
+            match, and therefore will raise a unify failure *)
+         if List.mem n1.name restricted_set || n1 = n2
+         then (n1, Term.var_to_term n2) :: aux g1' g2'
+         else raise (Unify.UnifyFailure Unify.Generic)
        | _ -> raise (Unify.UnifyFailure Unify.Generic))
     | _ -> []
   in
@@ -285,6 +310,7 @@ let all_meta_right_permute_unify
   (schemas : (Context.ctx_var, Context.block_schema list) Hashtbl.t)
   (nvars : (Term.id * Term.term) list)
   (ctxvar_ctx : (Context.ctx_var * Context.ctx_typ) list)
+  (xi_seq : (Context.ctx_var * Term.id list) list)
   (new_ctxvar_ctx : (Context.ctx_var * Context.ctx_typ) list)
   (perm : (var * term) list)
   (t1 : Formula.formula)
@@ -295,14 +321,27 @@ let all_meta_right_permute_unify
      a formula *)
   (* Generate a partial permutation that is a mapping between the explicit
      portion of the formulas contexts. *)
-  let perm = generate_partial_perm t2 t1 perm ctxvar_ctx new_ctxvar_ctx in
+  let restricted_set =
+    match Formula.get_ctx_var_opt t2 with
+    | Some g_var -> List.assoc g_var xi_seq
+    | None -> List.map fst nvars
+  in
+  let perm = generate_partial_perm t2 t1 perm restricted_set ctxvar_ctx new_ctxvar_ctx in
   let ctx_var_ctxs = new_ctxvar_ctx @ ctxvar_ctx in
-  (* Get all nominals to consider permuting *)
+  (* We limit the permutation to the restricted set of the context variable if
+     the ground term has one, otherwise it's all nominals in the sequent *)
+  (* Get all nominals to consider permuting to *)
   let support_t1 = Formula.formula_support_sans ctx_var_ctxs t1 in
-  let support_t2 = Formula.formula_support_sans ctx_var_ctxs t2 in
+  (* Remove any nominals from the ground term which are not in the restricted
+     set *)
+  let support_t2 =
+    Formula.formula_support_sans ctx_var_ctxs t2
+    |> List.filter (fun x -> List.mem (Term.get_id x) restricted_set)
+  in
+  (* Allow the identity mapping for any term in the ground formula *)
   let support_t1 = support_t1 @ support_t2 |> List.unique in
-  (* Remove any items which have already been assigned a mapping
-     in the partial permutation. *)
+  (* Remove any items which have already been assigned a mapping in the partial
+     permutation. *)
   let support_t1 = List.minus support_t1 (List.map snd perm) in
   let support_t2 =
     List.minus support_t2 (List.map (fun (v, _) -> Term.var_to_term v) perm)
@@ -1183,16 +1222,15 @@ let rec map_args f t =
   | _ -> []
 ;;
 
-(* Normalizes [form] by removing pi abstractions until it is a typing judgement.
-   Each pi binding is replaced by a new nominal variable, but this nominal is not added
-   to the sequent's variables - as a permutation must map to it and after this permutation
-   the variable will be removed via this operation happening in another derivation of the
-   =>L rule.
+(* Normalizes [form] by removing pi abstractions until it is an atomic typing
+   judgement. Each pi binding is replaced by a new nominal variable wrt [nvars],
+   but this nominal is not added to the sequent's variables - as a permutation
+   must map to it. After this permutation the variable will be removed via this
+   operation happening in another derivation of the =>L rule.
 
-   Returns the normalized formula and the nominals that were added to the context via removing
-   the pi abstractions. This list is in reverse order - where the first element is the last nominal
-   in the context.
- *)
+   Returns the normalized formula and the nominals that were added to the
+   context via removing the pi abstractions. This list is in reverse order -
+   where the first element is the last nominal in the context. *)
 let normalize_atomic_formula nvars form =
   let nvars = ref nvars in
   let rec aux (form : Formula.formula) added =
@@ -1306,6 +1344,7 @@ let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
                 schemas
                 nvars
                 ctxvar_ctx
+                xi_seq
                 bound_ctxvars
                 subst
                 left

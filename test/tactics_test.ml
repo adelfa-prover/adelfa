@@ -540,7 +540,7 @@ let apply_tests =
          let l = Context.ctx_var "L" in
          let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
          let _ =
-           Sequent.add_ctxvar seq l (Context.CtxTy ("c", []));
+           Sequent.add_ctxvar seq l ~rstrct:["n1"; "n2"] (Context.CtxTy ("c", []));
            Sequent.add_ctxvar seq e (Context.CtxTy ("c", []));
            Sequent.add_var seq (term_to_pair n);
            Sequent.add_var seq (term_to_pair n1);
@@ -589,17 +589,12 @@ let apply_tests =
          (*   "exists P3, {L, n2:hyp B |- P3 : conc C}" *)
          (*   f_res) ; *)
          let f_res =
-           try
-             let vwiths = [ "A", a2; "C", c2; "P1", p4; "P2", p5 ] in
-             let cwiths =
-               [ "E", Context.Ctx (Context.Var l, (term_to_var n1, Term.app hyp [ b ])) ]
-             in
-             let tbl = List.to_seq [ "c", schema ] |> Hashtbl.of_seq in
-             apply_with tbl seq f args (vwiths, cwiths)
-           with
-           | Unify.UnifyFailure e ->
-             print_endline (Unify.explain_failure e);
-             raise (Unify.UnifyFailure e)
+           let vwiths = [ "A", a2; "C", c2; "P1", p4; "P2", p5 ] in
+           let cwiths =
+             [ "E", Context.Ctx (Context.Var l, (term_to_var n1, Term.app hyp [ b ])) ]
+           in
+           let tbl = List.to_seq [ "c", schema ] |> Hashtbl.of_seq in
+           apply_with tbl seq f args (vwiths, cwiths)
          in
          assert_pprint_equal "exists P3, {L, n1:hyp B |- P3 : conc C}" f_res)
        ; ("Cannot instantiate ctx var multiple times"
@@ -714,8 +709,8 @@ let apply_tests =
               [ "E2", ity ]
               (atm
                  (Context.Ctx
-                    ( Context.Ctx (Context.Var g1, (term_to_var n1, tm))
-                    , (term_to_var n, tm) ))
+                    ( Context.Ctx (Context.Var g1, (term_to_var n, tm))
+                    , (term_to_var n1, tm) ))
                  e2
                  tm))
            (Tactics.apply schemas seq f args))
