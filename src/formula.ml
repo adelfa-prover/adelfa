@@ -359,6 +359,19 @@ let rec norm f =
      | f'' -> exists vs f'')
 ;;
 
+let rec eta_expand (f : formula) =
+  match f with
+  | Top | Bottom -> f
+  | Atm (g, m, t, a) -> Atm (g, Term.eta_expand m, Term.eta_expand t, a)
+  | Ctx (c, f') -> Ctx (c, eta_expand f')
+  | All (t, f') -> All (t, eta_expand f')
+  | Exists (t, f') -> Exists (t, eta_expand f')
+  | Imp (f1, f2) -> Imp (eta_expand f1, eta_expand f2)
+  | And (f1, f2) -> And (eta_expand f1, eta_expand f2)
+  | Or (f1, f2) -> Or (eta_expand f1, eta_expand f2)
+  | Prop (i, ts) -> Prop (i, List.map Term.eta_expand ts)
+;;
+
 (* Apply the given context variable substitution 
    within the given formula. *)
 let rec replace_ctx_vars ctxvar_subst f =

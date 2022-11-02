@@ -52,7 +52,7 @@
       forall L1, forall L2, forall L3, forall D1, forall D2, forall f,
         {D1 : map f L1 L2}* =>
             {D2 : map f L1 L3} => exists E, {E : eq-list L2 L3}
-  H2:{D2 : map ([x]f1 x) (cons e l1) L3}
+  H2:{D2 : map ([c10]f1 c10) (cons e l1) L3}
   H3:{n:nat |- f1 n : nat}*
   H4:{l1 : list}*
   H5:{l2 : list}*
@@ -189,7 +189,7 @@
       forall L1, forall L2, forall L3, forall D1, forall D2, forall f,
         {D1 : map f L1 L2}* =>
             {D2 : map f L1 L3} => exists E, {E : eq-list L2 L3}
-  H2:{D2 : map ([x]f1 x) nil L3}
+  H2:{D2 : map ([c21]f1 c21) nil L3}
   H3:{n:nat |- f1 n : nat}*
   
   ==================================
@@ -353,8 +353,8 @@
                     {D4 : map f L2 FL2} =>
                         {D5 : append FL1 FL2 FL12'} =>
                             exists E, {E : eq-list FL12 FL12'}
-  H3:{D3 : map ([x]f1 x) (cons x l1) FL1}
-  H4:{D4 : map ([x]f1 x) L2 FL2}
+  H3:{D3 : map ([c30]f1 c30) (cons x l1) FL1}
+  H4:{D4 : map ([c30]f1 c30) L2 FL2}
   H5:{D5 : append FL1 FL2 FL12'}
   H6:{l1 : list}*
   H7:{L2 : list}*
@@ -390,7 +390,7 @@
                     {D4 : map f L2 FL2} =>
                         {D5 : append FL1 FL2 FL12'} =>
                             exists E, {E : eq-list FL12 FL12'}
-  H4:{D4 : map ([x]f1 x) L2 FL2}
+  H4:{D4 : map ([c30]f1 c30) L2 FL2}
   H5:{D5 : append (cons (f1 x) FL3) FL2 FL12'}
   H6:{l1 : list}*
   H7:{L2 : list}*
@@ -431,7 +431,7 @@
                     {D4 : map f L2 FL2} =>
                         {D5 : append FL1 FL2 FL12'} =>
                             exists E, {E : eq-list FL12 FL12'}
-  H4:{D4 : map ([x]f1 x) L2 FL2}
+  H4:{D4 : map ([c30]f1 c30) L2 FL2}
   H6:{l1 : list}*
   H7:{L2 : list}*
   H8:{l3 : list}*
@@ -476,7 +476,7 @@
                     {D4 : map f L2 FL2} =>
                         {D5 : append FL1 FL2 FL12'} =>
                             exists E, {E : eq-list FL12 FL12'}
-  H4:{D4 : map ([x]f1 x) L2 FL2}
+  H4:{D4 : map ([c30]f1 c30) L2 FL2}
   H6:{l1 : list}*
   H7:{L2 : list}*
   H8:{l3 : list}*
@@ -522,7 +522,7 @@
                     {D4 : map f L2 FL2} =>
                         {D5 : append FL1 FL2 FL12'} =>
                             exists E, {E : eq-list FL12 FL12'}
-  H4:{D4 : map ([x]f1 x) L2 FL2}
+  H4:{D4 : map ([c30]f1 c30) L2 FL2}
   H6:{l1 : list}*
   H7:{L2 : list}*
   H8:{l3 : list}*
@@ -593,8 +593,8 @@
                     {D4 : map f L2 FL2} =>
                         {D5 : append FL1 FL2 FL12'} =>
                             exists E, {E : eq-list FL12 FL12'}
-  H2:{D2 : map ([x]f1 x) L12 FL12}
-  H4:{D4 : map ([x]f1 x) L12 FL2}
+  H2:{D2 : map ([c161]f1 c161) L12 FL12}
+  H4:{D4 : map ([c161]f1 c161) L12 FL2}
   H5:{D5 : append nil FL2 FL12'}
   H6:{L12 : list}*
   H7:{n:nat |- f1 n : nat}
@@ -618,8 +618,8 @@
                     {D4 : map f L2 FL2} =>
                         {D5 : append FL1 FL2 FL12'} =>
                             exists E, {E : eq-list FL12 FL12'}
-  H2:{D2 : map ([x]f1 x) L12 FL12}
-  H4:{D4 : map ([x]f1 x) L12 FL12'}
+  H2:{D2 : map ([c161]f1 c161) L12 FL12}
+  H4:{D4 : map ([c161]f1 c161) L12 FL12'}
   H6:{L12 : list}*
   H7:{n:nat |- f1 n : nat}
   H8:{FL12' : list}
@@ -643,8 +643,8 @@
                     {D4 : map f L2 FL2} =>
                         {D5 : append FL1 FL2 FL12'} =>
                             exists E, {E : eq-list FL12 FL12'}
-  H2:{D2 : map ([x]f1 x) L12 FL12}
-  H4:{D4 : map ([x]f1 x) L12 FL12'}
+  H2:{D2 : map ([c161]f1 c161) L12 FL12}
+  H4:{D4 : map ([c161]f1 c161) L12 FL12'}
   H6:{L12 : list}*
   H7:{n:nat |- f1 n : nat}
   H8:{FL12' : list}
@@ -669,8 +669,8 @@
                     {D4 : map f L2 FL2} =>
                         {D5 : append FL1 FL2 FL12'} =>
                             exists E, {E : eq-list FL12 FL12'}
-  H2:{D2 : map ([x]f1 x) L12 FL12}
-  H4:{D4 : map ([x]f1 x) L12 FL12'}
+  H2:{D2 : map ([c161]f1 c161) L12 FL12}
+  H4:{D4 : map ([c161]f1 c161) L12 FL12'}
   H6:{L12 : list}*
   H7:{n:nat |- f1 n : nat}
   H8:{FL12' : list}

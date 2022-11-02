@@ -65,14 +65,14 @@ Since these tests share a single specification file, group them here
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
-  H2:{Gamma |- D2 : of (lam T1 R1) T}
+  H2:{Gamma |- D2 : of (lam T1 ([c4]R1 c4)) T}
   H3:{Gamma |- T1 : ty}*
   H4:{Gamma, n:tm |- R1 n : tm}*
   H5:{Gamma, n1:tm |- R2 n1 : tm}*
   H6:{Gamma, n2:tm, n3:of n2 T1 |- D n2 n3 : step (R1 n2) (R2 n2)}*
   
   ==================================
-  exists D3, {Gamma |- D3 : of (lam T1 R2) T}
+  exists D3, {Gamma |- D3 : of (lam T1 ([c55]R2 c55)) T}
   
   Subgoal subject_reduction.2 is:
    exists D3, {Gamma |- D3 : of (R N) T}
@@ -106,7 +106,7 @@ Since these tests share a single specification file, group them here
   H10:{Gamma, n5:tm, n6:of n5 T1 |- D3 n5 n6 : of (R1 n5) T2}
   
   ==================================
-  exists D3, {Gamma |- D3 : of (lam T1 R2) (arr T1 T2)}
+  exists D3, {Gamma |- D3 : of (lam T1 ([c101]R2 c101)) (arr T1 T2)}
   
   Subgoal subject_reduction.2 is:
    exists D3, {Gamma |- D3 : of (R N) T}
@@ -141,7 +141,7 @@ Since these tests share a single specification file, group them here
   H11:{Gamma, n1:tm, n:of n1 T1 |- D1 n6 n5 n4 n3 n2 n1 n : of (R2 n1) T2}
   
   ==================================
-  exists D3, {Gamma |- D3 : of (lam T1 R2) (arr T1 T2)}
+  exists D3, {Gamma |- D3 : of (lam T1 ([c101]R2 c101)) (arr T1 T2)}
   
   Subgoal subject_reduction.2 is:
    exists D3, {Gamma |- D3 : of (R N) T}
@@ -176,7 +176,7 @@ Since these tests share a single specification file, group them here
   H11:{Gamma, n1:tm, n:of n1 T1 |- D1 n1 n : of (R2 n1) T2}
   
   ==================================
-  exists D3, {Gamma |- D3 : of (lam T1 R2) (arr T1 T2)}
+  exists D3, {Gamma |- D3 : of (lam T1 ([c101]R2 c101)) (arr T1 T2)}
   
   Subgoal subject_reduction.2 is:
    exists D3, {Gamma |- D3 : of (R N) T}
@@ -187,7 +187,7 @@ Since these tests share a single specification file, group them here
   Subgoal subject_reduction.4 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
   
-  subject_reduction.1>> exists of_lam R2 T1 T2 ([x][x1]D1 x x1).
+  subject_reduction.1>> exists of_lam ([x]R2 x) T1 T2 ([x][x1]D1 x x1).
   
   Subgoal subject_reduction.1:
   
@@ -211,7 +211,8 @@ Since these tests share a single specification file, group them here
   H11:{Gamma, n1:tm, n:of n1 T1 |- D1 n1 n : of (R2 n1) T2}
   
   ==================================
-  {Gamma |- of_lam R2 T1 T2 ([x][x1]D1 x x1) : of (lam T1 R2) (arr T1 T2)}
+  {Gamma |- of_lam ([x]R2 x) T1 T2 ([x][x1]D1 x x1) :
+    of (lam T1 ([c101]R2 c101)) (arr T1 T2)}
   
   Subgoal subject_reduction.2 is:
    exists D3, {Gamma |- D3 : of (R N) T}
@@ -234,7 +235,7 @@ Since these tests share a single specification file, group them here
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
-  H2:{Gamma |- D2 : of (app (lam T1 R) N) T}
+  H2:{Gamma |- D2 : of (app (lam T1 ([c22]R c22)) N) T}
   H3:{Gamma |- T1 : ty}*
   H4:{Gamma, n:tm |- R n : tm}*
   H5:{Gamma |- N : tm}*
@@ -263,11 +264,11 @@ Since these tests share a single specification file, group them here
   H3:{Gamma |- T1 : ty}*
   H4:{Gamma, n:tm |- R n : tm}*
   H5:{Gamma |- N : tm}*
-  H6:{Gamma |- lam T1 R : tm}
+  H6:{Gamma |- lam T1 ([c22]R c22) : tm}
   H7:{Gamma |- N : tm}
   H8:{Gamma |- T : ty}
   H9:{Gamma |- D3 : ty}
-  H10:{Gamma |- D4 : of (lam T1 R) (arr D3 T)}
+  H10:{Gamma |- D4 : of (lam T1 ([c22]R c22)) (arr D3 T)}
   H11:{Gamma |- D5 : of N D3}
   
   ==================================
@@ -294,7 +295,7 @@ Since these tests share a single specification file, group them here
   H3:{Gamma |- D3 : ty}*
   H4:{Gamma, n:tm |- R n : tm}*
   H5:{Gamma |- N : tm}*
-  H6:{Gamma |- lam D3 R : tm}
+  H6:{Gamma |- lam D3 ([c22]R c22) : tm}
   H7:{Gamma |- N : tm}
   H8:{Gamma |- T : ty}
   H9:{Gamma |- D3 : ty}
@@ -328,7 +329,7 @@ Since these tests share a single specification file, group them here
   H3:{Gamma |- D3 : ty}*
   H4:{Gamma, n:tm |- R n : tm}*
   H5:{Gamma |- N : tm}*
-  H6:{Gamma |- lam D3 R : tm}
+  H6:{Gamma |- lam D3 ([c22]R c22) : tm}
   H7:{Gamma |- N : tm}
   H8:{Gamma |- T : ty}
   H9:{Gamma |- D3 : ty}
@@ -363,7 +364,7 @@ Since these tests share a single specification file, group them here
   H3:{Gamma |- D3 : ty}*
   H4:{Gamma, n:tm |- R n : tm}*
   H5:{Gamma |- N : tm}*
-  H6:{Gamma |- lam D3 R : tm}
+  H6:{Gamma |- lam D3 ([c22]R c22) : tm}
   H7:{Gamma |- N : tm}
   H8:{Gamma |- T : ty}
   H9:{Gamma |- D3 : ty}
@@ -399,7 +400,7 @@ Since these tests share a single specification file, group them here
   H3:{Gamma |- D3 : ty}*
   H4:{Gamma, n:tm |- R n : tm}*
   H5:{Gamma |- N : tm}*
-  H6:{Gamma |- lam D3 R : tm}
+  H6:{Gamma |- lam D3 ([c22]R c22) : tm}
   H7:{Gamma |- N : tm}
   H8:{Gamma |- T : ty}
   H9:{Gamma |- D3 : ty}
@@ -697,17 +698,17 @@ Since these tests share a single specification file, group them here
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
-  H1:{Gamma |- D1 : of (app (lam T1 R1) (lam T2 R2)) T}
+  H1:{Gamma |- D1 : of (app (lam T1 ([c4]R1 c4)) (lam T2 ([c8]R2 c8))) T}
   H3:{n:tm |- R1 n : tm}*
   H4:{n1:tm |- R2 n1 : tm}*
   H5:{T1 : ty}*
   H6:{T2 : ty}*
   
   ==================================
-  exists D3, {Gamma |- D3 : of (R1 (lam T2 R2)) T}
+  exists D3, {Gamma |- D3 : of (R1 (lam T2 ([c57]R2 c57))) T}
   
   Subgoal subject_reduction_wsscbv.2 is:
-   exists D3, {Gamma |- D3 : of (app (lam T1 R) M4) T}
+   exists D3, {Gamma |- D3 : of (app (lam T1 ([c64]R c64)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
@@ -728,18 +729,18 @@ Since these tests share a single specification file, group them here
   H4:{n1:tm |- R2 n1 : tm}*
   H5:{T1 : ty}*
   H6:{T2 : ty}*
-  H7:{Gamma |- lam T1 R1 : tm}
-  H8:{Gamma |- lam T2 R2 : tm}
+  H7:{Gamma |- lam T1 ([c4]R1 c4) : tm}
+  H8:{Gamma |- lam T2 ([c8]R2 c8) : tm}
   H9:{Gamma |- T : ty}
   H10:{Gamma |- D3 : ty}
-  H11:{Gamma |- D4 : of (lam T1 R1) (arr D3 T)}
-  H12:{Gamma |- D5 : of (lam T2 R2) D3}
+  H11:{Gamma |- D4 : of (lam T1 ([c4]R1 c4)) (arr D3 T)}
+  H12:{Gamma |- D5 : of (lam T2 ([c8]R2 c8)) D3}
   
   ==================================
-  exists D3, {Gamma |- D3 : of (R1 (lam T2 R2)) T}
+  exists D3, {Gamma |- D3 : of (R1 (lam T2 ([c135]R2 c135))) T}
   
   Subgoal subject_reduction_wsscbv.2 is:
-   exists D3, {Gamma |- D3 : of (app (lam T1 R) M4) T}
+   exists D3, {Gamma |- D3 : of (app (lam T1 ([c64]R c64)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
@@ -760,26 +761,26 @@ Since these tests share a single specification file, group them here
   H4:{n1:tm |- R2 n1 : tm}*
   H5:{D3 : ty}*
   H6:{T2 : ty}*
-  H7:{Gamma |- lam D3 R1 : tm}
-  H8:{Gamma |- lam T2 R2 : tm}
+  H7:{Gamma |- lam D3 ([c4]R1 c4) : tm}
+  H8:{Gamma |- lam T2 ([c8]R2 c8) : tm}
   H9:{Gamma |- T : ty}
   H10:{Gamma |- D3 : ty}
-  H12:{Gamma |- D5 : of (lam T2 R2) D3}
+  H12:{Gamma |- D5 : of (lam T2 ([c8]R2 c8)) D3}
   H13:{Gamma, n2:tm |- R1 n2 : tm}
   H14:{Gamma |- D3 : ty}
   H15:{Gamma |- T : ty}
   H16:{Gamma, n3:tm, n4:of n3 D3 |- D6 n3 n4 : of (R1 n3) T}
   
   ==================================
-  exists D3, {Gamma |- D3 : of (R1 (lam T2 R2)) T}
+  exists D3, {Gamma |- D3 : of (R1 (lam T2 ([c201]R2 c201))) T}
   
   Subgoal subject_reduction_wsscbv.2 is:
-   exists D3, {Gamma |- D3 : of (app (lam T1 R) M4) T}
+   exists D3, {Gamma |- D3 : of (app (lam T1 ([c64]R c64)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
   
-  subject_reduction_wsscbv.1>> inst H16 with n3 = lam T2 R2.
+  subject_reduction_wsscbv.1>> inst H16 with n3 = lam T2 ([x]R2 x).
   
   Subgoal subject_reduction_wsscbv.1:
   
@@ -795,24 +796,24 @@ Since these tests share a single specification file, group them here
   H4:{n1:tm |- R2 n1 : tm}*
   H5:{D3 : ty}*
   H6:{T2 : ty}*
-  H7:{Gamma |- lam D3 R1 : tm}
-  H8:{Gamma |- lam T2 R2 : tm}
+  H7:{Gamma |- lam D3 ([c4]R1 c4) : tm}
+  H8:{Gamma |- lam T2 ([c8]R2 c8) : tm}
   H9:{Gamma |- T : ty}
   H10:{Gamma |- D3 : ty}
-  H12:{Gamma |- D5 : of (lam T2 R2) D3}
+  H12:{Gamma |- D5 : of (lam T2 ([c8]R2 c8)) D3}
   H13:{Gamma, n2:tm |- R1 n2 : tm}
   H14:{Gamma |- D3 : ty}
   H15:{Gamma |- T : ty}
   H16:{Gamma, n3:tm, n4:of n3 D3 |- D6 n3 n4 : of (R1 n3) T}
   H17:
-      {Gamma, n4:of (lam T2 R2) D3 |- D6 (lam T2 R2) n4 :
-        of (R1 (lam T2 R2)) T}
+      {Gamma, n4:of (lam T2 ([x]R2 x)) D3 |- D6 (lam T2 ([x]R2 x)) n4 :
+        of (R1 (lam T2 ([x]R2 x))) T}
   
   ==================================
-  exists D3, {Gamma |- D3 : of (R1 (lam T2 R2)) T}
+  exists D3, {Gamma |- D3 : of (R1 (lam T2 ([c201]R2 c201))) T}
   
   Subgoal subject_reduction_wsscbv.2 is:
-   exists D3, {Gamma |- D3 : of (app (lam T1 R) M4) T}
+   exists D3, {Gamma |- D3 : of (app (lam T1 ([c64]R c64)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
@@ -833,30 +834,30 @@ Since these tests share a single specification file, group them here
   H4:{n1:tm |- R2 n1 : tm}*
   H5:{D3 : ty}*
   H6:{T2 : ty}*
-  H7:{Gamma |- lam D3 R1 : tm}
-  H8:{Gamma |- lam T2 R2 : tm}
+  H7:{Gamma |- lam D3 ([c4]R1 c4) : tm}
+  H8:{Gamma |- lam T2 ([c8]R2 c8) : tm}
   H9:{Gamma |- T : ty}
   H10:{Gamma |- D3 : ty}
-  H12:{Gamma |- D5 : of (lam T2 R2) D3}
+  H12:{Gamma |- D5 : of (lam T2 ([c8]R2 c8)) D3}
   H13:{Gamma, n2:tm |- R1 n2 : tm}
   H14:{Gamma |- D3 : ty}
   H15:{Gamma |- T : ty}
   H16:{Gamma, n3:tm, n4:of n3 D3 |- D6 n3 n4 : of (R1 n3) T}
   H17:
-      {Gamma, n4:of (lam T2 R2) D3 |- D6 (lam T2 R2) n4 :
-        of (R1 (lam T2 R2)) T}
-  H18:{Gamma |- D6 (lam T2 R2) D5 : of (R1 (lam T2 R2)) T}
+      {Gamma, n4:of (lam T2 ([x]R2 x)) D3 |- D6 (lam T2 ([x]R2 x)) n4 :
+        of (R1 (lam T2 ([x]R2 x))) T}
+  H18:{Gamma |- D6 (lam T2 ([x]R2 x)) D5 : of (R1 (lam T2 ([x]R2 x))) T}
   
   ==================================
-  exists D3, {Gamma |- D3 : of (R1 (lam T2 R2)) T}
+  exists D3, {Gamma |- D3 : of (R1 (lam T2 ([c201]R2 c201))) T}
   
   Subgoal subject_reduction_wsscbv.2 is:
-   exists D3, {Gamma |- D3 : of (app (lam T1 R) M4) T}
+   exists D3, {Gamma |- D3 : of (app (lam T1 ([c64]R c64)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
   
-  subject_reduction_wsscbv.1>> exists D6 lam T2 R2 D5.
+  subject_reduction_wsscbv.1>> exists D6 lam T2 ([x]R2 x) D5.
   
   Subgoal subject_reduction_wsscbv.1:
   
@@ -872,25 +873,25 @@ Since these tests share a single specification file, group them here
   H4:{n1:tm |- R2 n1 : tm}*
   H5:{D3 : ty}*
   H6:{T2 : ty}*
-  H7:{Gamma |- lam D3 R1 : tm}
-  H8:{Gamma |- lam T2 R2 : tm}
+  H7:{Gamma |- lam D3 ([c4]R1 c4) : tm}
+  H8:{Gamma |- lam T2 ([c8]R2 c8) : tm}
   H9:{Gamma |- T : ty}
   H10:{Gamma |- D3 : ty}
-  H12:{Gamma |- D5 : of (lam T2 R2) D3}
+  H12:{Gamma |- D5 : of (lam T2 ([c8]R2 c8)) D3}
   H13:{Gamma, n2:tm |- R1 n2 : tm}
   H14:{Gamma |- D3 : ty}
   H15:{Gamma |- T : ty}
   H16:{Gamma, n3:tm, n4:of n3 D3 |- D6 n3 n4 : of (R1 n3) T}
   H17:
-      {Gamma, n4:of (lam T2 R2) D3 |- D6 (lam T2 R2) n4 :
-        of (R1 (lam T2 R2)) T}
-  H18:{Gamma |- D6 (lam T2 R2) D5 : of (R1 (lam T2 R2)) T}
+      {Gamma, n4:of (lam T2 ([x]R2 x)) D3 |- D6 (lam T2 ([x]R2 x)) n4 :
+        of (R1 (lam T2 ([x]R2 x))) T}
+  H18:{Gamma |- D6 (lam T2 ([x]R2 x)) D5 : of (R1 (lam T2 ([x]R2 x))) T}
   
   ==================================
-  {Gamma |- D6 (lam T2 R2) D5 : of (R1 (lam T2 R2)) T}
+  {Gamma |- D6 (lam T2 ([x]R2 x)) D5 : of (R1 (lam T2 ([c201]R2 c201))) T}
   
   Subgoal subject_reduction_wsscbv.2 is:
-   exists D3, {Gamma |- D3 : of (app (lam T1 R) M4) T}
+   exists D3, {Gamma |- D3 : of (app (lam T1 ([c64]R c64)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
@@ -907,7 +908,7 @@ Since these tests share a single specification file, group them here
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
-  H1:{Gamma |- D1 : of (app (lam T1 R) M3) T}
+  H1:{Gamma |- D1 : of (app (lam T1 ([c27]R c27)) M3) T}
   H3:{n:tm |- R n : tm}*
   H4:{T1 : ty}*
   H5:{M3 : tm}*
@@ -915,7 +916,7 @@ Since these tests share a single specification file, group them here
   H7:{D3 : sscbv M3 M4}*
   
   ==================================
-  exists D3, {Gamma |- D3 : of (app (lam T1 R) M4) T}
+  exists D3, {Gamma |- D3 : of (app (lam T1 ([c64]R c64)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
@@ -937,15 +938,15 @@ Since these tests share a single specification file, group them here
   H5:{M3 : tm}*
   H6:{M4 : tm}*
   H7:{D3 : sscbv M3 M4}*
-  H8:{Gamma |- lam T1 R : tm}
+  H8:{Gamma |- lam T1 ([c27]R c27) : tm}
   H9:{Gamma |- M3 : tm}
   H10:{Gamma |- T : ty}
   H11:{Gamma |- D4 : ty}
-  H12:{Gamma |- D5 : of (lam T1 R) (arr D4 T)}
+  H12:{Gamma |- D5 : of (lam T1 ([c27]R c27)) (arr D4 T)}
   H13:{Gamma |- D6 : of M3 D4}
   
   ==================================
-  exists D3, {Gamma |- D3 : of (app (lam T1 R) M4) T}
+  exists D3, {Gamma |- D3 : of (app (lam T1 ([c246]R c246)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
@@ -967,16 +968,16 @@ Since these tests share a single specification file, group them here
   H5:{M3 : tm}*
   H6:{M4 : tm}*
   H7:{D3 : sscbv M3 M4}*
-  H8:{Gamma |- lam T1 R : tm}
+  H8:{Gamma |- lam T1 ([c27]R c27) : tm}
   H9:{Gamma |- M3 : tm}
   H10:{Gamma |- T : ty}
   H11:{Gamma |- D4 : ty}
-  H12:{Gamma |- D5 : of (lam T1 R) (arr D4 T)}
+  H12:{Gamma |- D5 : of (lam T1 ([c27]R c27)) (arr D4 T)}
   H13:{Gamma |- D6 : of M3 D4}
   H14:{Gamma |- D1 n : of M4 D4}
   
   ==================================
-  exists D3, {Gamma |- D3 : of (app (lam T1 R) M4) T}
+  exists D3, {Gamma |- D3 : of (app (lam T1 ([c246]R c246)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
@@ -998,21 +999,21 @@ Since these tests share a single specification file, group them here
   H5:{M3 : tm}*
   H6:{M4 : tm}*
   H7:{D3 : sscbv M3 M4}*
-  H8:{Gamma |- lam T1 R : tm}
+  H8:{Gamma |- lam T1 ([c27]R c27) : tm}
   H9:{Gamma |- M3 : tm}
   H10:{Gamma |- T : ty}
   H11:{Gamma |- D4 : ty}
-  H12:{Gamma |- D5 : of (lam T1 R) (arr D4 T)}
+  H12:{Gamma |- D5 : of (lam T1 ([c27]R c27)) (arr D4 T)}
   H13:{Gamma |- D6 : of M3 D4}
   H14:{Gamma |- D1 n : of M4 D4}
   
   ==================================
-  exists D3, {Gamma |- D3 : of (app (lam T1 R) M4) T}
+  exists D3, {Gamma |- D3 : of (app (lam T1 ([c246]R c246)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
   
-  subject_reduction_wsscbv.2>> exists of_app lam T1 R M4 T D4 D5 D1 n.
+  subject_reduction_wsscbv.2>> exists of_app lam T1 ([x]R x) M4 T D4 D5 D1 n.
   
   Subgoal subject_reduction_wsscbv.2:
   
@@ -1029,16 +1030,17 @@ Since these tests share a single specification file, group them here
   H5:{M3 : tm}*
   H6:{M4 : tm}*
   H7:{D3 : sscbv M3 M4}*
-  H8:{Gamma |- lam T1 R : tm}
+  H8:{Gamma |- lam T1 ([c27]R c27) : tm}
   H9:{Gamma |- M3 : tm}
   H10:{Gamma |- T : ty}
   H11:{Gamma |- D4 : ty}
-  H12:{Gamma |- D5 : of (lam T1 R) (arr D4 T)}
+  H12:{Gamma |- D5 : of (lam T1 ([c27]R c27)) (arr D4 T)}
   H13:{Gamma |- D6 : of M3 D4}
   H14:{Gamma |- D1 n : of M4 D4}
   
   ==================================
-  {Gamma |- of_app (lam T1 R) M4 T D4 D5 (D1 n) : of (app (lam T1 R) M4) T}
+  {Gamma |- of_app (lam T1 ([x]R x)) M4 T D4 D5 (D1 n) :
+    of (app (lam T1 ([c246]R c246)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
@@ -1060,17 +1062,18 @@ Since these tests share a single specification file, group them here
   H5:{M3 : tm}*
   H6:{M4 : tm}*
   H7:{D3 : sscbv M3 M4}*
-  H8:{Gamma |- lam T1 R : tm}
+  H8:{Gamma |- lam T1 ([c27]R c27) : tm}
   H9:{Gamma |- M3 : tm}
   H10:{Gamma |- T : ty}
   H11:{Gamma |- D4 : ty}
-  H12:{Gamma |- D5 : of (lam T1 R) (arr D4 T)}
+  H12:{Gamma |- D5 : of (lam T1 ([c27]R c27)) (arr D4 T)}
   H13:{Gamma |- D6 : of M3 D4}
   H14:{Gamma |- D1 n : of M4 D4}
   H15:{Gamma |- M4 : tm}
   
   ==================================
-  {Gamma |- of_app (lam T1 R) M4 T D4 D5 (D1 n) : of (app (lam T1 R) M4) T}
+  {Gamma |- of_app (lam T1 ([x]R x)) M4 T D4 D5 (D1 n) :
+    of (app (lam T1 ([c246]R c246)) M4) T}
   
   Subgoal subject_reduction_wsscbv.3 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
@@ -1276,14 +1279,14 @@ Since these tests share a single specification file, group them here
   H5:{M2 : tm}*
   H6:{n:tm |- R n : tm}*
   H7:{T1 : ty}*
-  H8:{D3 : lscbn M (lam T1 R)}*
+  H8:{D3 : lscbn M (lam T1 ([x]R x))}*
   H9:{D4 : lscbn (R N) M2}*
   
   ==================================
   exists D3, {Gamma |- D3 : of M2 T}
   
   Subgoal subject_reduction_lscbn.2 is:
-   exists D3, {Gamma |- D3 : of (lam T1 R) T}
+   exists D3, {Gamma |- D3 : of (lam T1 ([c31]R c31)) T}
   
   subject_reduction_lscbn.1>> cases H1.
   
@@ -1302,7 +1305,7 @@ Since these tests share a single specification file, group them here
   H5:{M2 : tm}*
   H6:{n:tm |- R n : tm}*
   H7:{T1 : ty}*
-  H8:{D3 : lscbn M (lam T1 R)}*
+  H8:{D3 : lscbn M (lam T1 ([x]R x))}*
   H9:{D4 : lscbn (R N) M2}*
   H10:{Gamma |- M : tm}
   H11:{Gamma |- N : tm}
@@ -1315,7 +1318,7 @@ Since these tests share a single specification file, group them here
   exists D3, {Gamma |- D3 : of M2 T}
   
   Subgoal subject_reduction_lscbn.2 is:
-   exists D3, {Gamma |- D3 : of (lam T1 R) T}
+   exists D3, {Gamma |- D3 : of (lam T1 ([c31]R c31)) T}
   
   subject_reduction_lscbn.1>> apply IH to H14 H8.
   
@@ -1335,7 +1338,7 @@ Since these tests share a single specification file, group them here
   H5:{M2 : tm}*
   H6:{n:tm |- R n : tm}*
   H7:{T1 : ty}*
-  H8:{D3 : lscbn M (lam T1 R)}*
+  H8:{D3 : lscbn M (lam T1 ([x]R x))}*
   H9:{D4 : lscbn (R N) M2}*
   H10:{Gamma |- M : tm}
   H11:{Gamma |- N : tm}
@@ -1343,13 +1346,13 @@ Since these tests share a single specification file, group them here
   H13:{Gamma |- D5 : ty}
   H14:{Gamma |- D6 : of M (arr D5 T)}
   H15:{Gamma |- D7 : of N D5}
-  H16:{Gamma |- D1 n : of (lam T1 R) (arr D5 T)}
+  H16:{Gamma |- D1 n : of (lam T1 ([x]R x)) (arr D5 T)}
   
   ==================================
   exists D3, {Gamma |- D3 : of M2 T}
   
   Subgoal subject_reduction_lscbn.2 is:
-   exists D3, {Gamma |- D3 : of (lam T1 R) T}
+   exists D3, {Gamma |- D3 : of (lam T1 ([c31]R c31)) T}
   
   subject_reduction_lscbn.1>> cases H16.
   
@@ -1369,7 +1372,7 @@ Since these tests share a single specification file, group them here
   H5:{M2 : tm}*
   H6:{n:tm |- R n : tm}*
   H7:{D5 : ty}*
-  H8:{D3 : lscbn M (lam D5 R)}*
+  H8:{D3 : lscbn M (lam D5 ([x]R x))}*
   H9:{D4 : lscbn (R N) M2}*
   H10:{Gamma |- M : tm}
   H11:{Gamma |- N : tm}
@@ -1386,7 +1389,7 @@ Since these tests share a single specification file, group them here
   exists D3, {Gamma |- D3 : of M2 T}
   
   Subgoal subject_reduction_lscbn.2 is:
-   exists D3, {Gamma |- D3 : of (lam T1 R) T}
+   exists D3, {Gamma |- D3 : of (lam T1 ([c31]R c31)) T}
   
   subject_reduction_lscbn.1>> inst H20 with n2 = N.
   
@@ -1406,7 +1409,7 @@ Since these tests share a single specification file, group them here
   H5:{M2 : tm}*
   H6:{n:tm |- R n : tm}*
   H7:{D5 : ty}*
-  H8:{D3 : lscbn M (lam D5 R)}*
+  H8:{D3 : lscbn M (lam D5 ([x]R x))}*
   H9:{D4 : lscbn (R N) M2}*
   H10:{Gamma |- M : tm}
   H11:{Gamma |- N : tm}
@@ -1424,7 +1427,7 @@ Since these tests share a single specification file, group them here
   exists D3, {Gamma |- D3 : of M2 T}
   
   Subgoal subject_reduction_lscbn.2 is:
-   exists D3, {Gamma |- D3 : of (lam T1 R) T}
+   exists D3, {Gamma |- D3 : of (lam T1 ([c31]R c31)) T}
   
   subject_reduction_lscbn.1>> inst H21 with n3 = D7.
   
@@ -1444,7 +1447,7 @@ Since these tests share a single specification file, group them here
   H5:{M2 : tm}*
   H6:{n:tm |- R n : tm}*
   H7:{D5 : ty}*
-  H8:{D3 : lscbn M (lam D5 R)}*
+  H8:{D3 : lscbn M (lam D5 ([x]R x))}*
   H9:{D4 : lscbn (R N) M2}*
   H10:{Gamma |- M : tm}
   H11:{Gamma |- N : tm}
@@ -1463,7 +1466,7 @@ Since these tests share a single specification file, group them here
   exists D3, {Gamma |- D3 : of M2 T}
   
   Subgoal subject_reduction_lscbn.2 is:
-   exists D3, {Gamma |- D3 : of (lam T1 R) T}
+   exists D3, {Gamma |- D3 : of (lam T1 ([c31]R c31)) T}
   
   subject_reduction_lscbn.1>> apply IH to H22 H9.
   
@@ -1483,7 +1486,7 @@ Since these tests share a single specification file, group them here
   H5:{M2 : tm}*
   H6:{n:tm |- R n : tm}*
   H7:{D5 : ty}*
-  H8:{D3 : lscbn M (lam D5 R)}*
+  H8:{D3 : lscbn M (lam D5 ([x]R x))}*
   H9:{D4 : lscbn (R N) M2}*
   H10:{Gamma |- M : tm}
   H11:{Gamma |- N : tm}
@@ -1503,7 +1506,7 @@ Since these tests share a single specification file, group them here
   exists D3, {Gamma |- D3 : of M2 T}
   
   Subgoal subject_reduction_lscbn.2 is:
-   exists D3, {Gamma |- D3 : of (lam T1 R) T}
+   exists D3, {Gamma |- D3 : of (lam T1 ([c31]R c31)) T}
   
   subject_reduction_lscbn.1>> exists D1 n3 n2 n1 n.
   
@@ -1523,7 +1526,7 @@ Since these tests share a single specification file, group them here
   H5:{M2 : tm}*
   H6:{n:tm |- R n : tm}*
   H7:{D5 : ty}*
-  H8:{D3 : lscbn M (lam D5 R)}*
+  H8:{D3 : lscbn M (lam D5 ([x]R x))}*
   H9:{D4 : lscbn (R N) M2}*
   H10:{Gamma |- M : tm}
   H11:{Gamma |- N : tm}
@@ -1543,7 +1546,7 @@ Since these tests share a single specification file, group them here
   {Gamma |- D1 n3 n2 n1 n : of M2 T}
   
   Subgoal subject_reduction_lscbn.2 is:
-   exists D3, {Gamma |- D3 : of (lam T1 R) T}
+   exists D3, {Gamma |- D3 : of (lam T1 ([c31]R c31)) T}
   
   subject_reduction_lscbn.1>> search.
   
@@ -1557,12 +1560,12 @@ Since these tests share a single specification file, group them here
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
-  H1:{Gamma |- D1 : of (lam T1 R) T}
+  H1:{Gamma |- D1 : of (lam T1 ([c16]R c16)) T}
   H3:{n:tm |- R n : tm}*
   H4:{T1 : ty}*
   
   ==================================
-  exists D3, {Gamma |- D3 : of (lam T1 R) T}
+  exists D3, {Gamma |- D3 : of (lam T1 ([c31]R c31)) T}
   
   subject_reduction_lscbn.2>> exists D1.
   
@@ -1576,12 +1579,12 @@ Since these tests share a single specification file, group them here
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
-  H1:{Gamma |- D1 : of (lam T1 R) T}
+  H1:{Gamma |- D1 : of (lam T1 ([c16]R c16)) T}
   H3:{n:tm |- R n : tm}*
   H4:{T1 : ty}*
   
   ==================================
-  {Gamma |- D1 : of (lam T1 R) T}
+  {Gamma |- D1 : of (lam T1 ([c31]R c31)) T}
   
   subject_reduction_lscbn.2>> search.
   Proof Completed!

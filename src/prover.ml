@@ -506,7 +506,8 @@ let apply name args uws =
     let ctx1 = snd s1 in
     let ctx2 = snd s2 in
     Format.asprintf
-      "@[<v>@[Ambiguous@ context@ substitution.@ Found:@]@ @[<v>@[<2>%a@]@ @[ and@]@ @[<2>%a@]@]@]"
+      "@[<v>@[Ambiguous@ context@ substitution.@ Found:@]@ @[<v>@[<2>%a@]@ @[ and@]@ \
+       @[<2>%a@]@]@]"
       Print.pr_ctxexpr
       ctx1
       Print.pr_ctxexpr

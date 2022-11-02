@@ -22,9 +22,9 @@ let case_tests =
          match cases eval_sig (Hashtbl.create 1) seq "H1" with
          | [ case1; case2 ] ->
            set_bind_state case1.bind_state_case;
-           assert_pprint_equal "{eval_abs A : eval (abs A) (abs A)}" term;
+           assert_pprint_equal "{eval_abs ([x1]A x1) : eval (abs ([x1]A x1)) (abs ([x1]A x1))}" term;
            set_bind_state case2.bind_state_case;
-           assert_pprint_equal "{eval_app A A1 B P P1 P2 : eval (app A A1) B}" term
+           assert_pprint_equal "{eval_app A A1 B ([x1]P x1) P1 P2 : eval (app A A1) B}" term
          | cases -> assert_expected_cases 2 cases)
          (* "With Contexts" >:: *)
          (*   (fun () -> *)

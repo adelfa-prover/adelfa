@@ -185,8 +185,10 @@
         forall E, forall T1, forall T2, forall D1, forall D2,
           {G |- D1 : of E T1}* =>
               {G |- D2 : of E T2} => exists D3, {G |- D3 : eq T1 T2}
-  H1:{G |- of_abs T3 T4 R a1 : of (abs T3 ([x]R x)) (arr T3 T4)}@
-  H2:{G |- D2 : of (abs T3 ([x]R x)) T2}
+  H1:
+      {G |- of_abs T3 T4 ([c13]R c13) ([c14][c15]a1 c14 c15) :
+        of (abs T3 ([c4]R c4)) (arr T3 T4)}@
+  H2:{G |- D2 : of (abs T3 ([c4]R c4)) T2}
   H3:{G |- T3 : ty}*
   H4:{G |- T4 : ty}*
   H5:{G, n:tm |- R n : tm}*
@@ -213,7 +215,9 @@
         forall E, forall T1, forall T2, forall D1, forall D2,
           {G |- D1 : of E T1}* =>
               {G |- D2 : of E T2} => exists D3, {G |- D3 : eq T1 T2}
-  H1:{G |- of_abs T3 T4 R a1 : of (abs T3 ([x]R x)) (arr T3 T4)}@
+  H1:
+      {G |- of_abs T3 T4 ([c13]R c13) ([c14][c15]a1 c14 c15) :
+        of (abs T3 ([c4]R c4)) (arr T3 T4)}@
   H3:{G |- T3 : ty}*
   H4:{G |- T4 : ty}*
   H5:{G, n:tm |- R n : tm}*
@@ -245,7 +249,9 @@
         forall E, forall T1, forall T2, forall D1, forall D2,
           {G |- D1 : of E T1}* =>
               {G |- D2 : of E T2} => exists D3, {G |- D3 : eq T1 T2}
-  H1:{G |- of_abs T3 T4 R a1 : of (abs T3 ([x]R x)) (arr T3 T4)}@
+  H1:
+      {G |- of_abs T3 T4 ([c13]R c13) ([c14][c15]a1 c14 c15) :
+        of (abs T3 ([c4]R c4)) (arr T3 T4)}@
   H3:{G |- T3 : ty}*
   H4:{G |- T4 : ty}*
   H5:{G, n:tm |- R n : tm}*
@@ -277,7 +283,9 @@
         forall E, forall T1, forall T2, forall D1, forall D2,
           {G |- D1 : of E T1}* =>
               {G |- D2 : of E T2} => exists D3, {G |- D3 : eq T1 T2}
-  H1:{G |- of_abs T3 T5 R a1 : of (abs T3 ([x]R x)) (arr T3 T5)}@
+  H1:
+      {G |- of_abs T3 T5 ([c13]R c13) ([c14][c15]a1 c14 c15) :
+        of (abs T3 ([c4]R c4)) (arr T3 T5)}@
   H3:{G |- T3 : ty}*
   H4:{G |- T5 : ty}*
   H5:{G, n:tm |- R n : tm}*
@@ -309,7 +317,9 @@
         forall E, forall T1, forall T2, forall D1, forall D2,
           {G |- D1 : of E T1}* =>
               {G |- D2 : of E T2} => exists D3, {G |- D3 : eq T1 T2}
-  H1:{G |- of_abs T3 T5 R a1 : of (abs T3 ([x]R x)) (arr T3 T5)}@
+  H1:
+      {G |- of_abs T3 T5 ([c13]R c13) ([c14][c15]a1 c14 c15) :
+        of (abs T3 ([c4]R c4)) (arr T3 T5)}@
   H3:{G |- T3 : ty}*
   H4:{G |- T5 : ty}*
   H5:{G, n:tm |- R n : tm}*

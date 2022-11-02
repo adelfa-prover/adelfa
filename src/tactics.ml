@@ -1102,6 +1102,8 @@ let makeCases form seq (h : Term.term) typ : case list =
            new_lftys
        in
        List.iter (Sequent.add_hyp seq) new_hyps;
+       let newGoal = Formula.eta_expand seq.goal in
+       seq.goal <- newGoal;
        let case = make_case seq in
        Sequent.assign_sequent seq save_seq;
        Term.set_bind_state bind_state;
@@ -1159,6 +1161,7 @@ let cases lf_sig schemas seq id : case list =
   let case_heads =
     heads lf_sig schemas seq g
     |> List.filter (fun (_, _, typ) -> Term.get_ty_head typ = ty_head)
+    |> List.map (fun (g, t, ty) -> g, Term.eta_expand t, Term.eta_expand ty)
   in
   let per_head (seq, h, typ) =
     (* let (save_seq,bind_state) = (Sequent.cp_sequent seq, Term.get_bind_state ()) in *)
@@ -1318,25 +1321,18 @@ let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
     let sort_by_ctx_var substs =
       List.sort (fun (v1, _) (v2, _) -> String.compare v1 v2) substs
     in
-    if Option.is_none subst1 || Option.is_none subst2
-    then None
-    else (
-      let norm_subst1 =
-        Option.get subst1 |> List.filter can_be_ambiguous |> sort_by_ctx_var
-      in
-      let norm_subst2 =
-        Option.get subst2 |> List.filter can_be_ambiguous |> sort_by_ctx_var
-      in
-      try
-        if List.length norm_subst1 <> List.length norm_subst2
-        then Some (List.hd norm_subst1, List.hd norm_subst2)
-        else
-          Some
-            (List.combine norm_subst1 norm_subst2
-            |> List.find (fun ((v1, d1), (v2, d2)) ->
-                 Context.ctx_var_eq v1 v2 && not (Context.eq d1 d2)))
-      with
-      | Not_found -> None)
+    match subst1, subst2 with
+    | None, _ | _, None -> None
+    | Some subst1, Some subst2 ->
+      let norm_subst1 = List.filter can_be_ambiguous subst1 |> sort_by_ctx_var in
+      let norm_subst2 = List.filter can_be_ambiguous subst2 |> sort_by_ctx_var in
+      (try
+         Some
+           (List.combine_shortest norm_subst1 norm_subst2
+           |> List.find (fun ((v1, d1), (v2, d2)) ->
+                Context.ctx_var_eq v1 v2 && not (Context.eq d1 d2)))
+       with
+       | Not_found -> None)
   in
   let () =
     check_restrictions

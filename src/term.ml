@@ -473,8 +473,11 @@ let rec eta_expand t =
          (app t (List.map eta_expand bvars)))
   | Lam (tyctx, body) -> lambda tyctx (eta_expand body)
   | App (h, tms) -> app (eta_expand h) (List.map eta_expand tms)
+  | Pi (lctx, t) -> Pi (lctx, eta_expand t)
   | DB _ -> t
-  | _ -> bugf "Eta expanded invalid term"
+  | Type -> bugf "Eta expanded invalid type"
+  | Susp _ -> bugf "Eta expanded invalid susp"
+  | Ptr _ -> bugf "Eta expanded invalid ptr"
 ;;
 
 let remove_trailing_numbers s = Str.global_replace (Str.regexp "[0-9]*$") "" s

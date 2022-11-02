@@ -61,7 +61,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impR A B D1 : conc (imp A B)}@
+  H1:{G |- impR A B ([c7]D1 c7) : conc (imp A B)}@
   H2:{G |- A : proptm}*
   H3:{G |- B : proptm}*
   H4:{G, n:hyp A |- D1 n : conc B}*
@@ -90,7 +90,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impR A B D1 : conc (imp A B)}@
+  H1:{G |- impR A B ([c7]D1 c7) : conc (imp A B)}@
   H2:{G |- A : proptm}*
   H3:{G |- B : proptm}*
   H4:{G, n:hyp A |- D1 n : conc B}*
@@ -119,7 +119,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impL A1 B1 (imp A B) D1 D2 D3 : conc (imp A B)}@
+  H1:{G |- impL A1 B1 (imp A B) D1 ([c15]D2 c15) D3 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -148,7 +148,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impL A1 B1 (imp A B) D1 D2 D3 : conc (imp A B)}@
+  H1:{G |- impL A1 B1 (imp A B) D1 ([c15]D2 c15) D3 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -178,7 +178,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impL A1 B1 (imp A B) D1 D2 D3 : conc (imp A B)}@
+  H1:{G |- impL A1 B1 (imp A B) D1 ([c15]D2 c15) D3 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -208,7 +208,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impL A1 B1 (imp A B) D1 D2 D3 : conc (imp A B)}@
+  H1:{G |- impL A1 B1 (imp A B) D1 ([c15]D2 c15) D3 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -220,7 +220,7 @@
   H10:{G |- B : proptm}*
   
   ==================================
-  {G |- [x]impL A1 B1 B D1 ([y]D' y x) D3 : {x:hyp A}conc B}
+  {G |- [x]impL A1 B1 B D1 ([c57]D' c57 x) D3 : {x:hyp A}conc B}
   
   Subgoal imp_inv.3 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -240,7 +240,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impL A1 B1 (imp A B) D1 D2 D3 : conc (imp A B)}@
+  H1:{G |- impL A1 B1 (imp A B) D1 ([c15]D2 c15) D3 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -253,7 +253,7 @@
   H11:{G, n2:hyp A |- A1 : proptm}*
   
   ==================================
-  {G |- [x]impL A1 B1 B D1 ([y]D' y x) D3 : {x:hyp A}conc B}
+  {G |- [x]impL A1 B1 B D1 ([c57]D' c57 x) D3 : {x:hyp A}conc B}
   
   Subgoal imp_inv.3 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -273,7 +273,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impL A1 B1 (imp A B) D1 D2 D3 : conc (imp A B)}@
+  H1:{G |- impL A1 B1 (imp A B) D1 ([c15]D2 c15) D3 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -287,7 +287,7 @@
   H12:{G, n3:hyp A |- B1 : proptm}*
   
   ==================================
-  {G |- [x]impL A1 B1 B D1 ([y]D' y x) D3 : {x:hyp A}conc B}
+  {G |- [x]impL A1 B1 B D1 ([c57]D' c57 x) D3 : {x:hyp A}conc B}
   
   Subgoal imp_inv.3 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -307,7 +307,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impL A1 B1 (imp A B) D1 D2 D3 : conc (imp A B)}@
+  H1:{G |- impL A1 B1 (imp A B) D1 ([c15]D2 c15) D3 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -322,7 +322,7 @@
   H13:{G, n4:hyp A |- B : proptm}*
   
   ==================================
-  {G |- [x]impL A1 B1 B D1 ([y]D' y x) D3 : {x:hyp A}conc B}
+  {G |- [x]impL A1 B1 B D1 ([c57]D' c57 x) D3 : {x:hyp A}conc B}
   
   Subgoal imp_inv.3 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -342,7 +342,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impL A1 B1 (imp A B) D1 D2 D3 : conc (imp A B)}@
+  H1:{G |- impL A1 B1 (imp A B) D1 ([c15]D2 c15) D3 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -358,7 +358,7 @@
   H14:{G, n5:hyp A |- D1 : conc A1}*
   
   ==================================
-  {G |- [x]impL A1 B1 B D1 ([y]D' y x) D3 : {x:hyp A}conc B}
+  {G |- [x]impL A1 B1 B D1 ([c57]D' c57 x) D3 : {x:hyp A}conc B}
   
   Subgoal imp_inv.3 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -378,7 +378,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impL A1 B1 (imp A B) D1 D2 D3 : conc (imp A B)}@
+  H1:{G |- impL A1 B1 (imp A B) D1 ([c15]D2 c15) D3 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -395,7 +395,7 @@
   H15:{G, n1:hyp A, n:hyp B1 |- D' n n1 : conc B}
   
   ==================================
-  {G |- [x]impL A1 B1 B D1 ([y]D' y x) D3 : {x:hyp A}conc B}
+  {G |- [x]impL A1 B1 B D1 ([c57]D' c57 x) D3 : {x:hyp A}conc B}
   
   Subgoal imp_inv.3 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -415,7 +415,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- impL A1 B1 (imp A B) D1 D2 D3 : conc (imp A B)}@
+  H1:{G |- impL A1 B1 (imp A B) D1 ([c15]D2 c15) D3 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -433,7 +433,7 @@
   H16:{G, n6:hyp A |- D3 : hyp (imp A1 B1)}*
   
   ==================================
-  {G |- [x]impL A1 B1 B D1 ([y]D' y x) D3 : {x:hyp A}conc B}
+  {G |- [x]impL A1 B1 B D1 ([c57]D' c57 x) D3 : {x:hyp A}conc B}
   
   Subgoal imp_inv.3 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -453,7 +453,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- andL A1 B1 (imp A B) D1 D2 : conc (imp A B)}@
+  H1:{G |- andL A1 B1 (imp A B) ([c29][c30]D1 c29 c30) D2 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -479,7 +479,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- andL A1 B1 (imp A B) D1 D2 : conc (imp A B)}@
+  H1:{G |- andL A1 B1 (imp A B) ([c29][c30]D1 c29 c30) D2 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -506,7 +506,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- andL A1 B1 (imp A B) D1 D2 : conc (imp A B)}@
+  H1:{G |- andL A1 B1 (imp A B) ([c29][c30]D1 c29 c30) D2 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -534,7 +534,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- andL A1 B1 (imp A B) D1 D2 : conc (imp A B)}@
+  H1:{G |- andL A1 B1 (imp A B) ([c29][c30]D1 c29 c30) D2 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -562,7 +562,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- andL A1 B1 (imp A B) D1 D2 : conc (imp A B)}@
+  H1:{G |- andL A1 B1 (imp A B) ([c29][c30]D1 c29 c30) D2 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -574,7 +574,7 @@
   H10:{G |- B : proptm}*
   
   ==================================
-  {G |- [x]andL A1 B1 B ([y][z]D' z y n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([c74][c75]D' c75 c74 n x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -592,7 +592,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- andL A1 B1 (imp A B) D1 D2 : conc (imp A B)}@
+  H1:{G |- andL A1 B1 (imp A B) ([c29][c30]D1 c29 c30) D2 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -605,7 +605,7 @@
   H11:{G, n4:hyp A |- A1 : proptm}*
   
   ==================================
-  {G |- [x]andL A1 B1 B ([y][z]D' z y n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([c74][c75]D' c75 c74 n x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -623,7 +623,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- andL A1 B1 (imp A B) D1 D2 : conc (imp A B)}@
+  H1:{G |- andL A1 B1 (imp A B) ([c29][c30]D1 c29 c30) D2 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -637,7 +637,7 @@
   H12:{G, n5:hyp A |- B1 : proptm}*
   
   ==================================
-  {G |- [x]andL A1 B1 B ([y][z]D' z y n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([c74][c75]D' c75 c74 n x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -655,7 +655,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- andL A1 B1 (imp A B) D1 D2 : conc (imp A B)}@
+  H1:{G |- andL A1 B1 (imp A B) ([c29][c30]D1 c29 c30) D2 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -670,7 +670,7 @@
   H13:{G, n6:hyp A |- D2 : hyp (and A1 B1)}*
   
   ==================================
-  {G |- [x]andL A1 B1 B ([y][z]D' z y n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([c74][c75]D' c75 c74 n x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -688,7 +688,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
-  H1:{G |- andL A1 B1 (imp A B) D1 D2 : conc (imp A B)}@
+  H1:{G |- andL A1 B1 (imp A B) ([c29][c30]D1 c29 c30) D2 : conc (imp A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- imp A B : proptm}*
@@ -704,7 +704,7 @@
   H14:{G, n7:hyp A |- B : proptm}*
   
   ==================================
-  {G |- [x]andL A1 B1 B ([y][z]D' z y n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([c74][c75]D' c75 c74 n x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -782,7 +782,7 @@
   H5:{G |- B n : proptm}*
   
   ==================================
-  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([y]init (B n) y) n :
+  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c102]init (B n) c102) n :
     {x:hyp (A n)}conc (B n)}
   
   imp_inv.4>> weaken H4 with hyp A n.
@@ -804,7 +804,7 @@
   H6:{G, n1:hyp (A n) |- A n : proptm}*
   
   ==================================
-  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([y]init (B n) y) n :
+  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c102]init (B n) c102) n :
     {x:hyp (A n)}conc (B n)}
   
   imp_inv.4>> weaken H5 with hyp A n.
@@ -827,7 +827,7 @@
   H7:{G, n2:hyp (A n) |- B n : proptm}*
   
   ==================================
-  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([y]init (B n) y) n :
+  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c102]init (B n) c102) n :
     {x:hyp (A n)}conc (B n)}
   
   imp_inv.4>> weaken H7 with hyp B n.
@@ -851,7 +851,7 @@
   H8:{G, n2:hyp (A n), n3:hyp (B n) |- B n : proptm}*
   
   ==================================
-  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([y]init (B n) y) n :
+  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c102]init (B n) c102) n :
     {x:hyp (A n)}conc (B n)}
   
   imp_inv.4>> search.
@@ -916,7 +916,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- impL A1 B1 (and A B) D1 D2 D3 : conc (and A B)}@
+  H1:{G |- impL A1 B1 (and A B) D1 ([c15]D2 c15) D3 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -948,7 +948,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- impL A1 B1 (and A B) D1 D2 D3 : conc (and A B)}@
+  H1:{G |- impL A1 B1 (and A B) D1 ([c15]D2 c15) D3 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -981,7 +981,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- impL A1 B1 (and A B) D1 D2 D3 : conc (and A B)}@
+  H1:{G |- impL A1 B1 (and A B) D1 ([c15]D2 c15) D3 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1015,7 +1015,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- impL A1 B1 (and A B) D1 D2 D3 : conc (and A B)}@
+  H1:{G |- impL A1 B1 (and A B) D1 ([c15]D2 c15) D3 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1049,7 +1049,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- impL A1 B1 (and A B) D1 D2 D3 : conc (and A B)}@
+  H1:{G |- impL A1 B1 (and A B) D1 ([c15]D2 c15) D3 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1084,7 +1084,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- impL A1 B1 (and A B) D1 D2 D3 : conc (and A B)}@
+  H1:{G |- impL A1 B1 (and A B) D1 ([c15]D2 c15) D3 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1121,7 +1121,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- impL A1 B1 (and A B) D1 D2 D3 : conc (and A B)}@
+  H1:{G |- impL A1 B1 (and A B) D1 ([c15]D2 c15) D3 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1134,7 +1134,7 @@
   H12:{G |- B : proptm}*
   
   ==================================
-  {G |- impL A1 B1 A D1 ([y]D4 y) D3 : conc A}
+  {G |- impL A1 B1 A D1 ([c56]D4 c56) D3 : conc A}
   
   Subgoal and_inv.1 is:
    {G |- impL A1 B1 B D1 ([y]D5 y) D3 : conc B}
@@ -1160,7 +1160,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- impL A1 B1 (and A B) D1 D2 D3 : conc (and A B)}@
+  H1:{G |- impL A1 B1 (and A B) D1 ([c15]D2 c15) D3 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1194,7 +1194,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- impL A1 B1 (and A B) D1 D2 D3 : conc (and A B)}@
+  H1:{G |- impL A1 B1 (and A B) D1 ([c15]D2 c15) D3 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1207,7 +1207,7 @@
   H12:{G |- B : proptm}*
   
   ==================================
-  {G |- impL A1 B1 B D1 ([y]D5 y) D3 : conc B}
+  {G |- impL A1 B1 B D1 ([c69]D5 c69) D3 : conc B}
   
   Subgoal and_inv.2 is:
    exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1363,7 +1363,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- andL A1 B1 (and A B) D1 D2 : conc (and A B)}@
+  H1:{G |- andL A1 B1 (and A B) ([c29][c30]D1 c29 c30) D2 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1389,7 +1389,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- andL A1 B1 (and A B) D1 D2 : conc (and A B)}@
+  H1:{G |- andL A1 B1 (and A B) ([c29][c30]D1 c29 c30) D2 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1418,7 +1418,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- andL A1 B1 (and A B) D1 D2 : conc (and A B)}@
+  H1:{G |- andL A1 B1 (and A B) ([c29][c30]D1 c29 c30) D2 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1446,7 +1446,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- andL A1 B1 (and A B) D1 D2 : conc (and A B)}@
+  H1:{G |- andL A1 B1 (and A B) ([c29][c30]D1 c29 c30) D2 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1475,7 +1475,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- andL A1 B1 (and A B) D1 D2 : conc (and A B)}@
+  H1:{G |- andL A1 B1 (and A B) ([c29][c30]D1 c29 c30) D2 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1504,7 +1504,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- andL A1 B1 (and A B) D1 D2 : conc (and A B)}@
+  H1:{G |- andL A1 B1 (and A B) ([c29][c30]D1 c29 c30) D2 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1535,7 +1535,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- andL A1 B1 (and A B) D1 D2 : conc (and A B)}@
+  H1:{G |- andL A1 B1 (and A B) ([c29][c30]D1 c29 c30) D2 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1547,7 +1547,7 @@
   H11:{G |- B : proptm}*
   
   ==================================
-  {G |- andL A1 B1 A ([x][y]D3 y x) D2 : conc A}
+  {G |- andL A1 B1 A ([c84][c85]D3 c85 c84) D2 : conc A}
   
   Subgoal and_inv.3 is:
    {G |- andL A1 B1 B ([x][y]D4 y x) D2 : conc B}
@@ -1568,7 +1568,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- andL A1 B1 (and A B) D1 D2 : conc (and A B)}@
+  H1:{G |- andL A1 B1 (and A B) ([c29][c30]D1 c29 c30) D2 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1596,7 +1596,7 @@
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
-  H1:{G |- andL A1 B1 (and A B) D1 D2 : conc (and A B)}@
+  H1:{G |- andL A1 B1 (and A B) ([c29][c30]D1 c29 c30) D2 : conc (and A B)}@
   H2:{G |- A1 : proptm}*
   H3:{G |- B1 : proptm}*
   H4:{G |- and A B : proptm}*
@@ -1608,7 +1608,7 @@
   H11:{G |- B : proptm}*
   
   ==================================
-  {G |- andL A1 B1 B ([x][y]D4 y x) D2 : conc B}
+  {G |- andL A1 B1 B ([c98][c99]D4 c99 c98) D2 : conc B}
   
   Subgoal and_inv.4 is:
    exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1981,7 +1981,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{A : proptm}@
   H2:{G |- D1 : conc A}
-  H3:{G, n:hyp A |- impR B1 B2 (D n) : conc (imp B1 B2)}@@
+  H3:{G, n:hyp A |- impR B1 B2 ([c7]D n c7) : conc (imp B1 B2)}@@
   H4:{G, n:hyp A |- B1 : proptm}**
   H5:{G, n:hyp A |- B2 : proptm}**
   H6:{G, n:hyp A, n1:hyp B1 |- D n n1 : conc B2}**
@@ -2027,7 +2027,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{A : proptm}@
   H2:{G |- D1 : conc A}
-  H3:{G, n:hyp A |- impR B1 B2 (D n) : conc (imp B1 B2)}@@
+  H3:{G, n:hyp A |- impR B1 B2 ([c7]D n c7) : conc (imp B1 B2)}@@
   H4:{G, n:hyp A |- B1 : proptm}**
   H5:{G, n:hyp A |- B2 : proptm}**
   H6:{G, n:hyp A, n1:hyp B1 |- D n n1 : conc B2}**
@@ -2074,7 +2074,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{A : proptm}@
   H2:{G |- D1 : conc A}
-  H3:{G, n:hyp A |- impR B1 B2 (D n) : conc (imp B1 B2)}@@
+  H3:{G, n:hyp A |- impR B1 B2 ([c7]D n c7) : conc (imp B1 B2)}@@
   H4:{G, n:hyp A |- B1 : proptm}**
   H5:{G, n:hyp A |- B2 : proptm}**
   H6:{G, n:hyp A, n1:hyp B1 |- D n n1 : conc B2}**
@@ -2122,7 +2122,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{A : proptm}@
   H2:{G |- D1 : conc A}
-  H3:{G, n:hyp A |- impR B1 B2 (D n) : conc (imp B1 B2)}@@
+  H3:{G, n:hyp A |- impR B1 B2 ([c7]D n c7) : conc (imp B1 B2)}@@
   H4:{G, n:hyp A |- B1 : proptm}**
   H5:{G, n:hyp A |- B2 : proptm}**
   H6:{G, n:hyp A, n1:hyp B1 |- D n n1 : conc B2}**
@@ -2171,7 +2171,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{A : proptm}@
   H2:{G |- D1 : conc A}
-  H3:{G, n:hyp A |- impR B1 B2 (D n) : conc (imp B1 B2)}@@
+  H3:{G, n:hyp A |- impR B1 B2 ([c7]D n c7) : conc (imp B1 B2)}@@
   H4:{G, n:hyp A |- B1 : proptm}**
   H5:{G, n:hyp A |- B2 : proptm}**
   H6:{G, n:hyp A, n1:hyp B1 |- D n n1 : conc B2}**
@@ -2222,7 +2222,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{A : proptm}@
   H2:{G |- D1 : conc A}
-  H3:{G, n:hyp A |- impR B1 B2 (D n) : conc (imp B1 B2)}@@
+  H3:{G, n:hyp A |- impR B1 B2 ([c7]D n c7) : conc (imp B1 B2)}@@
   H4:{G, n:hyp A |- B1 : proptm}**
   H5:{G, n:hyp A |- B2 : proptm}**
   H6:{G, n:hyp A, n1:hyp B1 |- D n n1 : conc B2}**
@@ -2273,7 +2273,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{A : proptm}@
   H2:{G |- D1 : conc A}
-  H3:{G, n:hyp A |- impR B1 B2 (D n) : conc (imp B1 B2)}@@
+  H3:{G, n:hyp A |- impR B1 B2 ([c7]D n c7) : conc (imp B1 B2)}@@
   H4:{G, n:hyp A |- B1 : proptm}**
   H5:{G, n:hyp A |- B2 : proptm}**
   H6:{G, n:hyp A, n1:hyp B1 |- D n n1 : conc B2}**
@@ -2325,7 +2325,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{A : proptm}@
   H2:{G |- D1 : conc A}
-  H3:{G, n:hyp A |- impL (A1 n) (B1 n) B (D3 n) (D4 n) (D5 n) : conc B}@@
+  H3:
+      {G, n:hyp A |- impL (A1 n) (B1 n) B (D3 n) ([c15]D4 n c15) (D5 n) :
+        conc B}@@
   H4:{G, n:hyp A |- A1 n : proptm}**
   H5:{G, n:hyp A |- B1 n : proptm}**
   H6:{G, n:hyp A |- B : proptm}**
@@ -2371,7 +2373,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2420,7 +2422,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2472,7 +2474,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2525,7 +2527,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2580,7 +2582,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2635,7 +2637,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2691,7 +2693,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2748,7 +2750,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2808,7 +2810,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2869,7 +2871,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2930,7 +2932,7 @@
                       exists D3, {G |- D3 : conc B}
   H1:{imp A2 A3 : proptm}@
   H2:{G |- D1 : conc (imp A2 A3)}
-  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) (D4 n) n : conc B}@@
+  H3:{G, n:hyp (imp A2 A3) |- impL A2 A3 B (D3 n) ([c15]D4 n c15) n : conc B}@@
   H4:{G, n:hyp (imp A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (imp A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (imp A2 A3) |- B : proptm}**
@@ -2991,7 +2993,8 @@
   H1:{A n2 : proptm}@
   H2:{G |- D1 n2 : conc (A n2)}
   H3:
-      {G, n:hyp (A n2) |- impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) (D4 n2 n) n2 :
+      {G, n:hyp (A n2) |- 
+        impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) ([c15]D4 n2 n c15) n2 :
         conc (B n2)}@@
   H4:{G, n:hyp (A n2) |- A3 n2 : proptm}**
   H5:{G, n:hyp (A n2) |- A4 n2 : proptm}**
@@ -3042,7 +3045,8 @@
   H1:{A n2 : proptm}@
   H2:{G |- D1 n2 : conc (A n2)}
   H3:
-      {G, n:hyp (A n2) |- impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) (D4 n2 n) n2 :
+      {G, n:hyp (A n2) |- 
+        impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) ([c15]D4 n2 n c15) n2 :
         conc (B n2)}@@
   H4:{G, n:hyp (A n2) |- A3 n2 : proptm}**
   H5:{G, n:hyp (A n2) |- A4 n2 : proptm}**
@@ -3093,7 +3097,8 @@
   H1:{A n2 : proptm}@
   H2:{G |- D1 n2 : conc (A n2)}
   H3:
-      {G, n:hyp (A n2) |- impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) (D4 n2 n) n2 :
+      {G, n:hyp (A n2) |- 
+        impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) ([c15]D4 n2 n c15) n2 :
         conc (B n2)}@@
   H4:{G, n:hyp (A n2) |- A3 n2 : proptm}**
   H5:{G, n:hyp (A n2) |- A4 n2 : proptm}**
@@ -3145,7 +3150,8 @@
   H1:{A n2 : proptm}@
   H2:{G |- D1 n2 : conc (A n2)}
   H3:
-      {G, n:hyp (A n2) |- impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) (D4 n2 n) n2 :
+      {G, n:hyp (A n2) |- 
+        impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) ([c15]D4 n2 n c15) n2 :
         conc (B n2)}@@
   H4:{G, n:hyp (A n2) |- A3 n2 : proptm}**
   H5:{G, n:hyp (A n2) |- A4 n2 : proptm}**
@@ -3198,7 +3204,8 @@
   H1:{A n2 : proptm}@
   H2:{G |- D1 n2 : conc (A n2)}
   H3:
-      {G, n:hyp (A n2) |- impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) (D4 n2 n) n2 :
+      {G, n:hyp (A n2) |- 
+        impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) ([c15]D4 n2 n c15) n2 :
         conc (B n2)}@@
   H4:{G, n:hyp (A n2) |- A3 n2 : proptm}**
   H5:{G, n:hyp (A n2) |- A4 n2 : proptm}**
@@ -3253,7 +3260,8 @@
   H1:{A n2 : proptm}@
   H2:{G |- D1 n2 : conc (A n2)}
   H3:
-      {G, n:hyp (A n2) |- impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) (D4 n2 n) n2 :
+      {G, n:hyp (A n2) |- 
+        impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) ([c15]D4 n2 n c15) n2 :
         conc (B n2)}@@
   H4:{G, n:hyp (A n2) |- A3 n2 : proptm}**
   H5:{G, n:hyp (A n2) |- A4 n2 : proptm}**
@@ -3308,7 +3316,8 @@
   H1:{A n2 : proptm}@
   H2:{G |- D1 n2 : conc (A n2)}
   H3:
-      {G, n:hyp (A n2) |- impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) (D4 n2 n) n2 :
+      {G, n:hyp (A n2) |- 
+        impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) ([c15]D4 n2 n c15) n2 :
         conc (B n2)}@@
   H4:{G, n:hyp (A n2) |- A3 n2 : proptm}**
   H5:{G, n:hyp (A n2) |- A4 n2 : proptm}**
@@ -3364,7 +3373,8 @@
   H1:{A n2 : proptm}@
   H2:{G |- D1 n2 : conc (A n2)}
   H3:
-      {G, n:hyp (A n2) |- impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) (D4 n2 n) n2 :
+      {G, n:hyp (A n2) |- 
+        impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) ([c15]D4 n2 n c15) n2 :
         conc (B n2)}@@
   H4:{G, n:hyp (A n2) |- A3 n2 : proptm}**
   H5:{G, n:hyp (A n2) |- A4 n2 : proptm}**
@@ -3421,7 +3431,8 @@
   H1:{A n2 : proptm}@
   H2:{G |- D1 n2 : conc (A n2)}
   H3:
-      {G, n:hyp (A n2) |- impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) (D4 n2 n) n2 :
+      {G, n:hyp (A n2) |- 
+        impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) ([c15]D4 n2 n c15) n2 :
         conc (B n2)}@@
   H4:{G, n:hyp (A n2) |- A3 n2 : proptm}**
   H5:{G, n:hyp (A n2) |- A4 n2 : proptm}**
@@ -3479,7 +3490,8 @@
   H1:{A n2 : proptm}@
   H2:{G |- D1 n2 : conc (A n2)}
   H3:
-      {G, n:hyp (A n2) |- impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) (D4 n2 n) n2 :
+      {G, n:hyp (A n2) |- 
+        impL (A3 n2) (A4 n2) (B n2) (D3 n2 n) ([c15]D4 n2 n c15) n2 :
         conc (B n2)}@@
   H4:{G, n:hyp (A n2) |- A3 n2 : proptm}**
   H5:{G, n:hyp (A n2) |- A4 n2 : proptm}**
@@ -3800,7 +3812,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{A : proptm}@
   H2:{G |- D1 : conc A}
-  H3:{G, n:hyp A |- andL (A1 n) (B1 n) B (D3 n) (D4 n) : conc B}@@
+  H3:
+      {G, n:hyp A |- andL (A1 n) (B1 n) B ([c29][c30]D3 n c29 c30) (D4 n) :
+        conc B}@@
   H4:{G, n:hyp A |- A1 n : proptm}**
   H5:{G, n:hyp A |- B1 n : proptm}**
   H6:{G, n:hyp A |- B : proptm}**
@@ -3839,7 +3853,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -3881,7 +3897,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -3926,7 +3944,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -3972,7 +3992,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4019,7 +4041,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4067,7 +4091,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4118,7 +4144,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4170,7 +4198,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4223,7 +4253,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4277,7 +4309,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4332,7 +4366,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4388,7 +4424,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4438,7 +4476,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4488,7 +4528,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4541,7 +4583,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4595,7 +4639,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4650,7 +4696,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4703,7 +4751,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4756,7 +4806,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4810,7 +4862,9 @@
                       exists D3, {G |- D3 : conc B}
   H1:{and A2 A3 : proptm}@
   H2:{G |- D1 : conc (and A2 A3)}
-  H3:{G, n:hyp (and A2 A3) |- andL A2 A3 B (D3 n) n : conc B}@@
+  H3:
+      {G, n:hyp (and A2 A3) |- andL A2 A3 B ([c29][c30]D3 n c29 c30) n :
+        conc B}@@
   H4:{G, n:hyp (and A2 A3) |- A2 : proptm}**
   H5:{G, n:hyp (and A2 A3) |- A3 : proptm}**
   H6:{G, n:hyp (and A2 A3) |- B : proptm}**
@@ -4864,7 +4918,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -4908,7 +4963,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -4955,7 +5011,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5005,7 +5062,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5056,7 +5114,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5108,7 +5167,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5161,7 +5221,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5215,7 +5276,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5270,7 +5332,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5319,7 +5382,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5368,7 +5432,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5417,7 +5482,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5467,7 +5533,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**
@@ -5518,7 +5585,8 @@
   H1:{A n3 : proptm}@
   H2:{G |- D1 n3 : conc (A n3)}
   H3:
-      {G, n:hyp (A n3) |- andL (A3 n3) (A4 n3) (B n3) (D3 n3 n) n3 :
+      {G, n:hyp (A n3) |- 
+        andL (A3 n3) (A4 n3) (B n3) ([c29][c30]D3 n3 n c29 c30) n3 :
         conc (B n3)}@@
   H4:{G, n:hyp (A n3) |- A3 n3 : proptm}**
   H5:{G, n:hyp (A n3) |- A4 n3 : proptm}**

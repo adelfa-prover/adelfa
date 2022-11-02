@@ -38,14 +38,14 @@ induction on 4. intros. case H4.
     apply IH to H15 H17 H19 H13 with (L = L, n1:ty, n:var n1).
         prune H20.
     case H20.
-    exists all T3 ([z3]F2 z3). exists refl_ty X S DV ([x][y]all T3 ([z3]F2 z3)).
+    exists all T2 ([x] F1 x). exists refl_ty X S DV ([x][y]all T2 ([x] F1 x)).
     search.
   %case 2: arrow
     apply IH to H1 H2 H3 H5.
       case H7.
     apply IH to H1 H2 H3 H6.
       case H12.
-    exists arrow T4 T5. exists refl_ty X S DV ([x][y]arrow T4 T5).
+    exists arrow T3 T4. exists refl_ty X S DV ([x][y]arrow T3 T4).
     search.
   %case 3: top
     weaken H1 with (bound X S). weaken H2 with (bound X S). weaken H3 with (bound X S).
@@ -136,7 +136,7 @@ induction on 1. intros.
     %%%the proof will use transitivity and narrowing based on T1 and transitivity based on T2
       case H1(keep).
       apply IH to H16 with (G = G), Q = T1. case H18.
-      apply IH to H17 with (G = G, n12:ty), Q = (T5 n12). case H21.
+      apply IH to H17 with (G = G, n12:ty), Q = (T2 n12). case H21.
     %%%use transitivity based on T1 (H19) to derive (sub T3 S1)
       apply H19 to H14 H8 with S = T3, T = S1, D1 = D3, D2 = a1.
           prune H24.

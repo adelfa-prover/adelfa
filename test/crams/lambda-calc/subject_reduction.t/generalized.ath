@@ -16,7 +16,7 @@ Theorem subject_reduction : ctx Gamma:c, forall M1 M2 T D1 D2,
   case H2.
   apply IH to H6 H10 with (Gamma = Gamma, n1:tm, n:of n1 T1).
   prune H11.
-  exists of_lam R2 T1 T2 ([x] [x1] D1 x x1).
+  exists of_lam ([x] R2 x) T1 T2 ([x] [x1] D1 x x1).
   search.
 
   % step-beta case
@@ -38,4 +38,3 @@ Theorem subject_reduction : ctx Gamma:c, forall M1 M2 T D1 D2,
   apply IH to H6 H11.
   exists of_app M4 N T U D3 a2.
   search.
-

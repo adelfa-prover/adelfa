@@ -175,13 +175,13 @@ let rec get_explicit = function
   | Ctx (g, entry) -> entry :: get_explicit g
 ;;
 
-let length e =
-  let rec aux acc e =
-    match e with
-    | Nil | Var _ -> acc
-    | Ctx (e', _) -> aux (acc + 1) e'
+let length ctx =
+  let rec aux acc ctx =
+    match ctx with
+    | Nil | Var _ -> acc + 1
+    | Ctx (ctx', _) -> aux (acc + 1) ctx'
   in
-  aux 0 e
+  aux 0 ctx
 ;;
 
 (* checks if context expression g1 is a prefix of the context expression g2 *)
