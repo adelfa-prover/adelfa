@@ -123,6 +123,8 @@ val find_var_refs : (ctx_var * ctx_typ) list -> Term.tag -> ctx_expr -> Term.ter
 *)
 val get_explicit : ctx_expr -> (Term.var * Term.term) list
 
+val length : ctx_expr -> int
+
 (** [context_prefix g1 g2] checks if [g1] is a prefix of [g2] *)
 val context_prefix : ctx_expr -> ctx_expr -> bool
 

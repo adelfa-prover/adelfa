@@ -3,10 +3,12 @@
  * Implement tactics for reasoning.
  *
  *)
+type ctx_subst = Context.ctx_var * Context.ctx_expr
 
 exception InvalidFormula of Formula.formula * string
 exception InvalidTerm of Term.term
 exception InvalidName of string
+exception AmbiguousSubst of ctx_subst * ctx_subst
 exception NotLlambda
 exception NoCases
 exception Success

@@ -70,6 +70,7 @@ val get_hyp : sequent -> string -> hyp
 val remove_hyp : sequent -> string -> unit
 val replace_hyp : sequent -> string -> Formula.formula -> unit
 val norm_atom : sequent -> Formula.formula -> Formula.formula
+val prune_noms : sequent -> unit
 val exists_left : sequent -> Formula.formula -> Formula.formula
 val norm : sequent -> Formula.formula -> Formula.formula
 val normalize_formula : sequent -> string -> Formula.formula -> unit

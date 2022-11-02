@@ -232,7 +232,7 @@
   Subgoal ty_unique_aux.3 is:
    exists D3, {G |- D3 : eq (T1 n n1) (T2 n n1)}
   
-  ty_unique_aux.1>> apply IH to H6 H10.
+  ty_unique_aux.1>> apply IH to H6 H10 with (G = G,n1:tm,n:of n1 T3).
   
   Subgoal ty_unique_aux.1:
   

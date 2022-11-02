@@ -117,7 +117,7 @@ Since these tests share a single specification file, group them here
   Subgoal subject_reduction.4 is:
    exists D3, {Gamma |- D3 : of (app M4 N) T}
   
-  subject_reduction.1>> apply IH to H6 H10.
+  subject_reduction.1>> apply IH to H6 H10 with (Gamma = Gamma,n1:tm,n:of n1 T1).
   
   Subgoal subject_reduction.1:
   

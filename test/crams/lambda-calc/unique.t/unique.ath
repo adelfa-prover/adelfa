@@ -22,7 +22,7 @@ induction on 1. intros. case H1 (keep).
 
   %case 1: of_abs
     case H2.
-    apply IH to H6 H10.
+    apply IH to H6 H10 with (G = G, n1:tm, n:of n1 T3).
     case H11.
     exists (refl (arr T3 T4)). search.
 

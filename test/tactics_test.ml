@@ -58,6 +58,37 @@ let case_tests =
        ]
 ;;
 
+let ambiguous_subst_test () =
+  let g1 = Context.ctx_var "G" in
+  let t = var Constant "T" 0 ity in
+  let e = var Eigen "E" 0 iiity in
+  let e1 = var Eigen "E1" 0 ity in
+  let n = nominal_var "n" ity in
+  let n1 = nominal_var "n1" ity in
+  let lemma =
+    ctx [ g1, "c" ] (forall [ "E1", ity ] (imp (atm (Context.Var g1) e1 tm) Bottom))
+  in
+  let f =
+    atm
+      (Context.Ctx
+         (Context.Ctx (Context.Nil, (Term.term_to_var n, tm)), (Term.term_to_var n1, tm)))
+      (Term.app e [ n; n1 ])
+      tm
+  in
+  let schemas =
+    [ "c", [ Context.B ([], [ term_to_var t, tm ]) ] ] |> List.to_seq |> Hashtbl.of_seq
+  in
+  let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
+  let () = List.iter (fun v -> Sequent.add_var seq (Term.term_to_pair v)) [ e; n; n1 ] in
+  let () = Sequent.add_hyp seq ~name:"H1" f in
+  let args = [ Sequent.get_hyp seq "H1" ] |> List.map (fun h -> h.Sequent.formula) in
+  try
+    let _ = Tactics.apply schemas seq lemma args in
+    assert_failure "Application succeeded when an ambiguous ctx substitution occurs."
+  with
+  | AmbiguousSubst _ -> ()
+;;
+
 let apply_tests =
   "Apply"
   >::: [ ("Normal"
@@ -540,7 +571,7 @@ let apply_tests =
          let l = Context.ctx_var "L" in
          let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
          let _ =
-           Sequent.add_ctxvar seq l ~rstrct:["n1"; "n2"] (Context.CtxTy ("c", []));
+           Sequent.add_ctxvar seq l ~rstrct:[ "n1"; "n2" ] (Context.CtxTy ("c", []));
            Sequent.add_ctxvar seq e (Context.CtxTy ("c", []));
            Sequent.add_var seq (term_to_pair n);
            Sequent.add_var seq (term_to_pair n1);
@@ -815,6 +846,7 @@ let apply_tests =
               [ "E2", ity ]
               (atm (Context.Ctx (Context.Var g1, (term_to_var n, tm))) e2 tm))
            (Tactics.apply schemas seq f args))
+       ; "Detects ambiguous substitutions" >:: ambiguous_subst_test
        ]
 ;;
 

@@ -481,23 +481,37 @@ let freshen_nominals (form : Formula.formula) : Formula.formula =
         id, t')
       nominals
   in
-  List.iter (Sequent.add_var sequent) (List.map Term.term_to_pair (List.map snd alist));
+  (* Add all new nominals to the sequent *)
+  List.map (fun (_, dest) -> Term.term_to_pair dest) alist
+  |> List.iter (Sequent.add_var sequent);
   Formula.replace_formula_vars alist form
 ;;
 
 let apply name args uws =
   try
-    let f = match find_lemma_opt name with
+    let f =
+      match find_lemma_opt name with
       | Some f -> freshen_nominals f
       | None -> find_by_name name
     in
     let forms = List.map find_by_name args in
     let res_f = apply_form f forms uws in
     Sequent.add_hyp sequent res_f;
-    Sequent.normalize_hyps sequent
+    Sequent.normalize_hyps sequent;
+    Sequent.prune_noms sequent
   with
   | Unify.UnifyFailure e -> failwith (Unify.explain_failure e)
   | ApplyFailure str -> failwith str
+  | Tactics.AmbiguousSubst (s1, s2) ->
+    let ctx1 = snd s1 in
+    let ctx2 = snd s2 in
+    Format.asprintf
+      "@[<v>@[Ambiguous@ context@ substitution.@ Found:@]@ @[<v>@[<2>%a@]@ @[ and@]@ @[<2>%a@]@]@]"
+      Print.pr_ctxexpr
+      ctx1
+      Print.pr_ctxexpr
+      ctx2
+    |> failwith
   | Failure e -> failwith e
 ;;
 

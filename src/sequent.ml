@@ -232,6 +232,19 @@ let norm_atom sequent formula =
   aux formula
 ;;
 
+let prune_noms sequent =
+  let ctxvars = get_cvar_tys sequent.ctxvars in
+  let nom_in_forms =
+    List.flatten_map
+      (Formula.get_formula_used_nominals ctxvars)
+      (sequent.goal :: List.map (fun h -> h.formula) sequent.hyps)
+    |> List.unique ~cmp:(fun (_, t1) (_, t2) -> Term.eq t1 t2)
+  in
+  let nom_in_seq = get_nominals sequent in
+  let unnec_noms = List.minus nom_in_seq nom_in_forms in
+  sequent.vars <- List.minus sequent.vars unnec_noms
+;;
+
 (* Introduce new eigenvariables for quantifiers at the top-level. *)
 let exists_left sequent formula =
   let rec aux formula =

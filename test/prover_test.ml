@@ -91,4 +91,62 @@ let state_tests =
        ]
 ;;
 
-let tests = "Prover" >::: [ assert_tests ]
+let nominal_renamed_in_lemma () =
+  let e = var Eigen "E" 0 ity in
+  let x = const "x" ity in
+  let n = nominal_var "n" ity in
+  let g = Context.ctx_var "G" in
+  let g1 = Context.ctx_var "G1" in
+  let schema = Context.CtxTy ("c", [ [ term_to_var x, tm ] ]) in
+  let lemma =
+    Formula.forall
+      [ "E", ity ]
+      (Formula.imp
+         (Formula.atm (Context.Ctx (Context.Var g, (term_to_var n, tm))) e tm)
+         Formula.Bottom)
+  in
+  Prover.add_lemma "lemma" lemma;
+  let s = Sequent.make_sequent_from_goal ~form:Formula.Bottom () in
+  Sequent.add_hyp
+    s
+    ~name:"H1"
+    (Formula.atm (Context.Ctx (Context.Var g1, (term_to_var n, tm))) e tm);
+  Sequent.add_ctxvar s g schema;
+  Sequent.add_ctxvar s g1 schema;
+  Prover.set_sequent s;
+  let exn = Failure (Unify.explain_failure Unify.Generic) in
+  assert_raises exn (fun () -> Prover.apply "lemma" [ "H1" ] [])
+;;
+
+let nominal_same_in_seq () =
+  let e = var Eigen "E" 0 ity in
+  let x = const "x" ity in
+  let n = nominal_var "n" ity in
+  let g = Context.ctx_var "G" in
+  let schema = Context.CtxTy ("c", [ [ term_to_var x, tm ] ]) in
+  let lemma =
+    Formula.forall
+      [ "E", ity ]
+      (Formula.imp
+         (Formula.atm (Context.Ctx (Context.Var g, (term_to_var n, tm))) e tm)
+         Formula.Bottom)
+  in
+  let s = Sequent.make_sequent_from_goal ~form:Formula.Bottom () in
+  Sequent.add_hyp
+    s
+    ~name:"H1"
+    (Formula.atm (Context.Ctx (Context.Var g, (term_to_var n, tm))) e tm);
+  Sequent.add_hyp s ~name:"H2" lemma;
+  Sequent.add_ctxvar s g schema;
+  Prover.set_sequent s;
+  assert_equal () (Prover.apply "H2" [ "H1" ] [])
+;;
+
+let apply_tests =
+  "Apply"
+  >::: [ "Renames nominals appearing in lemmas" >:: nominal_renamed_in_lemma
+       ; "Keeps nominal names appearing in sequent" >:: nominal_same_in_seq
+       ]
+;;
+
+let tests = "Prover" >::: [ assert_tests; apply_tests ]

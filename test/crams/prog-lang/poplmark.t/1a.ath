@@ -35,7 +35,7 @@ induction on 4. intros. case H4.
     weaken H1 with ty. weaken H14 with (var n6).
     weaken H2 with ty. weaken H16 with (var n8).
     weaken H3 with ty. weaken H18 with (var n10).
-    apply IH to H15 H17 H19 H13.
+    apply IH to H15 H17 H19 H13 with (L = L, n1:ty, n:var n1).
         prune H20.
     case H20.
     exists all T3 ([z3]F2 z3). exists refl_ty X S DV ([x][y]all T3 ([z3]F2 z3)).
@@ -145,10 +145,10 @@ induction on 1. intros.
         weaken H14 with ty. weaken H25 with (var n13). search.
       assert {L, n:ty, n1:var n |- n : ty}.
       assert {L, n:ty, n1:var n |- n1 : var n}.
-      apply H20 to H26 H27 H25 H9.
+      apply H20 to H26 H27 H25 H9 with (L135 = L, n1:ty, n:var n1).
           prune H28.
     %%%use transitivity based on T2 (H22) to derive (sub (S2 n) (T4 n))
-      apply H22 to H28 H15.
+      apply H22 to H28 H15 with (L81012 = L, n12:ty, n1:var n12, n2:bound n12 T3, n:bound_var n12 T3 n2 n1).
           prune H29.
       exists (sa-all S1 ([x] S2 x) T3 ([x] T4 x) (D1 n12) ([w][x][y][z] D5 w y x z)).
       search.
@@ -241,7 +241,7 @@ split.
       ctxpermute H18 to L,n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:bound n N1, n3:bound_var n N1 n1 n2.
       %%%will also need derivations that M1, N1, M2 and N2 are well formed types
       %%%under the narrowed context
-      apply sub__ty to H13. case H20.
+      apply sub__ty to H13 with (L = L, n1:bound X P, n:bound_var X P n1 DV). case H20.
       apply sub__ty to H19 with (L = L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1: bound n N1, n3:bound_var n N1 n1 n2 ), D = D2 n3 n2 n1 n n14 n15, U1 = (M2 n), U2 = (N2 n).
       case H23.
       %%%derivation that M2 is a type, in the narrowed context
@@ -255,8 +255,8 @@ split.
           prune H13.
       apply IH1 to H3 H4 H5 H12 with X = X, M = M2, N = N2, P = P, DV = DV, D1 = D1, D2 = [x][y] a2 y x.
           prune H14.
-      apply sub__ty to H13. case H15.
-      apply sub__ty to H14. case H18.
+      apply sub__ty to H13 with (L = L, n1:bound X P, n:bound_var X P n1 DV). case H15.
+      apply sub__ty to H14 with (L = L, n1:bound X P, n:bound_var X P n1 DV). case H18.
       exists ([x][y] sa-arrow M1 M2 N1 N2 (D4 x y) (D2 x y)).
       search.
     %case 3: sa-trans-tvar
@@ -269,7 +269,7 @@ split.
           %%%weakening assumption of (sub P Q) to be able to apply transitivity
           assert {L, n:bound M P, n1:bound_var M P n DV |- D1 : sub P Q}.
             apply sub__ty to H5. case H15.
-            apply sub__ty to H6. case H18.
+            apply sub__ty to H6 with (L = L, n1:bound M Q, n:bound_var M Q n1 DV). case H18.
             strengthen H19. strengthen H21. strengthen H10. strengthen H23.
             weaken H24 with (bound M P). weaken H22 with (bound M P). weaken H16 with (bound M P).
             weaken H5 with (bound M P). weaken H28 with (bound_var M P n7 DV).
@@ -277,7 +277,7 @@ split.
           %%%applying transitivity
           apply H2 to H15 H14 with (L = L, n:bound M P, n1:bound_var M P n DV), S = P, T = N, D1 = D1, D2 = D4 n n1.
               prune H16.
-          apply sub__ty to H16. case H17.
+          apply sub__ty to H16 with (L = L, n1:bound M P, n:bound_var M P n1 DV). case H17.
           assert {L, n:bound M P, n1:bound_var M P n DV |- M : ty}.
             apply sub__ty to H5. case H20.
             weaken H21 with (bound M P). weaken H4 with (bound M P).
@@ -293,7 +293,7 @@ split.
         %case 3.2: from new full ctx var block
           apply IH1 to H3 H4 H5 H13 with X = (X n2 n3 n4 n5), M = (U2 n2 n3 n4 n5), N = (N n2 n3 n4 n5), P = P n2 n3 n4 n5, D1 = D1 n2 n3 n4 n5, D2 = [x][y]D n2 n3 n4 n5 y x, DV = DV n2 n3 n4 n5.
               prune H14.
-          apply sub__ty to H14. case H15.
+          apply sub__ty to H14 with (L = L, n1:bound (X n2 n3 n4 n5) (P n2 n3 n4 n5), n:bound_var (X n2 n3 n4 n5) (P n2 n3 n4 n5) n1 (DV n2 n3 n4 n5)). case H15.
           exists ([x][y] sa-trans-tvar (U2 n2 n3 n4 n5) (N n2 n3 n4 n5) n2 n3 n4 n5 (D4 n5 n4 n3 n2 x y)).
           search.
         %case 3.3: from a new split ctx var block
@@ -301,7 +301,7 @@ split.
           apply IH1 to H3 H4 H5 H13 with X = (X n2 n3), M = T2 n2 n3, N = (N n2 n3), P = P n2 n3, D1 = D1 n2 n3, D2 = [x][y] D n2 n3 y x, DV = DV n2 n3.
               prune H14.
           %%%obtaining derivations of sub-term well-formedness under narrowed context
-          apply sub__ty to H14. case H15.
+          apply sub__ty to H14 with (L = L, n1:bound (X n2 n3) (P n2 n3), n:bound_var (X n2 n3) (P n2 n3) n1 (DV n2 n3)). case H15.
           apply narrow_ty to H3 H4 H5 H9.
           apply narrow_var to H3 H4 H5 H10.
           exists ([x][y] sa-trans-tvar (T2 n2 n3) (N n2 n3) (M1 n2 n3) (DV2 n2 n3) n2 n3 (D4 n3 n2 x y)).

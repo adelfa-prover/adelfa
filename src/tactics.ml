@@ -2,6 +2,8 @@ open Term
 open Sequent
 open Extensions
 
+type ctx_subst = Context.ctx_var * Context.ctx_expr
+
 (* When an identified formula is of the wrong form.
  * Formula is the invalid formula and string describes what is
  * improper about its form. *)
@@ -12,6 +14,7 @@ exception InvalidTerm of term
  * the current sequent.
  * string is the invalid name. *)
 exception InvalidName of string
+exception AmbiguousSubst of ctx_subst * ctx_subst
 exception NotLlambda
 
 (* Used to indicate that a goal is solved by case analysis
@@ -1303,6 +1306,38 @@ let generate_subst f added restrictions =
 ;;
 
 let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
+  let can_be_ambiguous subst =
+    let _, expr = subst in
+    Context.length expr > 1
+  in
+  let get_differing_permutation
+    (subst1 : (Context.ctx_var * Context.ctx_expr) list option)
+    (subst2 : (Context.ctx_var * Context.ctx_expr) list option)
+    : (ctx_subst * ctx_subst) option
+    =
+    let sort_by_ctx_var substs =
+      List.sort (fun (v1, _) (v2, _) -> String.compare v1 v2) substs
+    in
+    if Option.is_none subst1 || Option.is_none subst2
+    then None
+    else (
+      let norm_subst1 =
+        Option.get subst1 |> List.filter can_be_ambiguous |> sort_by_ctx_var
+      in
+      let norm_subst2 =
+        Option.get subst2 |> List.filter can_be_ambiguous |> sort_by_ctx_var
+      in
+      try
+        if List.length norm_subst1 <> List.length norm_subst2
+        then Some (List.hd norm_subst1, List.hd norm_subst2)
+        else
+          Some
+            (List.combine norm_subst1 norm_subst2
+            |> List.find (fun ((v1, d1), (v2, d2)) ->
+                 Context.ctx_var_eq v1 v2 && not (Context.eq d1 d2)))
+      with
+      | Not_found -> None)
+  in
   let () =
     check_restrictions
       (map_args Formula.formula_to_annotation form)
@@ -1314,6 +1349,21 @@ let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
         match term, arg with
         | Formula.Imp (left, right), arg ->
           let res = ref (None, Term.get_bind_state ()) in
+          let map_out_of_var = ref false in
+          let set_res_or_raise new_res =
+            if Option.is_none (fst !res)
+            then (
+              res := new_res;
+              map_out_of_var := List.exists can_be_ambiguous (Option.get (fst !res)))
+            else if !map_out_of_var
+            then (
+              let subst1, _ = !res in
+              let subst2, _ = new_res in
+              match get_differing_permutation subst1 subst2 with
+              | None -> ()
+              | Some (s1, s2) -> raise (AmbiguousSubst (s1, s2)))
+            else raise Success
+          in
           (* If formula has any existential quantifiers at the top *)
           (* level, or is atomic we should normalize before trying *)
           (* to match with the argument formula. *)
@@ -1338,9 +1388,7 @@ let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
           then (
             try
               all_meta_right_permute_unify
-                ~sc:(fun x ->
-                  res := x;
-                  raise Success)
+                ~sc:set_res_or_raise
                 schemas
                 nvars
                 ctxvar_ctx
