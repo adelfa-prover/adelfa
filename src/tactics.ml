@@ -547,9 +547,20 @@ let search ~depth signature sequent =
         explicit_names
     else true
   in
+  let cvar_entry_to_formulas (entry : cvar_entry) : Formula.formula list =
+    let block_to_formulas (var : Context.ctx_var) (block : Context.block)
+      : Formula.formula list
+      =
+      List.map (fun (v, t) -> Formula.atm (Context.Var var) (Term.var_to_term v) t) block
+    in
+    let var, _, Context.CtxTy (_, blocks) = entry in
+    List.flatten_map (block_to_formulas var) blocks
+  in
+  let ctx_formulas = List.flatten_map cvar_entry_to_formulas sequent.ctxvars in
   let formulas =
     sequent.hyps
     |> List.map (fun hyp -> hyp.formula)
+    |> List.append ctx_formulas
     |> List.unique ~cmp:Formula.eq
     |> extract_ty_info signature sequent depth
   in
