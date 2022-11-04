@@ -14,7 +14,7 @@ exception InvalidTerm of term
  * the current sequent.
  * string is the invalid name. *)
 exception InvalidName of string
-exception AmbiguousSubst of ctx_subst * ctx_subst
+exception AmbiguousSubst of Context.ctx_expr * Context.ctx_expr
 exception NotLlambda
 
 (* Used to indicate that a goal is solved by case analysis
@@ -1325,8 +1325,8 @@ let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
     Context.length expr > 1
   in
   let get_differing_permutation
-    (subst1 : (Context.ctx_var * Context.ctx_expr) list option)
-    (subst2 : (Context.ctx_var * Context.ctx_expr) list option)
+    (subst1 : ctx_subst list option)
+    (subst2 : ctx_subst list option)
     : (ctx_subst * ctx_subst) option
     =
     let sort_by_ctx_var substs =
@@ -1368,7 +1368,10 @@ let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
               let subst2, _ = new_res in
               match get_differing_permutation subst1 subst2 with
               | None -> ()
-              | Some (s1, s2) -> raise (AmbiguousSubst (s1, s2)))
+              | Some (s1, s2) ->
+                let ctx1 = snd s1 in
+                let ctx2 = snd s2 in
+                raise (AmbiguousSubst (ctx1, ctx2)))
             else raise Success
           in
           (* If formula has any existential quantifiers at the top *)
@@ -1410,7 +1413,7 @@ let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
            | Some ctx_subst, bind_state ->
              Term.set_bind_state bind_state;
              Formula.replace_ctx_vars ctx_subst right
-           | None, _ -> raise (Unify.UnifyFailure Unify.Generic))
+           | None, _ -> raise (Unify.UnifyFailure (Unify.MatchingFormula arg)))
         | _ -> failwith "Too few implications in application")
       form
       args

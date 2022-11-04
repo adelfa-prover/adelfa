@@ -502,17 +502,17 @@ let apply name args uws =
   with
   | Unify.UnifyFailure e -> failwith (Unify.explain_failure e)
   | ApplyFailure str -> failwith str
-  | Tactics.AmbiguousSubst (s1, s2) ->
-    let ctx1 = snd s1 in
-    let ctx2 = snd s2 in
-    Format.asprintf
-      "@[<v>@[Ambiguous@ context@ substitution.@ Found:@]@ @[<v>@[<2>%a@]@ @[ and@]@ \
-       @[<2>%a@]@]@]"
-      Print.pr_ctxexpr
-      ctx1
-      Print.pr_ctxexpr
-      ctx2
-    |> failwith
+  | Tactics.AmbiguousSubst (ctx1, ctx2) ->
+    let msg =
+      Format.asprintf
+        "@[<hv>@[Ambiguous@ context@ substitution.@ Found:@]@ @[<v>@[<2>%a@]@ @[ and@]@ \
+         @[<2>%a@]@]@]"
+        Print.pr_ctxexpr
+        ctx1
+        Print.pr_ctxexpr
+        ctx2
+    in
+    failwith msg
   | Failure e -> failwith e
 ;;
 

@@ -9,6 +9,7 @@ type unify_failure =
   | ConstClash of (term * term)
   | Generic
   | FailTrail of int * unify_failure
+  | MatchingFormula of Formula.formula
 
 exception UnifyFailure of unify_failure
 

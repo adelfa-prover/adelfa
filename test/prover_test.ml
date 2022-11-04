@@ -107,14 +107,12 @@ let nominal_renamed_in_lemma () =
   in
   Prover.add_lemma "lemma" lemma;
   let s = Sequent.make_sequent_from_goal ~form:Formula.Bottom () in
-  Sequent.add_hyp
-    s
-    ~name:"H1"
-    (Formula.atm (Context.Ctx (Context.Var g1, (term_to_var n, tm))) e tm);
+  let f = Formula.atm (Context.Ctx (Context.Var g1, (term_to_var n, tm))) e tm in
+  Sequent.add_hyp s ~name:"H1" f;
   Sequent.add_ctxvar s g schema;
   Sequent.add_ctxvar s g1 schema;
   Prover.set_sequent s;
-  let exn = Failure (Unify.explain_failure Unify.Generic) in
+  let exn = Failure (Unify.explain_failure (Unify.MatchingFormula f)) in
   assert_raises exn (fun () -> Prover.apply "lemma" [ "H1" ] [])
 ;;
 

@@ -8,7 +8,7 @@ type ctx_subst = Context.ctx_var * Context.ctx_expr
 exception InvalidFormula of Formula.formula * string
 exception InvalidTerm of Term.term
 exception InvalidName of string
-exception AmbiguousSubst of ctx_subst * ctx_subst
+exception AmbiguousSubst of Context.ctx_expr * Context.ctx_expr
 exception NotLlambda
 exception NoCases
 exception Success

@@ -20,6 +20,7 @@ type unify_failure =
   | ConstClash of (term * term)
   | Generic
   | FailTrail of int * unify_failure
+  | MatchingFormula of Formula.formula
 
 let rec explain_failure = function
   | OccursCheck -> "Unification failure (occurs-check)"
@@ -31,6 +32,11 @@ let rec explain_failure = function
   | Generic -> "Unification failure"
   | FailTrail (n, fl) ->
     Printf.sprintf "While matching argument #%d:\n%s" n (explain_failure fl)
+  | MatchingFormula form ->
+    Format.asprintf
+      "@[<hv>@[While@ matching@ formula:@]@ @[<1>%a@]"
+      Print.pr_formula
+      form
 ;;
 
 exception UnifyFailure of unify_failure

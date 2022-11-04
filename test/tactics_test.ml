@@ -22,9 +22,13 @@ let case_tests =
          match cases eval_sig (Hashtbl.create 1) seq "H1" with
          | [ case1; case2 ] ->
            set_bind_state case1.bind_state_case;
-           assert_pprint_equal "{eval_abs ([x1]A x1) : eval (abs ([x1]A x1)) (abs ([x1]A x1))}" term;
+           assert_pprint_equal
+             "{eval_abs ([x1]A x1) : eval (abs ([x1]A x1)) (abs ([x1]A x1))}"
+             term;
            set_bind_state case2.bind_state_case;
-           assert_pprint_equal "{eval_app A A1 B ([x1]P x1) P1 P2 : eval (app A A1) B}" term
+           assert_pprint_equal
+             "{eval_app A A1 B ([x1]P x1) P1 P2 : eval (app A A1) B}"
+             term
          | cases -> assert_expected_cases 2 cases)
          (* "With Contexts" >:: *)
          (*   (fun () -> *)
@@ -83,10 +87,19 @@ let ambiguous_subst_test () =
   let () = Sequent.add_hyp seq ~name:"H1" f in
   let args = [ Sequent.get_hyp seq "H1" ] |> List.map (fun h -> h.Sequent.formula) in
   try
-    let _ = Tactics.apply schemas seq lemma args in
-    assert_failure "Application succeeded when an ambiguous ctx substitution occurs."
+    let f' = Tactics.apply schemas seq lemma args in
+    Format.asprintf
+      "%a@ %a@ %a@ Application@ succeeded@ when@ an@ ambiguous@ ctx@ substitution@ \
+       occurs."
+      Print.pr_formula
+      lemma
+      Print.pr_formula
+      f
+      Print.pr_formula
+      f'
+    |> assert_failure
   with
-  | AmbiguousSubst _ -> ()
+  | Tactics.AmbiguousSubst _ -> ()
 ;;
 
 let apply_tests =
@@ -548,7 +561,7 @@ let apply_tests =
            let _ = apply_with (Hashtbl.create 1) seq f args (vwiths, []) in
            assert_failure "Expected unification failure"
          with
-         | Unify.UnifyFailure Unify.Generic -> ())
+         | Unify.UnifyFailure _ -> ())
        ; ("With contexts"
          >:: fun () ->
          let conc = const "conc" iity in
@@ -660,8 +673,12 @@ let apply_tests =
          let schemas =
            List.map (fun v -> v, []) [ g; g1; g2 ] |> List.to_seq |> Hashtbl.of_seq
          in
-         assert_raises (Unify.UnifyFailure Unify.Generic) (fun () ->
-           Tactics.apply schemas seq f args))
+         try
+           let _ = Tactics.apply schemas seq f args in
+           assert_failure
+             "Application succeeded by instantiating universally quantified ctx var"
+         with
+         | Unify.UnifyFailure _ -> ())
        ; ("Is able to instantiate ctx var with schema"
          >:: fun () ->
          let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
@@ -774,8 +791,12 @@ let apply_tests =
          let args = [ atm (Context.Var g1) u1 tm; atm (Context.Var g2) u2 tm ] in
          let args = List.map (fun f -> Formula.norm f) args in
          let schemas = [ "c", [] ] |> List.to_seq |> Hashtbl.of_seq in
-         assert_raises (Unify.UnifyFailure Unify.Generic) (fun () ->
-           Tactics.apply schemas seq f args))
+         try
+           let _ = Tactics.apply schemas seq f args in
+           assert_failure
+             "Application succeeded by instantiating a universal ctx variable"
+         with
+         | Unify.UnifyFailure _ -> ())
        ; ("Matches abstractions in antecedent"
          >:: fun () ->
          let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
