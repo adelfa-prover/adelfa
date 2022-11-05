@@ -53,6 +53,8 @@
     ;; (regexp-opt '("skip" "assert") 'words)
     ("\\<\\(skip\\|assert\\)\\>"
      . font-lock-warning-face)
+    ;; (regexp-opt '("undo" "abort") 'words)
+    ("\\<\\(H[0-9]+\\)\\>" . font-lock-type-face)
     )
   "Default highlighting for Adelfa major mode.")
 

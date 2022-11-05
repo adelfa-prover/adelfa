@@ -48,7 +48,7 @@
  proof-shell-error-regexp               adelfa-error-terms-regexp
  proof-shell-strip-crs-from-input       nil
  proof-save-command-regexp              proof-no-regexp
- proof-non-undoables-regexp             "\\(undo\\|redo\\|abort\\)"
+ proof-non-undoables-regexp             "\\(undo\\|abort\\)."
  proof-find-and-forget-fn               'adelfa-find-and-forget-fn
  proof-script-syntax-table-entries      adelfa-mode-syntax-table-entries
  proof-script-font-lock-keywords        adelfa-script-font-lock-keywords
