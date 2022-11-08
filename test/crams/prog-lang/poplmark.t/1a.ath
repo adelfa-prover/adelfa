@@ -136,7 +136,7 @@ induction on 1. intros.
     %%%the proof will use transitivity and narrowing based on T1 and transitivity based on T2
       case H1(keep).
       apply IH to H16 with (G = G), Q = T1. case H18.
-      apply IH to H17 with (G = G, n12:ty), Q = (T2 n12). case H21.
+      apply IH to H17 with (G = G, n1:ty), Q = (T2 n1). case H21.
     %%%use transitivity based on T1 (H19) to derive (sub T3 S1)
       apply H19 to H14 H8 with S = T3, T = S1, D1 = D3, D2 = a1.
           prune H24.
@@ -145,12 +145,12 @@ induction on 1. intros.
         weaken H14 with ty. weaken H25 with (var n13). search.
       assert {L, n:ty, n1:var n |- n : ty}.
       assert {L, n:ty, n1:var n |- n1 : var n}.
-      apply H20 to H26 H27 H25 H9 with (L135 = L, n1:ty, n:var n1).
+      apply H20 to H26 H27 H25 H9 with (L = L, n1:ty, n:var n1).
           prune H28.
     %%%use transitivity based on T2 (H22) to derive (sub (S2 n) (T4 n))
-      apply H22 to H28 H15 with (L81012 = L, n12:ty, n1:var n12, n2:bound n12 T3, n:bound_var n12 T3 n2 n1).
+      apply H22 to H28 H15 with (L = L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n), S = (S2 n1).
           prune H29.
-      exists (sa-all S1 ([x] S2 x) T3 ([x] T4 x) (D1 n12) ([w][x][y][z] D5 w y x z)).
+      exists (sa-all S1 ([x] S2 x) T3 ([x] T4 x) (D1 n12) ([w][x][y][z] D5 z y n12 w x)).
       search.
       %case 1.2: sa-trans-tvar
         case H13.

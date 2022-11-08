@@ -18,11 +18,19 @@
 (****************************************************************************)
 
 let ( >> ) f g x = g (f x)
+let ( << ) f g x = f (g x)
 let ( |> ) x f = f x
 let curry f (x, y) = f x y
 let uncurry f x y = f (x, y)
 let failwithf fmt = Printf.ksprintf failwith fmt
-let bugf fmt = Printf.ksprintf failwith @@ "[ADELFA BUG]\n" ^^ fmt
+let bugf fmt = Printf.ksprintf failwith @@ "[ADELFA ERROR]\n" ^^ fmt
+let return x = Some x
+
+let ( let* ) o f =
+  match o with
+  | None -> None
+  | Some x -> f x
+;;
 
 let maybe_guard ?guard f =
   match guard with

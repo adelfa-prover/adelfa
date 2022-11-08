@@ -21,22 +21,27 @@ type unify_failure =
   | Generic
   | FailTrail of int * unify_failure
   | MatchingFormula of Formula.formula
+  | ContextFail of string
 
 let rec explain_failure = function
   | OccursCheck -> "Unification failure (occurs-check)"
   | ConstClash (t1, t2) ->
-    Printf.sprintf
-      "Unification failure (constant clash between %s and %s)"
-      (Print.string_of_term t1)
-      (Print.string_of_term t2)
+    Format.asprintf
+      "@[<hv>@[Unification@ failure@]@ @[(constant@ clash@ between@ @[%a@]@ @[and@] \
+       @[%a@])@]@]"
+      (Print.pr_term [])
+      t1
+      (Print.pr_term [])
+      t2
   | Generic -> "Unification failure"
   | FailTrail (n, fl) ->
     Printf.sprintf "While matching argument #%d:\n%s" n (explain_failure fl)
   | MatchingFormula form ->
     Format.asprintf
-      "@[<hv>@[While@ matching@ formula:@]@ @[<1>%a@]"
+      "@[<hv>@[Failed@ while@ matching@ formula:@]@ @[<1>%a@]"
       Print.pr_formula
       form
+  | ContextFail s -> s
 ;;
 
 exception UnifyFailure of unify_failure

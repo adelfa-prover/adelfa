@@ -32,7 +32,7 @@ let lookup_schema id = H.find schemas id
 
 let add_schema id s =
   if H.mem schemas id
-  then Format.eprintf "Warning: overriding existing schema named `%s'@." id;
+  then Format.eprintf "Warning:@ overriding@ existing@ schema@ named@ `%s'@." id;
   H.replace schemas id s
 ;;
 
@@ -42,7 +42,7 @@ let lookup_lemma id = H.find lemmas id
 
 let add_lemma id f =
   if H.mem lemmas id
-  then Format.eprintf "Warning: overriding existing lemma named `%s'@." id;
+  then Format.eprintf "Warning:@ overriding@ existing@ lemma@ named@ `%s'@." id;
   H.replace lemmas id f
 ;;
 
@@ -99,7 +99,7 @@ let get_propty_lst () = H.to_seq dfns |> Seq.map (fun (x, (y, _)) -> x, y) |> Li
 
 let add_definition (id, dfn) =
   if H.mem dfns id
-  then Format.eprintf "Warning: overriding existing definition named `%s'@." id;
+  then Format.eprintf "Warning:@ overriding@ existing@ definition@ named@ `%s'@." id;
   H.replace dfns id dfn
 ;;
 
@@ -257,11 +257,14 @@ let search depth () =
   | Formula.Atm _ | Formula.Prop _ ->
     (try
        Tactics.search ~depth !lf_sig sequent;
-       Format.asprintf
-         "Search failed. @,Unable to find a derivation for:@, %a@,"
-         Print.pr_formula
-         sequent.goal
-       |> failwith
+       let msg =
+         Format.asprintf
+           "@[<hv1>@[Search@ failed.@]@ @[Unable@ to@ determine@ validity@ of:@]@ \
+            @[<1>%a@]"
+           Print.pr_typing_judgement
+           sequent.goal
+       in
+       failwith msg
      with
      | Tactics.Success -> next_subgoal ())
   | Formula.Top -> next_subgoal ()
@@ -326,11 +329,12 @@ let type_apply_withs form (vwiths, cwiths) =
           else
             raise
               (ApplyFailure
-                 ("Context expression "
-                 ^ Print.string_of_ctxexpr ctxtm
-                 ^ " does not match schema "
-                 ^ schemaid
-                 ^ "."))
+                 (Format.asprintf
+                    "@[<hv1>@[Context@ expression@] @[<1>%a@] @[does@ not@ match@ \
+                     schema@]@ @[%s@].@]"
+                    Print.pr_ctxexpr
+                    ctxtm
+                    schemaid))
         with
         | Not_found -> raise (ApplyFailure ("Unknown context variable " ^ id)))
       cwiths )
@@ -421,10 +425,12 @@ let ensure_no_uninst_ctxvariable ctxvarctx f =
   then
     raise
       (ApplyFailure
-         ("Unable to find instantiation for context variable: "
-         ^ List.hd ctx_vars
-         ^ ".\nIn formula: "
-         ^ Print.string_of_formula f))
+         (Format.asprintf
+            "@[<hv1>@[Unable@ to@ find@ instantiation@ for@ context@ variable:@]@ \
+             @[<1>%s@]@ @[in@ formula:@]@ @[%a@]@]"
+            (List.hd ctx_vars)
+            Print.pr_formula
+            f))
 ;;
 
 let find_lemma_opt name = H.find_opt lemmas name

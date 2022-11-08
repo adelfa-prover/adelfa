@@ -10,6 +10,7 @@ type unify_failure =
   | Generic
   | FailTrail of int * unify_failure
   | MatchingFormula of Formula.formula
+  | ContextFail of string
 
 exception UnifyFailure of unify_failure
 

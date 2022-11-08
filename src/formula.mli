@@ -71,6 +71,7 @@ val norm : formula -> formula
 val eta_expand : formula -> formula
 val replace_ctx_vars : (Context.ctx_var * Context.ctx_expr) list -> formula -> formula
 val get_formula_used_ctxvars : formula -> Context.ctx_var list
+val get_formula_ctx_opt : formula -> Context.ctx_expr option
 val get_ctx_var_opt : formula -> Context.ctx_var option
 
 val context_support

@@ -4,6 +4,7 @@
 val pr_ty : Format.formatter -> Type.ty -> unit
 val pr_term : Term.id list -> Format.formatter -> Term.term -> unit
 val pr_formula : Format.formatter -> Formula.formula -> unit
+val pr_typing_judgement : Format.formatter -> Formula.formula -> unit
 val pr_ctxexpr : Format.formatter -> Context.ctx_expr -> unit
 val pr_sequent : Format.formatter -> Sequent.sequent -> unit
 val pr_uterm : Format.formatter -> Uterms.uterm -> unit

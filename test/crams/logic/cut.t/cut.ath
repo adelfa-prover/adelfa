@@ -19,9 +19,9 @@ induction on 1. intros. case H1(keep).
     ctxpermute H8 to G, n1:hyp A, n:hyp B1. weaken H7 with (hyp A).
     search.
   %case 3: andL
-    apply IH to H5 with (G = G, n1:hyp A1, n2:hyp B1), A = A, B = B, D = D1 n1 n2.
-    ctxpermute H7 to G, n3:hyp A, n1:hyp A1, n2:hyp B1.
-    exists ([x] andL A1 B1 B ([y][z] D' z y n x) D2).
+    apply IH to H5 with (G = G, n:hyp A1, n1:hyp B1).
+    ctxpermute H7 to G, n2:hyp A, n:hyp A1, n1:hyp B1.
+    exists ([x] andL A1 B1 B ([y][z] D' z y x) D2).
     case H4(keep). weaken H2 with (hyp A). weaken H3 with (hyp A). weaken H6 with (hyp A).
     weaken H10 with (hyp A).
     search.

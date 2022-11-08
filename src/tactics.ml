@@ -212,9 +212,8 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
           List.map2 (fun (id1, _) (id2, _) -> id1, Context.Var id2) bndrs1 bndrs2
         in
         let f = Formula.replace_ctx_vars subst f1' in
-        match inst f f2' with
-        | Some s -> Some (subst @ s)
-        | None -> None)
+        let* s = inst f f2' in
+        return (subst @ s))
       else None
     | Formula.All (vs1, f1'), Formula.All (vs2, f2')
     | Formula.Exists (vs1, f1'), Formula.Exists (vs2, f2') ->
@@ -260,7 +259,7 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
     @param bound_ctxvar_ctx a dummy context variable context to keep track of
       logical context variables and their set of annotated nominals.
  *)
-let generate_partial_perm f1 f2 added restricted_set ctxvar_ctx bound_ctxvar_ctx =
+let generate_partial_perm f1 f2 added ctxvar_ctx bound_ctxvar_ctx =
   let ctx_var_compat g1 g2 =
     match Context.get_ctx_var_opt g1, Context.get_ctx_var_opt g2 with
     (* Both have context variables, ensure they are typed by the same schema *)
@@ -289,12 +288,9 @@ let generate_partial_perm f1 f2 added restricted_set ctxvar_ctx bound_ctxvar_ctx
        | true, true -> aux g1' g2'
        | false, false ->
          (* If we can permute the ground term, it must map to the corresponding
-            nominal in the other formula. If we cannot permute it, it will never
-            match, and therefore will raise a unify failure *)
-         if List.mem n1.name restricted_set || n1 = n2
-         then (n1, Term.var_to_term n2) :: aux g1' g2'
-         else raise (Unify.UnifyFailure Unify.Generic)
-       | _ -> raise (Unify.UnifyFailure Unify.Generic))
+            nominal in the other formula. *)
+         if n1 = n2 then (n1, Term.var_to_term n2) :: aux g1' g2' else aux g1' g2'
+       | _ -> aux g1' g2')
     | _ -> []
   in
   match f1, f2 with
@@ -324,23 +320,28 @@ let all_meta_right_permute_unify
      a formula *)
   (* Generate a partial permutation that is a mapping between the explicit
      portion of the formulas contexts. *)
+  (* We limit the permutation to the restricted set of the context variable if
+     the ground term has one, otherwise it's all nominals in the sequent *)
   let restricted_set =
     match Formula.get_ctx_var_opt t2 with
     | Some g_var -> List.assoc g_var xi_seq
     | None -> List.map fst nvars
   in
-  let perm = generate_partial_perm t2 t1 perm restricted_set ctxvar_ctx new_ctxvar_ctx in
   let ctx_var_ctxs = new_ctxvar_ctx @ ctxvar_ctx in
-  (* We limit the permutation to the restricted set of the context variable if
-     the ground term has one, otherwise it's all nominals in the sequent *)
-  (* Get all nominals to consider permuting to *)
-  let support_t1 = Formula.formula_support_sans ctx_var_ctxs t1 in
   (* Remove any nominals from the ground term which are not in the restricted
      set *)
-  let support_t2 =
+  let support_t2, removed =
     Formula.formula_support_sans ctx_var_ctxs t2
-    |> List.filter (fun x -> List.mem (Term.get_id x) restricted_set)
+    |> List.partition (fun x -> List.mem (Term.get_id x) restricted_set)
   in
+  (* Get all nominals to consider permuting to, t1 will have nominals that are
+     not in the sequent yet we may permute to them, so we instead filter on
+     those which appeared in t2 and are not allowed to be permuted. *)
+  let support_t1 =
+    Formula.formula_support_sans ctx_var_ctxs t1
+    |> List.remove_all (fun x -> List.mem x removed)
+  in
+  let perm = generate_partial_perm t2 t1 perm ctxvar_ctx new_ctxvar_ctx in
   (* Allow the identity mapping for any term in the ground formula *)
   let support_t1 = support_t1 @ support_t2 |> List.unique in
   (* Remove any items which have already been assigned a mapping in the partial
@@ -430,8 +431,7 @@ let decompose_kinding lf_sig used ctx typ =
    inductive restriction r2 *)
 let satisfies r1 r2 =
   match r1, r2 with
-  | (Formula.LT i, Formula.LT j | Formula.LT i, Formula.EQ j | Formula.EQ i, Formula.EQ j)
-    when i = j -> true
+  | Formula.(LT i, LT j | LT i, EQ j | EQ i, EQ j) when i = j -> true
   | _, Formula.LT _ -> false
   | _, Formula.EQ _ -> false
   | _ -> true
@@ -571,12 +571,7 @@ let search ~depth signature sequent =
        explicit bindings, so this check is focused on the formation of the LF types in a context expression. *)
     let rec check_context used g =
       let hyp_ctxexprs =
-        List.filter_map
-          (fun hyp ->
-            match hyp.formula with
-            | Formula.Atm (g, _, _, _) -> Some g
-            | _ -> None)
-          sequent.hyps
+        List.filter_map (fun hyp -> Formula.get_formula_ctx_opt hyp.formula) sequent.hyps
       in
       let support_g =
         Formula.context_support_sans (Sequent.get_cvar_tys sequent.ctxvars) g
@@ -1337,13 +1332,9 @@ let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
     | Some subst1, Some subst2 ->
       let norm_subst1 = List.filter can_be_ambiguous subst1 |> sort_by_ctx_var in
       let norm_subst2 = List.filter can_be_ambiguous subst2 |> sort_by_ctx_var in
-      (try
-         Some
-           (List.combine_shortest norm_subst1 norm_subst2
-           |> List.find (fun ((v1, d1), (v2, d2)) ->
-                Context.ctx_var_eq v1 v2 && not (Context.eq d1 d2)))
-       with
-       | Not_found -> None)
+      List.combine_shortest norm_subst1 norm_subst2
+      |> List.find_opt (fun ((v1, d1), (v2, d2)) ->
+           Context.ctx_var_eq v1 v2 && not (Context.eq d1 d2))
   in
   let () =
     check_restrictions
@@ -1361,7 +1352,8 @@ let apply_arrow schemas nvars ctxvar_ctx bound_ctxvars xi_seq form args =
             if Option.is_none (fst !res)
             then (
               res := new_res;
-              map_out_of_var := List.exists can_be_ambiguous (Option.get (fst !res)))
+              map_out_of_var
+                := List.exists can_be_ambiguous (Option.default [] (fst !res)))
             else if !map_out_of_var
             then (
               let subst1, _ = !res in

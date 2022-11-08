@@ -86,20 +86,16 @@ let varcount = ref 1
 let reset_varcount () = varcount := 1
 let get_varcount () = !varcount
 let set_varcount i = varcount := i
-
-let fresh () =
-  let i = !varcount in
-  incr varcount;
-  i
-;;
+let remove_trailing_numbers s = Str.global_replace (Str.regexp "[0-9]*$") "" s
 
 let fresh_name name used =
-  let rec aux () =
-    let i = fresh () in
-    let new_name = name ^ string_of_int i in
-    if List.mem new_name used then aux () else new_name
+  let basename = remove_trailing_numbers name in
+  let rec aux i =
+    let name = basename ^ string_of_int i in
+    if List.mem name used then aux (i + 1) else name
   in
-  aux ()
+  (* Try to avoid any renaming *)
+  if List.mem name used then aux 1 else name
 ;;
 
 let fresh_wrt name used =

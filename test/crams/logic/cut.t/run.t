@@ -466,14 +466,14 @@
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
   
-  imp_inv.3>> apply IH to H5 with (G = G,n1:hyp A1,n2:hyp B1), A = A, B = B, D = D1 n1 n2.
+  imp_inv.3>> apply IH to H5 with (G = G,n:hyp A1,n1:hyp B1).
   
   Subgoal imp_inv.3:
   
-  Vars: D':(o) -> (o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o,
-          B:o, A:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n1, n}:c[]
+  Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
+          :o
+  Nominals: n2:o, n1:o, n:o
+  Contexts: G{n2, n1, n}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -485,7 +485,7 @@
   H4:{G |- imp A B : proptm}*
   H5:{G, n:hyp A1, n1:hyp B1 |- D1 n n1 : conc (imp A B)}*
   H6:{G |- D2 : hyp (and A1 B1)}*
-  H7:{G, n1:hyp A1, n2:hyp B1, n3:hyp A |- D' n2 n1 n n3 : conc B}
+  H7:{G, n:hyp A1, n1:hyp B1, n2:hyp A |- D' n1 n n2 : conc B}
   
   ==================================
   exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -493,14 +493,14 @@
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
   
-  imp_inv.3>> ctxpermute H7 to G,n3:hyp A,n1:hyp A1,n2:hyp B1.
+  imp_inv.3>> ctxpermute H7 to G,n2:hyp A,n:hyp A1,n1:hyp B1.
   
   Subgoal imp_inv.3:
   
-  Vars: D':(o) -> (o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o,
-          B:o, A:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n1, n}:c[]
+  Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
+          :o
+  Nominals: n2:o, n1:o, n:o
+  Contexts: G{n2, n1, n}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -512,8 +512,8 @@
   H4:{G |- imp A B : proptm}*
   H5:{G, n:hyp A1, n1:hyp B1 |- D1 n n1 : conc (imp A B)}*
   H6:{G |- D2 : hyp (and A1 B1)}*
-  H7:{G, n1:hyp A1, n2:hyp B1, n3:hyp A |- D' n2 n1 n n3 : conc B}
-  H8:{G, n3:hyp A, n1:hyp A1, n2:hyp B1 |- D' n2 n1 n n3 : conc B}
+  H7:{G, n:hyp A1, n1:hyp B1, n2:hyp A |- D' n1 n n2 : conc B}
+  H8:{G, n2:hyp A, n:hyp A1, n1:hyp B1 |- D' n1 n n2 : conc B}
   
   ==================================
   exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -521,14 +521,14 @@
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
   
-  imp_inv.3>> exists [x]andL A1 B1 B ([y][z]D' z y n x) D2.
+  imp_inv.3>> exists [x]andL A1 B1 B ([y][z]D' z y x) D2.
   
   Subgoal imp_inv.3:
   
-  Vars: D':(o) -> (o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o,
-          B:o, A:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n1, n}:c[]
+  Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
+          :o
+  Nominals: n2:o, n1:o, n:o
+  Contexts: G{n2, n1, n}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -540,11 +540,11 @@
   H4:{G |- imp A B : proptm}*
   H5:{G, n:hyp A1, n1:hyp B1 |- D1 n n1 : conc (imp A B)}*
   H6:{G |- D2 : hyp (and A1 B1)}*
-  H7:{G, n1:hyp A1, n2:hyp B1, n3:hyp A |- D' n2 n1 n n3 : conc B}
-  H8:{G, n3:hyp A, n1:hyp A1, n2:hyp B1 |- D' n2 n1 n n3 : conc B}
+  H7:{G, n:hyp A1, n1:hyp B1, n2:hyp A |- D' n1 n n2 : conc B}
+  H8:{G, n2:hyp A, n:hyp A1, n1:hyp B1 |- D' n1 n n2 : conc B}
   
   ==================================
-  {G |- [x]andL A1 B1 B ([y][z]D' z y n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([y][z]D' z y x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -553,10 +553,10 @@
   
   Subgoal imp_inv.3:
   
-  Vars: D':(o) -> (o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o,
-          B:o, A:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n1, n}:c[]
+  Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
+          :o
+  Nominals: n2:o, n1:o, n:o
+  Contexts: G{n2, n1, n}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -568,13 +568,13 @@
   H4:{G |- imp A B : proptm}*
   H5:{G, n:hyp A1, n1:hyp B1 |- D1 n n1 : conc (imp A B)}*
   H6:{G |- D2 : hyp (and A1 B1)}*
-  H7:{G, n1:hyp A1, n2:hyp B1, n3:hyp A |- D' n2 n1 n n3 : conc B}
-  H8:{G, n3:hyp A, n1:hyp A1, n2:hyp B1 |- D' n2 n1 n n3 : conc B}
+  H7:{G, n:hyp A1, n1:hyp B1, n2:hyp A |- D' n1 n n2 : conc B}
+  H8:{G, n2:hyp A, n:hyp A1, n1:hyp B1 |- D' n1 n n2 : conc B}
   H9:{G |- A : proptm}*
   H10:{G |- B : proptm}*
   
   ==================================
-  {G |- [x]andL A1 B1 B ([c74][c75]D' c75 c74 n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([c82][c83]D' c83 c82 x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -583,10 +583,10 @@
   
   Subgoal imp_inv.3:
   
-  Vars: D':(o) -> (o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o,
-          B:o, A:o
-  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n4, n3, n1, n}:c[]
+  Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
+          :o
+  Nominals: n3:o, n2:o, n1:o, n:o
+  Contexts: G{n3, n2, n1, n}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -598,14 +598,14 @@
   H4:{G |- imp A B : proptm}*
   H5:{G, n:hyp A1, n1:hyp B1 |- D1 n n1 : conc (imp A B)}*
   H6:{G |- D2 : hyp (and A1 B1)}*
-  H7:{G, n1:hyp A1, n2:hyp B1, n3:hyp A |- D' n2 n1 n n3 : conc B}
-  H8:{G, n3:hyp A, n1:hyp A1, n2:hyp B1 |- D' n2 n1 n n3 : conc B}
+  H7:{G, n:hyp A1, n1:hyp B1, n2:hyp A |- D' n1 n n2 : conc B}
+  H8:{G, n2:hyp A, n:hyp A1, n1:hyp B1 |- D' n1 n n2 : conc B}
   H9:{G |- A : proptm}*
   H10:{G |- B : proptm}*
-  H11:{G, n4:hyp A |- A1 : proptm}*
+  H11:{G, n3:hyp A |- A1 : proptm}*
   
   ==================================
-  {G |- [x]andL A1 B1 B ([c74][c75]D' c75 c74 n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([c82][c83]D' c83 c82 x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -614,10 +614,10 @@
   
   Subgoal imp_inv.3:
   
-  Vars: D':(o) -> (o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o,
-          B:o, A:o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n5, n4, n3, n1, n}:c[]
+  Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
+          :o
+  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
+  Contexts: G{n4, n3, n2, n1, n}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -629,15 +629,15 @@
   H4:{G |- imp A B : proptm}*
   H5:{G, n:hyp A1, n1:hyp B1 |- D1 n n1 : conc (imp A B)}*
   H6:{G |- D2 : hyp (and A1 B1)}*
-  H7:{G, n1:hyp A1, n2:hyp B1, n3:hyp A |- D' n2 n1 n n3 : conc B}
-  H8:{G, n3:hyp A, n1:hyp A1, n2:hyp B1 |- D' n2 n1 n n3 : conc B}
+  H7:{G, n:hyp A1, n1:hyp B1, n2:hyp A |- D' n1 n n2 : conc B}
+  H8:{G, n2:hyp A, n:hyp A1, n1:hyp B1 |- D' n1 n n2 : conc B}
   H9:{G |- A : proptm}*
   H10:{G |- B : proptm}*
-  H11:{G, n4:hyp A |- A1 : proptm}*
-  H12:{G, n5:hyp A |- B1 : proptm}*
+  H11:{G, n3:hyp A |- A1 : proptm}*
+  H12:{G, n4:hyp A |- B1 : proptm}*
   
   ==================================
-  {G |- [x]andL A1 B1 B ([c74][c75]D' c75 c74 n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([c82][c83]D' c83 c82 x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -646,10 +646,10 @@
   
   Subgoal imp_inv.3:
   
-  Vars: D':(o) -> (o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o,
-          B:o, A:o
-  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n6, n5, n4, n3, n1, n}:c[]
+  Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
+          :o
+  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
+  Contexts: G{n5, n4, n3, n2, n1, n}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -661,16 +661,16 @@
   H4:{G |- imp A B : proptm}*
   H5:{G, n:hyp A1, n1:hyp B1 |- D1 n n1 : conc (imp A B)}*
   H6:{G |- D2 : hyp (and A1 B1)}*
-  H7:{G, n1:hyp A1, n2:hyp B1, n3:hyp A |- D' n2 n1 n n3 : conc B}
-  H8:{G, n3:hyp A, n1:hyp A1, n2:hyp B1 |- D' n2 n1 n n3 : conc B}
+  H7:{G, n:hyp A1, n1:hyp B1, n2:hyp A |- D' n1 n n2 : conc B}
+  H8:{G, n2:hyp A, n:hyp A1, n1:hyp B1 |- D' n1 n n2 : conc B}
   H9:{G |- A : proptm}*
   H10:{G |- B : proptm}*
-  H11:{G, n4:hyp A |- A1 : proptm}*
-  H12:{G, n5:hyp A |- B1 : proptm}*
-  H13:{G, n6:hyp A |- D2 : hyp (and A1 B1)}*
+  H11:{G, n3:hyp A |- A1 : proptm}*
+  H12:{G, n4:hyp A |- B1 : proptm}*
+  H13:{G, n5:hyp A |- D2 : hyp (and A1 B1)}*
   
   ==================================
-  {G |- [x]andL A1 B1 B ([c74][c75]D' c75 c74 n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([c82][c83]D' c83 c82 x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -679,10 +679,10 @@
   
   Subgoal imp_inv.3:
   
-  Vars: D':(o) -> (o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o,
-          B:o, A:o
-  Nominals: n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n7, n6, n5, n4, n3, n1, n}:c[]
+  Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
+          :o
+  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
+  Contexts: G{n6, n5, n4, n3, n2, n1, n}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -694,17 +694,17 @@
   H4:{G |- imp A B : proptm}*
   H5:{G, n:hyp A1, n1:hyp B1 |- D1 n n1 : conc (imp A B)}*
   H6:{G |- D2 : hyp (and A1 B1)}*
-  H7:{G, n1:hyp A1, n2:hyp B1, n3:hyp A |- D' n2 n1 n n3 : conc B}
-  H8:{G, n3:hyp A, n1:hyp A1, n2:hyp B1 |- D' n2 n1 n n3 : conc B}
+  H7:{G, n:hyp A1, n1:hyp B1, n2:hyp A |- D' n1 n n2 : conc B}
+  H8:{G, n2:hyp A, n:hyp A1, n1:hyp B1 |- D' n1 n n2 : conc B}
   H9:{G |- A : proptm}*
   H10:{G |- B : proptm}*
-  H11:{G, n4:hyp A |- A1 : proptm}*
-  H12:{G, n5:hyp A |- B1 : proptm}*
-  H13:{G, n6:hyp A |- D2 : hyp (and A1 B1)}*
-  H14:{G, n7:hyp A |- B : proptm}*
+  H11:{G, n3:hyp A |- A1 : proptm}*
+  H12:{G, n4:hyp A |- B1 : proptm}*
+  H13:{G, n5:hyp A |- D2 : hyp (and A1 B1)}*
+  H14:{G, n6:hyp A |- B : proptm}*
   
   ==================================
-  {G |- [x]andL A1 B1 B ([c74][c75]D' c75 c74 n x) D2 : {x:hyp A}conc B}
+  {G |- [x]andL A1 B1 B ([c82][c83]D' c83 c82 x) D2 : {x:hyp A}conc B}
   
   Subgoal imp_inv.4 is:
    exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -782,7 +782,7 @@
   H5:{G |- B n : proptm}*
   
   ==================================
-  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c102]init (B n) c102) n :
+  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c110]init (B n) c110) n :
     {x:hyp (A n)}conc (B n)}
   
   imp_inv.4>> weaken H4 with hyp A n.
@@ -804,7 +804,7 @@
   H6:{G, n1:hyp (A n) |- A n : proptm}*
   
   ==================================
-  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c102]init (B n) c102) n :
+  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c110]init (B n) c110) n :
     {x:hyp (A n)}conc (B n)}
   
   imp_inv.4>> weaken H5 with hyp A n.
@@ -827,7 +827,7 @@
   H7:{G, n2:hyp (A n) |- B n : proptm}*
   
   ==================================
-  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c102]init (B n) c102) n :
+  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c110]init (B n) c110) n :
     {x:hyp (A n)}conc (B n)}
   
   imp_inv.4>> weaken H7 with hyp B n.
@@ -851,7 +851,7 @@
   H8:{G, n2:hyp (A n), n3:hyp (B n) |- B n : proptm}*
   
   ==================================
-  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c102]init (B n) c102) n :
+  {G |- [x]impL (A n) (B n) (B n) (init (A n) x) ([c110]init (B n) c110) n :
     {x:hyp (A n)}conc (B n)}
   
   imp_inv.4>> search.

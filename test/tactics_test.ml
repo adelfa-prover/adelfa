@@ -584,7 +584,7 @@ let apply_tests =
          let l = Context.ctx_var "L" in
          let seq = Sequent.make_sequent_from_goal ~form:Bottom () in
          let _ =
-           Sequent.add_ctxvar seq l ~rstrct:[ "n1"; "n2" ] (Context.CtxTy ("c", []));
+           Sequent.add_ctxvar seq l ~rstrct:[ "n"; "n1"; "n2" ] (Context.CtxTy ("c", []));
            Sequent.add_ctxvar seq e (Context.CtxTy ("c", []));
            Sequent.add_var seq (term_to_pair n);
            Sequent.add_var seq (term_to_pair n1);

@@ -309,6 +309,21 @@ let rec pr_formula ppf = function
   | Formula.Prop (h, argtms) ->
     Format.fprintf ppf "@[<3>%a%a@]" pr_str h pr_propargs argtms
 
+and pr_typing_judgement ppf = function
+  | Formula.Atm (g, m, a, ann) ->
+    Format.fprintf
+      ppf
+      "@[<2>%a@,@ |-@ @,%a@ :@ %a%a@]"
+      pr_ctxexpr
+      g
+      (pr_term [])
+      m
+      (pr_term [])
+      a
+      pr_ann
+      ann
+  | f -> pr_formula ppf f
+
 and pr_propargs ppf = function
   | [] -> ()
   | arg :: args' -> Format.fprintf ppf "@ %a%a" (pr_term []) arg pr_propargs args'
