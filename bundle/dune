@@ -1,0 +1,3 @@
+(executable
+ (name bundle)
+ (libraries str core unix))

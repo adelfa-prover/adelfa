@@ -1,16 +1,18 @@
 To Build:
 =========
-run `make' in this directory to build the system. This will produce
-`_build/default/bin/adelfa.exe' which can be run directly or via `dune exec
+Run `make' in this directory to build the system. This will produce
+`adelfa' in the root directory, which can be run directly or via `dune exec
 adelfa' to start the system.
 
-Run `Make debug' to build a byte code version of the system located at
+Run `make debug' to build a byte code version of the system located at
 `_build/default/bin/adelfa.bc'.
 
-Run `make test' to build the unit tests. This will produce
-and execute `_build/defalt/bin/test.exe'.
+Run `make test' to build the unit tests. This will produce and execute
+`_build/defalt/bin/test.exe' as well as a series of crams which run examples
+across expected output.
 
-Run `make install' to install Adelfa to your system.
+Run `make install' to install Adelfa to your system's `.opam/default/bin/'
+directory.
 
 Usage:
 ======
@@ -30,3 +32,6 @@ the Adelfa web page, run `make tar' to produce adelfa.tar. To adjust
 what files are included or not included in the tarball, edit the
 command in the makefile. Arguments to `tar' are read as includes, use
 the --exclude flag to mark items to be excluded.
+
+To update the example directory, run the bundle executable in the bundle/
+directory.

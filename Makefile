@@ -4,7 +4,7 @@ default : main
 .PHONY: main
 main:
 	@rm -f adelfa
-	@dune build @install --release
+	@dune build @install
 	@cp _build/default/bin/adelfa.exe ./adelfa
 
 all: main
@@ -19,7 +19,7 @@ install: main
 
 .PHONY: tar
 tar :
-	@tar -cvf adelfa.tar Makefile README system_description.txt system_reference.txt --exclude=**/*~ bin/ src/ test/ emacs/ _tags --exclude=examples/first_order/lists_2 --exclude=examples/first_order/lists_3 --exclude=examples/first_order/lists_4 --exclude=examples/lambda_calc/draft_snippets --exclude=examples/lambda_calc/strongly_normalizing --exclude=examples/lambda_calc/subject_reduction/informal --exclude=examples/lambda_calc/subject_reduction/reduce.lf --exclude=examples/lambda_calc/subject_reduction/large_step.ath --exclude=examples/lambda_calc/subject_reduction/small_step.ath --exclude=examples/prog_lang/miniml --exclude=examples/prog_lang/poplmark/twelf_files --exclude=examples/prog_lang/poplmark/proof_structure.txt examples/
+	@dune exec ./bundle/bundle.exe
 
 .PHONY: test
 test:

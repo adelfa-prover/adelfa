@@ -318,8 +318,6 @@ let all_meta_right_permute_unify
   (* We exclude names from context variable blocks in the permutation
      as these are maintained across the sequent and so cannot be renamed within
      a formula *)
-  (* Generate a partial permutation that is a mapping between the explicit
-     portion of the formulas contexts. *)
   (* We limit the permutation to the restricted set of the context variable if
      the ground term has one, otherwise it's all nominals in the sequent *)
   let restricted_set =
@@ -341,6 +339,8 @@ let all_meta_right_permute_unify
     Formula.formula_support_sans ctx_var_ctxs t1
     |> List.remove_all (fun x -> List.mem x removed)
   in
+  (* Generate a partial permutation between the explicit portion of the formulas
+     contexts. *)
   let perm = generate_partial_perm t2 t1 perm ctxvar_ctx new_ctxvar_ctx in
   (* Allow the identity mapping for any term in the ground formula *)
   let support_t1 = support_t1 @ support_t2 |> List.unique in
