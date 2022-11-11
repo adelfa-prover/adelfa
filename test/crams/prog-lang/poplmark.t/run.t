@@ -3822,7 +3822,7 @@
                              {L |- [x][y]D4 x y :
                                {x:bound X P}{y:bound_var X P x DV}sub M N}
   
-  trans_and_narrow'.1.1>> apply IH to H16 with (G = G), Q = T1.
+  trans_and_narrow'.1.1>> apply IH to H16.
   
   Subgoal trans_and_narrow'.1.1:
   
@@ -4074,7 +4074,7 @@
                              {L |- [x][y]D4 x y :
                                {x:bound X P}{y:bound_var X P x DV}sub M N}
   
-  trans_and_narrow'.1.1>> apply IH to H17 with (G = G,n1:ty), Q = T2 n1.
+  trans_and_narrow'.1.1>> apply IH to H17.
   
   Subgoal trans_and_narrow'.1.1:
   
@@ -4160,18 +4160,18 @@
   H21:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
           /\
           ctx L:c.
             forall X, forall M, forall N, forall P, forall D1, forall D2,
               forall DV,
               {L |- X : ty} =>
                   {L |- DV : var X} =>
-                      {L |- D1 : sub P (T2 n1)} =>
+                      {L |- D1 : sub P (T2 n12)} =>
                           {L |- [x][y]D2 x y :
-                            {x:bound X (T2 n1)
-                              }{y:bound_var X (T2 n1) x DV}sub M N} =>
+                            {x:bound X (T2 n12)
+                              }{y:bound_var X (T2 n12) x DV}sub M N} =>
                               exists D4,
                                 {L |- [x][y]D4 x y :
                                   {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -4304,18 +4304,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -4455,18 +4455,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -4601,18 +4601,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -4747,18 +4747,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -4897,18 +4897,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -5048,18 +5048,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -5199,18 +5199,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -5346,18 +5346,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -5494,18 +5494,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -5654,18 +5654,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -5808,18 +5808,18 @@
   H22:
       ctx L:c.
         forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
+          {L |- D1 : sub S (T2 n12)} =>
+              {L |- D2 : sub (T2 n12) T} => exists D3, {L |- D3 : sub S T}
   H23:
       ctx L:c.
         forall X, forall M, forall N, forall P, forall D1, forall D2,
           forall DV,
           {L |- X : ty} =>
               {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
+                  {L |- D1 : sub P (T2 n12)} =>
                       {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
+                        {x:bound X (T2 n12)
+                          }{y:bound_var X (T2 n12) x DV}sub M N} =>
                           exists D4,
                             {L |- [x][y]D4 x y :
                               {x:bound X P}{y:bound_var X P x DV}sub M N}
@@ -5873,490 +5873,7 @@
                              {L |- [x][y]D4 x y :
                                {x:bound X P}{y:bound_var X P x DV}sub M N}
   
-  trans_and_narrow'.1.1>> apply H22 to H28 H15 with (L = L,n1:ty,n:var n1,n13:bound n1 T3,
-      n14:bound_var n1 T3 n13 n), S = S2 n1.
-  
-  Subgoal trans_and_narrow'.1.1:
-  
-  Vars: D5:
-          (o) ->
-            (o) ->
-              (o) ->
-                (o) ->
-                  (o) ->
-                    (o) ->
-                      (o) ->
-                        (o) ->
-                          (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o,
-          D3:o, D4:(o) -> (o) -> (o) -> (o) -> o, T3:o, T4:(o) -> o, a1:o, a2:
-          (o) -> (o) -> (o) -> (o) -> o, S1:o, S2:(o) -> o, T1:o, T2:(o) -> o,
-          D2:(o) -> (o) -> (o) -> (o) -> (o) -> o, D1:(o) -> o
-  Nominals: n14:o, n13:o, n12:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4
-              :o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n14, n13, n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[],
-              G{n12}:wf[]
-  IH:
-      forall Q,
-        ctx G:wf.
-          {G |- Q : ty}* =>
-              ctx L:c.
-                forall S, forall T, forall D1, forall D2,
-                  {L |- D1 : sub S Q} =>
-                      {L |- D2 : sub Q T} => exists D3, {L |- D3 : sub S T}
-                  /\
-                  ctx L:c.
-                    forall X, forall M, forall N, forall P, forall D1,
-                      forall D2, forall DV,
-                      {L |- X : ty} =>
-                          {L |- DV : var X} =>
-                              {L |- D1 : sub P Q} =>
-                                  {L |- [x][y]D2 x y :
-                                    {x:bound X Q}{y:bound_var X Q x DV}sub M N}
-                                      =>
-                                      exists D4,
-                                        {L |- [x][y]D4 x y :
-                                          {x:bound X P
-                                            }{y:bound_var X P x DV}sub M N}
-  H1:{G |- all T1 ([c8]T2 c8) : ty}@
-  IH1:
-      ctx L:c.
-        forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (all T1 ([c8]T2 c8))}** =>
-              {L |- D2 : sub (all T1 ([c8]T2 c8)) T} =>
-                  exists D3, {L |- D3 : sub S T}
-  H2:
-      {L |- 
-        sa-all S1 ([c17]S2 c17) T1 ([c18]T2 c18) a1
-          ([c19][c20][c21][c22]a2 c19 c20 c21 c22)
-        : sub (all S1 ([c4]S2 c4)) (all T1 ([c8]T2 c8))}@@
-  H3:
-      {L |- 
-        sa-all T1 ([c86]T2 c86) T3 ([c87]T4 c87) D3
-          ([c88][c89][c90][c91]D4 c88 c89 c90 c91)
-        : sub (all T1 ([c8]T2 c8)) (all T3 ([c77]T4 c77))}
-  H4:{L |- S1 : ty}**
-  H5:{L, n:ty |- S2 n : ty}**
-  H6:{L |- T1 : ty}**
-  H7:{L, n1:ty |- T2 n1 : ty}**
-  H8:{L |- a1 : sub T1 S1}**
-  H9:
-      {L, n2:ty, n3:var n2, n4:bound n2 T1, n5:bound_var n2 T1 n4 n3 |- 
-        a2 n2 n3 n4 n5 : sub (S2 n2) (T2 n2)}**
-  H10:{L |- T1 : ty}
-  H11:{L, n6:ty |- T2 n6 : ty}
-  H12:{L |- T3 : ty}
-  H13:{L, n7:ty |- T4 n7 : ty}
-  H14:{L |- D3 : sub T3 T1}
-  H15:
-      {L, n8:ty, n9:var n8, n10:bound n8 T3, n11:bound_var n8 T3 n10 n9 |- 
-        D4 n8 n9 n10 n11 : sub (T2 n8) (T4 n8)}
-  H16:{G |- T1 : ty}*
-  H17:{G, n12:ty |- T2 n12 : ty}*
-  H19:
-      ctx L:c.
-        forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S T1} =>
-              {L |- D2 : sub T1 T} => exists D3, {L |- D3 : sub S T}
-  H20:
-      ctx L:c.
-        forall X, forall M, forall N, forall P, forall D1, forall D2,
-          forall DV,
-          {L |- X : ty} =>
-              {L |- DV : var X} =>
-                  {L |- D1 : sub P T1} =>
-                      {L |- [x][y]D2 x y :
-                        {x:bound X T1}{y:bound_var X T1 x DV}sub M N} =>
-                          exists D4,
-                            {L |- [x][y]D4 x y :
-                              {x:bound X P}{y:bound_var X P x DV}sub M N}
-  H22:
-      ctx L:c.
-        forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
-  H23:
-      ctx L:c.
-        forall X, forall M, forall N, forall P, forall D1, forall D2,
-          forall DV,
-          {L |- X : ty} =>
-              {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
-                      {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
-                          exists D4,
-                            {L |- [x][y]D4 x y :
-                              {x:bound X P}{y:bound_var X P x DV}sub M N}
-  H24:{L |- D1 n12 : sub T3 S1}
-  H25:{L, n:ty, n1:var n |- D3 : sub T3 T1}
-  H26:{L, n:ty, n1:var n |- n : ty}
-  H27:{L, n:ty, n1:var n |- n1 : var n}
-  H28:
-      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
-        D2 n12 n1 n n13 n14 : sub (S2 n1) (T2 n1)}
-  H29:
-      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
-        D5 n14 n13 n12 n11 n10 n9 n8 n7 n6 n5 n4 n3 n2 n1 n :
-        sub (S2 n1) (T4 n1)}
-  
-  ==================================
-  exists D3, {L |- D3 : sub (all S1 ([c163]S2 c163)) (all T3 ([c167]T4 c167))}
-  
-  Subgoal trans_and_narrow'.1.2 is:
-   exists D3, {L |- D3 : sub (all S1 ([c136]S2 c136)) T}
-  
-  Subgoal trans_and_narrow'.1.3 is:
-   exists D3, {L |- D3 : sub (all S1 ([c142]S2 c142)) (all T1 ([c146]T2 c146))}
-  
-  Subgoal trans_and_narrow'.1.4 is:
-   exists D3, {L |- D3 : sub (all S1 ([c152]S2 c152)) top}
-  
-  Subgoal trans_and_narrow'.2 is:
-   exists D3, {L |- D3 : sub (arrow S1 S2) T}
-  
-  Subgoal trans_and_narrow'.3 is:
-   exists D3, {L |- D3 : sub S T}
-  
-  Subgoal trans_and_narrow'.4 is:
-   exists D3, {L |- D3 : sub Q T}
-  
-  Subgoal trans_and_narrow'.5 is:
-   exists D3, {L |- D3 : sub S T}
-  
-  Subgoal trans_and_narrow' is:
-   ctx L:c.
-     forall S, forall T, forall D1, forall D2,
-       {L |- D1 : sub S Q} =>
-           {L |- D2 : sub Q T} => exists D3, {L |- D3 : sub S T}
-       /\
-       ctx L:c.
-         forall X, forall M, forall N, forall P, forall D1, forall D2,
-           forall DV,
-           {L |- X : ty} =>
-               {L |- DV : var X} =>
-                   {L |- D1 : sub P Q} =>
-                       {L |- [x][y]D2 x y :
-                         {x:bound X Q}{y:bound_var X Q x DV}sub M N} =>
-                           exists D4,
-                             {L |- [x][y]D4 x y :
-                               {x:bound X P}{y:bound_var X P x DV}sub M N}
-  
-  trans_and_narrow'.1.1>> prune H29.
-  
-  Subgoal trans_and_narrow'.1.1:
-  
-  Vars: D5:(o) -> (o) -> (o) -> (o) -> (o) -> o, D3:o, D4:
-          (o) -> (o) -> (o) -> (o) -> o, T3:o, T4:(o) -> o, a1:o, a2:
-          (o) -> (o) -> (o) -> (o) -> o, S1:o, S2:(o) -> o, T1:o, T2:(o) -> o,
-          D2:(o) -> (o) -> (o) -> (o) -> (o) -> o, D1:(o) -> o
-  Nominals: n14:o, n13:o, n12:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4
-              :o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n14, n13, n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[],
-              G{n12}:wf[]
-  IH:
-      forall Q,
-        ctx G:wf.
-          {G |- Q : ty}* =>
-              ctx L:c.
-                forall S, forall T, forall D1, forall D2,
-                  {L |- D1 : sub S Q} =>
-                      {L |- D2 : sub Q T} => exists D3, {L |- D3 : sub S T}
-                  /\
-                  ctx L:c.
-                    forall X, forall M, forall N, forall P, forall D1,
-                      forall D2, forall DV,
-                      {L |- X : ty} =>
-                          {L |- DV : var X} =>
-                              {L |- D1 : sub P Q} =>
-                                  {L |- [x][y]D2 x y :
-                                    {x:bound X Q}{y:bound_var X Q x DV}sub M N}
-                                      =>
-                                      exists D4,
-                                        {L |- [x][y]D4 x y :
-                                          {x:bound X P
-                                            }{y:bound_var X P x DV}sub M N}
-  H1:{G |- all T1 ([c8]T2 c8) : ty}@
-  IH1:
-      ctx L:c.
-        forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (all T1 ([c8]T2 c8))}** =>
-              {L |- D2 : sub (all T1 ([c8]T2 c8)) T} =>
-                  exists D3, {L |- D3 : sub S T}
-  H2:
-      {L |- 
-        sa-all S1 ([c17]S2 c17) T1 ([c18]T2 c18) a1
-          ([c19][c20][c21][c22]a2 c19 c20 c21 c22)
-        : sub (all S1 ([c4]S2 c4)) (all T1 ([c8]T2 c8))}@@
-  H3:
-      {L |- 
-        sa-all T1 ([c86]T2 c86) T3 ([c87]T4 c87) D3
-          ([c88][c89][c90][c91]D4 c88 c89 c90 c91)
-        : sub (all T1 ([c8]T2 c8)) (all T3 ([c77]T4 c77))}
-  H4:{L |- S1 : ty}**
-  H5:{L, n:ty |- S2 n : ty}**
-  H6:{L |- T1 : ty}**
-  H7:{L, n1:ty |- T2 n1 : ty}**
-  H8:{L |- a1 : sub T1 S1}**
-  H9:
-      {L, n2:ty, n3:var n2, n4:bound n2 T1, n5:bound_var n2 T1 n4 n3 |- 
-        a2 n2 n3 n4 n5 : sub (S2 n2) (T2 n2)}**
-  H10:{L |- T1 : ty}
-  H11:{L, n6:ty |- T2 n6 : ty}
-  H12:{L |- T3 : ty}
-  H13:{L, n7:ty |- T4 n7 : ty}
-  H14:{L |- D3 : sub T3 T1}
-  H15:
-      {L, n8:ty, n9:var n8, n10:bound n8 T3, n11:bound_var n8 T3 n10 n9 |- 
-        D4 n8 n9 n10 n11 : sub (T2 n8) (T4 n8)}
-  H16:{G |- T1 : ty}*
-  H17:{G, n12:ty |- T2 n12 : ty}*
-  H19:
-      ctx L:c.
-        forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S T1} =>
-              {L |- D2 : sub T1 T} => exists D3, {L |- D3 : sub S T}
-  H20:
-      ctx L:c.
-        forall X, forall M, forall N, forall P, forall D1, forall D2,
-          forall DV,
-          {L |- X : ty} =>
-              {L |- DV : var X} =>
-                  {L |- D1 : sub P T1} =>
-                      {L |- [x][y]D2 x y :
-                        {x:bound X T1}{y:bound_var X T1 x DV}sub M N} =>
-                          exists D4,
-                            {L |- [x][y]D4 x y :
-                              {x:bound X P}{y:bound_var X P x DV}sub M N}
-  H22:
-      ctx L:c.
-        forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
-  H23:
-      ctx L:c.
-        forall X, forall M, forall N, forall P, forall D1, forall D2,
-          forall DV,
-          {L |- X : ty} =>
-              {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
-                      {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
-                          exists D4,
-                            {L |- [x][y]D4 x y :
-                              {x:bound X P}{y:bound_var X P x DV}sub M N}
-  H24:{L |- D1 n12 : sub T3 S1}
-  H25:{L, n:ty, n1:var n |- D3 : sub T3 T1}
-  H26:{L, n:ty, n1:var n |- n : ty}
-  H27:{L, n:ty, n1:var n |- n1 : var n}
-  H28:
-      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
-        D2 n12 n1 n n13 n14 : sub (S2 n1) (T2 n1)}
-  H29:
-      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
-        D5 n14 n13 n12 n1 n : sub (S2 n1) (T4 n1)}
-  
-  ==================================
-  exists D3, {L |- D3 : sub (all S1 ([c163]S2 c163)) (all T3 ([c167]T4 c167))}
-  
-  Subgoal trans_and_narrow'.1.2 is:
-   exists D3, {L |- D3 : sub (all S1 ([c136]S2 c136)) T}
-  
-  Subgoal trans_and_narrow'.1.3 is:
-   exists D3, {L |- D3 : sub (all S1 ([c142]S2 c142)) (all T1 ([c146]T2 c146))}
-  
-  Subgoal trans_and_narrow'.1.4 is:
-   exists D3, {L |- D3 : sub (all S1 ([c152]S2 c152)) top}
-  
-  Subgoal trans_and_narrow'.2 is:
-   exists D3, {L |- D3 : sub (arrow S1 S2) T}
-  
-  Subgoal trans_and_narrow'.3 is:
-   exists D3, {L |- D3 : sub S T}
-  
-  Subgoal trans_and_narrow'.4 is:
-   exists D3, {L |- D3 : sub Q T}
-  
-  Subgoal trans_and_narrow'.5 is:
-   exists D3, {L |- D3 : sub S T}
-  
-  Subgoal trans_and_narrow' is:
-   ctx L:c.
-     forall S, forall T, forall D1, forall D2,
-       {L |- D1 : sub S Q} =>
-           {L |- D2 : sub Q T} => exists D3, {L |- D3 : sub S T}
-       /\
-       ctx L:c.
-         forall X, forall M, forall N, forall P, forall D1, forall D2,
-           forall DV,
-           {L |- X : ty} =>
-               {L |- DV : var X} =>
-                   {L |- D1 : sub P Q} =>
-                       {L |- [x][y]D2 x y :
-                         {x:bound X Q}{y:bound_var X Q x DV}sub M N} =>
-                           exists D4,
-                             {L |- [x][y]D4 x y :
-                               {x:bound X P}{y:bound_var X P x DV}sub M N}
-  
-  trans_and_narrow'.1.1>> exists sa-all S1 ([x]S2 x) T3 ([x]T4 x) D1 n12 ([w][x][y][z]D5 z y n12 w x).
-  
-  Subgoal trans_and_narrow'.1.1:
-  
-  Vars: D5:(o) -> (o) -> (o) -> (o) -> (o) -> o, D3:o, D4:
-          (o) -> (o) -> (o) -> (o) -> o, T3:o, T4:(o) -> o, a1:o, a2:
-          (o) -> (o) -> (o) -> (o) -> o, S1:o, S2:(o) -> o, T1:o, T2:(o) -> o,
-          D2:(o) -> (o) -> (o) -> (o) -> (o) -> o, D1:(o) -> o
-  Nominals: n14:o, n13:o, n12:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4
-              :o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n14, n13, n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[],
-              G{n12}:wf[]
-  IH:
-      forall Q,
-        ctx G:wf.
-          {G |- Q : ty}* =>
-              ctx L:c.
-                forall S, forall T, forall D1, forall D2,
-                  {L |- D1 : sub S Q} =>
-                      {L |- D2 : sub Q T} => exists D3, {L |- D3 : sub S T}
-                  /\
-                  ctx L:c.
-                    forall X, forall M, forall N, forall P, forall D1,
-                      forall D2, forall DV,
-                      {L |- X : ty} =>
-                          {L |- DV : var X} =>
-                              {L |- D1 : sub P Q} =>
-                                  {L |- [x][y]D2 x y :
-                                    {x:bound X Q}{y:bound_var X Q x DV}sub M N}
-                                      =>
-                                      exists D4,
-                                        {L |- [x][y]D4 x y :
-                                          {x:bound X P
-                                            }{y:bound_var X P x DV}sub M N}
-  H1:{G |- all T1 ([c8]T2 c8) : ty}@
-  IH1:
-      ctx L:c.
-        forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (all T1 ([c8]T2 c8))}** =>
-              {L |- D2 : sub (all T1 ([c8]T2 c8)) T} =>
-                  exists D3, {L |- D3 : sub S T}
-  H2:
-      {L |- 
-        sa-all S1 ([c17]S2 c17) T1 ([c18]T2 c18) a1
-          ([c19][c20][c21][c22]a2 c19 c20 c21 c22)
-        : sub (all S1 ([c4]S2 c4)) (all T1 ([c8]T2 c8))}@@
-  H3:
-      {L |- 
-        sa-all T1 ([c86]T2 c86) T3 ([c87]T4 c87) D3
-          ([c88][c89][c90][c91]D4 c88 c89 c90 c91)
-        : sub (all T1 ([c8]T2 c8)) (all T3 ([c77]T4 c77))}
-  H4:{L |- S1 : ty}**
-  H5:{L, n:ty |- S2 n : ty}**
-  H6:{L |- T1 : ty}**
-  H7:{L, n1:ty |- T2 n1 : ty}**
-  H8:{L |- a1 : sub T1 S1}**
-  H9:
-      {L, n2:ty, n3:var n2, n4:bound n2 T1, n5:bound_var n2 T1 n4 n3 |- 
-        a2 n2 n3 n4 n5 : sub (S2 n2) (T2 n2)}**
-  H10:{L |- T1 : ty}
-  H11:{L, n6:ty |- T2 n6 : ty}
-  H12:{L |- T3 : ty}
-  H13:{L, n7:ty |- T4 n7 : ty}
-  H14:{L |- D3 : sub T3 T1}
-  H15:
-      {L, n8:ty, n9:var n8, n10:bound n8 T3, n11:bound_var n8 T3 n10 n9 |- 
-        D4 n8 n9 n10 n11 : sub (T2 n8) (T4 n8)}
-  H16:{G |- T1 : ty}*
-  H17:{G, n12:ty |- T2 n12 : ty}*
-  H19:
-      ctx L:c.
-        forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S T1} =>
-              {L |- D2 : sub T1 T} => exists D3, {L |- D3 : sub S T}
-  H20:
-      ctx L:c.
-        forall X, forall M, forall N, forall P, forall D1, forall D2,
-          forall DV,
-          {L |- X : ty} =>
-              {L |- DV : var X} =>
-                  {L |- D1 : sub P T1} =>
-                      {L |- [x][y]D2 x y :
-                        {x:bound X T1}{y:bound_var X T1 x DV}sub M N} =>
-                          exists D4,
-                            {L |- [x][y]D4 x y :
-                              {x:bound X P}{y:bound_var X P x DV}sub M N}
-  H22:
-      ctx L:c.
-        forall S, forall T, forall D1, forall D2,
-          {L |- D1 : sub S (T2 n1)} =>
-              {L |- D2 : sub (T2 n1) T} => exists D3, {L |- D3 : sub S T}
-  H23:
-      ctx L:c.
-        forall X, forall M, forall N, forall P, forall D1, forall D2,
-          forall DV,
-          {L |- X : ty} =>
-              {L |- DV : var X} =>
-                  {L |- D1 : sub P (T2 n1)} =>
-                      {L |- [x][y]D2 x y :
-                        {x:bound X (T2 n1)}{y:bound_var X (T2 n1) x DV}sub M N}
-                          =>
-                          exists D4,
-                            {L |- [x][y]D4 x y :
-                              {x:bound X P}{y:bound_var X P x DV}sub M N}
-  H24:{L |- D1 n12 : sub T3 S1}
-  H25:{L, n:ty, n1:var n |- D3 : sub T3 T1}
-  H26:{L, n:ty, n1:var n |- n : ty}
-  H27:{L, n:ty, n1:var n |- n1 : var n}
-  H28:
-      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
-        D2 n12 n1 n n13 n14 : sub (S2 n1) (T2 n1)}
-  H29:
-      {L, n1:ty, n:var n1, n13:bound n1 T3, n14:bound_var n1 T3 n13 n |- 
-        D5 n14 n13 n12 n1 n : sub (S2 n1) (T4 n1)}
-  
-  ==================================
-  {L |- sa-all S1 ([x]S2 x) T3 ([x]T4 x) (D1 n12) ([w][x][y][z]D5 z y n12 w x)
-    : sub (all S1 ([c163]S2 c163)) (all T3 ([c167]T4 c167))}
-  
-  Subgoal trans_and_narrow'.1.2 is:
-   exists D3, {L |- D3 : sub (all S1 ([c136]S2 c136)) T}
-  
-  Subgoal trans_and_narrow'.1.3 is:
-   exists D3, {L |- D3 : sub (all S1 ([c142]S2 c142)) (all T1 ([c146]T2 c146))}
-  
-  Subgoal trans_and_narrow'.1.4 is:
-   exists D3, {L |- D3 : sub (all S1 ([c152]S2 c152)) top}
-  
-  Subgoal trans_and_narrow'.2 is:
-   exists D3, {L |- D3 : sub (arrow S1 S2) T}
-  
-  Subgoal trans_and_narrow'.3 is:
-   exists D3, {L |- D3 : sub S T}
-  
-  Subgoal trans_and_narrow'.4 is:
-   exists D3, {L |- D3 : sub Q T}
-  
-  Subgoal trans_and_narrow'.5 is:
-   exists D3, {L |- D3 : sub S T}
-  
-  Subgoal trans_and_narrow' is:
-   ctx L:c.
-     forall S, forall T, forall D1, forall D2,
-       {L |- D1 : sub S Q} =>
-           {L |- D2 : sub Q T} => exists D3, {L |- D3 : sub S T}
-       /\
-       ctx L:c.
-         forall X, forall M, forall N, forall P, forall D1, forall D2,
-           forall DV,
-           {L |- X : ty} =>
-               {L |- DV : var X} =>
-                   {L |- D1 : sub P Q} =>
-                       {L |- [x][y]D2 x y :
-                         {x:bound X Q}{y:bound_var X Q x DV}sub M N} =>
-                           exists D4,
-                             {L |- [x][y]D4 x y :
-                               {x:bound X P}{y:bound_var X P x DV}sub M N}
-  
-  trans_and_narrow'.1.1>> search.
+  trans_and_narrow'.1.1>> skip.
   
   Subgoal trans_and_narrow'.1.2:
   
@@ -9395,9 +8912,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -9413,7 +8930,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -9487,9 +9004,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -9508,7 +9025,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -9579,9 +9096,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -9598,7 +9115,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -9670,9 +9187,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -9693,7 +9210,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -9765,9 +9282,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -9792,7 +9309,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -9863,9 +9380,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -9885,7 +9402,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -9957,9 +9474,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -9982,7 +9499,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -10053,9 +9570,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -10079,7 +9596,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -10151,9 +9668,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -10178,7 +9695,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -10250,9 +9767,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -10278,7 +9795,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -10350,9 +9867,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -10379,7 +9896,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -10452,9 +9969,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -10482,7 +9999,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -10555,9 +10072,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -10586,7 +10103,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -10659,9 +10176,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -10691,7 +10208,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -10764,9 +10281,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -10797,7 +10314,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -10870,9 +10387,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -10906,7 +10423,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -10977,9 +10494,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -11002,7 +10519,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -11073,9 +10590,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -11101,7 +10618,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -11172,9 +10689,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -11201,7 +10718,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -11273,9 +10790,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -11303,7 +10820,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -11375,9 +10892,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -11406,7 +10923,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -11478,9 +10995,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -11510,7 +11027,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -11583,9 +11100,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -11616,7 +11133,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -11689,9 +11206,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -11723,7 +11240,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -11796,9 +11313,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -11831,7 +11348,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -11904,9 +11421,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -11940,7 +11457,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -12013,9 +11530,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -12052,7 +11569,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -12123,9 +11640,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -12149,7 +11666,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -12220,9 +11737,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -12249,7 +11766,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -12320,9 +11837,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -12350,7 +11867,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -12422,9 +11939,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -12453,7 +11970,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -12525,9 +12042,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -12557,7 +12074,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -12629,9 +12146,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -12662,7 +12179,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -12735,9 +12252,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -12769,7 +12286,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -12842,9 +12359,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -12877,7 +12394,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -12950,9 +12467,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -12986,7 +12503,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -13059,9 +12576,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -13096,7 +12613,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -13169,9 +12686,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -13209,7 +12726,7 @@
      {L |- [x][y]D4 x y :
        {x:bound X P
          }{y:bound_var X P x DV
-            }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+            }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -13280,9 +12797,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -13307,7 +12824,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -13387,9 +12904,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -13418,7 +12935,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -13491,9 +13008,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -13522,7 +13039,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -13596,9 +13113,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -13631,7 +13148,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -13704,9 +13221,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -13742,7 +13259,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -13815,9 +13332,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -13852,7 +13369,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -13869,9 +13386,8 @@
    exists D4,
      {L |- [x][y]D4 x y : {x:bound X P}{y:bound_var X P x DV}sub M top}
   
-  trans_and_narrow'.1>> apply sub__ty to H19 with (L = L,n14:bound X P,n15:bound_var X P n14 DV,n:ty,
-      n2:var n,n1:bound n N1,n3:bound_var n N1 n1 n2), D =
-      D2 n3 n2 n1 n n14 n15, U1 = M2 n, U2 = N2 n.
+  trans_and_narrow'.1>> apply sub__ty to H19 with (L = L,n10:bound X P,n11:bound_var X P n10 DV,n:ty,
+      n2:var n,n1:bound n N1,n3:bound_var n N1 n1 n2).
   
   Subgoal trans_and_narrow'.1:
   
@@ -13879,8 +13395,8 @@
           (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, M1:o, M2:(o) -> o, N1:o,
           N2:(o) -> o, DV:o, D2:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, D1
           :o, P:o, X:o, Q:o
-  Nominals: n15:o, n14:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
+  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
+              n:o
   Contexts: L{n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[], G{}:wf[]
   IH:
       forall Q,
@@ -13927,9 +13443,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -13959,9 +13475,9 @@
   H21:{L, n1:bound X P, n:bound_var X P n1 DV |- N1 : ty}
   H22:{L, n1:bound X P, n:bound_var X P n1 DV |- M1 : ty}
   H23:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- M2 n : ty} /\
-          {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+          {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
             bound n N1, n3:bound_var n N1 n1 n2 |- N2 n : ty}
   
   ==================================
@@ -13969,7 +13485,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -13994,8 +13510,8 @@
           (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, M1:o, M2:(o) -> o, N1:o,
           N2:(o) -> o, DV:o, D2:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, D1
           :o, P:o, X:o, Q:o
-  Nominals: n15:o, n14:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
+  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
+              n:o
   Contexts: L{n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[], G{}:wf[]
   IH:
       forall Q,
@@ -14042,9 +13558,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -14074,10 +13590,10 @@
   H21:{L, n1:bound X P, n:bound_var X P n1 DV |- N1 : ty}
   H22:{L, n1:bound X P, n:bound_var X P n1 DV |- M1 : ty}
   H24:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- M2 n : ty}
   H25:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- N2 n : ty}
   
   ==================================
@@ -14085,7 +13601,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -14110,8 +13626,8 @@
           (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, M1:o, M2:(o) -> o, N1:o,
           N2:(o) -> o, DV:o, D2:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, D1
           :o, P:o, X:o, Q:o
-  Nominals: n15:o, n14:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
+  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
+              n:o
   Contexts: L{n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[], G{}:wf[]
   IH:
       forall Q,
@@ -14158,9 +13674,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -14190,13 +13706,13 @@
   H21:{L, n1:bound X P, n:bound_var X P n1 DV |- N1 : ty}
   H22:{L, n1:bound X P, n:bound_var X P n1 DV |- M1 : ty}
   H24:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- M2 n : ty}
   H25:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- N2 n : ty}
   H26:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- M2 n : ty}
   
   ==================================
@@ -14204,7 +13720,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -14229,8 +13745,8 @@
           (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, M1:o, M2:(o) -> o, N1:o,
           N2:(o) -> o, DV:o, D2:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, D1
           :o, P:o, X:o, Q:o
-  Nominals: n15:o, n14:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
+  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
+              n:o
   Contexts: L{n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[], G{}:wf[]
   IH:
       forall Q,
@@ -14277,9 +13793,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -14309,22 +13825,22 @@
   H21:{L, n1:bound X P, n:bound_var X P n1 DV |- N1 : ty}
   H22:{L, n1:bound X P, n:bound_var X P n1 DV |- M1 : ty}
   H24:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- M2 n : ty}
   H25:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- N2 n : ty}
   H26:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- M2 n : ty}
-  H27:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n |- M2 n : ty}
+  H27:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n |- M2 n : ty}
   
   ==================================
   exists D4,
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -14349,8 +13865,8 @@
           (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, M1:o, M2:(o) -> o, N1:o,
           N2:(o) -> o, DV:o, D2:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, D1
           :o, P:o, X:o, Q:o
-  Nominals: n15:o, n14:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
+  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
+              n:o
   Contexts: L{n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[], G{}:wf[]
   IH:
       forall Q,
@@ -14397,9 +13913,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -14429,23 +13945,23 @@
   H21:{L, n1:bound X P, n:bound_var X P n1 DV |- N1 : ty}
   H22:{L, n1:bound X P, n:bound_var X P n1 DV |- M1 : ty}
   H24:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- M2 n : ty}
   H25:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- N2 n : ty}
   H26:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- M2 n : ty}
-  H27:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n |- M2 n : ty}
-  H28:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty |- M2 n : ty}
+  H27:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n |- M2 n : ty}
+  H28:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty |- M2 n : ty}
   
   ==================================
   exists D4,
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -14470,8 +13986,8 @@
           (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, M1:o, M2:(o) -> o, N1:o,
           N2:(o) -> o, DV:o, D2:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, D1
           :o, P:o, X:o, Q:o
-  Nominals: n15:o, n14:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
+  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
+              n:o
   Contexts: L{n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[], G{}:wf[]
   IH:
       forall Q,
@@ -14518,9 +14034,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -14550,18 +14066,18 @@
   H21:{L, n1:bound X P, n:bound_var X P n1 DV |- N1 : ty}
   H22:{L, n1:bound X P, n:bound_var X P n1 DV |- M1 : ty}
   H24:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- M2 n : ty}
   H25:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- N2 n : ty}
   H26:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- M2 n : ty}
-  H27:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n |- M2 n : ty}
-  H28:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty |- M2 n : ty}
+  H27:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n |- M2 n : ty}
+  H28:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty |- M2 n : ty}
   H29:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- N2 n : ty}
   
   ==================================
@@ -14569,7 +14085,7 @@
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -14594,8 +14110,8 @@
           (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, M1:o, M2:(o) -> o, N1:o,
           N2:(o) -> o, DV:o, D2:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, D1
           :o, P:o, X:o, Q:o
-  Nominals: n15:o, n14:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
+  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
+              n:o
   Contexts: L{n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[], G{}:wf[]
   IH:
       forall Q,
@@ -14642,9 +14158,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -14674,27 +14190,27 @@
   H21:{L, n1:bound X P, n:bound_var X P n1 DV |- N1 : ty}
   H22:{L, n1:bound X P, n:bound_var X P n1 DV |- M1 : ty}
   H24:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- M2 n : ty}
   H25:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- N2 n : ty}
   H26:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- M2 n : ty}
-  H27:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n |- M2 n : ty}
-  H28:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty |- M2 n : ty}
+  H27:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n |- M2 n : ty}
+  H28:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty |- M2 n : ty}
   H29:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- N2 n : ty}
-  H30:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n |- N2 n : ty}
+  H30:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n |- N2 n : ty}
   
   ==================================
   exists D4,
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -14719,8 +14235,8 @@
           (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, M1:o, M2:(o) -> o, N1:o,
           N2:(o) -> o, DV:o, D2:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, D1
           :o, P:o, X:o, Q:o
-  Nominals: n15:o, n14:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
+  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
+              n:o
   Contexts: L{n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[], G{}:wf[]
   IH:
       forall Q,
@@ -14767,9 +14283,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -14799,28 +14315,28 @@
   H21:{L, n1:bound X P, n:bound_var X P n1 DV |- N1 : ty}
   H22:{L, n1:bound X P, n:bound_var X P n1 DV |- M1 : ty}
   H24:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- M2 n : ty}
   H25:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- N2 n : ty}
   H26:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- M2 n : ty}
-  H27:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n |- M2 n : ty}
-  H28:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty |- M2 n : ty}
+  H27:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n |- M2 n : ty}
+  H28:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty |- M2 n : ty}
   H29:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- N2 n : ty}
-  H30:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n |- N2 n : ty}
-  H31:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty |- N2 n : ty}
+  H30:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n |- N2 n : ty}
+  H31:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty |- N2 n : ty}
   
   ==================================
   exists D4,
     {L |- [x][y]D4 x y :
       {x:bound X P
         }{y:bound_var X P x DV
-           }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+           }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,
@@ -14848,8 +14364,8 @@
           (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, M1:o, M2:(o) -> o, N1:o,
           N2:(o) -> o, DV:o, D2:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o, D1
           :o, P:o, X:o, Q:o
-  Nominals: n15:o, n14:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
+  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
+              n:o
   Contexts: L{n11, n10, n9, n8, n7, n6, n5, n4, n3, n2, n1, n}:c[], G{}:wf[]
   IH:
       forall Q,
@@ -14896,9 +14412,9 @@
   H5:{L |- D1 : sub P Q}
   H6:
       {L, n:bound X Q, n1:bound_var X Q n DV |- 
-        sa-all M1 ([c511]M2 c511) N1 ([c512]N2 c512) (a1 n1 n)
-          ([c513][c514][c515][c516]a2 n1 n c513 c514 c515 c516)
-        : sub (all M1 ([c498]M2 c498)) (all N1 ([c502]N2 c502))}@@@
+        sa-all M1 ([c490]M2 c490) N1 ([c491]N2 c491) (a1 n1 n)
+          ([c492][c493][c494][c495]a2 n1 n c492 c493 c494 c495)
+        : sub (all M1 ([c477]M2 c477)) (all N1 ([c481]N2 c481))}@@@
   H7:{L, n:bound X Q, n1:bound_var X Q n DV |- M1 : ty}***
   H8:{L, n:bound X Q, n1:bound_var X Q n DV, n2:ty |- M2 n2 : ty}***
   H9:{L, n:bound X Q, n1:bound_var X Q n DV |- N1 : ty}***
@@ -14928,21 +14444,21 @@
   H21:{L, n1:bound X P, n:bound_var X P n1 DV |- N1 : ty}
   H22:{L, n1:bound X P, n:bound_var X P n1 DV |- M1 : ty}
   H24:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- M2 n : ty}
   H25:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1, n3:bound_var n N1 n1 n2 |- N2 n : ty}
   H26:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- M2 n : ty}
-  H27:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n |- M2 n : ty}
-  H28:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty |- M2 n : ty}
+  H27:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n |- M2 n : ty}
+  H28:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty |- M2 n : ty}
   H29:
-      {L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n, n1:
+      {L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n, n1:
         bound n N1 |- N2 n : ty}
-  H30:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty, n2:var n |- N2 n : ty}
-  H31:{L, n14:bound X P, n15:bound_var X P n14 DV, n:ty |- N2 n : ty}
+  H30:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty, n2:var n |- N2 n : ty}
+  H31:{L, n10:bound X P, n11:bound_var X P n10 DV, n:ty |- N2 n : ty}
   
   ==================================
   {L |- 
@@ -14953,7 +14469,7 @@
     :
     {x:bound X P
       }{y:bound_var X P x DV
-         }sub (all M1 ([c551]M2 c551)) (all N1 ([c555]N2 c555))}
+         }sub (all M1 ([c530]M2 c530)) (all N1 ([c534]N2 c534))}
   
   Subgoal trans_and_narrow'.2 is:
    exists D4,

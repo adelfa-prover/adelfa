@@ -1,0 +1,19 @@
+proptm : type.
+top : proptm.
+imp : {A:proptm}{B:proptm}proptm.
+and : {A:proptm}{B:proptm}proptm.
+
+hyp : {A:proptm} type.
+
+conc : {C:proptm} type.
+
+init : {A:proptm}{D:hyp A}conc A.
+topR : conc top.
+andL : {A:proptm}{B:proptm}{C:proptm}{D1:{x:hyp A}{y:hyp B}conc C}
+       {D2:hyp (and A B)} conc C.
+andR : {A:proptm}{B:proptm}{D1:conc A}{D2:conc B}
+       conc (and A B).
+impL : {A:proptm}{B:proptm}{C:proptm}{D1:conc A}{D2:{x:hyp B}conc C}
+       {D3:hyp (imp A B)}conc C.
+impR : {A:proptm}{B:proptm}{D:{x:hyp A}conc B}
+       conc (imp A B).

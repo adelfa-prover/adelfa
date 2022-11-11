@@ -1,0 +1,40 @@
+%Subject Reduction for the simply typed lambda-calculus
+%Completed as part of Daniel Luick's honors thesis which can be accessed <a href="https://hdl.handle.net/11299/220294">here</a>. 
+
+Specification "generalized.lf".
+
+Schema c :=
+ {T}(x:tm,y:of x T).
+
+Theorem subject_reduction : ctx Gamma:c, forall M1 M2 T D1 D2,
+  {Gamma |- D1 : step M1 M2} => {Gamma |- D2 : of M1 T} => exists D3,
+  {Gamma |- D3 : of M2 T}.
+
+  induction on 1. intros. case H1.
+
+  % step-lam case
+  case H2.
+  apply IH to H6 H10 with (Gamma = Gamma, n1:tm, n:of n1 T1).
+  prune H11.
+  exists of_lam ([x] R2 x) T1 T2 ([x] [x1] D1 x x1).
+  search.
+
+  % step-beta case
+  case H2.
+  case H10.
+  inst H15 with n2 = N.
+  inst H16 with n3 = D5.
+  exists D6 N D5.
+  search.
+
+  % step-app2 case
+  case H2.
+  apply IH to H6 H12.
+  exists of_app M N2 T U a1 D3.
+  search.
+
+  % step-app1 case
+  case H2.
+  apply IH to H6 H11.
+  exists of_app M4 N T U D3 a2.
+  search.

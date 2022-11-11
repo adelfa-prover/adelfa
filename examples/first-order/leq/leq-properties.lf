@@ -1,0 +1,15 @@
+nat : type.
+z : nat.
+s : {x : nat} nat.
+
+leq : {x1: nat} {x2: nat} type.
+leq-z : {x2: nat} leq z x2.
+leq-s : {x1:nat}{x2:nat}{d:leq x1 x2} leq (s x1) (s x2).
+
+eq-nat : {x1: nat} {x2: nat} type.
+eq-nat-z : eq-nat z z.
+eq-nat-s : {x1:nat}{x2:nat}{d:eq-nat x1 x2} eq-nat (s x1) (s x2).
+
+plus : {x1: nat}{x2:nat}{x3:nat} type.
+plus-z : {x:nat} plus z x x.
+plus-s : {x1:nat}{x2:nat}{x3:nat}{d:plus x1 x2 x3} plus (s x1) x2 (s x3).

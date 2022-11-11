@@ -1,0 +1,25 @@
+nat : type.
+z : nat.
+s : {x:nat} nat.
+
+list : type.
+nil : list.
+cons : {n:nat} {l:list} list.
+
+eq_list : list -> list -> type.
+refl_list : {L:list} eq_list L L.
+
+append : list -> list -> list -> type.
+append_nil : {L:list} append nil L L.
+append_cons : {L1:list}{L2:list}{L3:list}{N:nat}{D:append L1 L2 L3}
+  append (cons N L1) L2 (cons N L3).
+
+rev_app : list -> list -> type.
+rev_app_nil : rev_app nil nil.
+rev_app_cons : {N:nat} {A:list} {B:list} {BN:list} {D:rev_app A B}
+  {D2:append B (cons N nil) BN} rev_app (cons N A) BN.
+
+rev_acc : list -> list -> list -> type.
+rev_acc_nil : {L:list} rev_acc nil L L.
+rev_acc_cons : {L1:list} {L2:list} {L3:list} {N:nat} {D:rev_acc L1 (cons N L2) L3}
+  rev_acc (cons N L1) L2 L3.

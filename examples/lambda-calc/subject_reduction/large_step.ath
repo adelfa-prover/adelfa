@@ -1,0 +1,27 @@
+Specification "reduce.lf".
+
+Schema c :=
+ {T}(x:tm,y:of x T).
+
+% Subject reduction for weak large step call by name reduction.
+Theorem subject_reduction_lscbn : ctx Gamma:c, forall M1 M2 T D1 D2,
+  {Gamma |- D1 : of M1 T} => {D2 : lscbn M1 M2} =>
+  exists D3, {Gamma |- D3 : of M2 T}.
+
+  induction on 2. intros. case H2.
+
+  % beta reduction case.
+  case H1.
+  apply IH to H14 H8.
+  % QUESTION: prune opportunity?
+  case H16.
+  inst H20 with n2 = N.
+  inst H21 with n3 = D7.
+  apply IH to H22 H9.
+  % QUESTION: it is fine having D1 n3 n2 n1 n without those being in the context, right?
+  exists (D1 n3 n2 n1 n).
+  search.
+
+  % abs reduction case.
+  exists D1.
+  search.

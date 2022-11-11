@@ -1,0 +1,35 @@
+ty : type.
+arr : ty -> ty -> ty.
+
+tm : type.
+app : tm -> tm -> tm.
+lam : ty -> (tm -> tm) -> tm.
+
+of : tm -> ty -> type.
+of_app : {M:tm}{N:tm}{T:ty}{U:ty}
+          {a1:of M (arr U T)} {a2:of N U} of (app M N) T.
+of_lam : {R : {x:tm} tm}{T:ty}{U:ty}
+          {a1:({x:tm}{z:of x T} of (R x) U)}
+          of (lam T ([x] R x)) (arr T U).
+
+eq : ty -> ty -> type.
+refl : {T:ty} eq T T.
+
+% weak small step call by value reduction
+
+sscbv : tm -> tm -> type.
+sscbv_app1 : {M1:tm} {M2:tm} {N:tm} {D1 : sscbv M1 M2}
+               sscbv (app M1 N) (app M2 N).
+sscbv_app2 : {R:{x:tm}tm}{T:ty}{M1:tm}{M2:tm}{D1 : sscbv M1 M2}
+               sscbv (app (lam T ([x] R x)) M1) (app (lam T ([x] R x)) M2).
+sscbv_beta : {R1 : {x:tm} tm}{R2 : {x:tm} tm}{T1:ty}{T2:ty}
+               sscbv (app (lam T1 ([x] R1 x)) (lam T2 ([x] R2 x))) (R1 (lam T2 ([x] R2 x))).
+
+% weak large step call by name reduction
+
+lscbn : tm -> tm -> type.
+lscbn_abs  : {R:{x:tm} tm} {T:ty} lscbn (lam T ([x] R x)) (lam T ([x] R x)).
+lscbn_beta : {M:tm} {N:tm} {V:tm} {R:{x:tm}tm} {T:ty}
+             {D1 : lscbn M (lam T ([x] R x))}
+             {D2 : lscbn (R N) V}
+             lscbn (app M N) V.

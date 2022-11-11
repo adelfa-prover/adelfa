@@ -1,0 +1,40 @@
+Specification "map.lf".
+
+Theorem map-eq : forall L1 L2 L3 D1 D2 f,
+  {D1: map f L1 L2} => {D2: map f L1 L3}
+   => exists E, {E: eq-list L2 L3}.
+induction on 1.
+intros.
+case H1.
+% cons case
+case H2.
+inst H3 with n = e.
+apply IH to H6 H11.
+exists eq-list-cons l2 L4 (f1 e) (E n1 n).
+search.
+% nil case
+case H2.
+exists eq-list-nil.
+search.
+
+Theorem map-distrib-append : forall L1 L2 L12 f FL12 FL1 FL2 D1 D2 D3 D4 D5 FL12',
+  {D1: append L1 L2 L12} =>
+   {D2: map f L12 FL12} => {D3: map f L1 FL1} =>
+    {D4: map f L2 FL2} => {D5: append FL1 FL2 FL12'} =>
+     exists E, {E: eq-list FL12 FL12'}.
+induction on 1.
+intros.
+case H1.
+% cons case
+case H2.
+case H3.
+case H5.
+apply IH to H10 H14 H19 H4 H25.
+exists eq-list-cons l4 FL12'1 (f1 x) (E n1 n).
+search.
+% nil case
+case H3.
+case H5.
+apply map-eq to H2 H4.
+exists E n.
+search.
