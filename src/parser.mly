@@ -157,8 +157,8 @@ ty:
 propty:
   | PROP
       { Type.propty }
-  | ty RARROW PROP
-      { Type.tyarrow [$1]  Type.propty }
+  | ty RARROW propty
+      { Type.tyarrow [$1] $3 }
 
 term:
   | LBRACE aid RBRACE term
