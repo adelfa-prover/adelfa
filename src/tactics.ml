@@ -242,8 +242,8 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
   inst f1 f2
 ;;
 
-(** [generate_partial_perm f1 f2 added ctxvar_ctx bound_ctxvar_ctx] will returns
-    a substitution that represents part of the permutation which is forced to be
+(** [generate_partial_mapping f1 f2 res ctxvar_ctxs] will returns
+    a substitution that represents part of the 1-1 mapping which is forced to be
     held if the explicit portions of [f1] and [f2]'s contexts are to match.
 
     @param f1 is the universally quantified formula, i.e. from the sequent
@@ -251,10 +251,14 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
     @param f2 could be either universally or existentially quantified depending
       on if it occurs under some bindings.
 
+    @param res is the restricted set which represents which nominal constants
+      may be mapped to another in the restricted set.
+
     @param ctxvar_ctxs the sequent and formula's ctx variable context.
- *)
-let generate_partial_perm f1 f2 res ctxvar_ctxs =
-  (* We'll check this in order to fail before we perform *)
+*)
+let generate_partial_mapping f1 f2 res ctxvar_ctxs =
+  (* We'll check this in order to fail before we traverse the context and
+     generate all possible mappings *)
   let ctx_var_compat g1 g2 =
     match Context.get_ctx_var_opt g1, Context.get_ctx_var_opt g2 with
     (* Both have context variables, ensure they are typed by the same schema *)
@@ -267,25 +271,35 @@ let generate_partial_perm f1 f2 res ctxvar_ctxs =
     | Some _, None -> false
     | None, _ -> true
   in
-  (* Generate a permutation which we know must be there. If  *)
-  let rec aux g1 g2 =
+  let not_in_mapping n1 n2 l =
+    (not (List.mem n1 (List.map fst l)))
+    && not (List.mem (Term.var_to_term n2) (List.map snd l))
+  in
+  (* Generate a mapping for nominals which we know must hold in order for the
+     two context expressions to match. *)
+  let rec aux acc g1 g2 =
     match g1, g2 with
     | Context.Ctx (g1', (n1, _)), Context.Ctx (g2', (n2, _)) ->
       if n1 = n2 || (List.mem n1.name res && List.mem n2.name res)
-      then (n1, Term.var_to_term n2) :: aux g1' g2'
-      else aux g1' g2'
-    | _, (Context.Nil | Context.Var _) -> []
+      then
+        if not_in_mapping n1 n2 acc
+        then aux ((n1, Term.var_to_term n2) :: acc) g1' g2'
+        else aux acc g1' g2'
+      else aux acc g1' g2'
+    | _, (Context.Nil | Context.Var _) -> acc
     | (Context.Nil | Context.Var _), _ -> raise (Unify.UnifyFailure Unify.Generic)
   in
   match f1, f2 with
   | Formula.Atm (g1, _, _, _), Formula.Atm (g2, _, _, _) ->
-    if ctx_var_compat g1 g2 then aux g1 g2 else raise (Unify.UnifyFailure Unify.Generic)
+    if ctx_var_compat g1 g2
+    then aux [] g1 g2
+    else raise (Unify.UnifyFailure Unify.Generic)
   | _ -> []
 ;;
 
 (* Try to unify t1 and t2 under permutations of nominal constants.
    For each successful unification, call sc.
-   t1 may contain logic variables, t2 is ground                    *)
+   t1 may contain logic variables, t2 is ground *)
 let all_meta_right_permute_unify
   ~sc
   (schemas : (Context.ctx_var, Context.block_schema list) Hashtbl.t)
@@ -297,38 +311,36 @@ let all_meta_right_permute_unify
   (t2 : Formula.formula)
   (rng : term list)
   =
-  (* We exclude names from context variable blocks in the permutation
-     as these are maintained across the sequent and so cannot be renamed within
-     a formula *)
-  (* We limit the permutation to the restricted set of the context variable if
-     the ground term has one, otherwise it's all nominals in the sequent *)
+  (* We exclude names from context variable blocks in the mappings as these are
+     maintained across the sequent and so cannot be renamed within a formula *)
+  (* We limit the mapping's support set to the restricted set of the context
+     variable if the ground term has one, otherwise it's all nominals in the
+     sequent *)
   let restricted_set =
     match Formula.get_ctx_var_opt t2 with
     | Some g_var -> List.assoc g_var xi_seq
     | None -> List.map fst nvars
   in
   let ctx_var_ctxs = new_ctxvar_ctx @ ctxvar_ctx in
-  (* Generate a partial permutation between the explicit portion of the formulas
+  (* Generate a partial mapping between the explicit portion of the formulas
      contexts. *)
-  let perm = generate_partial_perm t2 t1 restricted_set ctx_var_ctxs in
-  (* Remove any nominals from the ground term which are not in the restricted
-     set *)
+  let forced_mapping = generate_partial_mapping t2 t1 restricted_set ctx_var_ctxs in
+  (* Remove any nominals from the domain of the mapping if they are not in
+     restricted set *)
   let dom =
     Formula.formula_support_sans ctx_var_ctxs t2
     |> List.filter (fun x -> List.mem (Term.get_id x) restricted_set)
   in
-  (* Get all nominals to consider permuting to, t1 will have nominals that are
-     not in the sequent yet we may permute to them, so we instead filter on
-     those which appeared in t2 and are not allowed to be permuted. *)
+  (* Get all nominal constants which we are allowed to generate a mapping to *)
   let rng = List.filter (fun x -> List.mem (Term.get_id x) restricted_set) rng in
   (* Allow the identity mapping for any term in the ground formula *)
   let rng = rng @ dom |> List.unique in
   (* Remove any items which have already been assigned a mapping in the partial
      permutation. *)
-  let rng = List.minus rng (List.map snd perm) in
-  let dom = List.minus dom (List.map (fun (v, _) -> Term.var_to_term v) perm) in
+  let rng = List.minus rng (List.map snd forced_mapping) in
+  let dom = List.minus dom (List.map (fun (v, _) -> Term.var_to_term v) forced_mapping) in
   let dom_names = List.map term_to_name dom in
-  let perm_names = List.map (fun (v, t) -> v.Term.name, t) perm in
+  let perm_names = List.map (fun (v, t) -> v.Term.name, t) forced_mapping in
   Seq.permute (List.length dom) (List.to_seq rng)
   |> Seq.iter
        (Term.unwind_state (fun perm_rng ->
