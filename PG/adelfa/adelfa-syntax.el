@@ -38,7 +38,7 @@
 
 (defconst adelfa-reasoning-font-lock-keywords
   '(
-    ;; (regexp-opt '("Schema" "Specification" "Set") 'words)
+    ;; (regexp-opt '("Schema" "Set" "Specification") 'words)
     ("\\<\\(S\\(?:chema\\|et\\|pecification\\)\\)\\>"
      . font-lock-builtin-face)
     ;; (regexp-opt '("Define" "Theorem" "by") 'words)
@@ -53,8 +53,7 @@
     ;; (regexp-opt '("skip" "assert") 'words)
     ("\\<\\(skip\\|assert\\)\\>"
      . font-lock-warning-face)
-    ;; (regexp-opt '("undo" "abort") 'words)
-    ("\\<\\(H[0-9]+\\)\\>" . font-lock-type-face)
+    ("\\<\\(I?H[0-9]*\\)\\>" . font-lock-function-name-face)
     )
   "Default highlighting for Adelfa major mode.")
 
@@ -64,9 +63,9 @@
 
 (defconst adelfa-goals-keywords
   '(
-    ;; (regexp-opt '("Vars" "Nominals" "IH" "Contexts") 'words)
-    ("\\<\\(Contexts\\|IH\\|\\(?:Nominal\\|Var\\)s\\)\\>" . font-lock-constant-face)
-    ("\\<\\(H[0-9]+\\)\\>" . font-lock-function-name-face)
+    ;; (regexp-opt '("Vars" "Nominals" "Contexts") 'words)
+    ("\\<\\(\\(?:Context\\|Nominal\\|Var\\)s\\)\\>" . font-lock-constant-face)
+    ("\\<\\(I?H[0-9]*\\)\\>" . font-lock-function-name-face)
     ("\\<\\(Subgoal .*\\)\\>" . font-lock-variable-name-face)
     ("\\<\\(Proof Completed\\)\\>" . font-lock-function-name-face)
     )
@@ -74,9 +73,9 @@
 
 (defconst adelfa-response-keywords
   '(
-    ;; (regexp-opt '("Vars" "Nominals" "IH") 'words)
-    ("\\<\\(Contexts\\|IH\\|\\(?:Nominal\\|Var\\)s\\)\\>" . font-lock-constant-face)
-    ("\\<\\(H[0-9]+\\)\\>" . font-lock-function-name-face)
+    ;; (regexp-opt '("Vars" "Nominals") 'words)
+    ("\\<\\(Contexts\\|\\(?:Nominal\\|Var\\)s\\)\\>" . font-lock-constant-face)
+    ("\\<\\(I?H[0-9]*\\)\\>" . font-lock-function-name-face)
     ("\\<\\(Subgoal .*\\)\\>" . font-lock-variable-name-face)
     ("\\<\\(Proof Completed\\)\\>" . font-lock-function-name-face)
     )
