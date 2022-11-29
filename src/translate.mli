@@ -40,7 +40,7 @@ val trans_formula
   -> (string * Type.ty) list
   -> (Term.id * Term.term option ref) list
   -> (Term.id * Term.term option ref) list
-  -> Sequent.cvar_entry list
+  -> Context.CtxVarCtx.t
   -> (Term.id * Term.term option ref) list
   -> Uterms.uformula
   -> Formula.formula
@@ -49,7 +49,7 @@ val trans_ctx
   :  Signature.signature
   -> (Term.id * Term.term option ref) list
   -> (Term.id * Term.term option ref) list
-  -> Sequent.cvar_entry list
+  -> Context.CtxVarCtx.t
   -> (Term.id * Term.term option ref) list
   -> Uterms.uctx
   -> Context.ctx_expr * (Term.id * Term.term option ref) list

@@ -252,14 +252,14 @@ let trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
 let rec trans_ctx lf_sig evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx = function
   | UNil _ -> Context.Nil, nvar_ctx
   | UVar (pos, name) ->
-    if Sequent.ctxvar_mem ctxvar_ctx name
+    if Context.CtxVarCtx.mem ctxvar_ctx name
     then Context.Var (Context.ctx_var name), nvar_ctx
     else raise (TypingError (unknowncontext pos name))
   | UCtxTm (_, uctx, (name, utm)) ->
     let ctx, nvar_ctx' =
       trans_ctx lf_sig evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx uctx
     in
-    let ctx_entries = Context.ctxexpr_to_ctx (Sequent.get_cvar_tys ctxvar_ctx) ctx in
+    let ctx_entries = Context.ctxexpr_to_ctx ctxvar_ctx ctx in
     let tm, nvar_ctx'' =
       trans_term
         lf_sig
@@ -284,7 +284,7 @@ let rec trans_ctx lf_sig evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx = function
 ;;
 
 let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx formula =
-  let rec trans logicvar_ctx (ctxvar_ctx : Sequent.cvar_entry list) nvar_ctx = function
+  let rec trans logicvar_ctx (ctxvar_ctx : Context.CtxVarCtx.t) nvar_ctx = function
     | UTop -> Formula.Top, nvar_ctx
     | UBottom -> Formula.Bottom, nvar_ctx
     | UImp (f1, f2) ->
@@ -353,14 +353,14 @@ let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx 
         let cvar = Context.ctx_var id in
         try
           let _ = Hashtbl.find schemas schema in
-          cvar, ref [], Context.ctx_typ ~id:schema ()
+          cvar, (ref VarSet.empty, Context.ctx_typ ~id:schema ())
         with
         | Not_found -> raise (TypingError (badschema pos schema))
       in
       let ctxids = List.map process_locid loccids in
-      let f', nvar_ctx' =
-        trans logicvar_ctx (List.append (List.rev ctxids) ctxvar_ctx) nvar_ctx f
-      in
+      let c = Context.CtxVarCtx.copy ctxvar_ctx in
+      let () = Context.CtxVarCtx.add_vars c (List.rev ctxids) in
+      let f', nvar_ctx' = trans logicvar_ctx c nvar_ctx f in
       Formula.ctx cids f', nvar_ctx'
     | UAtm (uctx, utm, uty, ann) ->
       let ctx, nvar_ctx' =
@@ -371,7 +371,7 @@ let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx 
           (List.rev
              (List.map
                 (fun (x, _) -> x.Term.name, ref (Some (Term.var_to_term x)))
-                (Context.ctxexpr_to_ctx (Sequent.get_cvar_tys ctxvar_ctx) ctx)))
+                (Context.ctxexpr_to_ctx ctxvar_ctx ctx)))
           nvar_ctx'
       in
       let a, nvar_ctx''' =
@@ -504,10 +504,26 @@ let trans_dfn
         List.map (fun x -> x, ref None) l1, List.map (fun x -> x, ref None) l2
       in
       let fleft =
-        trans_formula lf_sig schemas dfns' [] new_logicvar_ctx [] new_nominal_ctx ufleft
+        trans_formula
+          lf_sig
+          schemas
+          dfns'
+          []
+          new_logicvar_ctx
+          (Context.CtxVarCtx.empty ())
+          new_nominal_ctx
+          ufleft
       in
       let fright =
-        trans_formula lf_sig schemas dfns' [] new_logicvar_ctx [] new_nominal_ctx ufright
+        trans_formula
+          lf_sig
+          schemas
+          dfns'
+          []
+          new_logicvar_ctx
+          (Context.CtxVarCtx.empty ())
+          new_nominal_ctx
+          ufright
       in
       if List.for_all (fun (_, x) -> Option.is_some !x) new_logicvar_ctx
       then

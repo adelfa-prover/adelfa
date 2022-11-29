@@ -144,7 +144,7 @@ let rec collect_terms ctxvars = function
 and collect_terms_ctx ctxvars = function
   | Nil -> []
   | Context.Var g ->
-    let (CtxTy (_, blocks)) = List.assoc g ctxvars in
+    let blocks = Context.CtxVarCtx.get_var_blocks ctxvars g in
     List.map snd (List.flatten blocks)
   | Ctx (expr, (_, t)) -> t :: collect_terms_ctx ctxvars expr
 ;;

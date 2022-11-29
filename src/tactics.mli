@@ -15,7 +15,7 @@ exception Success
 
 type case =
   { vars_case : (Term.id * Term.term) list
-  ; ctxvars_case : Sequent.cvar_entry list
+  ; ctxvars_case : Context.CtxVarCtx.t
   ; hyps_case : Sequent.hyp list
   ; goal_case : Formula.formula
   ; count_case : int
@@ -115,7 +115,7 @@ exception InvalidCtxPermutation of string
    raises InvalidCtxPermutation if given context expression is not
    as good permutation. *)
 val permute_ctx : Formula.formula -> Context.ctx_expr -> Formula.formula
-val strengthen : Sequent.cvar_entry list -> Formula.formula -> Formula.formula option
+val strengthen : Context.CtxVarCtx.t -> Formula.formula -> Formula.formula option
 
 exception InstTypeError of Formula.formula
 

@@ -130,7 +130,7 @@ let of_schema nvars ctxvars ctx (id, schema) =
     | Context.Ctx (ctx', (n, ty)) ->
       aux ctx' ((n, ty) :: block) || (is_block block && aux ctx' [ n, ty ])
     | Context.Var ctx_id ->
-      let (Context.CtxTy (s, _)) = List.assoc ctx_id ctxvars in
+      let s = Option.get (Context.CtxVarCtx.get_var_schema ctxvars ctx_id) in
       s = id && (List.length block = 0 || is_block block)
   in
   aux ctx []

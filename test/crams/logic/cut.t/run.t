@@ -142,7 +142,7 @@
   
   Vars: D':(o) -> (o) -> o, A1:o, B1:o, D1:o, D2:(o) -> o, D3:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -172,7 +172,7 @@
   
   Vars: D':(o) -> (o) -> o, A1:o, B1:o, D1:o, D2:(o) -> o, D3:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -202,7 +202,7 @@
   
   Vars: D':(o) -> (o) -> o, A1:o, B1:o, D1:o, D2:(o) -> o, D3:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -234,7 +234,7 @@
   
   Vars: D':(o) -> (o) -> o, A1:o, B1:o, D1:o, D2:(o) -> o, D3:o, B:o, A:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -267,7 +267,7 @@
   
   Vars: D':(o) -> (o) -> o, A1:o, B1:o, D1:o, D2:(o) -> o, D3:o, B:o, A:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -301,7 +301,7 @@
   
   Vars: D':(o) -> (o) -> o, A1:o, B1:o, D1:o, D2:(o) -> o, D3:o, B:o, A:o
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -336,7 +336,7 @@
   
   Vars: D':(o) -> (o) -> o, A1:o, B1:o, D1:o, D2:(o) -> o, D3:o, B:o, A:o
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n5, n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -372,7 +372,7 @@
   
   Vars: D':(o) -> (o) -> o, A1:o, B1:o, D1:o, D2:(o) -> o, D3:o, B:o, A:o
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n5, n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -409,7 +409,7 @@
   
   Vars: D':(o) -> (o) -> o, A1:o, B1:o, D1:o, D2:(o) -> o, D3:o, B:o, A:o
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n6, n5, n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -447,7 +447,7 @@
   
   Vars: A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -473,7 +473,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
           :o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -500,7 +500,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
           :o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -528,7 +528,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
           :o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -556,7 +556,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
           :o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -586,7 +586,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
           :o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -617,7 +617,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
           :o
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -649,7 +649,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
           :o
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n5, n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -682,7 +682,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A
           :o
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n6, n5, n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -813,7 +813,7 @@
   
   Vars: B:(o) -> o, A:(o) -> o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1}:c[(n:hyp (imp (A n) (B n)))]
+  Contexts: G{n1, n2}:c[(n:hyp (imp (A n) (B n)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -836,7 +836,7 @@
   
   Vars: B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1}:c[(n:hyp (imp (A n) (B n)))]
+  Contexts: G{n1, n2, n3}:c[(n:hyp (imp (A n) (B n)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1357,7 +1357,7 @@
   
   Vars: A1:o, B1:o, D1:(o) -> (o) -> o, D2:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1383,7 +1383,7 @@
   Vars: D4:(o) -> (o) -> o, D3:(o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o,
           D2:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1412,7 +1412,7 @@
   Vars: D4:(o) -> (o) -> o, D3:(o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o,
           D2:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1440,7 +1440,7 @@
   Vars: D4:(o) -> (o) -> o, D3:(o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o,
           D2:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1469,7 +1469,7 @@
   Vars: D4:(o) -> (o) -> o, D3:(o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o,
           D2:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1498,7 +1498,7 @@
   Vars: D4:(o) -> (o) -> o, D3:(o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o,
           D2:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1529,7 +1529,7 @@
   Vars: D4:(o) -> (o) -> o, D3:(o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o,
           D2:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1562,7 +1562,7 @@
   Vars: D4:(o) -> (o) -> o, D3:(o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o,
           D2:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1590,7 +1590,7 @@
   Vars: D4:(o) -> (o) -> o, D3:(o) -> (o) -> o, A1:o, B1:o, D1:(o) -> (o) -> o,
           D2:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1760,7 +1760,7 @@
   
   Vars: B:(o) -> o, A:(o) -> o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1}:c[(n:hyp (and (A n) (B n)))]
+  Contexts: G{n1, n2}:c[(n:hyp (and (A n) (B n)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1784,7 +1784,7 @@
   
   Vars: B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1}:c[(n:hyp (and (A n) (B n)))]
+  Contexts: G{n1, n2, n3}:c[(n:hyp (and (A n) (B n)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1848,7 +1848,7 @@
   
   Vars: B:(o) -> o, A:(o) -> o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1}:c[(n:hyp (and (A n) (B n)))]
+  Contexts: G{n1, n2}:c[(n:hyp (and (A n) (B n)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D,
@@ -1964,7 +1964,7 @@
   
   Vars: D:(o) -> (o) -> o, B1:o, B2:o, D1:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2010,7 +2010,7 @@
   
   Vars: D:(o) -> (o) -> o, B1:o, B2:o, D1:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2057,7 +2057,7 @@
   
   Vars: D:(o) -> (o) -> o, B1:o, B2:o, D1:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2105,7 +2105,7 @@
   
   Vars: D:(o) -> (o) -> o, B1:o, B2:o, D1:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2154,7 +2154,7 @@
   
   Vars: D:(o) -> (o) -> o, B1:o, B2:o, D1:o, A:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2205,7 +2205,7 @@
   
   Vars: D3:(o) -> (o) -> (o) -> o, D:(o) -> (o) -> o, B1:o, B2:o, D1:o, A:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2256,7 +2256,7 @@
   
   Vars: D3:(o) -> (o) -> (o) -> o, D:(o) -> (o) -> o, B1:o, B2:o, D1:o, A:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2308,7 +2308,7 @@
   Vars: A1:(o) -> o, B1:(o) -> o, D3:(o) -> o, D4:(o) -> (o) -> o, D5:(o) -> o,
           D1:o, B:o, A:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2356,7 +2356,7 @@
   
   Vars: A2:o, A3:o, D3:(o) -> o, D4:(o) -> (o) -> o, D1:o, B:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2405,7 +2405,7 @@
   
   Vars: A2:o, A3:o, D3:(o) -> o, D4:(o) -> (o) -> o, D1:o, B:o
   Nominals: n1:o, n:o
-  Contexts: G{n1, n}:c[]
+  Contexts: G{n, n1}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2457,7 +2457,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> o, D4:(o) -> (o) -> o,
           D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2510,7 +2510,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> o, D4:(o) -> (o) -> o,
           D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2565,7 +2565,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> o, D4:(o) -> (o) -> o,
           D5:(o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2620,7 +2620,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> o, D4:(o) -> (o) -> o,
           D5:(o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2676,7 +2676,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> o, D4:(o) -> (o) -> o,
           D5:(o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2733,7 +2733,7 @@
   Vars: D':(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> o, D4:(o) -> (o) -> o,
           D5:(o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2793,7 +2793,7 @@
           o, D3:(o) -> o, D4:(o) -> (o) -> o, D5:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2854,7 +2854,7 @@
           (o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> o, D4:(o) -> (o) -> o,
           D5:(o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2915,7 +2915,7 @@
           (o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> o, D4:(o) -> (o) -> o,
           D5:(o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -2975,7 +2975,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> o, D4:
           (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n1, n}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
+  Contexts: G{n, n1}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3027,7 +3027,7 @@
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:(o) -> o, B:
           (o) -> o, A:(o) -> o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n1, n}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
+  Contexts: G{n, n1}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3079,7 +3079,7 @@
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:(o) -> o, B:
           (o) -> o, A:(o) -> o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n1, n}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
+  Contexts: G{n, n1}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3132,7 +3132,7 @@
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:(o) -> o, B:
           (o) -> o, A:(o) -> o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n1, n}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
+  Contexts: G{n, n1}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3186,7 +3186,7 @@
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:(o) -> o, B:
           (o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n1, n}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
+  Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3242,7 +3242,7 @@
           (o) -> (o) -> (o) -> o, D5:(o) -> (o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n1, n}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
+  Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3298,7 +3298,7 @@
           (o) -> (o) -> (o) -> o, D5:(o) -> (o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n1, n}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
+  Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3355,7 +3355,7 @@
           (o) -> (o) -> (o) -> o, D5:(o) -> (o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n1, n}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
+  Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3413,7 +3413,7 @@
           (o) -> (o) -> (o) -> o, D5:(o) -> (o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n1, n}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
+  Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3472,7 +3472,7 @@
           (o) -> (o) -> (o) -> o, D5:(o) -> (o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n1, n}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
+  Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3795,7 +3795,7 @@
   Vars: A1:(o) -> o, B1:(o) -> o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> o, D1:o,
           B:o, A:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3836,7 +3836,7 @@
   
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3880,7 +3880,7 @@
   
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3927,7 +3927,7 @@
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -3975,7 +3975,7 @@
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4024,7 +4024,7 @@
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4074,7 +4074,7 @@
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4127,7 +4127,7 @@
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4181,7 +4181,7 @@
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4236,7 +4236,7 @@
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4292,7 +4292,7 @@
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4349,7 +4349,7 @@
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n5, n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4407,7 +4407,7 @@
   Vars: A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4459,7 +4459,7 @@
   Vars: D5:(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4511,7 +4511,7 @@
   Vars: D5:(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4566,7 +4566,7 @@
   Vars: D5:(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4622,7 +4622,7 @@
   Vars: D5:(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4679,7 +4679,7 @@
   Vars: D5:(o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4734,7 +4734,7 @@
           o, D3:(o) -> (o) -> (o) -> o, D4:(o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4789,7 +4789,7 @@
           (o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4845,7 +4845,7 @@
           (o) -> (o) -> (o) -> o, A2:o, A3:o, D3:(o) -> (o) -> (o) -> o, D4:
           (o) -> (o) -> (o) -> o, D2:(o) -> (o) -> (o) -> o, D1:o, B:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3}:c[]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4900,7 +4900,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D1:
           (o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4945,7 +4945,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D1:
           (o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -4993,7 +4993,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D1:
           (o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5044,7 +5044,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D1:
           (o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5096,7 +5096,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D1:
           (o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5149,7 +5149,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D1:
           (o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n4, n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2, n4}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5203,7 +5203,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D1:
           (o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n5, n4, n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2, n4, n5}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5258,7 +5258,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D1:
           (o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n6, n5, n4, n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2, n4, n5, n6}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5314,7 +5314,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D1:
           (o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5364,7 +5364,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5414,7 +5414,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5464,7 +5464,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5515,7 +5515,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,
@@ -5567,7 +5567,7 @@
   Vars: A3:(o) -> o, A4:(o) -> o, D3:(o) -> (o) -> (o) -> (o) -> o, D2:
           (o) -> (o) -> (o) -> (o) -> o, D1:(o) -> o, B:(o) -> o, A:(o) -> o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
+  Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
       ctx G:c.
         forall A, forall B, forall D1, forall D2,

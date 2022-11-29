@@ -30,6 +30,7 @@ type var =
   ; ty : ty
   }
 
+type t = var
 type tyctx = (id * ty) list
 
 type term =
@@ -397,6 +398,8 @@ let get_id t =
   | Var v -> v.name
   | _ -> bugf "Cannot get id of term"
 ;;
+
+let compare t1 t2 = String.compare t1.name t2.name
 
 let get_tag t =
   match observe t with

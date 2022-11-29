@@ -26,7 +26,7 @@ let tar_included =
 
 let package_to_tar () =
   let excludes = List.map (fun x -> "--exclude=" ^ x) tar_excluded in
-  let args = [ "-cvf"; tar_name ] @ excludes @ tar_included in
+  let args = [ "-cf"; tar_name ] @ excludes @ tar_included in
   let cmd = F.quote_command "tar" args in
   let _ = U.system cmd in
   ()

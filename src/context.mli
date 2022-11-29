@@ -107,16 +107,131 @@ type block_schema = B of wctx * entry list
 (** [ctx_schema] is a context schema [block_schema] *)
 type ctx_schema = block_schema list
 
+module CtxVarCtx : sig
+  (** Context variable context for a sequent. *)
+  module H = Extensions.Hashtbl
+
+  module Res = VarSet
+
+  (** The type of the context variables *)
+  type v = ctx_var
+
+  type ctx_ty = ctx_typ
+  type d = Res.t ref * ctx_ty
+  type entry = v * d
+
+  (** The context varaible context type *)
+  type t
+
+  (** [empty ()] creates a new empty context variable context *)
+  val empty : unit -> t
+
+  (** [is_empty ctx] determines if there are no entries in the context. *)
+  val is_empty : t -> bool
+
+  (** [add_var ctx var ?res ctx_ty] adds [var] to the context var context with a
+      new restricted set which contains all elements in [res] and has the schema
+      and blocks given in [ctx_ty] *)
+  val add_var : t -> v -> ?res:Res.elem list -> ctx_ty -> unit
+
+  (** [add_vars ctx vars] takes a list of key value pairs from a context
+      variable context and inserts them into [ctx] *)
+  val add_vars : t -> (v * d) list -> unit
+
+  (** [to_list ctx] gives a list of key value pairs from [ctx]*)
+  val to_list : t -> (v * d) list
+
+  (** [of_list entries] takes a list of key values pairs a returns a new ctx var
+      ctx representing it *)
+  val of_list : (v * d) list -> t
+
+  (** [of_list_list entries] takes a list of context variables and entries but
+      instead of a [VarSet] for the restricted set, the function will create it
+      for the caller. *)
+  val of_list_list : (v * (Res.elem list * ctx_ty)) list -> t
+
+  (** [get_vars ctx] returns all context variables in the context *)
+  val get_vars : t -> v list
+
+  (** [find_var_opt ctx var] returns [Some] value if [var] is in the context,
+      otherwise [None] *)
+  val find_var_opt : t -> v -> d option
+
+  (** [find_var_opt ctx var] returns [var]'s value if [var] is in the context,
+      otherwise raises [Not_found] *)
+  val find : t -> v -> d
+
+  (** [mem ctx var] determines if [var] has an entry in [ctx] *)
+  val mem : t -> v -> bool
+
+  (** [restrict_in ctx var elems] adds all of the elements of [elems] to the
+      restricted set of [var] *)
+  val restrict_in : t -> v -> Res.elem list -> unit
+
+  (** [remove_var ctx var] removes [var] from [ctx]*)
+  val remove_var : t -> v -> unit
+
+  (** [copy ctx] returns a deep copy of [ctx] *)
+  val copy : t -> t
+
+  (** [get_var_schema ctx var] returns [Some] schema which quantifies [var] or
+      [None] if [var] is not present in [ctx] *)
+  val get_var_schema : t -> v -> string option
+
+  (** [get_var_tys ctx] returns all of the context vars in [ctx] along with
+      their type *)
+  val get_var_tys : t -> (v * ctx_ty) list
+
+  (** [get_var_blocks ctx var] returns the elaborated context blocks
+      corresponding to [var] *)
+  val get_var_blocks : t -> v -> block list
+
+  (** [get_var_restricted ctx var] gives the restricted set corresponding to
+      [var] or [None] if [var] is not present in [ctx]*)
+  val get_var_restricted : t -> v -> Res.t option
+
+  (** [remove_all f ctx] will remove all entries from [ctx] which satisfy [f] *)
+  val remove_all : (v -> d -> bool) -> t -> unit
+
+  (** [map_inplace f ctx] will apply [f] to all entries of [ctx] modifying it inplace *)
+  val map_inplace : (v -> d -> d) -> t -> unit
+
+  (** [map_entries f ctx] retuns a list of entries with [f] applied, leaving
+      [ctx] unmodified with the proviso that [f] does not modify the restricted
+      set reference *)
+  val map_entries : (entry -> 'a) -> t -> 'a list
+
+  (** [get_ty entry] will extract the context type from an entry in the [ctx] *)
+  val get_ty : entry -> d
+
+  (** [get_restricted entry] returns the restricted set from [entry]*)
+  val get_restricted : entry -> Res.t
+
+  (** [get_id entry] returns the context variable id from an [entry]*)
+  val get_id : entry -> v
+
+  (** [get_blocks entry] gives the blocks from the [entry]*)
+  val get_blocks : entry -> block list
+
+  (** [get_schema entry] *)
+  val get_schema : entry -> string
+
+  (** [union ctx1 ctx2] returns a new [CtxVarCtx.t] which is the combination of
+      [ctx1] and [ctx2]. Entries in [ctx2] replace those in [ctx1]. [ctx1] and
+      [ctx2] are left unchanged *)
+  val union : t -> t -> t
+end
+
 (** [ctxexpr_to_ctx ctxvars e] converts [e] into a context that can be used in
     type checking *)
-val ctxexpr_to_ctx : (ctx_var * ctx_typ) list -> ctx_expr -> (Term.var * Term.term) list
+val ctxexpr_to_ctx : CtxVarCtx.t -> ctx_expr -> (Term.var * Term.term) list
 
 (** [replace_ctx_vars alist ctx] applies the substitution [alist] to the
     context variable in [ctx]*)
 val replace_ctx_vars : (string * ctx_expr) list -> ctx_expr -> ctx_expr
 
 (** [find_var_refs ctxvars tag ctx] gets all terms with [tag] from the context vars *)
-val find_var_refs : (ctx_var * ctx_typ) list -> Term.tag -> ctx_expr -> Term.term list
+val find_var_refs : CtxVarCtx.t -> Term.tag -> ctx_expr -> Term.term list
 
 (** [get_explicit g] gives the list of vars and their types in context expression [g]
     such that the last item in the context is the first item in the list

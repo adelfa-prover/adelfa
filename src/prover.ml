@@ -51,7 +51,7 @@ let sequent =
     ~copy:cp_sequent
     ~assign:assign_sequent
     { vars = []
-    ; ctxvars = []
+    ; ctxvars = Context.CtxVarCtx.empty ()
     ; hyps = []
     ; goal = Formula.Top
     ; count = 0
@@ -219,7 +219,7 @@ let case remove hyp =
       add_subgoals
         [ (fun () ->
             sequent.vars <- seq.vars;
-            sequent.ctxvars <- seq.ctxvars;
+            sequent.ctxvars <- Context.CtxVarCtx.copy seq.ctxvars;
             sequent.hyps <- seq.hyps;
             sequent.goal <- seq.goal;
             sequent.count <- seq.count;
@@ -322,7 +322,7 @@ let type_apply_withs form (vwiths, cwiths) =
             (List.map (fun (id, r) -> id, Option.get !r) new_nvarctx);
           if Typing.of_schema
                nvars
-               (Sequent.get_cvar_tys sequent.ctxvars)
+               sequent.ctxvars
                ctxtm
                (schemaid, lookup_schema schemaid)
           then id, ctxtm
@@ -378,16 +378,17 @@ let formula_vars_alist tag ctxvars formula =
 ;;
 
 let formula_free_logic_vars ctxvars formula =
-  let bound_ctxvars = ref [] in
+  let bound_ctxvars = Context.CtxVarCtx.empty () in
   let rec get_atomic bndrs formula =
     match formula with
     | Formula.Ctx (cbndrs, body) ->
       let _ =
-        bound_ctxvars
-          := List.map
-               (fun (vid, vty) -> Context.ctx_var vid, Context.CtxTy (vty, []))
-               cbndrs
-             @ !bound_ctxvars
+        Context.CtxVarCtx.add_vars
+          bound_ctxvars
+          (List.map
+             (fun (vid, vty) ->
+               Context.ctx_var vid, (ref VarSet.empty, Context.CtxTy (vty, [])))
+             cbndrs)
       in
       get_atomic bndrs body
     | Formula.All (vs, body) | Formula.Exists (vs, body) ->
@@ -401,7 +402,9 @@ let formula_free_logic_vars ctxvars formula =
   in
   let bound_vars, atoms = get_atomic [] formula in
   let logic_vars =
-    List.flatten_map (formula_vars_alist Term.Logic (!bound_ctxvars @ ctxvars)) atoms
+    List.flatten_map
+      (formula_vars_alist Term.Logic (Context.CtxVarCtx.union bound_ctxvars ctxvars))
+      atoms
   in
   List.remove_all (fun (id, _) -> List.mem id bound_vars) logic_vars
 ;;
@@ -410,7 +413,7 @@ let formula_free_logic_vars ctxvars formula =
    Assumes that any context variable appearing in the formula f
    is a member of the context variable context ctxvarctx.*)
 let ensure_no_logic_variable ctxvarctx f =
-  let logic_vars = formula_free_logic_vars ctxvarctx f in
+  let logic_vars = formula_free_logic_vars (Context.CtxVarCtx.copy ctxvarctx) f in
   if logic_vars <> [] then raise (ApplyFailure "Found logic variable at toplevel.")
 ;;
 
@@ -455,11 +458,11 @@ let apply_form f forms uws =
   (* let res_f = Tactics.apply_with !schemas sequent f' forms withs in *)
   let res_f = Tactics.apply_with schemas sequent f forms withs in
   let () =
-    ensure_no_uninst_ctxvariable (Sequent.get_cvar_tys sequent.Sequent.ctxvars) res_f
+    ensure_no_uninst_ctxvariable
+      (Context.CtxVarCtx.get_var_tys sequent.Sequent.ctxvars)
+      res_f
   in
-  let () =
-    ensure_no_logic_variable (Sequent.get_cvar_tys sequent.Sequent.ctxvars) res_f
-  in
+  let () = ensure_no_logic_variable sequent.Sequent.ctxvars res_f in
   res_f
 ;;
 
@@ -472,9 +475,7 @@ let apply_form f forms uws =
    @return the new formula with fresh nominals
 *)
 let freshen_nominals (form : Formula.formula) : Formula.formula =
-  let nominals =
-    Formula.get_formula_used_nominals (Sequent.get_cvar_tys sequent.Sequent.ctxvars) form
-  in
+  let nominals = Formula.get_formula_used_nominals sequent.Sequent.ctxvars form in
   let nvars = Sequent.get_nominals sequent in
   let used = ref nvars in
   let alist =
@@ -633,9 +634,10 @@ let weaken depth remove id ty =
     if Context.has_var g
     then (
       let _ =
-        restrict_in
-          (ctxvar_lookup sequent.ctxvars (Context.get_ctx_var g))
-          [ Term.get_id nvar ]
+        Context.CtxVarCtx.restrict_in
+          sequent.ctxvars
+          (Context.get_ctx_var g)
+          [ Term.term_to_var nvar ]
       in
       ());
     Sequent.add_var sequent (Term.term_to_pair nvar);

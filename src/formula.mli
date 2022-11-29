@@ -55,7 +55,7 @@ val fresh_raised_alist
   -> (id * term) list * term list
 
 val collect_vars_ctx : formula -> Term.var list
-val collect_terms : (Context.ctx_var * Context.ctx_typ) list -> formula -> term list
+val collect_terms : CtxVarCtx.t -> formula -> term list
 val replace_formula_vars : (id * term) list -> formula -> formula
 
 val replace_formula_vars_rename
@@ -73,30 +73,9 @@ val replace_ctx_vars : (Context.ctx_var * Context.ctx_expr) list -> formula -> f
 val get_formula_used_ctxvars : formula -> Context.ctx_var list
 val get_formula_ctx_opt : formula -> Context.ctx_expr option
 val get_ctx_var_opt : formula -> Context.ctx_var option
-
-val context_support
-  :  (Context.ctx_var * Context.ctx_typ) list
-  -> Context.ctx_expr
-  -> term list
-
-val context_support_sans
-  :  (Context.ctx_var * Context.ctx_typ) list
-  -> Context.ctx_expr
-  -> term list
-
-val formula_support : (Context.ctx_var * Context.ctx_typ) list -> formula -> term list
-
-val get_formula_used
-  :  (Context.ctx_var * Context.ctx_typ) list
-  -> formula
-  -> (id * term) list
-
-val get_formula_used_nominals
-  :  (Context.ctx_var * Context.ctx_typ) list
-  -> formula
-  -> (id * term) list
-
-val formula_support_sans
-  :  (Context.ctx_var * Context.ctx_typ) list
-  -> formula
-  -> term list
+val context_support : CtxVarCtx.t -> Context.ctx_expr -> term list
+val context_support_sans : CtxVarCtx.t -> Context.ctx_expr -> term list
+val formula_support : CtxVarCtx.t -> formula -> term list
+val get_formula_used : CtxVarCtx.t -> formula -> (id * term) list
+val get_formula_used_nominals : CtxVarCtx.t -> formula -> (id * term) list
+val formula_support_sans : CtxVarCtx.t -> formula -> term list

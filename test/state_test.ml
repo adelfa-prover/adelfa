@@ -7,7 +7,7 @@ let make_tests =
          >:: fun () ->
          let s : Sequent.sequent =
            { vars = []
-           ; ctxvars = []
+           ; ctxvars = Context.CtxVarCtx.empty ()
            ; hyps = []
            ; goal = Formula.Top
            ; count = 0
@@ -54,7 +54,7 @@ let reload_tests =
              ~copy:Sequent.cp_sequent
              ~assign:Sequent.assign_sequent
              { vars = []
-             ; ctxvars = []
+             ; ctxvars = Context.CtxVarCtx.empty ()
              ; hyps = []
              ; goal = Formula.Top
              ; count = 0

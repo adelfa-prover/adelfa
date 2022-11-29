@@ -309,7 +309,7 @@ let process_top_level () =
          (Prover.get_propty_lst ())
          []
          []
-         []
+         (Context.CtxVarCtx.empty ())
          []
          uthm
      in

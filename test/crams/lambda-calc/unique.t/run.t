@@ -179,7 +179,7 @@
   
   Vars: a1:(o) -> (o) -> o, R:(o) -> o, T3:o, T4:o, D2:o, T2:o
   Nominals: n2:o, n1:o, n:o
-  Contexts: G{n2, n1, n}:c[]
+  Contexts: G{n, n1, n2}:c[]
   IH:
       ctx G:c.
         forall E, forall T1, forall T2, forall D1, forall D2,
@@ -209,7 +209,7 @@
   
   Vars: D3:(o) -> (o) -> o, T5:o, a1:(o) -> (o) -> o, R:(o) -> o, T3:o, T4:o
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n5, n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
       ctx G:c.
         forall E, forall T1, forall T2, forall D1, forall D2,
@@ -243,7 +243,7 @@
   Vars: D3:(o) -> (o) -> o, T5:o, a1:(o) -> (o) -> o, R:(o) -> o, T3:o, T4:o,
           D1:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n5, n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
       ctx G:c.
         forall E, forall T1, forall T2, forall D1, forall D2,
@@ -277,7 +277,7 @@
   
   Vars: D3:(o) -> (o) -> o, T5:o, a1:(o) -> (o) -> o, R:(o) -> o, T3:o
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n5, n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
       ctx G:c.
         forall E, forall T1, forall T2, forall D1, forall D2,
@@ -311,7 +311,7 @@
   
   Vars: D3:(o) -> (o) -> o, T5:o, a1:(o) -> (o) -> o, R:(o) -> o, T3:o
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: G{n5, n4, n3, n2, n1, n}:c[]
+  Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
       ctx G:c.
         forall E, forall T1, forall T2, forall D1, forall D2,

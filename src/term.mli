@@ -32,6 +32,10 @@ type var =
   ; ty : ty (** [ty] The {!type:Type.ty} of the variable *)
   }
 
+type t = var
+
+val compare : t -> t -> int
+
 (** [term] an LF term *)
 type term =
   | Var of var

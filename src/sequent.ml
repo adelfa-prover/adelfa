@@ -17,17 +17,9 @@ type hyp =
   ; formula : Formula.formula
   }
 
-type cvar_entry = Context.ctx_var * Term.id list ref * Context.ctx_typ
-
-let cp_cvar_entry (id, restricted, blocks) =
-  let names = !restricted in
-  let cp = ref names in
-  id, cp, blocks
-;;
-
 type sequent =
   { mutable vars : (Term.id * Term.term) list
-  ; mutable ctxvars : cvar_entry list
+  ; mutable ctxvars : Context.CtxVarCtx.t
   ; mutable hyps : hyp list
   ; mutable goal : Formula.formula
   ; mutable count : int
@@ -36,12 +28,12 @@ type sequent =
   }
 
 let cp_sequent sq =
-  { sq with vars = sq.vars; ctxvars = List.map cp_cvar_entry sq.ctxvars }
+  { sq with vars = sq.vars; ctxvars = Context.CtxVarCtx.copy sq.ctxvars }
 ;;
 
 let assign_sequent sq1 sq2 =
   sq1.vars <- sq2.vars;
-  sq1.ctxvars <- sq2.ctxvars;
+  sq1.ctxvars <- Context.CtxVarCtx.copy sq2.ctxvars;
   sq1.hyps <- sq2.hyps;
   sq1.goal <- sq2.goal;
   sq1.count <- sq2.count;
@@ -76,17 +68,10 @@ let get_nominals sequent =
 let get_eigen sequent = List.filter (fun (_, t) -> Term.is_var Term.Eigen t) sequent.vars
 
 let add_ctxvar sequent c ?rstrct:(r = []) t =
-  sequent.ctxvars <- (c, ref r, t) :: sequent.ctxvars
+  Context.CtxVarCtx.add_var sequent.ctxvars c ~res:r t
 ;;
 
-let remove_ctxvar sequent v =
-  sequent.ctxvars
-    <- List.remove_all (fun (c, _, _) -> Context.ctx_var_eq v c) sequent.ctxvars
-;;
-
-let get_ctxvar_restricted (_, rstrct, _) = !rstrct
-let get_assoc_ctxvar_restricted (id, rstrct, _) = id, !rstrct
-let get_assoc_ctxvars_restricted entries = List.map get_assoc_ctxvar_restricted entries
+let remove_ctxvar sequent v = Context.CtxVarCtx.remove_var sequent.ctxvars v
 
 let replace_assoc_ctxvars_restricted alist entries =
   let alist = List.map (fun (v, t) -> v, Term.term_to_name t) alist in
@@ -101,32 +86,14 @@ let replace_assoc_ctxvars_restricted alist entries =
   List.map (fun (v, vars) -> v, aux vars) entries
 ;;
 
-let get_ctxvar_id (id, _, _) = id
-let get_ctxvar_ty (_, _, ctxty) = ctxty
-
-(* This function will update the given context variable context entry 
-   to add ns to the collection of restricted names. Returns the
-   updated context variable entry. *)
-let restrict_in ((_, rstrct, _) as cvar) ns =
-  rstrct := ns @ !rstrct;
-  cvar
-;;
-
-let ctxvar_mem cvars n = List.exists (fun (var, _, _) -> Context.ctx_var_eq n var) cvars
-
-(* Raises Not_found if context variable does not appear. *)
-let ctxvar_lookup cvars n = List.find (fun (var, _, _) -> Context.ctx_var_eq n var) cvars
-let get_cvar_tys cvars = List.map (fun (x, _, z) -> x, z) cvars
-
 (* apply susbtitution to eigenvariables in sequent.
    Does not modify Psi (eigenvariable context) to reflect the substitution;
    assumes this is handled by the caller. *)
 let replace_seq_vars subst sequent =
   sequent.vars <- sequent.vars;
-  sequent.ctxvars
-    <- List.map
-         (fun (v, rstrct, ctxty) -> v, rstrct, Context.replace_ctx_typ_vars subst ctxty)
-         sequent.ctxvars;
+  Context.CtxVarCtx.map_inplace
+    (fun _ (r, t) -> r, Context.replace_ctx_typ_vars subst t)
+    sequent.ctxvars;
   sequent.hyps
     <- List.map
          (fun h ->
@@ -211,13 +178,11 @@ let norm_atom sequent formula =
          let name, _ = Term.fresh_wrt ~ts:2 Nominal "n" v.Term.ty used in
          let _ = add_var sequent (Term.term_to_pair name) in
          if Context.has_var g
-         then (
-           let _ =
-             restrict_in
-               (ctxvar_lookup sequent.ctxvars (Context.get_ctx_var g))
-               [ Term.get_id name ]
-           in
-           ());
+         then
+           Context.CtxVarCtx.restrict_in
+             sequent.ctxvars
+             (Context.get_ctx_var g)
+             [ Term.term_to_var name ];
          let g' = Context.Ctx (g, (Term.term_to_var name, typ)) in
          let m' = Term.app m [ Term.eta_expand name ] in
          let a' =
@@ -233,10 +198,9 @@ let norm_atom sequent formula =
 ;;
 
 let prune_noms sequent =
-  let ctxvars = get_cvar_tys sequent.ctxvars in
   let nom_in_forms =
     List.flatten_map
-      (Formula.get_formula_used_nominals ctxvars)
+      (Formula.get_formula_used_nominals sequent.ctxvars)
       (sequent.goal :: List.map (fun h -> h.formula) sequent.hyps)
     |> List.unique ~cmp:(fun (_, t1) (_, t2) -> Term.eq t1 t2)
   in
@@ -305,8 +269,11 @@ let normalize_hyps sequent =
 ;;
 
 let make_sequent_from_goal ?(name = "") ~form:goal () =
-  { vars = List.map Term.term_to_pair (Formula.formula_support [] goal)
-  ; ctxvars = []
+  { vars =
+      List.map
+        Term.term_to_pair
+        (Formula.formula_support (Context.CtxVarCtx.empty ()) goal)
+  ; ctxvars = Context.CtxVarCtx.empty ()
   ; hyps = []
   ; goal
   ; count = 0
@@ -320,9 +287,9 @@ let eq sq1 sq2 =
   let hyp_forms2 = List.map (fun h -> h.formula) sq2.hyps in
   List.for_all2 (fun (v1, t1) (v2, t2) -> v1 = v2 && Term.eq t1 t2) sq1.vars sq2.vars
   && List.for_all2
-       (fun (v1, _, _) (v2, _, _) -> Context.ctx_var_eq v1 v2)
-       sq1.ctxvars
-       sq2.ctxvars
+       Context.ctx_var_eq
+       (Context.CtxVarCtx.get_vars sq1.ctxvars)
+       (Context.CtxVarCtx.get_vars sq2.ctxvars)
   && List.for_all2 Formula.eq hyp_forms1 hyp_forms2
   && Formula.eq sq1.goal sq2.goal
   && sq1.count = sq2.count

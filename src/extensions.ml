@@ -339,6 +339,13 @@ module Hashtbl = struct
     clear dest;
     iter (fun a b -> add dest a b) src
   ;;
+
+  let remove_all f tbl =
+    let f' k v = if f k v then None else Some v in
+    Hashtbl.filter_map_inplace f' tbl
+  ;;
+
+  let to_list tbl = Hashtbl.to_seq tbl |> List.of_seq
 end
 
 module Either = struct

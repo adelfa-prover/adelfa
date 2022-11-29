@@ -21,7 +21,10 @@ let of_schema_tests =
              ( Context.Ctx (Context.Var gamma, (term_to_var n, tm))
              , (term_to_var n1, Term.app typeof [ n; t1 ]) )
          in
-         let ctx_vars = [ gamma, Context.CtxTy ("c", []) ] in
+         let ctx_vars =
+           Context.CtxVarCtx.of_list
+             [ "Gamma", (ref VarSet.empty, Context.CtxTy ("c", [])) ]
+         in
          (* Schema c := {T}(x:tm, y:of x T) *)
          let blocks =
            [ Context.B
@@ -43,7 +46,10 @@ let of_schema_tests =
              ( Context.Ctx (Context.Var gamma, (term_to_var n, tm))
              , (term_to_var n1, Term.app typeof [ n; t ]) )
          in
-         let ctx_vars = [ "Gamma", Context.CtxTy ("c", []) ] in
+         let ctx_vars =
+           Context.CtxVarCtx.of_list
+             [ "Gamma", (ref VarSet.empty, Context.CtxTy ("c", [])) ]
+         in
          let schemas = [ Context.B ([], []) ] in
          of_schema nvars ctx_vars ctx ("c", schemas)
          |> not
@@ -62,7 +68,10 @@ let of_schema_tests =
              ( Context.Ctx (Context.Var gamma, (term_to_var n, tm))
              , (term_to_var n1, Term.app typeof [ n; t ]) )
          in
-         let ctx_vars = [ "Gamma", Context.CtxTy ("c", []) ] in
+         let ctx_vars =
+           Context.CtxVarCtx.of_list
+             [ "Gamma", (ref VarSet.empty, Context.CtxTy ("c", [])) ]
+         in
          (* Schema c := (x:tm) *)
          let schemas = [ Context.B ([], [ term_to_var x, tm ]) ] in
          of_schema nvars ctx_vars ctx ("c", schemas)
@@ -97,7 +106,10 @@ let of_schema_tests =
                  , (term_to_var n2, tm) )
              , (term_to_var n3, Term.app typeof [ n2; t2 ]) )
          in
-         let ctx_vars = [ "Gamma", Context.CtxTy ("c", []) ] in
+         let ctx_vars =
+           Context.CtxVarCtx.of_list
+             [ "Gamma", (ref VarSet.empty, Context.CtxTy ("c", [])) ]
+         in
          (* Schema c := {T}(x:tm, y:of x T) *)
          let schemas =
            [ Context.B
@@ -115,7 +127,10 @@ let of_schema_tests =
          let nvars = [ term_to_name n, n ] in
          (* < Gamma, n: tm, n1: of n T > *)
          let ctx = Context.Ctx (Context.Var gamma, (term_to_var n, tm)) in
-         let ctx_vars = [ "Gamma", Context.CtxTy ("c", []) ] in
+         let ctx_vars =
+           Context.CtxVarCtx.of_list
+             [ "Gamma", (ref VarSet.empty, Context.CtxTy ("c", [])) ]
+         in
          (* Schema c := {T}(x:tm, y:of x T) *)
          let schemas = [ Context.B ([], [ term_to_var x, tm ]) ] in
          of_schema nvars ctx_vars ctx ("c", schemas)
@@ -132,7 +147,10 @@ let of_schema_tests =
            Context.Ctx
              (Context.Ctx (Context.Var gamma, (term_to_var n, tm)), (term_to_var n1, tm))
          in
-         let ctx_vars = [ "Gamma", Context.CtxTy ("c", []) ] in
+         let ctx_vars =
+           Context.CtxVarCtx.of_list
+             [ "Gamma", (ref VarSet.empty, Context.CtxTy ("c", [])) ]
+         in
          (* Schema c := {T}(x:tm, y:of x T) *)
          let schemas = [ Context.B ([], [ term_to_var x, tm ]) ] in
          of_schema nvars ctx_vars ctx ("c", schemas)
@@ -155,7 +173,10 @@ let of_schema_tests =
                  , (term_to_var n1, ty) )
              , (term_to_var n2, Term.app typeof [ n; n1 ]) )
          in
-         let ctx_vars = [ "Gamma", Context.CtxTy ("c", []) ] in
+         let ctx_vars =
+           Context.CtxVarCtx.of_list
+             [ "Gamma", (ref VarSet.empty, Context.CtxTy ("c", [])) ]
+         in
          (* Schema c := {T}(x:tm, y:of x T) *)
          let schemas =
            [ Context.B
@@ -185,7 +206,10 @@ let of_schema_tests =
              ( Context.Ctx (Context.Var gamma, (term_to_var n, tm))
              , (term_to_var n1, Term.app typeof [ n; t1 ]) )
          in
-         let ctx_vars = [ "Gamma", Context.CtxTy ("c", []) ] in
+         let ctx_vars =
+           Context.CtxVarCtx.of_list
+             [ "Gamma", (ref VarSet.empty, Context.CtxTy ("c", [])) ]
+         in
          (* Schema c := {T}(x:tm, y:of x T) *)
          let schemas =
            [ Context.B

@@ -123,11 +123,134 @@ type wctx = (Term.id * Type.ty) list
 type block_schema = B of wctx * entry list
 type ctx_schema = block_schema list
 
+module CtxVarCtx = struct
+  module H = Extensions.Hashtbl
+  module Res = VarSet
+
+  type v = ctx_var
+  type ctx_ty = ctx_typ
+  type d = Res.t ref * ctx_ty
+  type entry = v * d
+  type t = (v, d) H.t
+
+  let empty () = H.create 19
+  let is_empty ctx = H.length ctx = 0
+  let add_var ctx v ?(res = Res.empty) blocks = H.replace ctx v (ref res, blocks)
+
+  let add_var ctx v ?(res = []) blocks =
+    let set = Res.add_vars Res.empty res in
+    add_var ctx v ~res:set blocks
+  ;;
+
+  let mem t v = H.mem t v
+  let add_vars ctx vs = H.replace_seq ctx (List.to_seq vs)
+  let find_var_opt t v = H.find_opt t v
+  let find t v = H.find t v
+  let to_list ctx = H.to_seq ctx |> List.of_seq
+
+  let of_list entries =
+    let ctx = empty () in
+    List.iter (fun (k, (r, b)) -> H.replace ctx k (r, b)) entries;
+    ctx
+  ;;
+
+  let of_list_list entries =
+    let ctx = empty () in
+    List.iter (fun (k, (r, b)) -> add_var ctx k ~res:r b) entries;
+    ctx
+  ;;
+
+  let get_vars ctx = to_list ctx |> List.map fst
+
+  let restrict_in t var noms =
+    match find_var_opt t var with
+    | Some (r, _) -> r := Res.add_vars !r noms
+    | None -> ()
+  ;;
+
+  let remove_var ctx v = H.remove ctx v
+
+  let copy ctx =
+    let copy_entry (k, (res, bl)) = k, (ref (Res.copy !res), bl) in
+    let new_ctx = empty () in
+    let new_entries = H.to_seq ctx |> Seq.map copy_entry in
+    H.replace_seq new_ctx new_entries;
+    new_ctx
+  ;;
+
+  let get_var_ty ctx var =
+    let* _, ty = find_var_opt ctx var in
+    return ty
+  ;;
+
+  let get_var_blocks ctx var =
+    match get_var_ty ctx var with
+    | None -> []
+    | Some (CtxTy (_, b)) -> b
+  ;;
+
+  let get_var_schema ctx var =
+    let* (CtxTy (s, _)) = get_var_ty ctx var in
+    return s
+  ;;
+
+  let get_var_tys ctx = to_list ctx |> List.map (fun (v, (_, b)) -> v, b)
+
+  let get_var_restricted ctx var =
+    let* res, _ = find_var_opt ctx var in
+    return !res
+  ;;
+
+  let remove_all f ctx =
+    let f' k v = if f k v then None else Some v in
+    H.filter_map_inplace f' ctx
+  ;;
+
+  let map_inplace f ctx =
+    let f' k v = Some (f k v) in
+    H.filter_map_inplace f' ctx
+  ;;
+
+  let map_entries f ctx = to_list ctx |> List.map f
+
+  let get_ty entry =
+    match entry with
+    | _, e -> e
+  ;;
+
+  let get_restricted entry =
+    match entry with
+    | _, (s, _) -> !s
+  ;;
+
+  let get_id entry =
+    match entry with
+    | id, _ -> id
+  ;;
+
+  let get_blocks entry =
+    match entry with
+    | _, (_, CtxTy (_, b)) -> b
+  ;;
+
+  let get_schema entry =
+    match entry with
+    | _, (_, CtxTy (s, _)) -> s
+  ;;
+
+  let union ctx1 ctx2 =
+    let ctx1' = copy ctx1 in
+    let ctx2_entries = copy ctx2 |> H.to_seq in
+    let () = H.replace_seq ctx1' ctx2_entries in
+    ctx1'
+  ;;
+end
+
 let rec ctxexpr_to_ctx ctxvars e =
   match e with
   | Nil -> []
   | Var id ->
-    let (CtxTy (_, blocks)) = List.assoc id ctxvars in
+    let blocks = CtxVarCtx.get_var_blocks ctxvars id in
     List.map (fun (v, ty) -> v, ty) (List.flatten blocks)
   | Ctx (e', (v, ty)) -> (v, ty) :: ctxexpr_to_ctx ctxvars e'
 ;;
@@ -149,8 +272,8 @@ let find_var_refs ctxvars tag ctx =
   let rec aux ctx =
     match ctx with
     | Nil -> []
-    | Var v when List.mem_assoc v ctxvars ->
-      let (CtxTy (_, blocks)) = List.assoc v ctxvars in
+    | Var v when CtxVarCtx.mem ctxvars v ->
+      let blocks = CtxVarCtx.get_var_blocks ctxvars v in
       if tag = Term.Nominal
       then
         List.map (fun (x, _) -> Term.var_to_term x) (List.flatten blocks)

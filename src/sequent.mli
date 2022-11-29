@@ -16,11 +16,9 @@ type hyp =
   ; formula : Formula.formula
   }
 
-type cvar_entry = Context.ctx_var * Term.id list ref * Context.ctx_typ
-
 type sequent =
-  { mutable vars : (Term.id * Term.term) list
-  ; mutable ctxvars : cvar_entry list
+  { mutable vars : (string * Term.term) list
+  ; mutable ctxvars : Context.CtxVarCtx.t
   ; mutable hyps : hyp list
   ; mutable goal : Formula.formula
   ; mutable count : int
@@ -39,30 +37,18 @@ val get_eigen : sequent -> (Term.id * Term.term) list
 val add_ctxvar
   :  sequent
   -> Context.ctx_var
-  -> ?rstrct:Term.id list
+  -> ?rstrct:Term.var list
   -> Context.ctx_typ
   -> unit
 
 val remove_ctxvar : sequent -> Context.ctx_var -> unit
-val get_ctxvar_id : cvar_entry -> string
-val get_ctxvar_restricted : cvar_entry -> Term.id list
-
-val get_assoc_ctxvars_restricted
-  :  cvar_entry list
-  -> (Context.ctx_var * Term.id list) list
 
 val replace_assoc_ctxvars_restricted
   :  (Term.id * Term.term) list
   -> (Context.ctx_var * Term.id list) list
   -> (Context.ctx_var * Term.id list) list
 
-val get_ctxvar_ty : cvar_entry -> Context.ctx_typ
-val restrict_in : cvar_entry -> Term.id list -> cvar_entry
-val ctxvar_mem : cvar_entry list -> Context.ctx_var -> bool
-
 (* Raises Not_found if the given context variable is not in the context *)
-val ctxvar_lookup : cvar_entry list -> Context.ctx_var -> cvar_entry
-val get_cvar_tys : cvar_entry list -> (Context.ctx_var * Context.ctx_typ) list
 val fresh_hyp_name : sequent -> string -> string
 val add_hyp : sequent -> ?name:string -> Formula.formula -> unit
 val make_hyp : sequent -> ?name:string -> ?tag:tag -> Formula.formula -> hyp

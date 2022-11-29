@@ -59,7 +59,7 @@ Since these tests share a single specification file, group them here
   
   Vars: D:(o) -> (o) -> o, R1:(o) -> o, T1:o, R2:(o) -> o, D2:o, T:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n3, n2, n1, n}:c[]
+  Contexts: Gamma{n, n1, n2, n3}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -90,7 +90,7 @@ Since these tests share a single specification file, group them here
   Vars: D3:(o) -> (o) -> o, T2:o, D:(o) -> (o) -> o, R1:(o) -> o, T1:o, R2:
           (o) -> o
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n6, n5, n4, n3, n2, n1, n}:c[]
+  Contexts: Gamma{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -124,7 +124,7 @@ Since these tests share a single specification file, group them here
   Vars: D3:(o) -> (o) -> o, T2:o, D:(o) -> (o) -> o, R1:(o) -> o, T1:o, R2:
           (o) -> o, D1:(o) -> (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n6, n5, n4, n3, n2, n1, n}:c[]
+  Contexts: Gamma{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -159,7 +159,7 @@ Since these tests share a single specification file, group them here
   Vars: D3:(o) -> (o) -> o, T2:o, D:(o) -> (o) -> o, R1:(o) -> o, T1:o, R2:
           (o) -> o, D1:(o) -> (o) -> o
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n6, n5, n4, n3, n2, n1, n}:c[]
+  Contexts: Gamma{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -194,7 +194,7 @@ Since these tests share a single specification file, group them here
   Vars: D3:(o) -> (o) -> o, T2:o, D:(o) -> (o) -> o, R1:(o) -> o, T1:o, R2:
           (o) -> o, D1:(o) -> (o) -> o
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n6, n5, n4, n3, n2, n1, n}:c[]
+  Contexts: Gamma{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -286,7 +286,7 @@ Since these tests share a single specification file, group them here
   
   Vars: D6:(o) -> (o) -> o, D3:o, D5:o, R:(o) -> o, N:o, T:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n3, n2, n1, n}:c[]
+  Contexts: Gamma{n, n1, n2, n3}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -320,7 +320,7 @@ Since these tests share a single specification file, group them here
   
   Vars: D6:(o) -> (o) -> o, D3:o, D5:o, R:(o) -> o, N:o, T:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n3, n2, n1, n}:c[]
+  Contexts: Gamma{n, n1, n2, n3}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -355,7 +355,7 @@ Since these tests share a single specification file, group them here
   
   Vars: D6:(o) -> (o) -> o, D3:o, D5:o, R:(o) -> o, N:o, T:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n3, n2, n1, n}:c[]
+  Contexts: Gamma{n, n1, n2, n3}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -391,7 +391,7 @@ Since these tests share a single specification file, group them here
   
   Vars: D6:(o) -> (o) -> o, D3:o, D5:o, R:(o) -> o, N:o, T:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n3, n2, n1, n}:c[]
+  Contexts: Gamma{n, n1, n2, n3}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -751,7 +751,7 @@ Since these tests share a single specification file, group them here
   
   Vars: D6:(o) -> (o) -> o, D3:o, D5:o, R1:(o) -> o, T2:o, R2:(o) -> o, T:o
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n4, n3, n2}:c[]
+  Contexts: Gamma{n2, n3, n4}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -786,7 +786,7 @@ Since these tests share a single specification file, group them here
   
   Vars: D6:(o) -> (o) -> o, D3:o, D5:o, R1:(o) -> o, T2:o, R2:(o) -> o, T:o
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n4, n3, n2}:c[]
+  Contexts: Gamma{n2, n3, n4}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -824,7 +824,7 @@ Since these tests share a single specification file, group them here
   
   Vars: D6:(o) -> (o) -> o, D3:o, D5:o, R1:(o) -> o, T2:o, R2:(o) -> o, T:o
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n4, n3, n2}:c[]
+  Contexts: Gamma{n2, n3, n4}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -863,7 +863,7 @@ Since these tests share a single specification file, group them here
   
   Vars: D6:(o) -> (o) -> o, D3:o, D5:o, R1:(o) -> o, T2:o, R2:(o) -> o, T:o
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n4, n3, n2}:c[]
+  Contexts: Gamma{n2, n3, n4}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -1361,7 +1361,7 @@ Since these tests share a single specification file, group them here
   Vars: a1:(o) -> (o) -> (o) -> o, D5:o, D6:o, D7:o, R:(o) -> o, D3:o, D4:o, M:
           o, N:o, T:o, M2:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n3, n2, n1}:c[]
+  Contexts: Gamma{n1, n2, n3}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -1398,7 +1398,7 @@ Since these tests share a single specification file, group them here
   Vars: a1:(o) -> (o) -> (o) -> o, D5:o, D6:o, D7:o, R:(o) -> o, D3:o, D4:o, M:
           o, N:o, T:o, M2:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n3, n2, n1}:c[]
+  Contexts: Gamma{n1, n2, n3}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -1436,7 +1436,7 @@ Since these tests share a single specification file, group them here
   Vars: a1:(o) -> (o) -> (o) -> o, D5:o, D6:o, D7:o, R:(o) -> o, D3:o, D4:o, M:
           o, N:o, T:o, M2:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n3, n2, n1}:c[]
+  Contexts: Gamma{n1, n2, n3}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -1475,7 +1475,7 @@ Since these tests share a single specification file, group them here
   Vars: a1:(o) -> (o) -> (o) -> o, D5:o, D6:o, D7:o, R:(o) -> o, D3:o, D4:o, M:
           o, N:o, D1:(o) -> (o) -> (o) -> (o) -> o, T:o, M2:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n3, n2, n1}:c[]
+  Contexts: Gamma{n1, n2, n3}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,
@@ -1515,7 +1515,7 @@ Since these tests share a single specification file, group them here
   Vars: a1:(o) -> (o) -> (o) -> o, D5:o, D6:o, D7:o, R:(o) -> o, D3:o, D4:o, M:
           o, N:o, D1:(o) -> (o) -> (o) -> (o) -> o, T:o, M2:o
   Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: Gamma{n3, n2, n1}:c[]
+  Contexts: Gamma{n1, n2, n3}:c[]
   IH:
       ctx Gamma:c.
         forall M1, forall M2, forall T, forall D1, forall D2,

@@ -9,7 +9,7 @@ val check_type : Signature.signature -> lftyctx -> term -> term -> term
 (* Context Expression Typing *)
 val of_schema
   :  (Term.id * Term.term) list
-  -> (Context.ctx_var * Context.ctx_typ) list
+  -> Context.CtxVarCtx.t
   -> Context.ctx_expr
   -> id * Context.ctx_schema
   -> bool

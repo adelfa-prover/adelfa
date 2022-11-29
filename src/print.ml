@@ -223,23 +223,20 @@ let pr_ctxty ppf (Context.CtxTy (id, blocks)) =
   Format.fprintf ppf "%a[%a]" pr_str id pr_blocks blocks
 ;;
 
-let rec pr_ctxvarlst ppf (lst : Sequent.cvar_entry list) =
-  match lst with
-  | [] -> ()
-  | [ (id, ns, ty) ] ->
-    Format.fprintf ppf "%a{%a}@,:@,%a" pr_str id pr_strlst !ns pr_ctxty ty
-  | (id, ns, ty) :: vs ->
-    Format.fprintf
-      ppf
-      "%a{%a}@,:@,%a,@ %a"
-      pr_str
-      id
-      pr_strlst
-      !ns
-      pr_ctxty
-      ty
-      pr_ctxvarlst
-      vs
+let pr_ctxvarlst ppf (ctx : Context.CtxVarCtx.t) =
+  let lst =
+    Context.CtxVarCtx.to_list ctx
+    |> List.map (fun (v, (n, b)) -> v, (VarSet.to_id_list !n, b))
+  in
+  let rec aux ppf lst =
+    match lst with
+    | [] -> ()
+    | [ (id, (ns, ty)) ] ->
+      Format.fprintf ppf "%a{%a}@,:@,%a" pr_str id pr_strlst ns pr_ctxty ty
+    | (id, (ns, ty)) :: vs ->
+      Format.fprintf ppf "%a{%a}@,:@,%a,@ %a" pr_str id pr_strlst ns pr_ctxty ty aux vs
+  in
+  aux ppf lst
 ;;
 
 let pr_ann ppf = function
@@ -356,7 +353,7 @@ let pr_sequent ppf seq =
       pr_varlst
       (List.filter Term.is_uninstantiated evars);
   if nvars = [] then () else Format.fprintf ppf "Nominals: @[<2>%a@]@." pr_varlst nvars;
-  if seq.Sequent.ctxvars = []
+  if Context.CtxVarCtx.is_empty seq.Sequent.ctxvars
   then ()
   else Format.fprintf ppf "Contexts: @[<2>%a@]@." pr_ctxvarlst seq.Sequent.ctxvars;
   Format.fprintf
