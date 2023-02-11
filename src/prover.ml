@@ -663,6 +663,32 @@ let permute_ctx remove hyp_name ctx_expr =
     failwithf "Not a valid context permutation.\n%s" str
 ;;
 
+let permute remove name perm =
+  try
+    let f = (Sequent.get_hyp sequent name).formula in
+    let f' = Tactics.permute f perm sequent in
+    if remove then Sequent.replace_hyp sequent name f' else Sequent.add_hyp sequent f'
+  with
+  | Tactics.PermutationFailure (OutOfResSetPermutation ns) ->
+    Format.asprintf
+      "@[<hv>@[Permutation@ provided@ can@ only@ contain@ nominals@ in@ the@ restricted@ \
+       set.@] @[Mappings@ not@ allowed@ for:@ %s@]@]"
+      (String.concat ", " ns)
+    |> failwith
+  | Tactics.PermutationFailure (MultiMappedPermutation ns) ->
+    Format.asprintf
+      "@[<hv>@[Multiple@ mappings found for:@] @[%s@]@]"
+      (String.concat ", " ns)
+    |> failwith
+  | Tactics.PermutationFailure (IncompletePermutation ns) ->
+    Format.asprintf
+      "@[<hv>@[Permutation@ provided@ is@ not@ complete.@] @[Mappings@ required@ for:@] \
+       @[%s@]@]"
+      (String.concat ", " ns)
+    |> failwith
+  | Not_found -> failwithf "No hyp of name `%s' found." name
+;;
+
 let strengthen remove name =
   try
     match (Sequent.get_hyp sequent name).formula with

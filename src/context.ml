@@ -103,6 +103,20 @@ let fresh_wrt name used =
   id, id :: used
 ;;
 
+let list_fresh_wrt names used =
+  let used = ref used in
+  let cvars_alist =
+    List.fold_left
+      (fun acc (v, t) ->
+        let v', used' = fresh_wrt v !used in
+        used := used';
+        (v, v', t) :: acc)
+      []
+      names
+  in
+  cvars_alist, !used
+;;
+
 (* context types *)
 type block = entry list
 type ctx_typ = CtxTy of string * block list

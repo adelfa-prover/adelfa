@@ -47,12 +47,12 @@
 %token IMP COMMA DOT LPAREN RPAREN TURN EQ TRUE FALSE DEFEQ
 %token UNFOLD APPDFN
 %token APPLY IND CASE SEARCH TO ON INTROS ASSERT WITH PRUNE
-%token SKIP ABORT UNDO LEFT RIGHT WEAKEN PERMUTECTX STRENGTHEN INST
+%token SKIP ABORT UNDO LEFT RIGHT WEAKEN PERMUTECTX PERMUTE STRENGTHEN INST
 %token SPLIT KEEP SPECIFICATION SEMICOLON
 %token THEOREM SCHEMA DEFINE SET
 %token SEARCHDEPTH
 %token QUIT
-%token COLON RARROW CTX FORALL EXISTS STAR AT BY
+%token COLON RARROW RLARROW CTX FORALL EXISTS STAR AT BY
 %token OR AND
 %token LBRACE RBRACE LBRACK RBRACK LANGLE RANGLE
 %token TYPE OTY PROP
@@ -262,6 +262,8 @@ command:
       { Uterms.Weaken($2, $4, Uterms.WithDepth($5)) }
   | PERMUTECTX clearable TO context_expr DOT 
       { Uterms.PermuteCtx($2, $4) }
+  | PERMUTE clearable WITH perm_expr DOT
+      { Uterms.Permute($2, $4) }
   | STRENGTHEN clearable DOT
       { Uterms.Strengthen($2) }
   | INST clearable WITH id EQ term DOT
@@ -353,7 +355,19 @@ withs:
       { [Uterms.Vws($1,$3)] }
   | LPAREN id EQ context_expr RPAREN
       { [Uterms.Cws($2,$4)] }
-      
+
+perm_expr:
+  | LPAREN perm_expr RPAREN
+     { $2 }
+  | id RARROW id COMMA perm_expr
+     { ($1, $3) :: $5 }
+  | id RARROW id
+     { [($1, $3)] }
+  | id RLARROW id
+     { [($1, $3); ($3, $1)] }
+  | id RLARROW id COMMA perm_expr
+     { ($1, $3) :: ($3, $1) :: $5 }
+
 formula:
   | term
     { Uterms.UProp($1) }

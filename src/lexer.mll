@@ -33,6 +33,7 @@
     "with",          WITH ;
     "weaken",        WEAKEN ;
     "ctxpermute",    PERMUTECTX ;
+    "permute",       PERMUTE ;
     "strengthen",    STRENGTHEN ;
     "inst",          INST ;
     "prune",         PRUNE ;
@@ -89,6 +90,7 @@ rule token = parse
 
 | ":"                { COLON }
 | "->"               { RARROW }
+| "<->"              { RLARROW }
 | "*"                { STAR }
 | "@"                { AT }
 | "\\/"              { OR }

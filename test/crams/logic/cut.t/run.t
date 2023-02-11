@@ -14,7 +14,7 @@
   
   
   ==================================
-  ctx G:c.
+  ctx G:c,
     forall A, forall B, forall D,
       {G |- D : conc (imp A B)} => exists D', {G |- [x]D' x : {x:hyp A}conc B}
   
@@ -23,13 +23,13 @@
   Subgoal imp_inv:
   
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
   
   ==================================
-  ctx G:c.
+  ctx G:c,
     forall A, forall B, forall D,
       {G |- D : conc (imp A B)}@ => exists D', {G |- [x]D' x : {x:hyp A}conc B}
   
@@ -40,7 +40,7 @@
   Vars: D:o, B:o, A:o
   Contexts: G{}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -57,7 +57,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -86,7 +86,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -115,7 +115,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -144,7 +144,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -174,7 +174,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -204,7 +204,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -236,7 +236,7 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -269,7 +269,7 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -303,7 +303,7 @@
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3, n4}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -338,7 +338,7 @@
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -374,7 +374,7 @@
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -411,7 +411,7 @@
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -449,7 +449,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -475,7 +475,7 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -502,7 +502,7 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -530,7 +530,7 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -558,7 +558,7 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -588,7 +588,7 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -619,7 +619,7 @@
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3, n4}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -651,7 +651,7 @@
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -684,7 +684,7 @@
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -716,7 +716,7 @@
   Vars: D1:o, B:o, A:o
   Contexts: G{}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -735,7 +735,7 @@
   Nominals: n:o
   Contexts: G{}:c[(n:hyp (imp (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -753,7 +753,7 @@
   Nominals: n:o
   Contexts: G{}:c[(n:hyp (imp (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -772,7 +772,7 @@
   Nominals: n:o
   Contexts: G{}:c[(n:hyp (imp (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -793,7 +793,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n1}:c[(n:hyp (imp (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -815,7 +815,7 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n1, n2}:c[(n:hyp (imp (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -838,7 +838,7 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n1, n2, n3}:c[(n:hyp (imp (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (imp A B)}* =>
               exists D', {G |- [x]D' x : {x:hyp A}conc B}
@@ -867,7 +867,7 @@
   
   
   ==================================
-  ctx G:c.
+  ctx G:c,
     forall A, forall B, forall D,
       {G |- D : conc (and A B)} =>
           exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -877,13 +877,13 @@
   Subgoal and_inv:
   
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
   
   ==================================
-  ctx G:c.
+  ctx G:c,
     forall A, forall B, forall D,
       {G |- D : conc (and A B)}@ =>
           exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -895,7 +895,7 @@
   Vars: D:o, B:o, A:o
   Contexts: G{}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -912,7 +912,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -944,7 +944,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -977,7 +977,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1011,7 +1011,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1045,7 +1045,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1080,7 +1080,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1117,7 +1117,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1156,7 +1156,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1190,7 +1190,7 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1225,7 +1225,7 @@
   Vars: D1:o, D2:o, B:o, A:o
   Contexts: G{}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1251,7 +1251,7 @@
   Vars: D1:o, D2:o, B:o, A:o
   Contexts: G{}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1277,7 +1277,7 @@
   Vars: D1:o, D2:o, B:o, A:o
   Contexts: G{}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1303,7 +1303,7 @@
   Vars: D1:o, D2:o, B:o, A:o
   Contexts: G{}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1332,7 +1332,7 @@
   Vars: D1:o, D2:o, B:o, A:o
   Contexts: G{}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1359,7 +1359,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1385,7 +1385,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1414,7 +1414,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1442,7 +1442,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1471,7 +1471,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1500,7 +1500,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1531,7 +1531,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1564,7 +1564,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1592,7 +1592,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1620,7 +1620,7 @@
   Vars: D1:o, B:o, A:o
   Contexts: G{}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1639,7 +1639,7 @@
   Nominals: n:o
   Contexts: G{}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1657,7 +1657,7 @@
   Nominals: n:o
   Contexts: G{}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1676,7 +1676,7 @@
   Nominals: n:o
   Contexts: G{}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1697,7 +1697,7 @@
   Nominals: n:o
   Contexts: G{}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1717,7 +1717,7 @@
   Nominals: n:o
   Contexts: G{}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1739,7 +1739,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n1}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1762,7 +1762,7 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n1, n2}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1786,7 +1786,7 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n1, n2, n3}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1811,7 +1811,7 @@
   Nominals: n:o
   Contexts: G{}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1830,7 +1830,7 @@
   Nominals: n1:o, n:o
   Contexts: G{n1}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1850,7 +1850,7 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n1, n2}:c[(n:hyp (and (A n) (B n)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D,
           {G |- D : conc (and A B)}* =>
               exists D1, exists D2, {G |- D1 : conc A} /\ {G |- D2 : conc B}
@@ -1878,7 +1878,7 @@
   
   
   ==================================
-  ctx G:c.
+  ctx G:c,
     forall A, forall B, forall D1, forall D2,
       {A : proptm} =>
           {G |- D1 : conc A} =>
@@ -1889,7 +1889,7 @@
   Subgoal cut:
   
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
@@ -1897,7 +1897,7 @@
                       exists D3, {G |- D3 : conc B}
   
   ==================================
-  ctx G:c.
+  ctx G:c,
     forall A, forall B, forall D1, forall D2,
       {A : proptm}@ =>
           {G |- D1 : conc A} =>
@@ -1908,14 +1908,14 @@
   Subgoal cut:
   
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -1923,7 +1923,7 @@
                       exists D3, {G |- D3 : conc B}
   
   ==================================
-  ctx G:c.
+  ctx G:c,
     forall A, forall B, forall D1, forall D2,
       {A : proptm}@ =>
           {G |- D1 : conc A} =>
@@ -1938,14 +1938,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -1966,14 +1966,14 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2012,14 +2012,14 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2059,14 +2059,14 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2107,14 +2107,14 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2156,14 +2156,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2207,14 +2207,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2258,14 +2258,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2310,14 +2310,14 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2358,14 +2358,14 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2407,14 +2407,14 @@
   Nominals: n1:o, n:o
   Contexts: G{n, n1}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2459,14 +2459,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2512,14 +2512,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2567,14 +2567,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2622,14 +2622,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2678,14 +2678,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2735,14 +2735,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2795,14 +2795,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2856,14 +2856,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2917,14 +2917,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -2977,14 +2977,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3029,14 +3029,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3081,14 +3081,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3134,14 +3134,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3188,14 +3188,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3244,14 +3244,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3300,14 +3300,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3357,14 +3357,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3415,14 +3415,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3474,14 +3474,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n3}:c[(n2:hyp (imp (A3 n2) (A4 n2)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3532,14 +3532,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3573,14 +3573,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3616,14 +3616,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3660,14 +3660,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3705,14 +3705,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3751,14 +3751,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3797,14 +3797,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3838,14 +3838,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3882,14 +3882,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3929,14 +3929,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -3977,14 +3977,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4026,14 +4026,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4076,14 +4076,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4129,14 +4129,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4183,14 +4183,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4238,14 +4238,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4294,14 +4294,14 @@
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3, n4}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4351,14 +4351,14 @@
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3, n4, n5}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4409,14 +4409,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4461,14 +4461,14 @@
   Nominals: n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4513,14 +4513,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4568,14 +4568,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4624,14 +4624,14 @@
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3, n4}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4681,14 +4681,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4736,14 +4736,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4791,14 +4791,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4847,14 +4847,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n3}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4902,14 +4902,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4947,14 +4947,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -4995,14 +4995,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5046,14 +5046,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5098,14 +5098,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5151,14 +5151,14 @@
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n4}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5205,14 +5205,14 @@
   Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n4, n5}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5260,14 +5260,14 @@
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2, n4, n5, n6}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5316,14 +5316,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5366,14 +5366,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5416,14 +5416,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5466,14 +5466,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5517,14 +5517,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5569,14 +5569,14 @@
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: G{n, n1, n2}:c[(n3:hyp (and (A3 n3) (A4 n3)))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5621,14 +5621,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5652,14 +5652,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5683,14 +5683,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5713,14 +5713,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5745,14 +5745,14 @@
   Nominals: n:o
   Contexts: G{n}:c[]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5777,14 +5777,14 @@
   Nominals: n1:o, n:o
   Contexts: G{n}:c[(n1:hyp (B n1))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5806,14 +5806,14 @@
   Nominals: n1:o, n:o
   Contexts: G{n}:c[(n1:hyp (B n1))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>
@@ -5836,14 +5836,14 @@
   Nominals: n1:o, n:o
   Contexts: G{n}:c[(n1:hyp (B n1))]
   IH:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}* =>
               {G |- D1 : conc A} =>
                   {G |- [x]D2 x : {x:hyp A}conc B} =>
                       exists D3, {G |- D3 : conc B}
   IH1:
-      ctx G:c.
+      ctx G:c,
         forall A, forall B, forall D1, forall D2,
           {A : proptm}@ =>
               {G |- D1 : conc A} =>

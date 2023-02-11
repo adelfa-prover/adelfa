@@ -58,6 +58,13 @@ val set_varcount : int -> unit
     does not appear in [used] *)
 val fresh_wrt : string -> ctx_var list -> ctx_var * ctx_var list
 
+(** [fresh_wrt name used] gives a numbered version of [name] such that it
+    does not appear in [used] *)
+val list_fresh_wrt
+  :  (ctx_var * string) list
+  -> ctx_var list
+  -> (ctx_var * ctx_var * string) list * ctx_var list
+
 (** [has_var g] determines if there is a context variable in the given
     context expression. *)
 val has_var : ctx_expr -> bool

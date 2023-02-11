@@ -129,6 +129,16 @@ module List = struct
     aux list
   ;;
 
+  let find_duplicates list =
+    let rec aux list =
+      match list with
+      | [] -> []
+      | head :: tl when mem head tl -> head :: aux tl
+      | _ :: tl -> aux tl
+    in
+    aux list
+  ;;
+
   let map ?guard f list = map (maybe_guard ?guard f) list
   let iter ?guard f list = iter (maybe_guard ?guard f) list
   let find_all ?guard f list = filter (maybe_guard ?guard f) list

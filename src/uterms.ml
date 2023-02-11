@@ -116,6 +116,7 @@ type command =
   | Abort
   | Weaken of clearable * uterm * depth
   | PermuteCtx of clearable * uctx
+  | Permute of clearable * (id * id) list
   | Strengthen of clearable
   | Inst of clearable * uwith list * depth
   | Prune of id

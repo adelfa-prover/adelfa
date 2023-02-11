@@ -377,13 +377,17 @@ let all_meta_right_permute_unify
 
 (* Determines if two formulas are equal up to permutation of nominal constants *)
 let permute_eq ~sc nvars ctxvar_ctx f1 f2 =
+  let aux subst =
+    let f2 = Formula.replace_formula_vars subst f2 in
+    if Formula.eq f2 f1 then sc ()
+  in
   try
-    let substs = generate_mappings_for ctxvar_ctx nvars f1 f2 in
-    let aux subst =
-      let f2 = Formula.replace_formula_vars subst f2 in
-      if Formula.eq f2 f1 then sc ()
-    in
-    Seq.iter aux substs
+    let support_f1 = Formula.formula_support_sans ctxvar_ctx f1 in
+    let support_f2 = Formula.formula_support_sans ctxvar_ctx f2 in
+    if List.length support_f1 = List.length support_f2
+    then (
+      let substs = generate_mappings_for ctxvar_ctx nvars f1 f2 in
+      Seq.iter aux substs)
   with
   | Unify.UnifyFailure _ -> ()
 ;;
@@ -1528,11 +1532,16 @@ let intro sequent =
            (List.map2 (fun (n, _) (_, t) -> n, Term.app t support) vs new_vars)
            f
   | Formula.Ctx (cvars, f) ->
+    let cvars_alist, _ =
+      Context.list_fresh_wrt cvars (Context.CtxVarCtx.get_vars sequent.ctxvars)
+    in
+    let cvars' = List.map (fun (_, v', t) -> v', t) cvars_alist in
+    let alist = List.map (fun (v, v', _) -> v, Context.Var v') cvars_alist in
     let cvars' =
-      List.map (fun (v, id) -> v, (ref VarSet.empty, Context.ctx_typ ~id ())) cvars
+      List.map (fun (v, id) -> v, (ref VarSet.empty, Context.ctx_typ ~id ())) cvars'
     in
     Context.CtxVarCtx.add_vars sequent.ctxvars cvars';
-    sequent.goal <- f
+    sequent.goal <- Formula.replace_ctx_vars alist f
   | _ -> raise (InvalidFormula (sequent.goal, "Cannot introduce further."))
 ;;
 
@@ -1588,6 +1597,13 @@ let weaken ~depth lf_sig sequent form t =
 
 exception InvalidCtxPermutation of string
 
+type permutation_failure =
+  | IncompletePermutation of Term.id list
+  | MultiMappedPermutation of Term.id list
+  | OutOfResSetPermutation of Term.id list
+
+exception PermutationFailure of permutation_failure
+
 let permute_ctx form g' =
   (* need to verify that
        (1) all items in g are in g' and all in g ' are in g
@@ -1634,6 +1650,91 @@ let permute_ctx form g' =
     check_dependencies (List.split g'_explicit);
     Formula.atm ~ann g' m a
   | _ -> bugf "Expected atomic formula when permuting context"
+;;
+
+let permute form perm sequent =
+  let incomplete_mapped_nominals () =
+    let dom = List.map fst perm in
+    let rng = List.map snd perm in
+    List.remove_all (fun v -> List.mem v rng) dom
+    @ List.remove_all (fun v -> List.mem v dom) rng
+  in
+  let multiple_mapped_nominals () =
+    let dom = List.find_duplicates (List.map fst perm) in
+    let rng = List.find_duplicates (List.map snd perm) in
+    List.unique (dom @ rng)
+  in
+  let invalid_nominals f =
+    match f with
+    | Formula.Atm (g, _, _, _) ->
+      let perm_supp =
+        VarSet.from_list
+          (List.map
+             (fun (v, _) -> { name = v; tag = Nominal; ts = 2; ty = Type.oty })
+             perm)
+      in
+      let restricted_set =
+        match Context.get_ctx_var_opt g with
+        | Some g_var ->
+          Option.get (Context.CtxVarCtx.get_var_restricted sequent.ctxvars g_var)
+        | None ->
+          VarSet.from_list
+            (List.map (fun (_, x) -> Term.term_to_var x) (Sequent.get_nominals sequent))
+      in
+      VarSet.minus perm_supp restricted_set |> VarSet.to_id_list
+    | _ -> []
+  in
+  let rec permute' f =
+    match f with
+    | Formula.Atm _ ->
+      (match invalid_nominals f with
+       | [] ->
+         let form_noms = Formula.get_formula_used_nominals sequent.ctxvars f in
+         let alist =
+           List.filter (fun (v, _) -> List.mem_assoc v form_noms) perm
+           |> List.map (fun (v, _) ->
+                let tm = List.assoc v form_noms |> Term.rename_vars perm in
+                v, tm)
+         in
+         Formula.replace_formula_vars alist f
+       | noms -> raise (PermutationFailure (OutOfResSetPermutation noms)))
+    | Formula.Ctx (bndrs, f) ->
+      (* Add all of the bound ctx vars to the ctx var ctx with the entire
+         support set of the sequent as its restricted set*)
+      let nominals =
+        Sequent.get_nominals sequent |> List.map (fun (_, t) -> Term.term_to_var t)
+      in
+      let cvars_alist, _ =
+        Context.list_fresh_wrt bndrs (Context.CtxVarCtx.get_vars sequent.ctxvars)
+      in
+      let cvars' =
+        List.map
+          (fun (_, v', id) ->
+            v', (ref (VarSet.from_list nominals), Context.ctx_typ ~id ()))
+          cvars_alist
+      in
+      let alist = List.map (fun (v, v', _) -> v, Context.Var v') cvars_alist in
+      let alist_rev = List.map (fun (v, v', _) -> v', Context.Var v) cvars_alist in
+      Context.CtxVarCtx.add_vars sequent.ctxvars cvars';
+      let f' = permute' (Formula.replace_ctx_vars alist f) in
+      Context.CtxVarCtx.remove_all (fun v _ -> List.mem_assoc v cvars') sequent.ctxvars;
+      let f'' = Formula.replace_ctx_vars alist_rev f' in
+      Formula.Ctx (bndrs, f'')
+    | Formula.Top -> Formula.Top
+    | Formula.Bottom -> Formula.Bottom
+    | Formula.Prop (d, t) -> Formula.Prop (d, t)
+    (* These binders don't change the permutation and are skipped over *)
+    | Formula.All (t, f) -> Formula.All (t, permute' f)
+    | Formula.Exists (t, f) -> Formula.Exists (t, permute' f)
+    (* Propogate the permutation across connectives *)
+    | Formula.Imp (l, r) -> Formula.Imp (permute' l, permute' r)
+    | Formula.And (l, r) -> Formula.And (permute' l, permute' r)
+    | Formula.Or (l, r) -> Formula.Or (permute' l, permute' r)
+  in
+  match incomplete_mapped_nominals (), multiple_mapped_nominals () with
+  | [], [] -> permute' form
+  | [], ns -> raise (PermutationFailure (MultiMappedPermutation ns))
+  | ns, _ -> raise (PermutationFailure (IncompletePermutation ns))
 ;;
 
 let strengthen ctxvars form =

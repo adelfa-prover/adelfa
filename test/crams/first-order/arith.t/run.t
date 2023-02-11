@@ -70,13 +70,13 @@
   
   
   ==================================
-  ctx G:c. {G |- z : nat} => False => False
+  ctx G:c, {G |- z : nat} => False => False
   
   z_nat>> intros.
   
   Subgoal z_nat:
   
-  H1:ctx G:c. {G |- z : nat} => False
+  H1:ctx G:c, {G |- z : nat} => False
   
   ==================================
   False
@@ -85,7 +85,7 @@
   
   Subgoal z_nat:
   
-  H1:ctx G:c. {G |- z : nat} => False
+  H1:ctx G:c, {G |- z : nat} => False
   H2:{z : nat}
   
   ==================================
@@ -95,7 +95,7 @@
   
   Subgoal z_nat:
   
-  H1:ctx G:c. {G |- z : nat} => False
+  H1:ctx G:c, {G |- z : nat} => False
   H2:{z : nat}
   H3:False
   

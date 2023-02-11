@@ -72,6 +72,31 @@ let rec observe = function
   | t -> t
 ;;
 
+let rename_vars alist (t : term) =
+  let rec aux t =
+    match t with
+    | Var v ->
+      (match List.assoc_opt v.name alist with
+       | Some v' -> Var { v with name = v' }
+       | None -> Var v)
+    | DB i -> DB i
+    | Lam (tyctx, t') -> Lam (tyctx, aux t')
+    | App (t, ts) -> App (aux t, List.map aux ts)
+    | Susp (t, i, j, e) -> Susp (aux t, i, j, e)
+    | Ptr p ->
+      (match p with
+       | { contents = V v } ->
+         Ptr
+           { contents =
+               V { v with name = Option.default v.name (List.assoc_opt v.name alist) }
+           }
+       | { contents = T t } -> Ptr { contents = T (aux t) })
+    | Pi (bndrs, t') -> Pi (bndrs, aux t')
+    | Type -> Type
+  in
+  aux t
+;;
+
 let db n = DB n
 let get_ctx_tys tyctx = List.map snd tyctx
 let get_lfctx_tys lftyctx = List.map snd lftyctx

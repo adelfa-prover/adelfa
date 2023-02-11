@@ -47,13 +47,14 @@
     ;; (regexp-opt '("search" "intros" "split" "left" "right" "apply" "induction" "exists" "case" "to" "on" "keep" "with" "search_depth") 'words)
     ("\\<\\(apply\\|case\\|exists\\|in\\(?:duction\\|tros\\)\\|keep\\|left\\|on\\|right\\|s\\(?:earch\\(?:_depth\\)?\\|plit\\)\\|to\\|with\\)\\>"
      . font-lock-function-name-face)
-    ;; (regexp-opt '("weaken" "strengthen" "ctxpermute" "inst" "prune" "unfold" "applydfn") 'words)
-    ("\\<\\(weaken\\|strengthen\\|ctxpermute\\|inst\\|prune\\|unfold\\|applydfn\\)\\>"
+    ;; (regexp-opt '("weaken" "strengthen" "ctxpermute" "inst" "prune" "unfold" "applydfn" "permute") 'words)
+    ("\\<\\(applydfn\\|ctxpermute\\|inst\\|p\\(?:\\(?:ermut\\|run\\)e\\)\\|strengthen\\|unfold\\|weaken\\)\\>"
      . font-lock-function-name-face)
     ;; (regexp-opt '("skip" "assert") 'words)
     ("\\<\\(skip\\|assert\\)\\>"
      . font-lock-warning-face)
-    ("\\<\\(I?H[0-9]*\\)\\>" . font-lock-function-name-face)
+    ;; (regexp-opt '("IH" "H[0-9]") 'words)
+    ("\\<\\(H[0-9]+\\|IH[0-9]*\\)\\>" . font-lock-type-face)
     )
   "Default highlighting for Adelfa major mode.")
 

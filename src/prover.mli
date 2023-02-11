@@ -82,6 +82,16 @@ val left : unit -> unit
 val right : unit -> unit
 val weaken : Uterms.depth -> bool -> string -> Term.term -> unit
 val permute_ctx : bool -> string -> Context.ctx_expr -> unit
+
+(** [permute remove hyp_name perm] attempts to permute the nominal constants
+    in [hyp_name] and adds it to the assumption set if it's possible, removing
+    [hyp_name] if [remove] was specified.
+
+    The permutation must be valid with respect to the formula equivalence rules
+    for the proof system and the permutation provided must be a complete
+    permutation. If these conditions are not met, a failure is raised. *)
+val permute : bool -> string -> (Term.id * Term.id) list -> unit
+
 val strengthen : bool -> string -> unit
 val inst : Uterms.depth -> bool -> string -> Uterms.uwith list -> unit
 val prune : string -> unit

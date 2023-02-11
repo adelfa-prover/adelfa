@@ -16,6 +16,7 @@ let from_list elems =
   VS.add_seq elems s
 ;;
 
+let subset s1 s2 = VS.subset s1 s2
 let mem s v = VS.mem v s
 let union s1 s2 = VS.union s1 s2
 let minus s1 s2 = VS.diff s1 s2

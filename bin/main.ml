@@ -268,6 +268,10 @@ let process_proof () =
     (match clear with
      | Uterms.Keep name -> Prover.permute_ctx false name g
      | Uterms.Remove name -> Prover.permute_ctx true name g)
+  | Uterms.Permute (clear, perms) ->
+    (match clear with
+     | Uterms.Keep name -> Prover.permute false name perms
+     | Uterms.Remove name -> Prover.permute true name perms)
   | Uterms.Strengthen clear ->
     (match clear with
      | Uterms.Keep name -> Prover.strengthen false name

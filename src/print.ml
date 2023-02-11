@@ -259,7 +259,7 @@ let rec pr_ctxbndrs ppf bndrs =
   match bndrs with
   | [] -> ()
   | (n, schema) :: bndrs' ->
-    Format.fprintf ppf "ctx %a@,:@,%a.@ %a" pr_str n pr_str schema pr_ctxbndrs bndrs'
+    Format.fprintf ppf "ctx %a@,:@,%a,@ %a" pr_str n pr_str schema pr_ctxbndrs bndrs'
 ;;
 
 let rec pr_allbndrs ppf bndrs =
@@ -388,6 +388,12 @@ let rec pr_uctxtm ppf = function
     Format.fprintf ppf "%a,@,%a:%a" pr_uctxtm uctx pr_str id pr_uterm utm
 ;;
 
+let rec pr_perm ppf = function
+  | [] -> ()
+  | [ (n, n') ] -> Format.fprintf ppf "@[%a -> %a@]" pr_str n pr_str n'
+  | (n, n') :: r -> Format.fprintf ppf "@[%a -> %a,@] %a" pr_str n pr_str n' pr_perm r
+;;
+
 let pr_uctx ppf = function
   | Uterms.UNil _ -> ()
   | uctx -> Format.fprintf ppf "%a@ |-@ " pr_uctxtm uctx
@@ -502,6 +508,8 @@ let rec pr_command ppf = function
     Format.fprintf ppf "@[<4>assert %a %a.@]" pr_uform uform pr_str (string_of_int i)
   | Uterms.PermuteCtx (name, uctx) ->
     Format.fprintf ppf "@[<4>ctxpermute %a to %a.@]" pr_clearable name pr_uctxtm uctx
+  | Uterms.Permute (name, perm) ->
+    Format.fprintf ppf "@[<4>permute %a to %a.@]" pr_clearable name pr_perm perm
   | Uterms.Strengthen name -> Format.fprintf ppf "strengthen %a." pr_clearable name
   | Uterms.Inst (name, withs, DefaultDepth) ->
     Format.fprintf ppf "@[<4>inst %a with %a.@]" pr_clearable name pr_withs withs

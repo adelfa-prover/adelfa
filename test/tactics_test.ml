@@ -1320,7 +1320,76 @@ let inst_tests =
        ]
 ;;
 
+let atomic_formula_test () =
+  let n = var Nominal "n" 3 ity in
+  let n1 = var Nominal "n1" 3 ity in
+  let d = var Eigen "D" 1 ity in
+  let f1 = atm Context.Nil d (Term.app typeof [ n; n1 ]) in
+  let seq = Sequent.make_sequent_from_goal ~form:Top () in
+  List.iter (fun v -> Sequent.add_var seq (term_to_pair v)) [ n; n1 ];
+  Sequent.add_hyp seq ~name:"H1" f1;
+  let act = Tactics.permute f1 [ "n1", "n"; "n", "n1" ] seq in
+  assert_formula_equal act (atm Context.Nil d (Term.app typeof [ n1; n ]))
+;;
+
+let incomplete_formula_test () =
+  let n = var Nominal "n" 3 ity in
+  let n1 = var Nominal "n1" 3 ity in
+  let d = var Eigen "D" 1 ity in
+  let f1 = atm Context.Nil d (Term.app typeof [ n; n1 ]) in
+  let seq = Sequent.make_sequent_from_goal ~form:Top () in
+  List.iter (fun v -> Sequent.add_var seq (term_to_pair v)) [ n; n1 ];
+  Sequent.add_hyp seq ~name:"H1" f1;
+  assert_raises
+    (Tactics.PermutationFailure (Tactics.IncompletePermutation [ "n1"; "n" ]))
+    (fun () -> Tactics.permute f1 [ "n1", "n" ] seq)
+;;
+
+let multi_mapped_perm () =
+  let n = var Nominal "n" 3 ity in
+  let n1 = var Nominal "n1" 3 ity in
+  let d = var Eigen "D" 1 ity in
+  let f1 = atm Context.Nil d (Term.app typeof [ n; n1 ]) in
+  let seq = Sequent.make_sequent_from_goal ~form:Top () in
+  List.iter (fun v -> Sequent.add_var seq (term_to_pair v)) [ n; n1 ];
+  Sequent.add_hyp seq ~name:"H1" f1;
+  assert_raises
+    (Tactics.PermutationFailure (Tactics.MultiMappedPermutation [ "n1"; "n" ]))
+    (fun () -> Tactics.permute f1 [ "n1", "n"; "n1", "n"; "n", "n1" ] seq)
+;;
+
+let context_quantifier_allows_seq_supp () =
+  let n = var Nominal "n" 3 ity in
+  let n1 = var Nominal "n1" 3 ity in
+  let n2 = var Nominal "n2" 3 ity in
+  let d = var Eigen "D" 1 ity in
+  let g = Context.ctx_var "G" in
+  let f1 = ctx [g, "c"] (atm (Context.Var g) d (Term.app typeof [ n; n1 ])) in
+  let seq = Sequent.make_sequent_from_goal ~form:Top () in
+  List.iter (fun v -> Sequent.add_var seq (term_to_pair v)) [ n; n1; n2 ];
+  Sequent.add_hyp seq ~name:"H1" f1;
+  assert_formula_equal
+    (ctx [g, "c"] (atm (Context.Var g) d (Term.app typeof [ n2; n1 ])))
+    (Tactics.permute f1 [ "n", "n2"; "n2", "n"] seq)
+;;
+
+let permute_tests =
+  "Permute"
+  >::: [ "Permuting atomic formula" >:: atomic_formula_test
+       ; "Incomplete permutation" >:: incomplete_formula_test
+       ; "Multiple mapped permutation" >:: multi_mapped_perm
+       ; "Over ctx quantifiers" >:: context_quantifier_allows_seq_supp
+       ]
+;;
+
 let tests =
   "Tactics"
-  >::: [ case_tests; apply_tests; exists_tests; extract_tests; search_tests; inst_tests ]
+  >::: [ case_tests
+       ; apply_tests
+       ; exists_tests
+       ; extract_tests
+       ; search_tests
+       ; inst_tests
+       ; permute_tests
+       ]
 ;;

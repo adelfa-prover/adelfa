@@ -12,6 +12,7 @@ val add_vars : t -> elem list -> t
 val add_term : t -> Term.term -> t
 val filter : (elem -> bool) -> t -> t
 val copy : t -> t
+val subset : t -> t -> bool
 val mem : t -> elem -> bool
 val union : t -> t -> t
 val minus : t -> t -> t

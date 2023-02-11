@@ -66,6 +66,7 @@ and in_ptr =
 
 val lftyctx_to_tyctx : lftyctx -> tyctx
 val observe : term -> term
+val rename_vars : (id * id) list -> term -> term
 val db : int -> term
 val get_ctx_tys : tyctx -> Type.ty list
 val get_lfctx_tys : lftyctx -> term list

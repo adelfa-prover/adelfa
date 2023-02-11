@@ -15,7 +15,7 @@ Since these tests share a single specification file, group them here
   
   
   ==================================
-  ctx Gamma:c.
+  ctx Gamma:c,
     forall M1, forall M2, forall T, forall D1, forall D2,
       {Gamma |- D1 : step M1 M2} =>
           {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -25,13 +25,13 @@ Since these tests share a single specification file, group them here
   Subgoal subject_reduction:
   
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
   
   ==================================
-  ctx Gamma:c.
+  ctx Gamma:c,
     forall M1, forall M2, forall T, forall D1, forall D2,
       {Gamma |- D1 : step M1 M2}@ =>
           {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -43,7 +43,7 @@ Since these tests share a single specification file, group them here
   Vars: D2:o, D1:o, T:o, M2:o, M1:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -61,7 +61,7 @@ Since these tests share a single specification file, group them here
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n, n1, n2, n3}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -92,7 +92,7 @@ Since these tests share a single specification file, group them here
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -126,7 +126,7 @@ Since these tests share a single specification file, group them here
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -161,7 +161,7 @@ Since these tests share a single specification file, group them here
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -196,7 +196,7 @@ Since these tests share a single specification file, group them here
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n, n1, n2, n3, n4, n5, n6}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -231,7 +231,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{n}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -257,7 +257,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{n}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -288,7 +288,7 @@ Since these tests share a single specification file, group them here
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n, n1, n2, n3}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -322,7 +322,7 @@ Since these tests share a single specification file, group them here
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n, n1, n2, n3}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -357,7 +357,7 @@ Since these tests share a single specification file, group them here
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n, n1, n2, n3}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -393,7 +393,7 @@ Since these tests share a single specification file, group them here
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n, n1, n2, n3}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -428,7 +428,7 @@ Since these tests share a single specification file, group them here
   Vars: D:o, N1:o, M:o, N2:o, D2:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -451,7 +451,7 @@ Since these tests share a single specification file, group them here
   Vars: U:o, a1:o, a2:o, D:o, N1:o, M:o, N2:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -479,7 +479,7 @@ Since these tests share a single specification file, group them here
   Vars: D3:o, U:o, a1:o, a2:o, D:o, N1:o, M:o, N2:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -508,7 +508,7 @@ Since these tests share a single specification file, group them here
   Vars: D3:o, U:o, a1:o, a2:o, D:o, N1:o, M:o, N2:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -537,7 +537,7 @@ Since these tests share a single specification file, group them here
   Vars: D:o, M3:o, M4:o, N:o, D2:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -557,7 +557,7 @@ Since these tests share a single specification file, group them here
   Vars: U:o, a1:o, a2:o, D:o, M3:o, M4:o, N:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -582,7 +582,7 @@ Since these tests share a single specification file, group them here
   Vars: D3:o, U:o, a1:o, a2:o, D:o, M3:o, M4:o, N:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -608,7 +608,7 @@ Since these tests share a single specification file, group them here
   Vars: D3:o, U:o, a1:o, a2:o, D:o, M3:o, M4:o, N:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : step M1 M2}* =>
               {Gamma |- D2 : of M1 T} => exists D3, {Gamma |- D3 : of M2 T}
@@ -648,7 +648,7 @@ Since these tests share a single specification file, group them here
   
   
   ==================================
-  ctx Gamma:c.
+  ctx Gamma:c,
     forall M1, forall M2, forall T, forall D1, forall D2,
       {Gamma |- D1 : of M1 T} =>
           {D2 : sscbv M1 M2} => exists D3, {Gamma |- D3 : of M2 T}
@@ -658,13 +658,13 @@ Since these tests share a single specification file, group them here
   Subgoal subject_reduction_wsscbv:
   
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
   
   ==================================
-  ctx Gamma:c.
+  ctx Gamma:c,
     forall M1, forall M2, forall T, forall D1, forall D2,
       {Gamma |- D1 : of M1 T} =>
           {D2 : sscbv M1 M2}@ => exists D3, {Gamma |- D3 : of M2 T}
@@ -676,7 +676,7 @@ Since these tests share a single specification file, group them here
   Vars: D2:o, D1:o, T:o, M2:o, M1:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -694,7 +694,7 @@ Since these tests share a single specification file, group them here
   Nominals: n1:o, n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -721,7 +721,7 @@ Since these tests share a single specification file, group them here
   Nominals: n1:o, n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -753,7 +753,7 @@ Since these tests share a single specification file, group them here
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n2, n3, n4}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -788,7 +788,7 @@ Since these tests share a single specification file, group them here
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n2, n3, n4}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -826,7 +826,7 @@ Since these tests share a single specification file, group them here
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n2, n3, n4}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -865,7 +865,7 @@ Since these tests share a single specification file, group them here
   Nominals: n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n2, n3, n4}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -904,7 +904,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -929,7 +929,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -959,7 +959,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -990,7 +990,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1021,7 +1021,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1053,7 +1053,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1085,7 +1085,7 @@ Since these tests share a single specification file, group them here
   Vars: D3:o, M3:o, M4:o, N:o, D1:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1105,7 +1105,7 @@ Since these tests share a single specification file, group them here
   Vars: U:o, a1:o, a2:o, D3:o, M3:o, M4:o, N:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1130,7 +1130,7 @@ Since these tests share a single specification file, group them here
   Vars: U:o, a1:o, a2:o, D3:o, M3:o, M4:o, N:o, D1:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1156,7 +1156,7 @@ Since these tests share a single specification file, group them here
   Vars: U:o, a1:o, a2:o, D3:o, M3:o, M4:o, N:o, D1:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1182,7 +1182,7 @@ Since these tests share a single specification file, group them here
   Vars: U:o, a1:o, a2:o, D3:o, M3:o, M4:o, N:o, D1:o, T:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : sscbv M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1223,7 +1223,7 @@ Since these tests share a single specification file, group them here
   
   
   ==================================
-  ctx Gamma:c.
+  ctx Gamma:c,
     forall M1, forall M2, forall T, forall D1, forall D2,
       {Gamma |- D1 : of M1 T} =>
           {D2 : lscbn M1 M2} => exists D3, {Gamma |- D3 : of M2 T}
@@ -1233,13 +1233,13 @@ Since these tests share a single specification file, group them here
   Subgoal subject_reduction_lscbn:
   
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
   
   ==================================
-  ctx Gamma:c.
+  ctx Gamma:c,
     forall M1, forall M2, forall T, forall D1, forall D2,
       {Gamma |- D1 : of M1 T} =>
           {D2 : lscbn M1 M2}@ => exists D3, {Gamma |- D3 : of M2 T}
@@ -1251,7 +1251,7 @@ Since these tests share a single specification file, group them here
   Vars: D2:o, D1:o, T:o, M2:o, M1:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1269,7 +1269,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1296,7 +1296,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1329,7 +1329,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1363,7 +1363,7 @@ Since these tests share a single specification file, group them here
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n1, n2, n3}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1400,7 +1400,7 @@ Since these tests share a single specification file, group them here
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n1, n2, n3}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1438,7 +1438,7 @@ Since these tests share a single specification file, group them here
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n1, n2, n3}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1477,7 +1477,7 @@ Since these tests share a single specification file, group them here
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n1, n2, n3}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1517,7 +1517,7 @@ Since these tests share a single specification file, group them here
   Nominals: n3:o, n2:o, n1:o, n:o
   Contexts: Gamma{n1, n2, n3}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1556,7 +1556,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
@@ -1575,7 +1575,7 @@ Since these tests share a single specification file, group them here
   Nominals: n:o
   Contexts: Gamma{}:c[]
   IH:
-      ctx Gamma:c.
+      ctx Gamma:c,
         forall M1, forall M2, forall T, forall D1, forall D2,
           {Gamma |- D1 : of M1 T} =>
               {D2 : lscbn M1 M2}* => exists D3, {Gamma |- D3 : of M2 T}
