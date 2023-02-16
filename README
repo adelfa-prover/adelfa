@@ -8,7 +8,7 @@ Run `make debug' to build a byte code version of the system located at
 `_build/default/bin/adelfa.bc'.
 
 Run `make test' to build the unit tests. This will produce and execute
-`_build/defalt/bin/test.exe' as well as a series of crams which run examples
+`_build/default/bin/test.exe' as well as a series of crams which run examples
 across expected output.
 
 Run `make install' to install Adelfa to your system's `.opam/default/bin/'

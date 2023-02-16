@@ -1364,13 +1364,13 @@ let context_quantifier_allows_seq_supp () =
   let n2 = var Nominal "n2" 3 ity in
   let d = var Eigen "D" 1 ity in
   let g = Context.ctx_var "G" in
-  let f1 = ctx [g, "c"] (atm (Context.Var g) d (Term.app typeof [ n; n1 ])) in
+  let f1 = ctx [ g, "c" ] (atm (Context.Var g) d (Term.app typeof [ n; n1 ])) in
   let seq = Sequent.make_sequent_from_goal ~form:Top () in
   List.iter (fun v -> Sequent.add_var seq (term_to_pair v)) [ n; n1; n2 ];
   Sequent.add_hyp seq ~name:"H1" f1;
   assert_formula_equal
-    (ctx [g, "c"] (atm (Context.Var g) d (Term.app typeof [ n2; n1 ])))
-    (Tactics.permute f1 [ "n", "n2"; "n2", "n"] seq)
+    (ctx [ g, "c" ] (atm (Context.Var g) d (Term.app typeof [ n2; n1 ])))
+    (Tactics.permute f1 [ "n", "n2"; "n2", "n" ] seq)
 ;;
 
 let permute_tests =

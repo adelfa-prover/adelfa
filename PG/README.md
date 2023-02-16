@@ -73,10 +73,5 @@ Adelfa compatibility with Proof General is still in its infancy. It should work
 for many common workflows, but it may become out of sync at times. This happens
 when an error occurs in Adelfa that is not recognized as such by Proof General.
 When this happens, abort the proof with `C-c C-x` and continue the proof up to
-the unrecognized error. Even better, consider [creating an
-issue](https://github.com/CJohnson19/PG/issues/new) with what Adelfa responded
-with.
-
-Adelfa doesn't have a notion of undoing a completed proof. Therefore, if you
-want to add content above a completed proof, Proof General can become confused,
-and you should restart to sync the state again.
+the unrecognized error. Consider [emailing the
+maintainer](mailto:joh13266@umn.edu) with a description of the error.

@@ -40,7 +40,7 @@ from the base type `o' using the constructor `->'.
 
 Commands
 ========
-There are 4 top level commands when using the tool
+There are 6 top level commands when using the tool
 
 1. Quit.
 Quit the prover.
@@ -76,6 +76,17 @@ and the formula appearing to the left of the := must be an instance of
 the defined predicate. Definitions may only be unfolded or applied to
 an appropriate formula; case analysis cannot be performed on defined
 formulas.
+
+6. Set <setting> <value>.
+
+Set the value of options during proof development. It also may be used
+inside theorem construction. Options are:
+
+   - search_depth
+
+     The maximum number of time to perform type decomposotion on assumption
+     judgements when using the `search' tactic.
+
 
 Tactics
 =======
@@ -153,7 +164,13 @@ context is a valid permutation of the context G (does not violate
 dependencies), then a new assumption is added with the permuted
 context expression.
 
-14. inst <assumption-name> with n=<lf-term>.
+14. permute <assumption-name> to <perm>
+If `perm' is a valid permutation of nominal constants with respect to
+<assumption-name> then a new assumption is added with the permutation applied to
+it. Permutations are a series of comma seperated unidirectional `n ->
+n1` or bidirectional `n <-> n1` mappings.
+
+15. inst <assumption-name> with n=<lf-term>.
 This tactic captures the use of the substitution property for LF.
 If the given assumption is of the form {G1,n:B,G2 |- M:A}, and the
 given term can be determined to be such that {G1 |- <lf-term> : B}
@@ -161,24 +178,24 @@ is valid then this tactic replaces the given assumption with one in
 which n:B is removed from the context expression and all occurrences of
 n are replaced by <lf-term>.
 
-15. prune <assumption-name>.
+16. prune <assumption-name>.
 If the given assumption is of the form {G |- X n1 ... nm : A} for some
 eigenvariable X and distinct nominal constants n1,...,nm then this
 tactic will prune those nominal constants appearing as arguments to X
 which (1) do not already appear in G and (2) are not permitted in the
 instantiations for the context variable in G.
 
-16. undo.
+17. undo.
 Undo the last step of reasoning.
 
-17. skip.
+18. skip.
 Skip to the next subgoal of derivation.
 
-18. abort.
+19. abort.
 Abort the proof construction and return to top-level loop without
 adding formula to the available lemmas.
 
-19. unfold.
+20. unfold.
     unfold <assumption-name>.
 
 If the given assumption formula is a defined predicate then it is
@@ -186,7 +203,7 @@ unfolded using the relevant definition, using the first clause which
 matches. If no assumption formula is given, the goal formula is
 unfolded.
 
-20. applydfn <prop-name>.
+21. applydfn <prop-name>.
     applydfn <prop-name> to <assumption-name>.
 
 Attempts to apply a clause of the definition of <prop-name> to the
