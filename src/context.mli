@@ -1,7 +1,5 @@
 (** [Context] is a representation of context expressions *)
 
-(* context expressions *)
-
 (** [ctx_var] represents implicit portion of context expression. *)
 type ctx_var = string
 
@@ -13,7 +11,7 @@ type ctx_expr =
   | Nil (** [Nil] represents empty context*)
   | Var of ctx_var (** [Var s] represents implicit portion identified by [s]*)
   | Ctx of ctx_expr * entry
-      (** [Ctx expr entry] adds an explicit portion to the context *)
+  (** [Ctx expr entry] adds an explicit portion to the context *)
 
 (** [entry_eq e1 e2] determines if an entry in an explicit portion of
     the context has the same identifier and are of the same type.*)
@@ -241,10 +239,10 @@ val replace_ctx_vars : (string * ctx_expr) list -> ctx_expr -> ctx_expr
 val find_var_refs : CtxVarCtx.t -> Term.tag -> ctx_expr -> Term.term list
 
 (** [get_explicit g] gives the list of vars and their types in context expression [g]
-    such that the last item in the context is the first item in the list
-*)
+    such that the last item in the context is the first item in the list *)
 val get_explicit : ctx_expr -> (Term.var * Term.term) list
 
+(** [length g] returns the length of the context expression *)
 val length : ctx_expr -> int
 
 (** [context_prefix g1 g2] checks if [g1] is a prefix of [g2] *)
@@ -254,6 +252,10 @@ val context_prefix : ctx_expr -> ctx_expr -> bool
     expression [expr]. Assumes ids exist in the explicit part of the
     context expression. *)
 val remove_ctx_items : ctx_expr -> Term.id list -> ctx_expr
+
+(** [subordination_min graph name g] returns a copy of the context expression [g]
+    with all entries in the context that are not subordinate to [name] removed *)
+val subordination_min : Subordination.subordination_rel -> Term.id -> ctx_expr -> ctx_expr
 
 (** [split_ctx g n] splits a context by the location of the variable [n].
     Returns the context to the left of n, the type of n, and the context

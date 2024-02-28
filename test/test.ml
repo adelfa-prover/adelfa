@@ -10,6 +10,7 @@ let tests =
        ; Sequent_test.tests
        ; State_test.tests
        ; Typing_test.tests
+       ; Subordination_test.tests
        ]
 ;;
 

@@ -59,6 +59,13 @@ let rec context_map f c =
   | Ctx (c', (v, tm)) -> Ctx (context_map f c', (v, f tm))
 ;;
 
+let rec context_filter f c =
+  match c with
+  | Nil | Var _ -> c
+  | Ctx (c', (_, e)) when f e -> context_filter f c'
+  | Ctx (c', (v, tm)) -> Ctx (context_filter f c', (v, tm))
+;;
+
 let replace_ctx_expr_vars ?tag alist ctx =
   let rec aux c =
     match c with
@@ -336,6 +343,12 @@ let remove_ctx_items expr ids =
     | Ctx (e', (n, t)) -> if List.mem n.name ids then rem e' else Ctx (rem e', (n, t))
   in
   rem expr
+;;
+
+let subordination_min graph t expr =
+  context_filter
+    (fun n -> not (Subordination.subordinates graph (Term.get_ty_head n) t))
+    expr
 ;;
 
 (* splits a context by the location of n.

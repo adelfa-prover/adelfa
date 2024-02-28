@@ -66,6 +66,12 @@ let assert_formula_equal s t =
   assert_string_equal (Print.string_of_formula s) (Print.string_of_formula t)
 ;;
 
+let assert_context_equal g1 g2 =
+  let g1 = Print.string_of_ctxexpr g1 in
+  let g2 = Print.string_of_ctxexpr g2 in
+  assert_string_equal g1 g2
+;;
+
 let assert_term_pprint_equal s t =
   let t = renumber_term t in
   assert_string_equal s (Print.string_of_term t)
@@ -222,6 +228,19 @@ let abs_decl =
     (Signature.Prefix 0)
 ;;
 
+let typed_abs_decl =
+  Signature.obj_dec
+    "abs"
+    (Term.pi
+       [ term_to_var (const ~ts:2 "r" ity), ty
+       ; ( term_to_var (const ~ts:2 "r" iity)
+         , Term.pi [ term_to_var (const ~ts:2 "x" ity), tm ] tm )
+       ]
+       tm)
+    0
+    (Signature.Prefix 0)
+;;
+
 let typeof_app_decl =
   let m = const ~ts:2 "M" ity in
   let n = const ~ts:2 "N" ity in
@@ -318,6 +337,25 @@ let eval_sig =
     ; eval_abs_decl
     ]
 ;;
+
+let unique_sig =
+  List.fold_left
+    Signature.add_obj_decl
+    (List.fold_left
+       Signature.add_type_decl
+       Signature.empty
+       [ ty_decl; tm_decl; typeof_decl; eval_decl ])
+    [ arrow_decl
+    ; app_decl
+    ; typed_abs_decl
+    ; typeof_app_decl
+    ; typeof_abs_decl
+    ; eval_app_decl
+    ; eval_abs_decl
+    ]
+;;
+
+let unique_sub_rel = Subordination.subordination_relation unique_sig
 
 let (typeof_schema : Context.ctx_schema) =
   let x = const "x" ity in

@@ -44,7 +44,7 @@ let get_obj_decls (_, ods) = List.map snd ods
 let add_type_decl (tds, ods) d = (d.ty_name, d) :: tds, ods
 let lookup_type_decl_op (tds, _) id = List.assoc_opt id tds
 
-(* Assuption is that this is performed only after constant has been 
+(* Assumption is that this is performed only after constant has been 
  * introduced *)
 let lookup_type_decl (tds, _) id = List.assoc id tds
 let is_type (tds, _) id = List.mem_assoc id tds

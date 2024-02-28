@@ -1,4 +1,4 @@
-(* These general printing functions do not make use of fixity or 
+(* These general printing functions do not make use of fixity or
    implicit information from the signature *)
 
 val pr_ty : Format.formatter -> Type.ty -> unit
@@ -9,6 +9,7 @@ val pr_ctxexpr : Format.formatter -> Context.ctx_expr -> unit
 val pr_sequent : Format.formatter -> Sequent.sequent -> unit
 val pr_uterm : Format.formatter -> Uterms.uterm -> unit
 val print_ty : Type.ty -> unit
+val pr_sub_rel : Format.formatter -> Subordination.subordination_rel -> unit
 val print_term : Term.term -> unit
 val print_sequent : Sequent.sequent -> unit
 val print_uterm : Uterms.uterm -> unit
@@ -25,3 +26,4 @@ val string_of_command : Uterms.command -> string
 val string_of_topcommand : Uterms.top_command -> string
 val string_of_subst : (Term.id * Term.term) list -> string
 val string_of_ctxvarty : Context.ctx_typ -> string
+val string_of_sub : Subordination.subordination_rel -> string

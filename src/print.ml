@@ -19,7 +19,7 @@ let rec pr_strlst ppf = function
 ;;
 
 (*** These first functions will print LF terms in fully explicit form.
-     They do not use the signature to determine implicit arguments or fixity. ***)
+  They do not use the signature to determine implicit arguments or fixity. ***)
 
 let rec pr_ty_literal ppf = function
   | Ty (tys, bty) -> Format.fprintf ppf "Ty([%a],%a)" pr_tylst_literal tys pr_str bty
@@ -44,6 +44,16 @@ let rec pr_ty ppf = function
         Format.fprintf ppf "@[<2>(%a)@ %a@ %a@]" pr_ty arg pr_str imp pr_tys tys'
     in
     pr_tys ppf tys
+;;
+
+let pr_sub_rel ppf rel =
+  let entries = Subordination.subordination_rel_to_list rel in
+  let rec aux ppf = function
+    | [] -> ()
+    | (src, tys) :: tl ->
+      Format.fprintf ppf "@[<2>%a@,<=@,%a;@]@.%a" pr_str src pr_strlst tys aux tl
+  in
+  aux ppf entries
 ;;
 
 let pr_var ppf v = pr_str ppf v.name
@@ -669,5 +679,10 @@ let string_of_subst subst =
 
 let string_of_ctxvarty ctxvarty =
   pr_ctxty Format.str_formatter ctxvarty;
+  Format.flush_str_formatter ()
+;;
+
+let string_of_sub sub_rel =
+  pr_sub_rel Format.str_formatter sub_rel;
   Format.flush_str_formatter ()
 ;;
