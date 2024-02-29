@@ -8,19 +8,19 @@ module T = Term
 type key = Sig.id
 type value = Sig.id list
 type entry = key * value
-type subordination_rel = entry list
+type sub_rel = entry list
 
 module Graph = struct
-  let empty : subordination_rel = []
+  let empty : sub_rel = []
 
-  let rec get_opt (graph : subordination_rel) (node : key) : value option =
+  let rec get_opt (graph : sub_rel) (node : key) : value option =
     match graph with
     | [] -> None
     | (n, x) :: _ when n = node -> Some x
     | _ :: tl -> get_opt tl node
   ;;
 
-  let has_path (graph : subordination_rel) (from_node : key) (to_node : key) : bool =
+  let has_path (graph : sub_rel) (from_node : key) (to_node : key) : bool =
     let rec aux visited graph node =
       if List.mem node visited
       then false
@@ -33,7 +33,7 @@ module Graph = struct
     aux [] graph from_node
   ;;
 
-  let insert (graph : subordination_rel) (src : key) (dst : key) : subordination_rel =
+  let insert (graph : sub_rel) (src : key) (dst : key) : sub_rel =
     let rec aux graph src dst =
       match graph with
       | [] -> [ src, [ dst ] ]
@@ -44,10 +44,10 @@ module Graph = struct
   ;;
 end
 
-let subordination_rel_to_list rel = rel
+let sub_rel_to_list rel = rel
 
-let add_term_to_graph (graph : subordination_rel) (name : Sig.id) (term : T.term)
-  : subordination_rel
+let add_term_to_graph (graph : sub_rel) (name : Sig.id) (term : T.term)
+  : sub_rel
   =
   let rec aux term =
     match T.observe (T.hnorm term) with
@@ -62,29 +62,28 @@ let add_term_to_graph (graph : subordination_rel) (name : Sig.id) (term : T.term
   List.fold_left (fun graph node -> Graph.insert graph node name) graph (aux term)
 ;;
 
-let add_type_to_graph (graph : subordination_rel) (type_decl : Sig.type_decl)
-  : subordination_rel
+let add_type_to_graph (graph : sub_rel) (type_decl : Sig.type_decl)
+  : sub_rel
   =
   let name = type_decl.Sig.ty_name in
   let term = type_decl.Sig.kind in
   add_term_to_graph graph name term
 ;;
 
-let add_obj_to_graph (graph : subordination_rel) (obj_decl : Sig.obj_decl)
-  : subordination_rel
+let add_obj_to_graph (graph : sub_rel) (obj_decl : Sig.obj_decl)
+  : sub_rel
   =
   let term = obj_decl.Sig.typ in
   let type_name = Term.get_ty_head obj_decl.Sig.typ in
   add_term_to_graph graph type_name term
 ;;
 
-let subordination_relation (signature : Sig.signature) : subordination_rel =
+let sub_relation (signature : Sig.signature) : sub_rel =
   let type_graph =
     Sig.get_type_decls signature |> List.fold_left add_type_to_graph Graph.empty
   in
   Sig.get_obj_decls signature |> List.fold_left add_obj_to_graph type_graph
-;;
 
-let subordinates (rel : subordination_rel) (a : Sig.id) (b : Sig.id) =
+let subordinates (rel : sub_rel) (a : Sig.id) (b : Sig.id) =
   Graph.has_path rel a b
 ;;

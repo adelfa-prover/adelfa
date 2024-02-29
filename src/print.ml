@@ -47,7 +47,7 @@ let rec pr_ty ppf = function
 ;;
 
 let pr_sub_rel ppf rel =
-  let entries = Subordination.subordination_rel_to_list rel in
+  let entries = Subordination.sub_rel_to_list rel in
   let rec aux ppf = function
     | [] -> ()
     | (src, tys) :: tl ->

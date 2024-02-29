@@ -253,9 +253,27 @@ val context_prefix : ctx_expr -> ctx_expr -> bool
     context expression. *)
 val remove_ctx_items : ctx_expr -> Term.id list -> ctx_expr
 
-(** [subordination_min graph name g] returns a copy of the context expression [g]
+(** [block_prefix_sub sub_rel tys b1 b2] checks if [b1] is a prefix of [b2]
+    where the extra items in [b2] cannot subordinate any types in [ids] *)
+val block_prefix_sub
+  :  Subordination.sub_rel
+  -> Term.id list
+  -> block_schema
+  -> block_schema
+  -> bool
+
+(** [block_eq_sub sub_rel name b1 b2] checks if [b1] equal to [b2] after removing
+    all types not subordinate to [name] *)
+val block_eq_sub
+  :  Subordination.sub_rel
+  -> Term.id
+  -> block_schema
+  -> block_schema
+  -> bool
+
+(** [subordination_min sub_rel name g] returns a copy of the context expression [g]
     with all entries in the context that are not subordinate to [name] removed *)
-val subordination_min : Subordination.subordination_rel -> Term.id -> ctx_expr -> ctx_expr
+val subordination_min : Subordination.sub_rel -> Term.id -> ctx_expr -> ctx_expr
 
 (** [split_ctx g n] splits a context by the location of the variable [n].
     Returns the context to the left of n, the type of n, and the context

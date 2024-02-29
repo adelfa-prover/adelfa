@@ -11,6 +11,7 @@ let tests =
        ; State_test.tests
        ; Typing_test.tests
        ; Subordination_test.tests
+       ; Context_test.tests
        ]
 ;;
 

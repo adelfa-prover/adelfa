@@ -355,7 +355,7 @@ let unique_sig =
     ]
 ;;
 
-let unique_sub_rel = Subordination.subordination_relation unique_sig
+let unique_sub_rel = Subordination.sub_relation unique_sig
 
 let (typeof_schema : Context.ctx_schema) =
   let x = const "x" ity in

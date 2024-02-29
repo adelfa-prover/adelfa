@@ -62,7 +62,7 @@ let rec context_map f c =
 let rec context_filter f c =
   match c with
   | Nil | Var _ -> c
-  | Ctx (c', (_, e)) when f e -> context_filter f c'
+  | Ctx (c', (_, e)) when not (f e) -> context_filter f c'
   | Ctx (c', (v, tm)) -> Ctx (context_filter f c', (v, tm))
 ;;
 
@@ -336,6 +336,23 @@ let rec context_prefix g1 g2 =
   | _, _ -> false
 ;;
 
+let block_prefix_sub sub_rel tys b1 b2 =
+  let subordinates_no_types (_, entry) =
+    List.for_all
+      (fun t -> Subordination.subordinates sub_rel (Term.get_ty_head entry) t |> not)
+      tys
+  in
+  let rec aux b1 b2 =
+    match b1, b2 with
+    | [], extras -> List.for_all subordinates_no_types extras
+    | (v1, e1) :: b1', (v2, e2) :: b2' -> v1 = v2 && Term.eq e1 e2 && aux b1' b2'
+    | _, _ -> false
+  in
+  let (B (_, b1)) = b1 in
+  let (B (_, b2)) = b2 in
+  aux b1 b2
+;;
+
 let remove_ctx_items expr ids =
   let rec rem e =
     match e with
@@ -345,10 +362,25 @@ let remove_ctx_items expr ids =
   rem expr
 ;;
 
-let subordination_min graph t expr =
-  context_filter
-    (fun n -> not (Subordination.subordinates graph (Term.get_ty_head n) t))
-    expr
+let subordination_min sub_rel t expr =
+  context_filter (fun n -> Subordination.subordinates sub_rel (Term.get_ty_head n) t) expr
+;;
+
+let block_restrict sub_rel ts block =
+  let subordinates_any (_, entry) =
+    List.exists
+      (fun t' -> Subordination.subordinates sub_rel (Term.get_ty_head entry) t')
+      ts
+  in
+  let (B (_, entries)) = block in
+  List.filter subordinates_any entries
+;;
+
+let block_eq_sub sub_rel a b1 b2 =
+  let b1_min = block_restrict sub_rel [ a ] b1 in
+  let b2_min = block_restrict sub_rel [ a ] b2 in
+  List.length b1_min = List.length b2_min
+  && List.for_all2 (fun (v1, e1) (v2, e2) -> v1 = v2 && Term.eq e1 e2) b1_min b2_min
 ;;
 
 (* splits a context by the location of n.
