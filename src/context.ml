@@ -379,8 +379,9 @@ let block_restrict sub_rel ts block =
 let block_eq_sub sub_rel a b1 b2 =
   let b1_min = block_restrict sub_rel [ a ] b1 in
   let b2_min = block_restrict sub_rel [ a ] b2 in
-  List.length b1_min = List.length b2_min
-  && List.for_all2 (fun (v1, e1) (v2, e2) -> v1 = v2 && Term.eq e1 e2) b1_min b2_min
+  if List.length b1_min <> List.length b2_min
+  then false
+  else List.for_all2 (fun (v1, e1) (v2, e2) -> v1 = v2 && Term.eq e1 e2) b1_min b2_min
 ;;
 
 (* splits a context by the location of n.

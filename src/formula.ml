@@ -378,7 +378,37 @@ let rec eta_expand (f : formula) =
   | Prop (i, ts) -> Prop (i, List.map Term.eta_expand ts)
 ;;
 
-(* Apply the given context variable substitution 
+let block_sim f ctx_var sub_rel b1 b2 =
+  let rec aux = function
+    | Top | Bottom | Prop _ -> true
+    | Imp (l, r) | Or (l, r) | And (l, r) -> aux l && aux r
+    | Atm (g, _, a, _) when g = Context.Var ctx_var ->
+      Context.block_eq_sub sub_rel (Term.get_ty_head a) b1 b2
+    | Atm (g, _, _, _) when Context.get_ctx_var g = ctx_var -> false
+    | Atm _ -> true
+    | Ctx (cvars, f) -> List.exists (fun (cv, _) -> cv = ctx_var) cvars || aux f
+    | All (_, f) | Exists (_, f) -> aux f
+  in
+  aux f
+;;
+
+let block_in_schema_sub f ctx_var sub_rel b c =
+  let get_block_types (B (_, entries)) =
+    List.map (fun (_, t) -> Term.get_ty_head t) entries
+  in
+  let context_types = List.flatten_map get_block_types c in
+  List.exists
+    (fun schema_block ->
+      block_prefix_sub sub_rel context_types schema_block b
+      && block_sim f ctx_var sub_rel b schema_block)
+    c
+;;
+
+let schema_transports f ctx_var sub_rel c1 c2 =
+  List.for_all (fun block -> block_in_schema_sub f ctx_var sub_rel block c1) c2
+;;
+
+(* Apply the given context variable substitution
    within the given formula. *)
 let rec replace_ctx_vars ctxvar_subst f =
   match f with

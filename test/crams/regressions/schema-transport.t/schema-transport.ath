@@ -1,0 +1,15 @@
+Specification "schema-transport.lf".
+
+Schema c :=
+ {T}(x:tm,y:of x T).
+
+Schema c' :=
+ {T}(x:tm,y:of x T).
+
+%%% Strengthening properties for ty and eq.
+Theorem ty_independent : ctx G:c, forall T:o, {G |- T : ty} => {T:ty}.
+induction on 1. intros. case H1. 
+  apply IH to H2. apply IH to H3. search.
+
+Theorem eq_independent : ctx G:c', forall T1 T2 D, {G |- D : eq T1 T2} => {D : eq T1 T2}.
+intros. case H1. apply ty_independent to H2. abort.

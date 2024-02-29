@@ -64,6 +64,30 @@ val replace_formula_vars_rename
   -> formula
   -> formula
 
+val block_sim
+  :  formula
+  -> Context.ctx_var
+  -> Subordination.sub_rel
+  -> Context.block_schema
+  -> Context.block_schema
+  -> bool
+
+val block_in_schema_sub
+  :  formula
+  -> Context.ctx_var
+  -> Subordination.sub_rel
+  -> Context.block_schema
+  -> Context.ctx_schema
+  -> bool
+
+val schema_transports
+  :  formula
+  -> Context.ctx_var
+  -> Subordination.sub_rel
+  -> Context.ctx_schema
+  -> Context.ctx_schema
+  -> bool
+
 val reduce_inductive_annotation : annotation -> annotation
 val formula_to_annotation : formula -> annotation
 val copy_formula : formula -> formula

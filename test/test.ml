@@ -12,6 +12,7 @@ let tests =
        ; Typing_test.tests
        ; Subordination_test.tests
        ; Context_test.tests
+       ; Formula_test.tests
        ]
 ;;
 

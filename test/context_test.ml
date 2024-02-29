@@ -38,7 +38,7 @@ let prefix =
           let b1 = C.B ([], [ Term.term_to_var n, tm ]) in
           let b2 = C.B ([], [ Term.term_to_var n, tm; Term.term_to_var n1, ty ]) in
           assert_bool
-            "Prefix should not pass"
+            "Prefix doesn't allow types which subordinate passed in types"
             (not (C.block_prefix_sub unique_sub_rel [ ty_decl.ty_name ] b1 b2)))
        ]
 ;;

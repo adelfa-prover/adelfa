@@ -51,7 +51,7 @@ let pr_sub_rel ppf rel =
   let rec aux ppf = function
     | [] -> ()
     | (src, tys) :: tl ->
-      Format.fprintf ppf "@[<2>%a@,<=@,%a;@]@.%a" pr_str src pr_strlst tys aux tl
+      Format.fprintf ppf "@[<2>%a@ @,<=@ @,%a@]@.%a" pr_str src pr_strlst tys aux tl
   in
   aux ppf entries
 ;;
