@@ -120,7 +120,7 @@ let schema_transport =
             ]
           in
           let schema2 = [ Context.B ([], [ term_to_var n, tm ]) ] in
-          let res = Formula.schema_transports f "g" unique_sub_rel schema1 schema2 in
+          let res = Formula.schema_transports f "g" unique_sub_rel schema2 schema1 in
           assert_bool "Blocks should be in schema" res)
        ]
 ;;

@@ -19,10 +19,10 @@ type tag =
 type id = string
 
 (* Note about timestamps:
-     Constants from sig are all at the outtermost level, ts = 0
-     Then are all the eigenvariables, ts = 1 
-     Then there are the bound variables, ts = 2
-     Finally, nominals are also at the same as bound vars, ts = 2*)
+   Constants from sig are all at the outtermost level, ts = 0
+   Then are all the eigenvariables, ts = 1
+   Then there are the bound variables, ts = 2
+   Finally, nominals are also at the same as bound vars, ts = 2*)
 type var =
   { name : id
   ; tag : tag
@@ -175,7 +175,7 @@ let rec hnorm term =
      (* abstraction? besides considering the LF types. *)
      | Pi (lfidtys, t) ->
        (* should be ok to assume that number of args is less
-                   than pi-bound variables *)
+          than pi-bound variables *)
        let n = List.length args in
        let alist = List.map2 (fun (v, _) a -> v.name, a) (List.take n lfidtys) args in
        pi
@@ -277,6 +277,43 @@ let rec eta_normalize t =
     else lambda idtys (app h ts')
   | App (h, ts) -> app h (List.map eta_normalize ts)
   | _ as t -> t
+;;
+
+let rec alpha_eq t1 t2 mappings =
+  let try_map_vars v1 v2 mappings =
+    if v1.ts <> v2.ts
+    then None
+    else if v1.ts = 0 && v2.ts = 0
+    then if v1.name = v2.name then Some mappings else None
+    else (
+      match List.assoc_opt v1.name mappings with
+      | Some v1' -> if v1' = v2.name then Some mappings else None
+      | None ->
+        if List.exists (fun (_, dst) -> v2.name = dst) mappings
+        then None
+        else Some ((v1.name, v2.name) :: mappings))
+  in
+  match norm t1, norm t2 with
+  | DB i1, DB i2 -> if i1 = i2 then Some mappings else None
+  | Var v1, Var v2 -> try_map_vars v1 v2 mappings
+  | App (h1, l1), App (h2, l2) ->
+    if List.length l1 <> List.length l2
+    then None
+    else
+      List.fold_left2
+        (fun acc t1 t2 ->
+          match acc with
+          | Some mappings -> alpha_eq t1 t2 mappings
+          | None -> None)
+        (alpha_eq h1 h2 mappings)
+        l1
+        l2
+  | Lam (idtys1, t1), Lam (idtys2, t2) ->
+    if get_ctx_tys idtys1 <> get_ctx_tys idtys2 then None else alpha_eq t1 t2 mappings
+  | Pi (idtys1, t1), Pi (idtys2, t2) ->
+    if get_ctx_tys idtys1 <> get_ctx_tys idtys2 then None else alpha_eq t1 t2 mappings
+  | Type, Type -> Some mappings
+  | _ -> Some mappings
 ;;
 
 let rec eq t1 t2 =
@@ -408,7 +445,7 @@ let abstract test =
 let abstract id ty t = lambda [ id, ty ] (abstract (fun _ id' -> id' = id) 1 t)
 
 (** Utilities.
-  * Easy creation of constants and variables, with sharing. *)
+    * Easy creation of constants and variables, with sharing. *)
 
 let nominal_var name ty = Ptr (ref (V { name; tag = Nominal; ts = max_int; ty }))
 
@@ -417,6 +454,7 @@ let var tag name ts ty =
 ;;
 
 let const ?(ts = 0) s ty = Ptr (ref (V { name = s; ts; tag = Constant; ty }))
+let logic ?(ts = 1) s ty = Ptr (ref (V { name = s; ts; tag = Logic; ty }))
 
 let get_id t =
   match observe (hnorm t) with
@@ -485,7 +523,7 @@ let fresh ?(tag = Logic) ?(ts = 1) ty =
   var tag name ts ty
 ;;
 
-(* given a variable term, eta expand into 
+(* given a variable term, eta expand into
    equivallent term in eta long form. *)
 let rec eta_expand t =
   match observe (hnorm t) with

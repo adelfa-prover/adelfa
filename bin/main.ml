@@ -41,7 +41,7 @@ let reset_if_interactive () =
   if !interactive
   then
     !lexbuf.lex_curr_p
-      <- { !lexbuf.lex_curr_p with pos_cnum = 0; pos_bol = 0; pos_lnum = 1 }
+    <- { !lexbuf.lex_curr_p with pos_cnum = 0; pos_bol = 0; pos_lnum = 1 }
 ;;
 
 let position_range (p1, p2) =
@@ -80,7 +80,7 @@ let checkInput () =
     then (
       lexbuf := Lexing.from_channel (open_in fname);
       !lexbuf.Lexing.lex_curr_p
-        <- { !lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = fname })
+      <- { !lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = fname })
     else failwithf "Error: Invalid input file: `%s'." fname
 ;;
 
@@ -142,7 +142,7 @@ let handle_common v =
    Read from a file or stdin *)
 let process_proof () =
   (* read in tactic, call appropriate step in prover.
-       if proof complete is raised return to outer loop. *)
+     if proof complete is raised return to outer loop. *)
   if !Globals.annotate
   then (
     fprintf !out "</pre>\n%!";
@@ -176,7 +176,7 @@ let process_proof () =
   | Uterms.Case (Uterms.Remove hyp) -> Prover.case true hyp
   | Uterms.Exists utm ->
     (* weak type checking/inference must be done on utm using current proof state
-           then call Prover.exsits*)
+       then call Prover.exsits*)
     let nvars =
       List.filter
         (fun (_, t) -> Term.is_var Term.Nominal t)

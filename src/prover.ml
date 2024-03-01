@@ -14,14 +14,24 @@ exception ProofCompleted
     6. The available definitions
     7. The current settings
     8. The induction count
-**)
+    **)
 
 type prover_settings = { mutable search_depth : int }
 
 (* 1. The currently loaded LF signature *)
 let lf_sig = State.rref Signature.empty
-let clear_sig () = lf_sig := Signature.empty
-let set_sig s = lf_sig := s
+let sub_rel = State.rref Subordination.empty
+
+let clear_sig () =
+  lf_sig := Signature.empty;
+  sub_rel := Subordination.empty
+;;
+
+let set_sig s =
+  lf_sig := s;
+  sub_rel := Subordination.sub_relation s
+;;
+
 let has_sig () = !lf_sig = Signature.empty |> not
 
 (* 2. The available context schemas *)
@@ -183,7 +193,7 @@ let induction i = Tactics.ind sequent i (get_ind_count ())
 let intros () = Tactics.intros sequent
 
 let case_to_subgoal remove h_name case : subgoal =
- fun () ->
+  fun () ->
   sequent.vars <- case.Tactics.vars_case;
   sequent.ctxvars <- case.Tactics.ctxvars_case;
   sequent.hyps <- case.Tactics.hyps_case;
@@ -196,8 +206,8 @@ let case_to_subgoal remove h_name case : subgoal =
 ;;
 
 (* the unification for first case is modifying the sequent.
-  need to make a true copy where the vars are different or
-  find another way to reset so we can try next unification *)
+   need to make a true copy where the vars are different or
+   find another way to reset so we can try next unification *)
 let case remove hyp =
   try
     match (Sequent.get_hyp sequent hyp).formula with
@@ -341,7 +351,7 @@ let type_apply_withs form (vwiths, cwiths) =
 ;;
 
 (*
-let freshen_formula_names f (vwiths, cwiths) =
+   let freshen_formula_names f (vwiths, cwiths) =
   let support =
     Formula.formula_support_sans (Sequent.get_cvar_tys sequent.Sequent.ctxvars) f
   in
@@ -409,7 +419,7 @@ let formula_free_logic_vars ctxvars formula =
   List.remove_all (fun (id, _) -> List.mem id bound_vars) logic_vars
 ;;
 
-(* check the given formula for logic variables. 
+(* check the given formula for logic variables.
    Assumes that any context variable appearing in the formula f
    is a member of the context variable context ctxvarctx.*)
 let ensure_no_logic_variable ctxvarctx f =
@@ -456,7 +466,7 @@ let apply_form f forms uws =
   in
   (* let f' = freshen_formula_names (Formula.copy_formula f) withs in *)
   (* let res_f = Tactics.apply_with !schemas sequent f' forms withs in *)
-  let res_f = Tactics.apply_with schemas sequent f forms withs in
+  let res_f = Tactics.apply_with schemas ~sub_rel:!sub_rel sequent f forms withs in
   let () =
     ensure_no_uninst_ctxvariable
       (Context.CtxVarCtx.get_var_tys sequent.Sequent.ctxvars)

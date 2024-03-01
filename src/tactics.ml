@@ -57,10 +57,10 @@ let fresh_nameless_alist ~support ~tag ~ts tids =
 (* replace the given variables in a term by new eigenvariables
    which have been raised over the given support. *)
 (*
-let freshen_term ~used ?(support = []) (tids : (id * Type.ty) list) t =
-  let alist, vars = Formula.fresh_raised_alist ~tag:Eigen ~ts:1 ~used ~support tids in
-  List.map term_to_pair vars, replace_term_vars alist t
-;;
+   let freshen_term ~used ?(support = []) (tids : (id * Type.ty) list) t =
+   let alist, vars = Formula.fresh_raised_alist ~tag:Eigen ~ts:1 ~used ~support tids in
+   List.map term_to_pair vars, replace_term_vars alist t
+   ;;
 *)
 
 (* given a type Pi([(x1,A1);...;(xm,Am)],B)
@@ -93,10 +93,10 @@ let freshen_type ~used ?(support = []) = function
 
    Returns the new block's entry list.*)
 (*
-let freshen_block ~used ?(support = []) (Context.B (schema_vars, entries)) =
-  let alist, _ = Formula.fresh_raised_alist ~tag:Eigen ~used ~ts:1 ~support schema_vars in
-  List.map (fun (x, y) -> x, replace_term_vars alist y) entries
-;;
+   let freshen_block ~used ?(support = []) (Context.B (schema_vars, entries)) =
+   let alist, _ = Formula.fresh_raised_alist ~tag:Eigen ~used ~ts:1 ~support schema_vars in
+   List.map (fun (x, y) -> x, replace_term_vars alist y) entries
+   ;;
 *)
 
 (* replaces the given bound vars in a formula by new logic variables.*)
@@ -119,7 +119,8 @@ let freshen_ctx_bindings ctx_vars bindings form =
       (List.map2 (fun (bn, _) (nn, _) -> bn, Context.Var nn) bindings new_vars)
       form
   in
-  new_vars, new_form
+  let mapping = List.combine (List.map fst bindings) (List.map fst new_vars) in
+  mapping, new_vars, new_form
 ;;
 
 (* Checks if two context formulas can be made equivalent. [g_seq] is the context
@@ -137,6 +138,7 @@ let freshen_ctx_bindings ctx_vars bindings form =
 *)
 let context_instance
   (schemas : (Context.ctx_var, Context.block_schema list) Hashtbl.t)
+  (compat : (id * id list) list)
   (nvars : (id * term) list)
   (ctxvar_ctx_seq : Context.CtxVarCtx.t)
   (ctxvar_ctx_form : Context.CtxVarCtx.t)
@@ -148,9 +150,10 @@ let context_instance
     (* ensure v_form logical *)
     if Context.CtxVarCtx.mem ctxvar_ctx_form v_form
     then (
-      let schema_seq = Context.CtxVarCtx.get_var_schema ctxvar_ctx_seq v_seq in
-      let schema_logic = Context.CtxVarCtx.get_var_schema ctxvar_ctx_form v_form in
-      schema_seq = schema_logic)
+      let schema_seq_name = Context.CtxVarCtx.get_var_schema ctxvar_ctx_seq v_seq in
+      let schema_seq_name = Option.default "" schema_seq_name in
+      let compatible_schemas = List.assoc_opt v_form compat in
+      Option.map_default (List.mem schema_seq_name) false compatible_schemas)
     else false
   in
   let can_instantiate_to_expr v_form g_seq =
@@ -188,12 +191,12 @@ let context_instance
    if the formula f2 is an instance of the formula
    f1.
    (i.e. we can instantiate eigenvariables in f1
-    s.t. it is equal to f2)
+   s.t. it is equal to f2)
    Returns an option which contains the context variable
    substitution that makes the formulas equal if it is
    an instance and None otherwise.
 *)
-let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
+let formula_instance schemas compat nvars ctxvar_ctx bound_ctxvars f1 f2 =
   let rec inst f1 f2 =
     match Formula.norm f1, Formula.norm f2 with
     | Formula.Top, Formula.Top | Formula.Bottom, Formula.Bottom -> Some []
@@ -206,7 +209,7 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
     | Formula.Ctx (bndrs1, f1'), Formula.Ctx (bndrs2, f2') ->
       if List.length bndrs1 != List.length bndrs2
       then None
-      else if List.fold_left2 (fun b (_, s1) (_, s2) -> b && s1 = s2) true bndrs1 bndrs2
+      else if List.for_all2 (fun (_, s1) (_, s2) -> s1 = s2) bndrs1 bndrs2
       then (
         let subst =
           List.map2 (fun (id1, _) (id2, _) -> id1, Context.Var id2) bndrs1 bndrs2
@@ -219,7 +222,7 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
     | Formula.Exists (vs1, f1'), Formula.Exists (vs2, f2') ->
       if List.length vs1 != List.length vs2
       then None
-      else if List.fold_left2 (fun b idty1 idty2 -> b && idty1 = idty2) true vs1 vs2
+      else if List.for_all2 (fun idty1 idty2 -> idty1 = idty2) vs1 vs2
       then (
         let f =
           Formula.replace_formula_vars
@@ -231,7 +234,7 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
     | Formula.Atm (g1, m1, a1, _), Formula.Atm (g2, m2, a2, _) ->
       if Unify.try_right_unify ~used:nvars m1 m2
          && Unify.try_right_unify ~used:nvars a1 a2
-      then context_instance schemas nvars ctxvar_ctx bound_ctxvars g1 g2
+      then context_instance schemas compat nvars ctxvar_ctx bound_ctxvars g1 g2
       else None
     | Formula.Prop (p1, argtms1), Formula.Prop (p2, argtms2) ->
       if p1 = p2 && List.for_all2 (Unify.try_right_unify ~used:nvars) argtms1 argtms2
@@ -248,24 +251,22 @@ let formula_instance schemas nvars ctxvar_ctx bound_ctxvars f1 f2 =
 
     @param f1 is the universally quantified formula, i.e. from the sequent
 
-    @param f2 could be either universally or existentially quantified depending
+    @param f2
+      could be either universally or existentially quantified depending
       on if it occurs under some bindings.
 
-    @param res is the restricted set which represents which nominal constants
+    @param res
+      is the restricted set which represents which nominal constants
       may be mapped to another in the restricted set.
 
-    @param ctxvar_ctxs the sequent and formula's ctx variable context.
-*)
-let generate_partial_mapping f1 f2 res ctxvar_ctxs =
+    @param ctxvar_ctxs the sequent and formula's ctx variable context. *)
+let generate_partial_mapping f1 f2 res =
   (* We'll check this in order to fail before we traverse the context and
      generate all possible mappings *)
-  let ctx_var_compat g1 g2 =
+  let ctx_var_compatible g1 g2 =
     match Context.get_ctx_var_opt g1, Context.get_ctx_var_opt g2 with
-    (* Both have context variables, ensure they are typed by the same schema *)
-    | Some v1, Some v2 ->
-      let schema1 = Context.CtxVarCtx.get_var_schema ctxvar_ctxs v1 in
-      let schema2 = Context.CtxVarCtx.get_var_schema ctxvar_ctxs v2 in
-      schema2 = schema1
+    (* Both have context variables, leave schema checking up to subordination *)
+    | Some _, Some _ -> true
     (* The universally quantified formula cannot match if it has an implicit
        portion while the existentially quantified formula doesn't.*)
     | Some _, None -> false
@@ -291,9 +292,10 @@ let generate_partial_mapping f1 f2 res ctxvar_ctxs =
   in
   match f1, f2 with
   | Formula.Atm (g1, _, _, _), Formula.Atm (g2, _, _, _) ->
-    if ctx_var_compat g1 g2
+    if ctx_var_compatible g1 g2
     then aux [] g1 g2
-    else raise (Unify.UnifyFailure Unify.Generic)
+    else
+      raise (Unify.UnifyFailure (Unify.ContextFail "could not match context variables"))
   | _ -> []
 ;;
 
@@ -313,9 +315,7 @@ let generate_mappings_for ctxvar_ctx nvars dest_form ?rng src_form =
   in
   (* Generate a partial mapping between the explicit portion of the formulas
      contexts. *)
-  let forced_mapping =
-    generate_partial_mapping src_form dest_form restricted_set ctxvar_ctx
-  in
+  let forced_mapping = generate_partial_mapping src_form dest_form restricted_set in
   (* Remove any nominals from the domain of the mapping if they are not in
      restricted set *)
   let dom =
@@ -335,7 +335,7 @@ let generate_mappings_for ctxvar_ctx nvars dest_form ?rng src_form =
   let forced_mapping_subst = List.map (fun (v, t) -> v.Term.name, t) forced_mapping in
   Seq.permute (List.length dom) (List.to_seq rng)
   |> Seq.map (fun subst ->
-       List.combine dom_names (List.of_seq subst) @ forced_mapping_subst)
+    List.combine dom_names (List.of_seq subst) @ forced_mapping_subst)
 ;;
 
 (* Try to unify t1 and t2 under permutations of nominal constants.
@@ -344,6 +344,7 @@ let generate_mappings_for ctxvar_ctx nvars dest_form ?rng src_form =
 let all_meta_right_permute_unify
   ~sc
   (schemas : (Context.ctx_var, Context.block_schema list) Hashtbl.t)
+  compat
   (nvars : (Term.id * Term.term) list)
   (ctxvar_ctx : Context.CtxVarCtx.t)
   (new_ctxvar_ctx : Context.CtxVarCtx.t)
@@ -362,6 +363,7 @@ let all_meta_right_permute_unify
       let subst =
         formula_instance
           schemas
+          compat
           nvars
           ctxvar_ctx'
           new_ctxvar_ctx
@@ -394,7 +396,7 @@ let permute_eq ~sc nvars ctxvar_ctx f1 f2 =
 
 (* Given an LF signature, a context expression, and a type
    this function computes
-      F(ctx; typ)
+   F(ctx; typ)
    which is the set of atomic formulas whose validity ensure that the
    given type expression is a valid LF type under the given context. *)
 let decompose_kinding lf_sig used ctx typ =
@@ -533,18 +535,18 @@ let extract_ty_info signature sequent depth formulas =
    raises Success exception if current goal is determined valid by search.
 
    procedure:
-     1) once at outset check the nominal constants in explicit part of context
-          - no duplicate binding for name
-          - all explicit bindings must be restricted from appearing in context variables
+   1) once at outset check the nominal constants in explicit part of context
+   - no duplicate binding for name
+   - all explicit bindings must be restricted from appearing in context variables
      2) Extract all typing information from all hypotheses and add them to the
-        assumption set
+     assumption set
      3) then being the search loop attempting to complete derivation
-          a) normalize the goal formula (i.e. apply Pi-R rule)
-          b) check for match in assumption set (i.e. apply id rule)
-          c) decompose typing judgement (i.e. apply atm-R rule)
-               - for leaves perform check of context formation
-                 must either be the prefix of some context expression from an assumption or
-                 shown well-formed explicitly
+     a) normalize the goal formula (i.e. apply Pi-R rule)
+     b) check for match in assumption set (i.e. apply id rule)
+     c) decompose typing judgement (i.e. apply atm-R rule)
+   - for leaves perform check of context formation
+     must either be the prefix of some context expression from an assumption or
+     shown well-formed explicitly
 *)
 let search ~depth signature sequent =
   (* checks that the explicit bindings in context expression g are all distinct and are
@@ -603,10 +605,10 @@ let search ~depth signature sequent =
             support_hypg
             |> List.permute (List.length support_g)
             |> List.iter (fun perm ->
-                 let alist = List.combine support_g_names perm in
-                 if Context.context_prefix (Context.replace_ctx_expr_vars alist g) hyp_g
-                 then raise Success
-                 else ()))
+              let alist = List.combine support_g_names perm in
+              if Context.context_prefix (Context.replace_ctx_expr_vars alist g) hyp_g
+              then raise Success
+              else ()))
           else ())
       in
       List.iter match_with_ctx hyp_ctxexprs;
@@ -659,8 +661,8 @@ let search ~depth signature sequent =
         |> List.map (fun f () -> sequent.goal <- f)
       in
       (* Note: Since this is analysis is always performed after normalization we
-               are assured that the type of the judgement is atomic and the head of the
-               term component of the judgement is a variable or an application term. *)
+         are assured that the type of the judgement is atomic and the head of the
+         term component of the judgement is a variable or an application term. *)
       let g, m, a, ann =
         match sequent.goal with
         | Formula.Atm (g, m, a, ann) -> g, m, a, ann
@@ -831,9 +833,9 @@ let ind sequent i n =
        (Xi\tycvar)[thetaj'] U
          {Gamma|NGamma:C[G1[thetaj'];...;Gj[thetaj'];G;G{j+1}[thetaj'];...;Gn[thetaj']]}*)
 (* Possible raising optimization:
-     in Psij' we might check which variables in Psi have a rigid
-     occurence in G1,...,Gj and avoid raising these variables because
-     such dependencies would be ill-formed. *)
+   in Psij' we might check which variables in Psi have a rigid
+   occurence in G1,...,Gj and avoid raising these variables because
+   such dependencies would be ill-formed. *)
 let addBlock
   (seq : Sequent.sequent)
   (tycvar : Context.CtxVarCtx.entry)
@@ -905,7 +907,7 @@ let addBlock
 
 (* enumerates all the name choices of arity types atys relative to
    names and away from prohibited.
- *)
+*)
 let rec namesLists (atys : Type.ty list) (names : VarSet.t) (prohibited : VarSet.t)
   : Term.term list list
   =
@@ -958,7 +960,7 @@ let rec namesLists (atys : Type.ty list) (names : VarSet.t) (prohibited : VarSet
    - prohibited is the collection of nominal constants assigned types
       by the explicit bindings of g relative to seq
    - usable is the collection of nominal constants (N \ NGamma \ prohibited)
- *)
+*)
 let allBlocks
   (seq : Sequent.sequent)
   (g : Context.ctx_expr)
@@ -979,12 +981,12 @@ let allBlocks
   in
   let usable = VarSet.minus (VarSet.minus noms n_gamma) prohibited in
   (* for each location in the block list j
-         0 to
-           (let CtxTy(schema, blocks) = Sequent.get_ctxvar_ty tycvar in
-            List.length blocks)
+     0 to
+     (let CtxTy(schema, blocks) = Sequent.get_ctxvar_ty tycvar in
+     List.length blocks)
      for every list of names in namelsts names,
      for every binding in the block i
-         1 to (List.length entries),
+     1 to (List.length entries),
      call:
      addblock seq tycvar bl_schm names usable j i *)
   let namelsts = namesLists entry_atys usable (VarSet.union n_gamma prohibited) in
@@ -1027,7 +1029,7 @@ let allBlocks
        U{allBlocks seq g tycvar bl_schmi | 1<= i<= m}
    where
    - tycvar = Gamma|NGamma:C[G1,...,Gn]
- *)
+*)
 let implicitHeads seq schemas (g : Context.ctx_expr)
   : (Sequent.sequent * Term.term * Term.term) list
   =
@@ -1057,7 +1059,7 @@ let sigHeads lf_sig seq : (Sequent.sequent * Term.term * Term.term) list =
 ;;
 
 (* returns all the (sequent, head) tuples identified for the context
-   expression g relative to seq.  *)
+   expression g relative to seq. *)
 let heads lf_sig schemas seq g =
   let sig_heads = sigHeads lf_sig seq in
   let ex_heads = explicitHeads seq g in
@@ -1187,10 +1189,10 @@ let exists sequent t =
     if Type.eq got_ty ty
     then
       sequent.goal
-        <- Formula.replace_formula_vars_rename
-             ~used:sequent.vars
-             [ n, t ]
-             (Formula.Exists (vs, body))
+      <- Formula.replace_formula_vars_rename
+           ~used:sequent.vars
+           [ n, t ]
+           (Formula.Exists (vs, body))
     else raise (InvalidTerm t)
   | _ -> assert false
 ;;
@@ -1241,7 +1243,7 @@ let normalize_atomic_formula nvars form =
       (match Term.observe (Term.hnorm a) with
        | Term.Pi ((v, typ) :: bndrs, body) ->
          (* for each binder introduce new name n, raise relevant eigenvariables over n,
-             then move into context and apply term component to this n. *)
+            then move into context and apply term component to this n. *)
          let name, _ = Term.fresh_wrt ~ts:2 Nominal "n" v.Term.ty !nvars in
          let _ = nvars := Term.term_to_pair name :: !nvars in
          let g' = Context.Ctx (g, (Term.term_to_var name, typ)) in
@@ -1308,6 +1310,7 @@ let generate_subst f added ctx_var_ctx =
 
 let apply_arrow
   schemas
+  compat
   nvars
   (ctxvar_ctx : Context.CtxVarCtx.t)
   (bound_ctxvars : Context.CtxVarCtx.t)
@@ -1337,7 +1340,7 @@ let apply_arrow
         let norm_subst2 = List.filter can_be_ambiguous subst2 |> sort_by_ctx_var in
         List.combine_shortest norm_subst1 norm_subst2
         |> List.find_opt (fun ((v1, d1), (v2, d2)) ->
-             Context.ctx_var_eq v1 v2 && not (Context.eq d1 d2))
+          Context.ctx_var_eq v1 v2 && not (Context.eq d1 d2))
     in
     if Option.is_none (fst !res) then res := new_res;
     if List.exists can_be_ambiguous (Option.default [] (fst !res))
@@ -1399,6 +1402,7 @@ let apply_arrow
               all_meta_right_permute_unify
                 ~sc:(set_res_or_raise res)
                 schemas
+                compat
                 nvars
                 ctxvar_ctx
                 bound_ctxvars
@@ -1423,37 +1427,47 @@ let apply_arrow
  * will apply the formula to the given hypotheses (inferring
  * instantiations for universal and context quantifiers)
  * and adds the resulting formula to the sequent. *)
-let apply schemas sequent formula args =
-  let process_bindings ctxs foralls body =
-    let new_ctxvars, body' =
+let apply schemas ~sub_rel sequent formula args =
+  let process_bindings ctxs compatible_schemas foralls body =
+    let mapping, new_ctxvars, body' =
       freshen_ctx_bindings
         (Context.CtxVarCtx.map_entries Context.CtxVarCtx.get_id sequent.ctxvars)
         ctxs
         body
     in
+    let fresh_compat =
+      List.map (fun (src, dest) -> dest, List.assoc src compatible_schemas) mapping
+    in
     let nvars = List.filter (fun (_, t) -> is_var Nominal t) sequent.vars in
     apply_arrow
       schemas
+      fresh_compat
       nvars
       sequent.ctxvars
       (Context.CtxVarCtx.of_list_list new_ctxvars)
       (freshen_nameless_bindings ~support:(List.map snd nvars) ~ts:1 foralls body')
       args
   in
-  let rec collect_bindings ctxbndrs varbndrs formula =
-    match Formula.norm formula with
-    | Formula.Ctx (bndrs, body) -> collect_bindings (ctxbndrs @ bndrs) varbndrs body
-    | Formula.All (vs, body) -> collect_bindings ctxbndrs (varbndrs @ vs) body
-    | Formula.Imp (_, _) -> ctxbndrs, varbndrs, formula
-    | _ ->
-      [ "Structure of applied term must be a substructure of the following."
-      ; "<ctx/forall quantifiers> F1 => ... => Fk => F"
-      ]
-      |> String.concat "\n"
-      |> failwith
+  let collect_bindings formula =
+    let rec aux ctxbndrs varbndrs formula =
+      match Formula.norm formula with
+      | Formula.Ctx (bndrs, body) -> aux (ctxbndrs @ bndrs) varbndrs body
+      | Formula.All (vs, body) -> aux ctxbndrs (varbndrs @ vs) body
+      | Formula.Imp (_, _) -> ctxbndrs, varbndrs, formula
+      | _ ->
+        [ "Structure of applied term must be a substructure of the following."
+        ; "<ctx/forall quantifiers> F1 => ... => Fk => F"
+        ]
+        |> String.concat "\n"
+        |> failwith
+    in
+    aux [] [] formula
   in
-  let ctxbndrs, varbndrs, body = collect_bindings [] [] formula in
-  process_bindings ctxbndrs varbndrs body
+  let ctxbndrs, varbndrs, body = collect_bindings formula in
+  let compat =
+    Formula.get_compatible_context_schemas (Hashtbl.to_list schemas) sub_rel formula
+  in
+  process_bindings ctxbndrs compat varbndrs body
 ;;
 
 let take_from_binders binders withs =
@@ -1486,22 +1500,13 @@ let rec instantiate_withs term (vwiths, cwiths) =
   | _ -> term
 ;;
 
-let apply_with schemas sequent formula args (vwiths, cwiths) =
+let apply_with schemas ~sub_rel sequent formula args (vwiths, cwiths) =
   if args = [] && vwiths = [] && cwiths = []
   then formula
   else (
     let term = instantiate_withs formula (vwiths, cwiths) in
-    apply schemas sequent (Formula.norm term) args)
+    apply schemas ~sub_rel sequent (Formula.norm term) args)
 ;;
-
-(* match (Formula.norm term) with *)
-(* | Formula.Imp(_,_) as f -> *)
-(*    apply schemas sequent f args *)
-(* | f when args = [] -> *)
-(*    apply schemas sequent f args  *)
-(* | f -> *)
-(*    apply schemas sequent f args *)
-(*       (failwith "All quantifier instantiations must be given before applying to formulas.") *)
 
 (* Given a sequent, applies one of:  ctx-R, all-R, and imp-R and
  * returns the resulting sequent. *)
@@ -1528,9 +1533,9 @@ let intro sequent =
     in
     List.iter (add_var sequent) new_vars;
     sequent.goal
-      <- Formula.replace_formula_vars
-           (List.map2 (fun (n, _) (_, t) -> n, Term.app t support) vs new_vars)
-           f
+    <- Formula.replace_formula_vars
+         (List.map2 (fun (n, _) (_, t) -> n, Term.app t support) vs new_vars)
+         f
   | Formula.Ctx (cvars, f) ->
     let cvars_alist, _ =
       Context.list_fresh_wrt cvars (Context.CtxVarCtx.get_vars sequent.ctxvars)
@@ -1606,14 +1611,14 @@ exception PermutationFailure of permutation_failure
 
 let permute_ctx form g' =
   (* need to verify that
-       (1) all items in g are in g' and all in g ' are in g
-       (2) g' respects dependencies (i.e. no name is used
+     (1) all items in g are in g' and all in g ' are in g
+     (2) g' respects dependencies (i.e. no name is used
      in a type before it appears in the context) *)
   let rec check_dependencies = function
     | [], [] -> ()
     | v :: vs, _ :: typs ->
       if List.mem v.Term.name (List.map fst (Term.get_used typs))
-      then raise (InvalidCtxPermutation "Later contet items cannot depend on later name");
+      then raise (InvalidCtxPermutation "context items cannot depend on later name");
       check_dependencies (vs, typs)
     | _ -> bugf "Could not check dependencies"
   in
@@ -1693,8 +1698,8 @@ let permute form perm sequent =
          let alist =
            List.filter (fun (v, _) -> List.mem_assoc v form_noms) perm
            |> List.map (fun (v, _) ->
-                let tm = List.assoc v form_noms |> Term.rename_vars perm in
-                v, tm)
+             let tm = List.assoc v form_noms |> Term.rename_vars perm in
+             v, tm)
          in
          Formula.replace_formula_vars alist f
        | noms -> raise (PermutationFailure (OutOfResSetPermutation noms)))
@@ -1755,9 +1760,9 @@ let inst ~depth lf_sig sequent form subst =
   match form, subst with
   | Formula.Atm (g, m, a, _), [ (n, t) ] ->
     (* split the context g based on location on n into g1,n:b,g2.
-          search for a proof that under g1 the term t has type b.
-          if successful replace n with t in g2, m, and a and return the
-          updated formula. *)
+       search for a proof that under g1 the term t has type b.
+       if successful replace n with t in g2, m, and a and return the
+       updated formula. *)
     let pristine = State.snapshot () in
     let g1, b, g2 = Context.split_ctx g n in
     let to_prove = Formula.Atm (g1, t, b, Formula.None) in

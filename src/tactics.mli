@@ -76,6 +76,7 @@ val exists : Sequent.sequent -> Term.term -> unit
  * and adds the resulting formula to the sequent. *)
 val apply
   :  (string, Context.ctx_schema) Hashtbl.t
+  -> sub_rel:Subordination.sub_rel
   -> Sequent.sequent
   -> Formula.formula
   -> Formula.formula list
@@ -83,6 +84,7 @@ val apply
 
 val apply_with
   :  (string, Context.ctx_schema) Hashtbl.t
+  -> sub_rel:Subordination.sub_rel
   -> Sequent.sequent
   -> Formula.formula
   -> Formula.formula list

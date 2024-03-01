@@ -4,15 +4,16 @@ module T = Term
 (* NOTE: The subordination checks use associative lists and don't fill
    transitive connections -- making lookup possibly expensive. If this causes a
    slowdown, think about using sets and/or filling any transitive connections
-   to allow [has_path] to only look at the single entry. *)
+   after initial construction to allow [has_path] to only look at the single
+   entry. *)
 type key = Sig.id
 type value = Sig.id list
 type entry = key * value
 type sub_rel = entry list
 
-module Graph = struct
-  let empty : sub_rel = []
+let empty : sub_rel = []
 
+module Graph = struct
   let rec get_opt (graph : sub_rel) (node : key) : value option =
     match graph with
     | [] -> None
@@ -46,9 +47,7 @@ end
 
 let sub_rel_to_list rel = rel
 
-let add_term_to_graph (graph : sub_rel) (name : Sig.id) (term : T.term)
-  : sub_rel
-  =
+let add_term_to_graph (graph : sub_rel) (name : Sig.id) (term : T.term) : sub_rel =
   let rec aux term =
     match T.observe (T.hnorm term) with
     | T.Type -> [ name ]
@@ -62,17 +61,13 @@ let add_term_to_graph (graph : sub_rel) (name : Sig.id) (term : T.term)
   List.fold_left (fun graph node -> Graph.insert graph node name) graph (aux term)
 ;;
 
-let add_type_to_graph (graph : sub_rel) (type_decl : Sig.type_decl)
-  : sub_rel
-  =
+let add_type_to_graph (graph : sub_rel) (type_decl : Sig.type_decl) : sub_rel =
   let name = type_decl.Sig.ty_name in
   let term = type_decl.Sig.kind in
   add_term_to_graph graph name term
 ;;
 
-let add_obj_to_graph (graph : sub_rel) (obj_decl : Sig.obj_decl)
-  : sub_rel
-  =
+let add_obj_to_graph (graph : sub_rel) (obj_decl : Sig.obj_decl) : sub_rel =
   let term = obj_decl.Sig.typ in
   let type_name = Term.get_ty_head obj_decl.Sig.typ in
   add_term_to_graph graph type_name term
@@ -80,10 +75,9 @@ let add_obj_to_graph (graph : sub_rel) (obj_decl : Sig.obj_decl)
 
 let sub_relation (signature : Sig.signature) : sub_rel =
   let type_graph =
-    Sig.get_type_decls signature |> List.fold_left add_type_to_graph Graph.empty
+    Sig.get_type_decls signature |> List.fold_left add_type_to_graph empty
   in
   Sig.get_obj_decls signature |> List.fold_left add_obj_to_graph type_graph
-
-let subordinates (rel : sub_rel) (a : Sig.id) (b : Sig.id) =
-  Graph.has_path rel a b
 ;;
+
+let subordinates (rel : sub_rel) (a : Sig.id) (b : Sig.id) = Graph.has_path rel a b

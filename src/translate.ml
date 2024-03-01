@@ -454,7 +454,7 @@ let trans_schema lf_sig ublock_schemas =
               utm
           in
           match nvar_ctx with
-          | [] -> (Term.term_to_var (Term.const id (Term.erase tm)), tm) :: prev_entries
+          | [] -> (Term.term_to_var (Term.logic id (Term.erase tm)), tm) :: prev_entries
           | (id, _) :: _ ->
             raise (TypingError (unknownconstant (Lexing.dummy_pos, Lexing.dummy_pos) id)))
         []

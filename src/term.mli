@@ -103,6 +103,7 @@ val get_tag : term -> tag
 val get_var_ty : term -> ty
 val is_var : tag -> term -> bool
 val const : ?ts:int -> id -> ty -> term
+val logic : ?ts:int -> id -> ty -> term
 val find_vars : tag -> term list -> var list
 val find_var_refs : tag -> term list -> term list
 
@@ -135,3 +136,4 @@ val tc : tyctx -> term -> Type.ty
 val erase : term -> Type.ty
 val eta_expand : term -> term
 val is_uninstantiated : id * term -> bool
+val alpha_eq : term -> term -> (id * id) list -> (id * id) list option

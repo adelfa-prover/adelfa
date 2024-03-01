@@ -355,6 +355,7 @@ let unique_sig =
     ]
 ;;
 
+let eval_sub_rel = Subordination.sub_relation eval_sig
 let unique_sub_rel = Subordination.sub_relation unique_sig
 
 let (typeof_schema : Context.ctx_schema) =

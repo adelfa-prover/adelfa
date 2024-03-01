@@ -126,7 +126,8 @@ let list_fresh_wrt names used =
 
 (* context types *)
 type block = entry list
-type ctx_typ = CtxTy of string * block list
+type schema_name = string
+type ctx_typ = CtxTy of schema_name * block list
 
 let ctx_typ ?(blocks = []) ~id () = CtxTy (id, blocks)
 
@@ -336,21 +337,30 @@ let rec context_prefix g1 g2 =
   | _, _ -> false
 ;;
 
+let entries_alpha_eq mappings (v1, e1) (v2, e2) =
+  let* mappings = Term.alpha_eq (Term.var_to_term v1) (Term.var_to_term v2) mappings in
+  let* mappings = Term.alpha_eq e1 e2 mappings in
+  Some mappings
+;;
+
 let block_prefix_sub sub_rel tys b1 b2 =
   let subordinates_no_types (_, entry) =
     List.for_all
       (fun t -> Subordination.subordinates sub_rel (Term.get_ty_head entry) t |> not)
       tys
   in
-  let rec aux b1 b2 =
+  let rec aux b1 b2 mapping =
     match b1, b2 with
-    | [], extras -> List.for_all subordinates_no_types extras
-    | (v1, e1) :: b1', (v2, e2) :: b2' -> v1 = v2 && Term.eq e1 e2 && aux b1' b2'
-    | _, _ -> false
+    | [], extras ->
+      if List.for_all subordinates_no_types extras then Some mapping else None
+    | e1 :: b1', e2 :: b2' ->
+      let* res = entries_alpha_eq mapping e1 e2 in
+      aux b1' b2' res
+    | _, _ -> None
   in
   let (B (_, b1)) = b1 in
   let (B (_, b2)) = b2 in
-  aux b1 b2
+  aux b1 b2 [] |> Option.is_some
 ;;
 
 let remove_ctx_items expr ids =
@@ -381,7 +391,15 @@ let block_eq_sub sub_rel a b1 b2 =
   let b2_min = block_restrict sub_rel [ a ] b2 in
   if List.length b1_min <> List.length b2_min
   then false
-  else List.for_all2 (fun (v1, e1) (v2, e2) -> v1 = v2 && Term.eq e1 e2) b1_min b2_min
+  else
+    List.fold_left2
+      (fun acc e1 e2 ->
+        let* acc = acc in
+        entries_alpha_eq acc e1 e2)
+      (Some [])
+      b1_min
+      b2_min
+    |> Option.is_some
 ;;
 
 (* splits a context by the location of n.

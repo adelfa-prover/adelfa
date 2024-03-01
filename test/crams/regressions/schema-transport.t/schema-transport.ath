@@ -1,15 +1,31 @@
 Specification "schema-transport.lf".
 
+Schema onlyTerm := (x:tm).
+
+Theorem useless : ctx G:onlyTerm, forall M:o, {G |- M : tm} => exists D:o, {G |- D : tm}.
+intros. exists M. search.
+
 Schema c :=
  {T}(x:tm,y:of x T).
 
-Schema c' :=
- {T}(x:tm,y:of x T).
+Theorem uses_useless : ctx G:c, forall M:o, {G |- M : tm} => exists D:o, {G |- D: tm}.
+intros. apply useless to H1. exists D. search.
 
-%%% Strengthening properties for ty and eq.
 Theorem ty_independent : ctx G:c, forall T:o, {G |- T : ty} => {T:ty}.
 induction on 1. intros. case H1. 
   apply IH to H2. apply IH to H3. search.
 
+% Changes names of variables
+Schema c' :=
+ {A}(a:tm,z:of a A).
+
 Theorem eq_independent : ctx G:c', forall T1 T2 D, {G |- D : eq T1 T2} => {D : eq T1 T2}.
 intros. case H1. apply ty_independent to H2. abort.
+
+% Subordinates a type in c, should fail
+Schema c'' :=
+ {T}(x:tm,y:of x T, z:tm).
+
+Theorem eq_independent : ctx G:c'', forall T1 T2 D, {G |- D : eq T1 T2} => {D : eq T1 T2}.
+intros. case H1. apply ty_independent to H2.
+

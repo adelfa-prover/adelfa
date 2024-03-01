@@ -109,6 +109,9 @@ type wctx = (Term.id * Type.ty) list
     and the second element represents the schematic variables *)
 type block_schema = B of wctx * entry list
 
+(** [schema_name] represents an identifier for a [ctx_schema] *)
+type schema_name = string
+
 (** [ctx_schema] is a context schema [block_schema] *)
 type ctx_schema = block_schema list
 
