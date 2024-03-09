@@ -125,4 +125,96 @@ let schema_transport =
        ]
 ;;
 
-let tests = "Formula" >::: [ block_sim; block_in; schema_transport ]
+let negative_occurrences =
+  "Negative occurrences"
+  >::: [ ("Negative occurrences"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G" in
+          let e1 = var Eigen "E1" 0 ity in
+          let f = imp (atm (Context.Var g1) e1 tm) Bottom in
+          assert_bool "Should have a negative occurrence of G" (occurs_negatively g1 f))
+       ; ("No occurrence"
+          >:: fun () ->
+          let f = Bottom in
+          assert_bool
+            "Should not have a negative occurrence of a variable which doesn't appear in \
+             a formula"
+            (occurs_negatively "G" f |> not))
+       ; ("Negative occurrence of other variable"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G" in
+          let e1 = var Eigen "E1" 0 ity in
+          let f = imp (atm (Context.Var g1) e1 tm) Bottom in
+          assert_bool
+            "Should not have a negative occurrence of a variable which doesn't appear in \
+             a formula"
+            (occurs_negatively "F" f |> not))
+       ; ("Negative occurrence of bottom"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G" in
+          let e1 = var Eigen "E1" 0 ity in
+          let f = imp Bottom (atm (Context.Var g1) e1 tm) in
+          assert_bool
+            "Should hold for a formula which has a vacuously true statement"
+            (occurs_negatively "F" f))
+       ; ("Positive occurrence of top"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G" in
+          let e1 = var Eigen "E1" 0 ity in
+          let f = imp (atm (Context.Var g1) e1 tm) Top in
+          assert_bool
+            "Should hold for a formula which has a true in a positive position"
+            (occurs_negatively "F" f))
+       ; ("Holds when both children of AND have negative occurrence"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G" in
+          let e1 = var Eigen "E1" 0 ity in
+          let f =
+            f_and
+              (imp (atm (Context.Var g1) e1 tm) Bottom)
+              (imp (atm (Context.Var g1) e1 tm) Bottom)
+          in
+          assert_bool
+            "Should hold for a formula which has negative on both sides of and"
+            (occurs_negatively "G" f))
+       ; ("Doesn't hold when only one child of AND has negative occurrence"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G" in
+          let e1 = var Eigen "E1" 0 ity in
+          let f =
+            f_and (imp (atm (Context.Var g1) e1 tm) Bottom) (atm (Context.Var g1) e1 tm)
+          in
+          assert_bool
+            "Should hold for a formula which has negative on both sides of and"
+            (occurs_negatively "G" f |> not))
+       ; ("Holds when either child of OR has negative occurrence"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G" in
+          let f1 = Context.ctx_var "F" in
+          let e1 = var Eigen "E1" 0 ity in
+          let f =
+            f_or
+              (imp (atm (Context.Var g1) e1 tm) Bottom)
+              (imp (atm (Context.Var f1) e1 tm) Bottom)
+          in
+          let () = assert_bool "Should hold on left" (occurs_negatively "G" f) in
+          let f =
+            f_or
+              (imp (atm (Context.Var f1) e1 tm) Bottom)
+              (imp (atm (Context.Var g1) e1 tm) Bottom)
+          in
+          assert_bool "Should hold on right" (occurs_negatively "F" f))
+       ; ("Doesn't hold when neither child of OR has negative occurrence"
+          >:: fun () ->
+          let f1 = Context.ctx_var "F" in
+          let e1 = var Eigen "E1" 0 ity in
+          let f =
+            f_or
+              (imp (atm (Context.Var f1) e1 tm) Bottom)
+              (imp (atm (Context.Var f1) e1 tm) Bottom)
+          in
+          assert_bool "Should hold on left" (occurs_negatively "G" f |> not))
+       ]
+;;
+
+let tests = "Formula" >::: [ block_sim; block_in; schema_transport; negative_occurrences ]

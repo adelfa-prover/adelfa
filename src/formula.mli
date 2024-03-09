@@ -123,3 +123,11 @@ val formula_support : CtxVarCtx.t -> formula -> term list
 val get_formula_used : CtxVarCtx.t -> formula -> (id * term) list
 val get_formula_used_nominals : CtxVarCtx.t -> formula -> (id * term) list
 val formula_support_sans : CtxVarCtx.t -> formula -> term list
+
+(** [occurs_negatively var formula] checks if the variable [var] occurs
+    negatively in the {e body} of [formula].
+
+    @param formula
+      must be only the body of a formula to avoid capturing inner
+      quantified names of [var]. *)
+val occurs_negatively : Context.ctx_var -> formula -> bool

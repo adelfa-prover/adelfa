@@ -463,3 +463,26 @@ let get_compatible_context_schemas schemas sub_rel f =
   in
   collect_bindings f |> List.map (fun x -> fst x, get_compatible_schemas x)
 ;;
+
+let occurs_negatively (ctx_var : ctx_var) (f : formula) =
+  let rec aux (is_negative : bool) (f : formula) =
+    match f with
+    | Atm (g, _, _, _) when Context.get_ctx_var_opt g = Some ctx_var -> [ is_negative ]
+    | Atm _ | Prop _ -> [ false ]
+    | Top -> [ not is_negative ]
+    | Bottom -> [ is_negative ]
+    | Ctx (bndrs, _) when List.mem_assoc ctx_var bndrs -> [ false ]
+    | Ctx (_, f') -> aux is_negative f'
+    | All (_, f') | Exists (_, f') -> aux is_negative f'
+    | Imp (f1, f2) ->
+      let left_negative = List.exists (fun x -> x) (aux (not is_negative) f1) in
+      let right_negative = List.exists (fun x -> x) (aux is_negative f2) in
+      [ left_negative || right_negative ]
+    | And (f1, f2) -> aux is_negative f1 @ aux is_negative f2
+    | Or (f1, f2) ->
+      let left_negative = List.exists (fun x -> x) (aux is_negative f1) in
+      let right_negative = List.exists (fun x -> x) (aux is_negative f2) in
+      [ left_negative || right_negative ]
+  in
+  List.for_all (fun x -> x) (aux false f)
+;;

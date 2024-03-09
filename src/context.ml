@@ -340,7 +340,7 @@ let rec context_prefix g1 g2 =
 let entries_alpha_eq mappings (v1, e1) (v2, e2) =
   let* mappings = Term.alpha_eq (Term.var_to_term v1) (Term.var_to_term v2) mappings in
   let* mappings = Term.alpha_eq e1 e2 mappings in
-  Some mappings
+  return mappings
 ;;
 
 let block_prefix_sub sub_rel tys b1 b2 =

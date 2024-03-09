@@ -1437,6 +1437,7 @@ let apply schemas ~sub_rel sequent formula args =
     in
     let fresh_compat =
       List.map (fun (src, dest) -> dest, List.assoc src compatible_schemas) mapping
+      |> List.filter (fun (src, _) -> Formula.occurs_negatively src body')
     in
     let nvars = List.filter (fun (_, t) -> is_var Nominal t) sequent.vars in
     apply_arrow
