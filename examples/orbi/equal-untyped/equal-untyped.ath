@@ -1,0 +1,138 @@
+Specification "equal-untyped.lf".
+
+Schema xG := (x: tm).
+Schema xaG := (x: tm,a: aeq x x).
+Schema daG := (x:tm, a:aeq x x, u:deq x x).
+
+Theorem reflG: ctx G:xaG, forall T, {G |- T : tm} => exists D, {G |- D : aeq T T}.
+induction on 1. intros. case H1 (keep).
+%app
+apply IH to H2.
+apply IH to H3.
+exists ae_a M1 M2 M1 M2 D D1.
+search.
+%lam
+weaken H2 with aeq n n.
+apply IH to H3 with (G = G, n1: tm, n:aeq n1 n1).
+prune H2.
+exists ae_l M M D.
+search.
+%ctx
+exists n1. search.
+
+Theorem symG: ctx G:xaG, forall T1 T2 Q,
+  {G |- Q : aeq T1 T2} => exists D, {G |- D : aeq T2 T1}.
+induction on 1.intros. case H1(keep).
+%lam
+apply IH to H4 with (G = G, n1: tm, n: aeq n1 n1).
+prune H5.
+exists (ae_l N M D1).
+search.
+%app
+apply IH to H6.
+apply IH to H7.
+exists (ae_a N1 N2 M1 M2 D D3).
+search.
+%context
+exists n1. search.
+
+Theorem tranG: ctx G:xaG, forall M1 M2 M3 D1 D2,
+  {G |- D1: aeq M1 M2} => {G |- D2: aeq M2 M3} => exists D3, {G |- D3: aeq M1 M3}.
+induction on 1. intros.
+case H1 (keep).
+%lam
+case H2.
+apply IH to H5 H8 with (G = G, n1:tm, n: aeq n1 n1).
+prune H9.
+exists ae_l M M4 D1. search.
+%app
+case H2.
+apply IH to H7 H13.
+apply IH to H8 H14.
+exists ae_a M4 M5 N3 N4 D1 D2. search.
+%ctx
+case H2.
+exists n1. search.
+
+Theorem ceqG: ctx G:daG, forall M N D1,
+  {G |- D1: deq M N} => exists D2, {G |- D2 : aeq M N}.
+induction on 1.
+intros. case H1 (keep).
+apply IH to H5.
+apply IH to H6.
+apply tranG to H7 H8. exists D5. search.
+apply IH to H4.
+apply symG to H5. exists D1. search.
+apply reflG to H2. exists D.  search.
+weaken H4 with aeq n2 n2.
+ctxpermute H5 to G, n2: tm, n4: aeq n2 n2, n3:deq n2 n2.
+apply IH to H6 with (G = G, n1:tm, n2:aeq n1 n1, n:deq n1 n1).
+prune H7.
+skip.
+% exists ae_l M1 N1 D2. search.
+apply IH to H6. apply IH to H7.
+exists ae_a M1 M2 N1 N2 D1 D4. search.
+exists n1. search.
+
+Theorem seqG : ctx G:daG, forall M N D1,
+  {G |- D1: aeq M N} => exists D2, {G |- D2: deq M N}.
+induction on 1.
+intros. case H1 (keep).
+weaken H4 with deq n2 n2.
+apply IH to H5 with (G = G, n1:tm, n2:aeq n1 n1, n:deq n1 n1).
+prune H6.
+skip.
+% exists de_l M1 N1 (D2). search.
+apply IH to H6. apply IH to H7.
+exists de_a M1 M2 N1 N2 D1 D4. search.
+exists n2. search.
+
+Theorem substG: ctx G:xaG, forall M1: o -> o M2: o -> o N1 N2 D1: o -> o -> o D2,
+  {G |- [x][y] D1 x y : {x:tm}{y:aeq x x} aeq (M1 x) (M2 x)} => {G |- D2: aeq N1 N2}
+    => exists D3, {G |- D3 : aeq (M1 N1) (M2 N2)}.
+induction on 1.
+intros.
+case H1 (keep).
+ctxpermute H5 to G, n4:tm, n5:aeq n4 n4, n:tm, n1:aeq n n.
+weaken H2 with tm.
+weaken H7 with aeq n6 n6.
+apply IH to H6 H8 with (G = G, n1:tm, n:aeq n1 n1).
+prune H9.
+inst H3 with n = N1.
+inst H4 with n = N2.
+strengthen H10.
+strengthen H11.
+prune H5.
+exists ae_l (M3 N1) (M4 N2) D3.
+assert {G, n:tm |- M3 N1 n : tm}.
+  ctxpermute H10 to G, n2:tm, n1:aeq N1 N1.
+  strengthen H12.
+  search.
+assert {G, n:tm |- M4 N2 n : tm}.
+  ctxpermute H11 to G, n3:tm, n1:aeq N2 N2.
+  strengthen H13.
+  search.
+search.
+apply IH to H7 H2.
+apply IH to H8 H2.
+exists ae_a (M3 N1) (M4 N1) (M5 N2) (M6 N2) (D1 n1 n) (D5 n1 n). search.
+exists D2. search.
+exists n3. search.
+
+Theorem reflR: ctx G1:xG, ctx G2:xaG, forall M, { G1 |- M : tm } => exists D, { G2 |- D: aeq M M}.
+induction on 1.
+intros.
+case H1.
+apply IH to H2.
+ch.
+apply IH to H7 H2.
+apply IH to H8 H2.
+exists ae_a (M3 N1) (M4 N1) (M5 N2) (M6 N2) (D1 n1 n) (D5 n1 n). search.
+exists D2. search.
+exists n3. search.
+
+Theorem reflR: ctx G1:xG, ctx G2:c, forall M, { G1 |- M : tm } => exists D, { G2 |- D: aeq M M}.
+induction on 1.
+intros.
+case H1.
+apply IH to H2.

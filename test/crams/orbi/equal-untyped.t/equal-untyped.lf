@@ -1,0 +1,28 @@
+tm: type.
+lam: {M: {x:tm} tm} tm.
+app: {M1:tm}{M2:tm} tm.
+
+aeq: tm -> tm -> type.
+deq: tm -> tm -> type.
+
+ae_a : {M1: tm}{M2: tm}{N1:tm}{N2:tm}
+       {D1:aeq M1 N1}{D2:aeq M2 N2}
+       aeq (app M1 M2) (app N1 N2).
+ae_l : {M:{x:tm} tm}{N:{y:tm} tm}
+       {D: {z:tm}{D1: aeq z z} aeq (M z) (N z)}
+       aeq (lam ([x] M x)) (lam ([x] N x)).
+
+de_a : {M1:tm}{M2:tm}{N1:tm}{N2:tm}
+       {D1: deq M1 N1}{D2: deq M2 N2}
+       deq (app M1 M2) (app N1 N2).
+de_l : {M: {x:tm} tm}{N: {x:tm} tm}
+       {D: {z:tm}{D1:deq z z} deq (M z) (N z)}
+       deq (lam ([x] M x)) (lam ([x] N x)).
+de_r : {M:tm} deq M M.
+de_s : {M:tm}{N:tm}
+       {D: deq M N}
+       deq N M.
+de_t : {M1:tm}{M2:tm}{M3:tm}
+       {D1: deq M1 M2}
+       {D2: deq M2 M3}
+       deq M1 M3.
