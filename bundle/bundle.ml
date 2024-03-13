@@ -46,7 +46,7 @@ let copy_file src dest =
   U.close ifd;
   let b = F.dirname dest in
   let _ = U.system (F.quote_command "mkdir" [ "-p"; b ]) in
-  let ofd = U.openfile dest [ U.O_WRONLY; U.O_CREAT ] 0o644 in
+  let ofd = U.openfile dest [ U.O_WRONLY; U.O_TRUNC; U.O_CREAT ] 0o644 in
   let _ = U.write ofd content 0 size in
   U.fsync ofd;
   U.close ofd
