@@ -197,13 +197,13 @@ let negative_occurrences =
               (imp (atm (Context.Var g1) e1 tm) Bottom)
               (imp (atm (Context.Var f1) e1 tm) Bottom)
           in
-          let () = assert_bool "Should hold on left" (occurs_negatively "G" f) in
+          let () = assert_bool "Should hold" (occurs_negatively "G" f) in
           let f =
             f_or
               (imp (atm (Context.Var f1) e1 tm) Bottom)
               (imp (atm (Context.Var g1) e1 tm) Bottom)
           in
-          assert_bool "Should hold on right" (occurs_negatively "F" f))
+          assert_bool "Should hold" (occurs_negatively "F" f))
        ; ("Doesn't hold when neither child of OR has negative occurrence"
           >:: fun () ->
           let f1 = Context.ctx_var "F" in
@@ -213,7 +213,50 @@ let negative_occurrences =
               (imp (atm (Context.Var f1) e1 tm) Bottom)
               (imp (atm (Context.Var f1) e1 tm) Bottom)
           in
-          assert_bool "Should hold on left" (occurs_negatively "G" f |> not))
+          assert_bool "Should not hold" (occurs_negatively "G" f |> not))
+       ; ("Holds when assumption formula is provably false"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G1" in
+          let e1 = var Eigen "E1" 0 ity in
+          let hyp = imp Top Bottom in
+          let f = imp hyp (atm (Context.Var g1) e1 tm) in
+          assert_bool "Should hold" (occurs_negatively "G1" f))
+       ; ("Holds when assumption formula has occurrence in positive position"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G1" in
+          let e1 = var Eigen "E1" 0 ity in
+          let hyp = imp Top (atm (Context.Var g1) e1 tm) in
+          let f = imp hyp (atm (Context.Var g1) e1 tm) in
+          assert_bool "Should hold" (occurs_negatively "G1" f))
+       ; ("Does not hold when assumption formula has no occurrence in positive"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G1" in
+          let g2 = Context.ctx_var "G2" in
+          let e1 = var Eigen "E1" 0 ity in
+          let hyp = imp Top (atm (Context.Var g2) e1 tm) in
+          let f = imp hyp (atm (Context.Var g1) e1 tm) in
+          assert_bool "Should not hold" (occurs_negatively "G1" f |> not))
+       ; ("Avoids shadowing"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G1" in
+          let e1 = var Eigen "E1" 0 ity in
+          let hyp = ctx [ "G1", "c" ] (imp Top (atm (Context.Var g1) e1 tm)) in
+          let f = imp hyp (atm (Context.Var g1) e1 tm) in
+          assert_bool "Should not hold" (occurs_negatively "G1" f |> not))
+       ; ("Avoids shadowing, considering bottom"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G1" in
+          let e1 = var Eigen "E1" 0 ity in
+          let hyp = ctx [ "G1", "c" ] (imp Top Bottom) in
+          let f = imp hyp (atm (Context.Var g1) e1 tm) in
+          assert_bool "Should hold" (occurs_negatively "G1" f))
+       ; ("Avoids shadowing, considering top"
+          >:: fun () ->
+          let g1 = Context.ctx_var "G1" in
+          let e1 = var Eigen "E1" 0 ity in
+          let hyp = ctx [ "G1", "c" ] (imp Top (imp Top Bottom)) in
+          let f = imp hyp (atm (Context.Var g1) e1 tm) in
+          assert_bool "Should hold" (occurs_negatively "G1" f))
        ]
 ;;
 
