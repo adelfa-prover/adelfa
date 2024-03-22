@@ -8,6 +8,7 @@
 (maintainers "Chase Johnson <joh13266@umn.edu>")
 (homepage "http://sparrow.cs.umn.edu/adelfa/index.html")
 (documentation "http://sparrow.cs.umn.edu/adelfa/reference-guide.html")
+(generate_opam_files)
 
 (package
  (name adelfa)
