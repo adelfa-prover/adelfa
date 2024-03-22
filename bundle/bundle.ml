@@ -3,7 +3,7 @@ module U = Unix
 
 exception InvalidDirectory
 
-let adelfa_root_name = "Adelfa"
+let adelfa_root_name = "adelfa"
 let example_dir = "examples/"
 let tar_name = "adelfa.tar"
 let cram_dir = "test/crams/"

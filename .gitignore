@@ -1,0 +1,17 @@
+# build artifacts
+_build
+_opam
+_build
+_boot
+_perf
+_coverage
+*.install
+
+# vscode settings
+.vscode
+
+# Executable
+adelfa
+
+# Distribution
+adelfa.tar
