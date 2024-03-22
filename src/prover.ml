@@ -782,7 +782,7 @@ let prune name =
   try
     let f = (Sequent.get_hyp sequent name).formula in
     match f with
-    | Formula.Atm (_, m, _, _) when check_term (Term.norm m) -> Tactics.prune sequent f
+    | Formula.Atm (_, m, _, _) when check_term (Term.norm m) -> Tactics.prune !sub_rel sequent f
     | _ ->
       failwith
         "Pruning formulas must be of the form {G |- X n1 ... nm : A} with n1,...,nm \

@@ -68,8 +68,8 @@ weaken H4 with aeq n2 n2.
 ctxpermute H5 to G, n2: tm, n4: aeq n2 n2, n3:deq n2 n2.
 apply IH to H6 with (G = G, n1:tm, n2:aeq n1 n1, n:deq n1 n1).
 prune H7.
-skip.
-% exists ae_l M1 N1 D2. search.
+strengthen H7.
+exists ae_l M1 N1 ([x][y] D2 y x). search.
 apply IH to H6. apply IH to H7.
 exists ae_a M1 M2 N1 N2 D1 D4. search.
 exists n1. search.
@@ -81,8 +81,9 @@ intros. case H1 (keep).
 weaken H4 with deq n2 n2.
 apply IH to H5 with (G = G, n1:tm, n2:aeq n1 n1, n:deq n1 n1).
 prune H6.
-skip.
-% exists de_l M1 N1 (D2). search.
+ctxpermute H6 to G, n1:tm, n:deq n1 n1, n2:aeq n1 n1.
+strengthen H7.
+exists de_l M1 N1 D2. search.
 apply IH to H6. apply IH to H7.
 exists de_a M1 M2 N1 N2 D1 D4. search.
 exists n2. search.
@@ -119,8 +120,8 @@ exists ae_a (M3 N1) (M4 N1) (M5 N2) (M6 N2) (D1 n1 n) (D5 n1 n). search.
 exists D2. search.
 exists n3. search.
 
-Theorem reflR: ctx G1:xG, ctx G2:xaG, forall M, { G1 |- M : tm } => exists D, { G2 |- D: aeq M M}.
-induction on 1.
-intros.
-case H1.
-apply IH to H2.
+% Theorem reflR: ctx G1:xG, ctx G2:xaG, forall M, { G1 |- M : tm } => exists D, { G2 |- D: aeq M M}.
+% induction on 1.
+% intros.
+% case H1.
+% apply IH to H2.

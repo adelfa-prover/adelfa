@@ -17,10 +17,6 @@ exception InvalidName of string
 exception AmbiguousSubst of Context.ctx_expr * Context.ctx_expr
 exception NotLlambda
 
-(* Used to indicate that a goal is solved by case analysis
- * constructing no subcases. *)
-exception NoCases
-
 (* Indicates a sucess in search *)
 exception Success
 
@@ -1791,51 +1787,55 @@ let inst ~depth lf_sig sequent form subst =
 (* Prune will identify dependencies which are impossible given the restriction
    on the nominal constants which may appear in an instantiation for a
    context variable. *)
-let prune sequent form =
+let prune sub_rel sequent form =
   match form with
-  | Formula.Atm (g, m, _, _) ->
-    if Context.has_var g
-    then (
-      let hd, args =
-        let h = Term.norm m in
-        match h with
-        | Term.App (hd, args) -> hd, args
-        | _ -> bugf "Expected application when pruning"
-      in
-      let gamma = Context.get_ctx_var g in
-      let cvar = gamma, Context.CtxVarCtx.find sequent.ctxvars gamma in
-      let bound_names =
-        List.map fst (Context.ctxexpr_to_ctx sequent.ctxvars g) |> VarSet.from_list
-      in
-      let restricted = VarSet.minus (Context.CtxVarCtx.get_restricted cvar) bound_names in
-      if VarSet.is_empty restricted
-      then ()
-      else (
-        let (Type.Ty (atys, id)) = Term.get_var_ty hd in
-        let ns = List.map Term.eta_normalize args in
-        let to_prune =
-          List.map (fun t -> VarSet.mem restricted (Term.term_to_var t)) args
-        in
-        let args' =
-          List.combine to_prune ns
-          |> List.filter (fun (v, _) -> not v)
-          |> List.map (fun (_, v) -> Term.nominal_var (Term.get_id v) (Term.get_var_ty v))
-        in
-        let atys' =
-          List.combine to_prune atys |> List.filter (fun (v, _) -> not v) |> List.map snd
-        in
-        let new_ty = Type.Ty (atys', id) in
-        let new_term = Term.var Eigen (Term.get_id hd) 1 new_ty in
-        let subst =
-          [ ( Term.get_id hd
-            , List.fold_left
-                (fun body n -> abstract (Term.get_id n) (Term.get_var_ty n) body)
-                (Term.app new_term args')
-                (List.rev ns) )
-          ]
-        in
-        Sequent.add_var sequent (Term.get_id hd, new_term);
-        Sequent.replace_seq_vars subst sequent))
-    else ()
+  | Formula.Atm (g, m, a, _) when Context.has_var g ->
+    let hd, args =
+      let h = Term.norm m in
+      match h with
+      | Term.App (hd, args) -> hd, args
+      | _ -> bugf "Expected application when pruning"
+    in
+    let gamma = Context.get_ctx_var g in
+    let cvar = gamma, Context.CtxVarCtx.find sequent.ctxvars gamma in
+    let bound_names =
+      List.map fst (Context.ctxexpr_to_ctx sequent.ctxvars g) |> VarSet.from_list
+    in
+    let restricted = VarSet.minus (Context.CtxVarCtx.get_restricted cvar) bound_names in
+    let (Type.Ty (atys, id)) = Term.get_var_ty hd in
+    let ns = List.map Term.eta_normalize args in
+    let subordinates =
+      Context.get_explicit g
+      |> List.map (fun (v, t) ->
+        v, Subordination.subordinates sub_rel (Term.get_ty_head t) (Term.get_ty_head a))
+    in
+    let to_prune =
+      List.map
+        (fun t ->
+          VarSet.mem restricted (Term.term_to_var t)
+          || List.assoc_opt (Term.term_to_var t) subordinates = Some false)
+        args
+    in
+    let args' =
+      List.combine to_prune ns
+      |> List.filter (fun (v, _) -> not v)
+      |> List.map (fun (_, v) -> Term.nominal_var (Term.get_id v) (Term.get_var_ty v))
+    in
+    let atys' =
+      List.combine to_prune atys |> List.filter (fun (v, _) -> not v) |> List.map snd
+    in
+    let new_ty = Type.Ty (atys', id) in
+    let new_term = Term.var Eigen (Term.get_id hd) 1 new_ty in
+    let subst =
+      [ ( Term.get_id hd
+        , List.fold_left
+            (fun body n -> abstract (Term.get_id n) (Term.get_var_ty n) body)
+            (Term.app new_term args')
+            (List.rev ns) )
+      ]
+    in
+    Sequent.add_var sequent (Term.get_id hd, new_term);
+    Sequent.replace_seq_vars subst sequent
+  | Formula.Atm _ -> ()
   | _ -> bugf "Expected pruning atomic formula"
 ;;

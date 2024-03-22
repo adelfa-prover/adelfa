@@ -10,7 +10,6 @@ exception InvalidTerm of Term.term
 exception InvalidName of string
 exception AmbiguousSubst of Context.ctx_expr * Context.ctx_expr
 exception NotLlambda
-exception NoCases
 exception Success
 
 type case =
@@ -149,4 +148,4 @@ val inst
   -> (Term.id * Term.term) list
   -> Formula.formula
 
-val prune : Sequent.sequent -> Formula.formula -> unit
+val prune : Subordination.sub_rel -> Sequent.sequent -> Formula.formula -> unit
