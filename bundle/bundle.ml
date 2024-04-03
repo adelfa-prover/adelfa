@@ -7,12 +7,12 @@ let adelfa_root_name = "adelfa"
 let example_dir = "examples/"
 let tar_name = "adelfa.tar"
 let cram_dir = "test/crams/"
-let excluded = [ "regressions"; "README"; "dune" ]
+let cram_excluded = [ "regressions"; "README"; "dune" ]
 let tar_excluded = [ "test/crams/"; "**/*~" ]
 
 let tar_included =
   [ "Makefile"
-  ; "README"
+  ; "README.md"
   ; "system_description.txt"
   ; "system_reference.txt"
   ; "dune-project"
@@ -52,6 +52,14 @@ let copy_file src dest =
   U.close ofd
 ;;
 
+let rec delete_directory path =
+  if Sys.is_directory path
+  then (
+    Sys.readdir path |> Array.iter (fun name -> delete_directory (F.concat path name));
+    Unix.rmdir path)
+  else Sys.remove path
+;;
+
 let get_crams cram_root =
   let rec aux dir =
     if not (Sys.is_directory dir)
@@ -60,10 +68,10 @@ let get_crams cram_root =
       let members =
         Sys.readdir dir
         |> Array.to_list
-        |> List.filter (fun m -> not (List.mem m excluded))
+        |> List.filter (fun m -> not (List.mem m cram_excluded))
         |> List.map (fun f -> F.concat dir f)
         |> List.filter (fun f ->
-             Sys.is_directory f || not (String.ends_with ~suffix:".t" f))
+          Sys.is_directory f || not (String.ends_with ~suffix:".t" f))
       in
       List.concat_map aux members)
   in
@@ -93,6 +101,7 @@ let () =
   let absolute_paths =
     List.map (fun (f, t) -> F.concat root f, F.concat root t) transformations
   in
+  delete_directory example_dir;
   List.iter (fun (f, t) -> copy_file f t) absolute_paths;
   package_to_tar ();
   flush_all ()
