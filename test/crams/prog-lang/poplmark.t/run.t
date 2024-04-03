@@ -59,2567 +59,6 @@
   sub__ty>> search.
   Proof Completed!
   
-  >> Theorem ty_strengthening:
-      ctx  L:c,
-        forall  X S DV T:(o) -> (o) -> o,
-          {L |- X : ty} =>
-            {L |- S : ty} =>
-              {L |- DV : var X} =>
-                {L |- [x][y]T x y : {x:bound X S}{y:bound_var X S x DV}ty} =>
-                  exists  T' Eq,
-                    {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}.
-  
-  Subgoal ty_strengthening:
-  
-  
-  ==================================
-  ctx L:c,
-    forall X, forall S, forall DV, forall T,
-      {L |- X : ty} =>
-          {L |- S : ty} =>
-              {L |- DV : var X} =>
-                  {L |- [x][y]T x y : {x:bound X S}{y:bound_var X S x DV}ty} =>
-                      exists T', exists Eq,
-                        {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  
-  ty_strengthening>> induction on 4.
-  
-  Subgoal ty_strengthening:
-  
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  
-  ==================================
-  ctx L:c,
-    forall X, forall S, forall DV, forall T,
-      {L |- X : ty} =>
-          {L |- S : ty} =>
-              {L |- DV : var X} =>
-                  {L |- [x][y]T x y : {x:bound X S}{y:bound_var X S x DV}ty}@
-                      =>
-                      exists T', exists Eq,
-                        {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  
-  ty_strengthening>> intros.
-  
-  Subgoal ty_strengthening:
-  
-  Vars: T:(o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n1:o, n:o
-  Contexts: L{n, n1}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H4:{L, n:bound X S, n1:bound_var X S n DV |- T n n1 : ty}@
-  
-  ==================================
-  exists T', exists Eq, {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  
-  ty_strengthening>> cases H4.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T1:(o) -> (o) -> o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T1 n1 n : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c19][c20]all (T1 c20 c19) ([c13]F c20 c19 c13))
-        ([c21][c22]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> apply IH to H1 H2 H3 H5 with (L = L), X = X, S = S, DV = DV, T =
-      [x][y]T1 y x.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: Eq:(o) -> (o) -> (o) -> o, T':(o) -> (o) -> (o) -> o, T1:
-          (o) -> (o) -> o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T1 n1 n : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H7:{L |- Eq n2 n1 n : eq_ty X S DV ([x][y]T1 y x) ([x][y]T' n2 n1 n)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c19][c20]all (T1 c20 c19) ([c13]F c20 c19 c13))
-        ([c21][c22]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> prune H7.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: Eq:o, T':(o) -> (o) -> (o) -> o, T1:(o) -> (o) -> o, F:
-          (o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T1 n1 n : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H7:{L |- Eq : eq_ty X S DV ([x][y]T1 y x) ([x][y]T' n2 n1 n)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c19][c20]all (T1 c20 c19) ([c13]F c20 c19 c13))
-        ([c21][c22]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> cases H7.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> weaken H6 with var n2.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:
-      {L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F n1 n n2 :
-        ty}*
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> ctxpermute H12 to L,n2:ty,n5:var n2,n:bound X S,n1:bound_var X S n DV.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:
-      {L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F n1 n n2 :
-        ty}*
-  H13:
-      {L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F n1 n n2 :
-        ty}*
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> weaken H1 with ty.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5, n6}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:
-      {L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F n1 n n2 :
-        ty}*
-  H13:
-      {L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F n1 n n2 :
-        ty}*
-  H14:{L, n6:ty |- X : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> weaken H14 with var n6.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5, n6, n7}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:
-      {L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F n1 n n2 :
-        ty}*
-  H13:
-      {L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F n1 n n2 :
-        ty}*
-  H14:{L, n6:ty |- X : ty}
-  H15:{L, n6:ty, n7:var n6 |- X : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> weaken H2 with ty.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5, n6, n7, n8}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:
-      {L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F n1 n n2 :
-        ty}*
-  H13:
-      {L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F n1 n n2 :
-        ty}*
-  H14:{L, n6:ty |- X : ty}
-  H15:{L, n6:ty, n7:var n6 |- X : ty}
-  H16:{L, n8:ty |- S : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> weaken H16 with var n8.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5, n6, n7, n8, n9}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:
-      {L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F n1 n n2 :
-        ty}*
-  H13:
-      {L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F n1 n n2 :
-        ty}*
-  H14:{L, n6:ty |- X : ty}
-  H15:{L, n6:ty, n7:var n6 |- X : ty}
-  H16:{L, n8:ty |- S : ty}
-  H17:{L, n8:ty, n9:var n8 |- S : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> weaken H3 with ty.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n10, n2, n3, n4, n5, n6, n7, n8, n9}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:
-      {L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F n1 n n2 :
-        ty}*
-  H13:
-      {L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F n1 n n2 :
-        ty}*
-  H14:{L, n6:ty |- X : ty}
-  H15:{L, n6:ty, n7:var n6 |- X : ty}
-  H16:{L, n8:ty |- S : ty}
-  H17:{L, n8:ty, n9:var n8 |- S : ty}
-  H18:{L, n10:ty |- DV : var X}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> weaken H18 with var n10.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
-              n:o
-  Contexts: L{n, n1, n10, n11, n2, n3, n4, n5, n6, n7, n8, n9}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:
-      {L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F n1 n n2 :
-        ty}*
-  H13:
-      {L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F n1 n n2 :
-        ty}*
-  H14:{L, n6:ty |- X : ty}
-  H15:{L, n6:ty, n7:var n6 |- X : ty}
-  H16:{L, n8:ty |- S : ty}
-  H17:{L, n8:ty, n9:var n8 |- S : ty}
-  H18:{L, n10:ty |- DV : var X}
-  H19:{L, n10:ty, n11:var n10 |- DV : var X}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> apply IH to H15 H17 H19 H13 with (L = L,n1:ty,n:var n1).
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, Eq:
-          (o) ->
-            (o) ->
-              (o) ->
-                (o) ->
-                  (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o,
-          T':
-          (o) ->
-            (o) ->
-              (o) ->
-                (o) ->
-                  (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o,
-          F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
-              n:o
-  Contexts: L{n, n1, n10, n11, n2, n3, n4, n5, n6, n7, n8, n9}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:
-      {L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F n1 n n2 :
-        ty}*
-  H13:
-      {L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F n1 n n2 :
-        ty}*
-  H14:{L, n6:ty |- X : ty}
-  H15:{L, n6:ty, n7:var n6 |- X : ty}
-  H16:{L, n8:ty |- S : ty}
-  H17:{L, n8:ty, n9:var n8 |- S : ty}
-  H18:{L, n10:ty |- DV : var X}
-  H19:{L, n10:ty, n11:var n10 |- DV : var X}
-  H20:
-      {L, n1:ty, n:var n1 |- Eq n11 n10 n9 n8 n7 n6 n5 n4 n3 n2 n1 n :
-        eq_ty X S DV ([x][y]F y x n1)
-          ([x][y]T' n11 n10 n9 n8 n7 n6 n5 n4 n3 n2 n1 n)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> prune H20.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: T2:o, Eq:(o) -> (o) -> o, T':
-          (o) ->
-            (o) ->
-              (o) ->
-                (o) ->
-                  (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> (o) -> o,
-          F:(o) -> (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o,
-              n:o
-  Contexts: L{n, n1, n10, n11, n2, n3, n4, n5, n6, n7, n8, n9}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F n1 n n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:
-      {L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F n1 n n2 :
-        ty}*
-  H13:
-      {L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F n1 n n2 :
-        ty}*
-  H14:{L, n6:ty |- X : ty}
-  H15:{L, n6:ty, n7:var n6 |- X : ty}
-  H16:{L, n8:ty |- S : ty}
-  H17:{L, n8:ty, n9:var n8 |- S : ty}
-  H18:{L, n10:ty |- DV : var X}
-  H19:{L, n10:ty, n11:var n10 |- DV : var X}
-  H20:
-      {L, n1:ty, n:var n1 |- Eq n1 n :
-        eq_ty X S DV ([x][y]F y x n1)
-          ([x][y]T' n11 n10 n9 n8 n7 n6 n5 n4 n3 n2 n1 n)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c113][c114]all T2 ([c107]F c114 c113 c107))
-        ([c115][c116]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> cases H20.
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: F1:(o) -> o, T2:o, DV:o, S:o, X:o
-  Nominals: n13:o, n12:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n10, n11, n12, n13, n2, n3, n4, n5, n6, n7, n8, n9}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F1 n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:{L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F1 n2 : ty}*
-  H13:{L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F1 n2 : ty}*
-  H14:{L, n6:ty |- X : ty}
-  H15:{L, n6:ty, n7:var n6 |- X : ty}
-  H16:{L, n8:ty |- S : ty}
-  H17:{L, n8:ty, n9:var n8 |- S : ty}
-  H18:{L, n10:ty |- DV : var X}
-  H19:{L, n10:ty, n11:var n10 |- DV : var X}
-  H21:{L, n1:ty, n:var n1 |- X : ty}
-  H22:{L, n1:ty, n:var n1 |- S : ty}
-  H23:{L, n1:ty, n:var n1 |- DV : var X}
-  H24:
-      {L, n1:ty, n:var n1, n12:bound X S, n13:bound_var X S n12 DV |- F1 n1 :
-        ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c199][c200]all T2 ([c193]F1 c193)) ([c201][c202]T')}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> exists all T2 ([x]F1 x).
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: F1:(o) -> o, T2:o, DV:o, S:o, X:o
-  Nominals: n13:o, n12:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n10, n11, n12, n13, n2, n3, n4, n5, n6, n7, n8, n9}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F1 n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:{L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F1 n2 : ty}*
-  H13:{L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F1 n2 : ty}*
-  H14:{L, n6:ty |- X : ty}
-  H15:{L, n6:ty, n7:var n6 |- X : ty}
-  H16:{L, n8:ty |- S : ty}
-  H17:{L, n8:ty, n9:var n8 |- S : ty}
-  H18:{L, n10:ty |- DV : var X}
-  H19:{L, n10:ty, n11:var n10 |- DV : var X}
-  H21:{L, n1:ty, n:var n1 |- X : ty}
-  H22:{L, n1:ty, n:var n1 |- S : ty}
-  H23:{L, n1:ty, n:var n1 |- DV : var X}
-  H24:
-      {L, n1:ty, n:var n1, n12:bound X S, n13:bound_var X S n12 DV |- F1 n1 :
-        ty}
-  
-  ==================================
-  exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c199][c200]all T2 ([c193]F1 c193))
-        ([c201][c202]all T2 ([x]F1 x))}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> exists refl_ty X S DV ([x][y]all T2 ([x]F1 x)).
-  
-  Subgoal ty_strengthening.1:
-  
-  Vars: F1:(o) -> o, T2:o, DV:o, S:o, X:o
-  Nominals: n13:o, n12:o, n11:o, n10:o, n9:o, n8:o, n7:o, n6:o, n5:o, n4:o, n3:
-              o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n10, n11, n12, n13, n2, n3, n4, n5, n6, n7, n8, n9}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T2 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV, n2:ty |- F1 n2 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n3:bound X S, n4:bound_var X S n3 DV |- T2 : ty}
-  H12:{L, n:bound X S, n1:bound_var X S n DV, n2:ty, n5:var n2 |- F1 n2 : ty}*
-  H13:{L, n2:ty, n5:var n2, n:bound X S, n1:bound_var X S n DV |- F1 n2 : ty}*
-  H14:{L, n6:ty |- X : ty}
-  H15:{L, n6:ty, n7:var n6 |- X : ty}
-  H16:{L, n8:ty |- S : ty}
-  H17:{L, n8:ty, n9:var n8 |- S : ty}
-  H18:{L, n10:ty |- DV : var X}
-  H19:{L, n10:ty, n11:var n10 |- DV : var X}
-  H21:{L, n1:ty, n:var n1 |- X : ty}
-  H22:{L, n1:ty, n:var n1 |- S : ty}
-  H23:{L, n1:ty, n:var n1 |- DV : var X}
-  H24:
-      {L, n1:ty, n:var n1, n12:bound X S, n13:bound_var X S n12 DV |- F1 n1 :
-        ty}
-  
-  ==================================
-  {L |- refl_ty X S DV ([x][y]all T2 ([x]F1 x)) :
-    eq_ty X S DV ([c199][c200]all T2 ([c193]F1 c193))
-      ([c201][c202]all T2 ([x]F1 x))}
-  
-  Subgoal ty_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.1>> search.
-  
-  Subgoal ty_strengthening.2:
-  
-  Vars: T1:(o) -> (o) -> o, T2:(o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n1:o, n:o
-  Contexts: L{n, n1}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T1 n1 n : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV |- T2 n1 n : ty}*
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.2>> apply IH to H1 H2 H3 H5.
-  
-  Subgoal ty_strengthening.2:
-  
-  Vars: Eq:(o) -> (o) -> o, T':(o) -> (o) -> o, T1:(o) -> (o) -> o, T2:
-          (o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n1:o, n:o
-  Contexts: L{n, n1}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T1 n1 n : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV |- T2 n1 n : ty}*
-  H7:{L |- Eq n1 n : eq_ty X S DV ([x][y]T1 y x) ([x][y]T' n1 n)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c34][c35]arrow (T1 c35 c34) (T2 c35 c34)) ([c36][c37]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.2>> cases H7.
-  
-  Subgoal ty_strengthening.2:
-  
-  Vars: T3:o, T2:(o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T3 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV |- T2 n1 n : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n2:bound X S, n3:bound_var X S n2 DV |- T3 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c245][c246]arrow T3 (T2 c246 c245)) ([c247][c248]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.2>> apply IH to H1 H2 H3 H6.
-  
-  Subgoal ty_strengthening.2:
-  
-  Vars: T3:o, Eq:(o) -> (o) -> (o) -> (o) -> o, T':
-          (o) -> (o) -> (o) -> (o) -> o, T2:(o) -> (o) -> o, DV:o, S:o, X:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T3 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV |- T2 n1 n : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n2:bound X S, n3:bound_var X S n2 DV |- T3 : ty}
-  H12:{L |- Eq n3 n2 n1 n : eq_ty X S DV ([x][y]T2 y x) ([x][y]T' n3 n2 n1 n)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c245][c246]arrow T3 (T2 c246 c245)) ([c247][c248]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.2>> cases H12.
-  
-  Subgoal ty_strengthening.2:
-  
-  Vars: T4:o, T3:o, DV:o, S:o, X:o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T3 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV |- T4 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n2:bound X S, n3:bound_var X S n2 DV |- T3 : ty}
-  H13:{L |- X : ty}
-  H14:{L |- S : ty}
-  H15:{L |- DV : var X}
-  H16:{L, n4:bound X S, n5:bound_var X S n4 DV |- T4 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq : eq_ty X S DV ([c297][c298]arrow T3 T4) ([c299][c300]T')}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.2>> exists arrow T3 T4.
-  
-  Subgoal ty_strengthening.2:
-  
-  Vars: T4:o, T3:o, DV:o, S:o, X:o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T3 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV |- T4 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n2:bound X S, n3:bound_var X S n2 DV |- T3 : ty}
-  H13:{L |- X : ty}
-  H14:{L |- S : ty}
-  H15:{L |- DV : var X}
-  H16:{L, n4:bound X S, n5:bound_var X S n4 DV |- T4 : ty}
-  
-  ==================================
-  exists Eq,
-    {L |- Eq :
-      eq_ty X S DV ([c297][c298]arrow T3 T4) ([c299][c300]arrow T3 T4)}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.2>> exists refl_ty X S DV ([x][y]arrow T3 T4).
-  
-  Subgoal ty_strengthening.2:
-  
-  Vars: T4:o, T3:o, DV:o, S:o, X:o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n:bound X S, n1:bound_var X S n DV |- T3 : ty}*
-  H6:{L, n:bound X S, n1:bound_var X S n DV |- T4 : ty}*
-  H8:{L |- X : ty}
-  H9:{L |- S : ty}
-  H10:{L |- DV : var X}
-  H11:{L, n2:bound X S, n3:bound_var X S n2 DV |- T3 : ty}
-  H13:{L |- X : ty}
-  H14:{L |- S : ty}
-  H15:{L |- DV : var X}
-  H16:{L, n4:bound X S, n5:bound_var X S n4 DV |- T4 : ty}
-  
-  ==================================
-  {L |- refl_ty X S DV ([x][y]arrow T3 T4) :
-    eq_ty X S DV ([c297][c298]arrow T3 T4) ([c299][c300]arrow T3 T4)}
-  
-  Subgoal ty_strengthening.3 is:
-   exists T', exists Eq,
-     {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.2>> search.
-  
-  Subgoal ty_strengthening.3:
-  
-  Vars: DV:o, S:o, X:o
-  Nominals: n1:o, n:o
-  Contexts: L{n, n1}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  
-  ==================================
-  exists T', exists Eq, {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.3>> weaken H1 with bound X S.
-  
-  Subgoal ty_strengthening.3:
-  
-  Vars: DV:o, S:o, X:o
-  Nominals: n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n2:bound X S |- X : ty}
-  
-  ==================================
-  exists T', exists Eq, {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.3>> weaken H2 with bound X S.
-  
-  Subgoal ty_strengthening.3:
-  
-  Vars: DV:o, S:o, X:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n2:bound X S |- X : ty}
-  H6:{L, n3:bound X S |- S : ty}
-  
-  ==================================
-  exists T', exists Eq, {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.3>> weaken H3 with bound X S.
-  
-  Subgoal ty_strengthening.3:
-  
-  Vars: DV:o, S:o, X:o
-  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n2:bound X S |- X : ty}
-  H6:{L, n3:bound X S |- S : ty}
-  H7:{L, n4:bound X S |- DV : var X}
-  
-  ==================================
-  exists T', exists Eq, {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]T')}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.3>> exists top.
-  
-  Subgoal ty_strengthening.3:
-  
-  Vars: DV:o, S:o, X:o
-  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n2:bound X S |- X : ty}
-  H6:{L, n3:bound X S |- S : ty}
-  H7:{L, n4:bound X S |- DV : var X}
-  
-  ==================================
-  exists Eq, {L |- Eq : eq_ty X S DV ([c43][c44]top) ([c45][c46]top)}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.3>> exists refl_ty X S DV ([x][y]top).
-  
-  Subgoal ty_strengthening.3:
-  
-  Vars: DV:o, S:o, X:o
-  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4}:c[]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H5:{L, n2:bound X S |- X : ty}
-  H6:{L, n3:bound X S |- S : ty}
-  H7:{L, n4:bound X S |- DV : var X}
-  
-  ==================================
-  {L |- refl_ty X S DV ([x][y]top) :
-    eq_ty X S DV ([c43][c44]top) ([c45][c46]top)}
-  
-  Subgoal ty_strengthening.4 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-         ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.3>> search.
-  
-  Subgoal ty_strengthening.4:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1}:c[(n2:ty, n3:var n2, n4:bound n2 (U n2 n3 n4 n5), n5:
-              bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-        ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.4>> weaken H1 with bound X n2 n3 n4 n5 S n2 n3 n4 n5.
-  
-  Subgoal ty_strengthening.4:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n6}:c[(n2:ty, n3:var n2, n4:bound n2 (U n2 n3 n4 n5), n5:
-              bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  H5:{L, n6:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- X n2 n3 n4 n5 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-        ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.4>> weaken H2 with bound X n2 n3 n4 n5 S n2 n3 n4 n5.
-  
-  Subgoal ty_strengthening.4:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n6, n7}:c[(n2:ty, n3:var n2, n4:bound n2 (U n2 n3 n4 n5),
-              n5:bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  H5:{L, n6:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- X n2 n3 n4 n5 : ty}
-  H6:{L, n7:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- S n2 n3 n4 n5 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-        ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.4>> weaken H3 with bound X n2 n3 n4 n5 S n2 n3 n4 n5.
-  
-  Subgoal ty_strengthening.4:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n6, n7, n8}:c[(n2:ty, n3:var n2, n4:
-              bound n2 (U n2 n3 n4 n5), n5:bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  H5:{L, n6:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- X n2 n3 n4 n5 : ty}
-  H6:{L, n7:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- S n2 n3 n4 n5 : ty}
-  H7:
-      {L, n8:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- DV n2 n3 n4 n5 :
-        var (X n2 n3 n4 n5)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-        ([c66][c67]T')}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.4>> exists n2.
-  
-  Subgoal ty_strengthening.4:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n6, n7, n8}:c[(n2:ty, n3:var n2, n4:
-              bound n2 (U n2 n3 n4 n5), n5:bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  H5:{L, n6:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- X n2 n3 n4 n5 : ty}
-  H6:{L, n7:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- S n2 n3 n4 n5 : ty}
-  H7:
-      {L, n8:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- DV n2 n3 n4 n5 :
-        var (X n2 n3 n4 n5)}
-  
-  ==================================
-  exists Eq,
-    {L |- Eq :
-      eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-        ([c66][c67]n2)}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.4>> exists refl_ty X n2 n3 n4 n5 S n2 n3 n4 n5 DV n2 n3 n4 n5 ([x][y]n2).
-  
-  Subgoal ty_strengthening.4:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n6, n7, n8}:c[(n2:ty, n3:var n2, n4:
-              bound n2 (U n2 n3 n4 n5), n5:bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  H5:{L, n6:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- X n2 n3 n4 n5 : ty}
-  H6:{L, n7:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- S n2 n3 n4 n5 : ty}
-  H7:
-      {L, n8:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- DV n2 n3 n4 n5 :
-        var (X n2 n3 n4 n5)}
-  
-  ==================================
-  {L |- refl_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([x][y]n2) :
-    eq_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c64][c65]n2)
-      ([c66][c67]n2)}
-  
-  Subgoal ty_strengthening.5 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.4>> search.
-  
-  Subgoal ty_strengthening.5:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.5>> weaken H1 with bound X n2 n3 S n2 n3.
-  
-  Subgoal ty_strengthening.5:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n4}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  H5:{L, n4:bound (X n2 n3) (S n2 n3) |- X n2 n3 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.5>> weaken H2 with bound X n2 n3 S n2 n3.
-  
-  Subgoal ty_strengthening.5:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n4, n5}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  H5:{L, n4:bound (X n2 n3) (S n2 n3) |- X n2 n3 : ty}
-  H6:{L, n5:bound (X n2 n3) (S n2 n3) |- S n2 n3 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.5>> weaken H3 with bound X n2 n3 S n2 n3.
-  
-  Subgoal ty_strengthening.5:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n4, n5, n6}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  H5:{L, n4:bound (X n2 n3) (S n2 n3) |- X n2 n3 : ty}
-  H6:{L, n5:bound (X n2 n3) (S n2 n3) |- S n2 n3 : ty}
-  H7:{L, n6:bound (X n2 n3) (S n2 n3) |- DV n2 n3 : var (X n2 n3)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]T')}
-  
-  ty_strengthening.5>> exists n2.
-  
-  Subgoal ty_strengthening.5:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n4, n5, n6}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  H5:{L, n4:bound (X n2 n3) (S n2 n3) |- X n2 n3 : ty}
-  H6:{L, n5:bound (X n2 n3) (S n2 n3) |- S n2 n3 : ty}
-  H7:{L, n6:bound (X n2 n3) (S n2 n3) |- DV n2 n3 : var (X n2 n3)}
-  
-  ==================================
-  exists Eq,
-    {L |- Eq :
-      eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]n2)}
-  
-  ty_strengthening.5>> exists refl_ty X n2 n3 S n2 n3 DV n2 n3 ([x][y]n2).
-  
-  Subgoal ty_strengthening.5:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n4, n5, n6}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}ty}* =>
-                          exists T', exists Eq,
-                            {L |- Eq : eq_ty X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  H5:{L, n4:bound (X n2 n3) (S n2 n3) |- X n2 n3 : ty}
-  H6:{L, n5:bound (X n2 n3) (S n2 n3) |- S n2 n3 : ty}
-  H7:{L, n6:bound (X n2 n3) (S n2 n3) |- DV n2 n3 : var (X n2 n3)}
-  
-  ==================================
-  {L |- refl_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([x][y]n2) :
-    eq_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([c79][c80]n2) ([c81][c82]n2)}
-  
-  ty_strengthening.5>> search.
-  Proof Completed!
-  
-  >> Theorem var_strengthening:
-      ctx  L:c,
-        forall  Q X S DV T:(o) -> (o) -> o,
-          {L |- X : ty} =>
-            {L |- S : ty} =>
-              {L |- DV : var X} =>
-                {L |- [x][y]T x y : {x:bound X S}{y:bound_var X S x DV}var Q}
-                  =>
-                  exists  T' Eq,
-                    {L |- Eq : eq_var Q X S DV ([x][y]T x y) ([x][y]T')}.
-  
-  Subgoal var_strengthening:
-  
-  
-  ==================================
-  ctx L:c,
-    forall Q, forall X, forall S, forall DV, forall T,
-      {L |- X : ty} =>
-          {L |- S : ty} =>
-              {L |- DV : var X} =>
-                  {L |- [x][y]T x y : {x:bound X S}{y:bound_var X S x DV}var Q}
-                      =>
-                      exists T', exists Eq,
-                        {L |- Eq : eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  
-  var_strengthening>> induction on 4.
-  
-  Subgoal var_strengthening:
-  
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  
-  ==================================
-  ctx L:c,
-    forall Q, forall X, forall S, forall DV, forall T,
-      {L |- X : ty} =>
-          {L |- S : ty} =>
-              {L |- DV : var X} =>
-                  {L |- [x][y]T x y :
-                    {x:bound X S}{y:bound_var X S x DV}var Q}@ =>
-                      exists T', exists Eq,
-                        {L |- Eq : eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  
-  var_strengthening>> intros.
-  
-  Subgoal var_strengthening:
-  
-  Vars: T:(o) -> (o) -> o, DV:o, S:o, X:o, Q:o
-  Nominals: n1:o, n:o
-  Contexts: L{n, n1}:c[]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X : ty}
-  H2:{L |- S : ty}
-  H3:{L |- DV : var X}
-  H4:{L, n:bound X S, n1:bound_var X S n DV |- T n n1 : var Q}@
-  
-  ==================================
-  exists T', exists Eq, {L |- Eq : eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  
-  var_strengthening>> cases H4.
-  
-  Subgoal var_strengthening.1:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1}:c[(n2:ty, n3:var n2, n4:bound n2 (U n2 n3 n4 n5), n5:
-              bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_var n2 (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c21][c22]n3)
-        ([c23][c24]T')}
-  
-  Subgoal var_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]T')}
-  
-  var_strengthening.1>> weaken H1 with bound X n2 n3 n4 n5 S n2 n3 n4 n5.
-  
-  Subgoal var_strengthening.1:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n6}:c[(n2:ty, n3:var n2, n4:bound n2 (U n2 n3 n4 n5), n5:
-              bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  H5:{L, n6:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- X n2 n3 n4 n5 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_var n2 (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c21][c22]n3)
-        ([c23][c24]T')}
-  
-  Subgoal var_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]T')}
-  
-  var_strengthening.1>> weaken H2 with bound X n2 n3 n4 n5 S n2 n3 n4 n5.
-  
-  Subgoal var_strengthening.1:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n6, n7}:c[(n2:ty, n3:var n2, n4:bound n2 (U n2 n3 n4 n5),
-              n5:bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  H5:{L, n6:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- X n2 n3 n4 n5 : ty}
-  H6:{L, n7:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- S n2 n3 n4 n5 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_var n2 (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c21][c22]n3)
-        ([c23][c24]T')}
-  
-  Subgoal var_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]T')}
-  
-  var_strengthening.1>> weaken H3 with bound X n2 n3 n4 n5 S n2 n3 n4 n5.
-  
-  Subgoal var_strengthening.1:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n6, n7, n8}:c[(n2:ty, n3:var n2, n4:
-              bound n2 (U n2 n3 n4 n5), n5:bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  H5:{L, n6:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- X n2 n3 n4 n5 : ty}
-  H6:{L, n7:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- S n2 n3 n4 n5 : ty}
-  H7:
-      {L, n8:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- DV n2 n3 n4 n5 :
-        var (X n2 n3 n4 n5)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_var n2 (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c21][c22]n3)
-        ([c23][c24]T')}
-  
-  Subgoal var_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]T')}
-  
-  var_strengthening.1>> exists n3.
-  
-  Subgoal var_strengthening.1:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n6, n7, n8}:c[(n2:ty, n3:var n2, n4:
-              bound n2 (U n2 n3 n4 n5), n5:bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  H5:{L, n6:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- X n2 n3 n4 n5 : ty}
-  H6:{L, n7:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- S n2 n3 n4 n5 : ty}
-  H7:
-      {L, n8:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- DV n2 n3 n4 n5 :
-        var (X n2 n3 n4 n5)}
-  
-  ==================================
-  exists Eq,
-    {L |- Eq :
-      eq_var n2 (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c21][c22]n3)
-        ([c23][c24]n3)}
-  
-  Subgoal var_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]T')}
-  
-  var_strengthening.1>> exists refl_var n2 X n2 n3 n4 n5 S n2 n3 n4 n5 DV n2 n3 n4 n5 ([x][y]n3).
-  
-  Subgoal var_strengthening.1:
-  
-  Vars: U:(o) -> (o) -> (o) -> (o) -> o, DV:(o) -> (o) -> (o) -> (o) -> o, S:
-          (o) -> (o) -> (o) -> (o) -> o, X:(o) -> (o) -> (o) -> (o) -> o
-  Nominals: n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n6, n7, n8}:c[(n2:ty, n3:var n2, n4:
-              bound n2 (U n2 n3 n4 n5), n5:bound_var n2 (U n2 n3 n4 n5) n4 n3)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 n4 n5 : ty}
-  H2:{L |- S n2 n3 n4 n5 : ty}
-  H3:{L |- DV n2 n3 n4 n5 : var (X n2 n3 n4 n5)}
-  H5:{L, n6:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- X n2 n3 n4 n5 : ty}
-  H6:{L, n7:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- S n2 n3 n4 n5 : ty}
-  H7:
-      {L, n8:bound (X n2 n3 n4 n5) (S n2 n3 n4 n5) |- DV n2 n3 n4 n5 :
-        var (X n2 n3 n4 n5)}
-  
-  ==================================
-  {L |- refl_var n2 (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([x][y]n3)
-    :
-    eq_var n2 (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([c21][c22]n3)
-      ([c23][c24]n3)}
-  
-  Subgoal var_strengthening.2 is:
-   exists T', exists Eq,
-     {L |- Eq :
-       eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]T')}
-  
-  var_strengthening.1>> search.
-  
-  Subgoal var_strengthening.2:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]T')}
-  
-  var_strengthening.2>> weaken H1 with bound X n2 n3 S n2 n3.
-  
-  Subgoal var_strengthening.2:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n4}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  H5:{L, n4:bound (X n2 n3) (S n2 n3) |- X n2 n3 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]T')}
-  
-  var_strengthening.2>> weaken H2 with bound X n2 n3 S n2 n3.
-  
-  Subgoal var_strengthening.2:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n4, n5}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  H5:{L, n4:bound (X n2 n3) (S n2 n3) |- X n2 n3 : ty}
-  H6:{L, n5:bound (X n2 n3) (S n2 n3) |- S n2 n3 : ty}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]T')}
-  
-  var_strengthening.2>> weaken H3 with bound X n2 n3 S n2 n3.
-  
-  Subgoal var_strengthening.2:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n4, n5, n6}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  H5:{L, n4:bound (X n2 n3) (S n2 n3) |- X n2 n3 : ty}
-  H6:{L, n5:bound (X n2 n3) (S n2 n3) |- S n2 n3 : ty}
-  H7:{L, n6:bound (X n2 n3) (S n2 n3) |- DV n2 n3 : var (X n2 n3)}
-  
-  ==================================
-  exists T', exists Eq,
-    {L |- Eq :
-      eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]T')}
-  
-  var_strengthening.2>> exists n3.
-  
-  Subgoal var_strengthening.2:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n4, n5, n6}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  H5:{L, n4:bound (X n2 n3) (S n2 n3) |- X n2 n3 : ty}
-  H6:{L, n5:bound (X n2 n3) (S n2 n3) |- S n2 n3 : ty}
-  H7:{L, n6:bound (X n2 n3) (S n2 n3) |- DV n2 n3 : var (X n2 n3)}
-  
-  ==================================
-  exists Eq,
-    {L |- Eq :
-      eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]n3)}
-  
-  var_strengthening.2>> exists refl_var n2 X n2 n3 S n2 n3 DV n2 n3 ([x][y]n3).
-  
-  Subgoal var_strengthening.2:
-  
-  Vars: DV:(o) -> (o) -> o, S:(o) -> (o) -> o, X:(o) -> (o) -> o
-  Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n4, n5, n6}:c[(n2:ty, n3:var n2)]
-  IH:
-      ctx L:c,
-        forall Q, forall X, forall S, forall DV, forall T,
-          {L |- X : ty} =>
-              {L |- S : ty} =>
-                  {L |- DV : var X} =>
-                      {L |- [x][y]T x y :
-                        {x:bound X S}{y:bound_var X S x DV}var Q}* =>
-                          exists T', exists Eq,
-                            {L |- Eq :
-                              eq_var Q X S DV ([x][y]T x y) ([x][y]T')}
-  H1:{L |- X n2 n3 : ty}
-  H2:{L |- S n2 n3 : ty}
-  H3:{L |- DV n2 n3 : var (X n2 n3)}
-  H5:{L, n4:bound (X n2 n3) (S n2 n3) |- X n2 n3 : ty}
-  H6:{L, n5:bound (X n2 n3) (S n2 n3) |- S n2 n3 : ty}
-  H7:{L, n6:bound (X n2 n3) (S n2 n3) |- DV n2 n3 : var (X n2 n3)}
-  
-  ==================================
-  {L |- refl_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([x][y]n3) :
-    eq_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([c37][c38]n3) ([c39][c40]n3)}
-  
-  var_strengthening.2>> search.
-  Proof Completed!
-  
   >> Theorem narrow_ty:
       ctx  L:c,
         forall  Q X P D T:(o) -> (o) -> o DV,
@@ -2690,220 +129,169 @@
   ==================================
   {L |- [x][y]T x y : {x:bound X P}{y:bound_var X P x DV}ty}
   
-  narrow_ty>> apply ty_strengthening to H1 H7 H2 H4.
+  narrow_ty>> prune H4.
   
   Subgoal narrow_ty:
   
-  Vars: Eq:(o) -> (o) -> o, T':(o) -> (o) -> o, DV:o, T:(o) -> (o) -> o, D:o, P
-          :o, X:o, Q:o
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o
   Nominals: n1:o, n:o
   Contexts: L{n, n1}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T n n1 : ty}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : ty}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H8:{L |- Eq n1 n : eq_ty X Q DV ([x][y]T x y) ([x][y]T' n1 n)}
   
   ==================================
-  {L |- [x][y]T x y : {x:bound X P}{y:bound_var X P x DV}ty}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}ty}
   
-  narrow_ty>> cases H8.
+  narrow_ty>> strengthen H4.
   
   Subgoal narrow_ty:
   
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3}:c[]
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o
+  Nominals: n1:o, n:o
+  Contexts: L{n, n1}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : ty}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : ty}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H9:{L |- X : ty}
-  H10:{L |- Q : ty}
-  H11:{L |- DV : var X}
-  H12:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : ty}
+  H8:{L, n:bound X Q |- T : ty}
   
   ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}ty}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}ty}
   
-  narrow_ty>> strengthen H12.
+  narrow_ty>> strengthen H8.
   
   Subgoal narrow_ty:
   
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3}:c[]
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o
+  Nominals: n1:o, n:o
+  Contexts: L{n, n1}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : ty}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : ty}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H9:{L |- X : ty}
-  H10:{L |- Q : ty}
-  H11:{L |- DV : var X}
-  H12:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : ty}
-  H13:{L, n2:bound X Q |- T1 : ty}
+  H8:{L, n:bound X Q |- T : ty}
+  H9:{L |- T : ty}
   
   ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}ty}
-  
-  narrow_ty>> strengthen H13.
-  
-  Subgoal narrow_ty:
-  
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3}:c[]
-  H1:{L |- X : ty}
-  H2:{L |- DV : var X}
-  H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : ty}
-  H6:{L |- P : ty}
-  H7:{L |- Q : ty}
-  H9:{L |- X : ty}
-  H10:{L |- Q : ty}
-  H11:{L |- DV : var X}
-  H12:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : ty}
-  H13:{L, n2:bound X Q |- T1 : ty}
-  H14:{L |- T1 : ty}
-  
-  ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}ty}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}ty}
   
   narrow_ty>> weaken H1 with bound X P.
   
   Subgoal narrow_ty:
   
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o
-  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4}:c[]
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o
+  Nominals: n2:o, n1:o, n:o
+  Contexts: L{n, n1, n2}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : ty}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : ty}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H9:{L |- X : ty}
-  H10:{L |- Q : ty}
-  H11:{L |- DV : var X}
-  H12:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : ty}
-  H13:{L, n2:bound X Q |- T1 : ty}
-  H14:{L |- T1 : ty}
-  H15:{L, n4:bound X P |- X : ty}
+  H8:{L, n:bound X Q |- T : ty}
+  H9:{L |- T : ty}
+  H10:{L, n2:bound X P |- X : ty}
   
   ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}ty}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}ty}
   
   narrow_ty>> weaken H6 with bound X P.
   
   Subgoal narrow_ty:
   
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5}:c[]
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o
+  Nominals: n3:o, n2:o, n1:o, n:o
+  Contexts: L{n, n1, n2, n3}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : ty}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : ty}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H9:{L |- X : ty}
-  H10:{L |- Q : ty}
-  H11:{L |- DV : var X}
-  H12:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : ty}
-  H13:{L, n2:bound X Q |- T1 : ty}
-  H14:{L |- T1 : ty}
-  H15:{L, n4:bound X P |- X : ty}
-  H16:{L, n5:bound X P |- P : ty}
+  H8:{L, n:bound X Q |- T : ty}
+  H9:{L |- T : ty}
+  H10:{L, n2:bound X P |- X : ty}
+  H11:{L, n3:bound X P |- P : ty}
   
   ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}ty}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}ty}
   
   narrow_ty>> weaken H2 with bound X P.
   
   Subgoal narrow_ty:
   
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o
+  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
+  Contexts: L{n, n1, n2, n3, n4}:c[]
+  H1:{L |- X : ty}
+  H2:{L |- DV : var X}
+  H3:{L |- D : sub P Q}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : ty}
+  H6:{L |- P : ty}
+  H7:{L |- Q : ty}
+  H8:{L, n:bound X Q |- T : ty}
+  H9:{L |- T : ty}
+  H10:{L, n2:bound X P |- X : ty}
+  H11:{L, n3:bound X P |- P : ty}
+  H12:{L, n4:bound X P |- DV : var X}
+  
+  ==================================
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}ty}
+  
+  narrow_ty>> weaken H9 with bound X P.
+  
+  Subgoal narrow_ty:
+  
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o
+  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
+  Contexts: L{n, n1, n2, n3, n4, n5}:c[]
+  H1:{L |- X : ty}
+  H2:{L |- DV : var X}
+  H3:{L |- D : sub P Q}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : ty}
+  H6:{L |- P : ty}
+  H7:{L |- Q : ty}
+  H8:{L, n:bound X Q |- T : ty}
+  H9:{L |- T : ty}
+  H10:{L, n2:bound X P |- X : ty}
+  H11:{L, n3:bound X P |- P : ty}
+  H12:{L, n4:bound X P |- DV : var X}
+  H13:{L, n5:bound X P |- T : ty}
+  
+  ==================================
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}ty}
+  
+  narrow_ty>> weaken H13 with bound_var X P n5 DV.
+  
+  Subgoal narrow_ty:
+  
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: L{n, n1, n2, n3, n4, n5, n6}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : ty}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : ty}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H9:{L |- X : ty}
-  H10:{L |- Q : ty}
-  H11:{L |- DV : var X}
-  H12:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : ty}
-  H13:{L, n2:bound X Q |- T1 : ty}
-  H14:{L |- T1 : ty}
-  H15:{L, n4:bound X P |- X : ty}
-  H16:{L, n5:bound X P |- P : ty}
-  H17:{L, n6:bound X P |- DV : var X}
+  H8:{L, n:bound X Q |- T : ty}
+  H9:{L |- T : ty}
+  H10:{L, n2:bound X P |- X : ty}
+  H11:{L, n3:bound X P |- P : ty}
+  H12:{L, n4:bound X P |- DV : var X}
+  H13:{L, n5:bound X P |- T : ty}
+  H14:{L, n5:bound X P, n6:bound_var X P n5 DV |- T : ty}
   
   ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}ty}
-  
-  narrow_ty>> weaken H14 with bound X P.
-  
-  Subgoal narrow_ty:
-  
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o
-  Nominals: n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5, n6, n7}:c[]
-  H1:{L |- X : ty}
-  H2:{L |- DV : var X}
-  H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : ty}
-  H6:{L |- P : ty}
-  H7:{L |- Q : ty}
-  H9:{L |- X : ty}
-  H10:{L |- Q : ty}
-  H11:{L |- DV : var X}
-  H12:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : ty}
-  H13:{L, n2:bound X Q |- T1 : ty}
-  H14:{L |- T1 : ty}
-  H15:{L, n4:bound X P |- X : ty}
-  H16:{L, n5:bound X P |- P : ty}
-  H17:{L, n6:bound X P |- DV : var X}
-  H18:{L, n7:bound X P |- T1 : ty}
-  
-  ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}ty}
-  
-  narrow_ty>> weaken H18 with bound_var X P n7 DV.
-  
-  Subgoal narrow_ty:
-  
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o
-  Nominals: n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5, n6, n7, n8}:c[]
-  H1:{L |- X : ty}
-  H2:{L |- DV : var X}
-  H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : ty}
-  H6:{L |- P : ty}
-  H7:{L |- Q : ty}
-  H9:{L |- X : ty}
-  H10:{L |- Q : ty}
-  H11:{L |- DV : var X}
-  H12:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : ty}
-  H13:{L, n2:bound X Q |- T1 : ty}
-  H14:{L |- T1 : ty}
-  H15:{L, n4:bound X P |- X : ty}
-  H16:{L, n5:bound X P |- P : ty}
-  H17:{L, n6:bound X P |- DV : var X}
-  H18:{L, n7:bound X P |- T1 : ty}
-  H19:{L, n7:bound X P, n8:bound_var X P n7 DV |- T1 : ty}
-  
-  ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}ty}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}ty}
   
   narrow_ty>> search.
   Proof Completed!
@@ -2980,228 +368,169 @@
   ==================================
   {L |- [x][y]T x y : {x:bound X P}{y:bound_var X P x DV}var S}
   
-  narrow_var>> apply var_strengthening to H1 H7 H2 H4.
+  narrow_var>> prune H4.
   
   Subgoal narrow_var:
   
-  Vars: Eq:(o) -> (o) -> o, T':(o) -> (o) -> o, DV:o, T:(o) -> (o) -> o, D:o, P
-          :o, X:o, Q:o, S:o
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o, S:o
   Nominals: n1:o, n:o
   Contexts: L{n, n1}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T n n1 : var S}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : var S}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H8:{L |- Eq n1 n : eq_var S X Q DV ([x][y]T x y) ([x][y]T' n1 n)}
   
   ==================================
-  {L |- [x][y]T x y : {x:bound X P}{y:bound_var X P x DV}var S}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}var S}
   
-  narrow_var>> cases H8.
+  narrow_var>> strengthen H4.
   
   Subgoal narrow_var:
   
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o, S:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3}:c[]
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o, S:o
+  Nominals: n1:o, n:o
+  Contexts: L{n, n1}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : var S}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : var S}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H9:{L |- S : ty}
-  H10:{L |- X : ty}
-  H11:{L |- Q : ty}
-  H12:{L |- DV : var X}
-  H13:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : var S}
+  H8:{L, n:bound X Q |- T : var S}
   
   ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}var S}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}var S}
   
-  narrow_var>> strengthen H13.
+  narrow_var>> strengthen H8.
   
   Subgoal narrow_var:
   
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o, S:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3}:c[]
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o, S:o
+  Nominals: n1:o, n:o
+  Contexts: L{n, n1}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : var S}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : var S}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H9:{L |- S : ty}
-  H10:{L |- X : ty}
-  H11:{L |- Q : ty}
-  H12:{L |- DV : var X}
-  H13:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : var S}
-  H14:{L, n2:bound X Q |- T1 : var S}
+  H8:{L, n:bound X Q |- T : var S}
+  H9:{L |- T : var S}
   
   ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}var S}
-  
-  narrow_var>> strengthen H14.
-  
-  Subgoal narrow_var:
-  
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o, S:o
-  Nominals: n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3}:c[]
-  H1:{L |- X : ty}
-  H2:{L |- DV : var X}
-  H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : var S}
-  H6:{L |- P : ty}
-  H7:{L |- Q : ty}
-  H9:{L |- S : ty}
-  H10:{L |- X : ty}
-  H11:{L |- Q : ty}
-  H12:{L |- DV : var X}
-  H13:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : var S}
-  H14:{L, n2:bound X Q |- T1 : var S}
-  H15:{L |- T1 : var S}
-  
-  ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}var S}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}var S}
   
   narrow_var>> weaken H1 with bound X P.
   
   Subgoal narrow_var:
   
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o, S:o
-  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4}:c[]
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o, S:o
+  Nominals: n2:o, n1:o, n:o
+  Contexts: L{n, n1, n2}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : var S}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : var S}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H9:{L |- S : ty}
-  H10:{L |- X : ty}
-  H11:{L |- Q : ty}
-  H12:{L |- DV : var X}
-  H13:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : var S}
-  H14:{L, n2:bound X Q |- T1 : var S}
-  H15:{L |- T1 : var S}
-  H16:{L, n4:bound X P |- X : ty}
+  H8:{L, n:bound X Q |- T : var S}
+  H9:{L |- T : var S}
+  H10:{L, n2:bound X P |- X : ty}
   
   ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}var S}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}var S}
   
   narrow_var>> weaken H6 with bound X P.
   
   Subgoal narrow_var:
   
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o, S:o
-  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5}:c[]
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o, S:o
+  Nominals: n3:o, n2:o, n1:o, n:o
+  Contexts: L{n, n1, n2, n3}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : var S}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : var S}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H9:{L |- S : ty}
-  H10:{L |- X : ty}
-  H11:{L |- Q : ty}
-  H12:{L |- DV : var X}
-  H13:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : var S}
-  H14:{L, n2:bound X Q |- T1 : var S}
-  H15:{L |- T1 : var S}
-  H16:{L, n4:bound X P |- X : ty}
-  H17:{L, n5:bound X P |- P : ty}
+  H8:{L, n:bound X Q |- T : var S}
+  H9:{L |- T : var S}
+  H10:{L, n2:bound X P |- X : ty}
+  H11:{L, n3:bound X P |- P : ty}
   
   ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}var S}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}var S}
   
   narrow_var>> weaken H2 with bound X P.
   
   Subgoal narrow_var:
   
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o, S:o
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o, S:o
+  Nominals: n4:o, n3:o, n2:o, n1:o, n:o
+  Contexts: L{n, n1, n2, n3, n4}:c[]
+  H1:{L |- X : ty}
+  H2:{L |- DV : var X}
+  H3:{L |- D : sub P Q}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : var S}
+  H6:{L |- P : ty}
+  H7:{L |- Q : ty}
+  H8:{L, n:bound X Q |- T : var S}
+  H9:{L |- T : var S}
+  H10:{L, n2:bound X P |- X : ty}
+  H11:{L, n3:bound X P |- P : ty}
+  H12:{L, n4:bound X P |- DV : var X}
+  
+  ==================================
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}var S}
+  
+  narrow_var>> weaken H9 with bound X P.
+  
+  Subgoal narrow_var:
+  
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o, S:o
+  Nominals: n5:o, n4:o, n3:o, n2:o, n1:o, n:o
+  Contexts: L{n, n1, n2, n3, n4, n5}:c[]
+  H1:{L |- X : ty}
+  H2:{L |- DV : var X}
+  H3:{L |- D : sub P Q}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : var S}
+  H6:{L |- P : ty}
+  H7:{L |- Q : ty}
+  H8:{L, n:bound X Q |- T : var S}
+  H9:{L |- T : var S}
+  H10:{L, n2:bound X P |- X : ty}
+  H11:{L, n3:bound X P |- P : ty}
+  H12:{L, n4:bound X P |- DV : var X}
+  H13:{L, n5:bound X P |- T : var S}
+  
+  ==================================
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}var S}
+  
+  narrow_var>> weaken H13 with bound_var X P n5 DV.
+  
+  Subgoal narrow_var:
+  
+  Vars: DV:o, T:o, D:o, P:o, X:o, Q:o, S:o
   Nominals: n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
   Contexts: L{n, n1, n2, n3, n4, n5, n6}:c[]
   H1:{L |- X : ty}
   H2:{L |- DV : var X}
   H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : var S}
+  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T : var S}
   H6:{L |- P : ty}
   H7:{L |- Q : ty}
-  H9:{L |- S : ty}
-  H10:{L |- X : ty}
-  H11:{L |- Q : ty}
-  H12:{L |- DV : var X}
-  H13:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : var S}
-  H14:{L, n2:bound X Q |- T1 : var S}
-  H15:{L |- T1 : var S}
-  H16:{L, n4:bound X P |- X : ty}
-  H17:{L, n5:bound X P |- P : ty}
-  H18:{L, n6:bound X P |- DV : var X}
+  H8:{L, n:bound X Q |- T : var S}
+  H9:{L |- T : var S}
+  H10:{L, n2:bound X P |- X : ty}
+  H11:{L, n3:bound X P |- P : ty}
+  H12:{L, n4:bound X P |- DV : var X}
+  H13:{L, n5:bound X P |- T : var S}
+  H14:{L, n5:bound X P, n6:bound_var X P n5 DV |- T : var S}
   
   ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}var S}
-  
-  narrow_var>> weaken H15 with bound X P.
-  
-  Subgoal narrow_var:
-  
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o, S:o
-  Nominals: n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5, n6, n7}:c[]
-  H1:{L |- X : ty}
-  H2:{L |- DV : var X}
-  H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : var S}
-  H6:{L |- P : ty}
-  H7:{L |- Q : ty}
-  H9:{L |- S : ty}
-  H10:{L |- X : ty}
-  H11:{L |- Q : ty}
-  H12:{L |- DV : var X}
-  H13:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : var S}
-  H14:{L, n2:bound X Q |- T1 : var S}
-  H15:{L |- T1 : var S}
-  H16:{L, n4:bound X P |- X : ty}
-  H17:{L, n5:bound X P |- P : ty}
-  H18:{L, n6:bound X P |- DV : var X}
-  H19:{L, n7:bound X P |- T1 : var S}
-  
-  ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}var S}
-  
-  narrow_var>> weaken H19 with bound_var X P n7 DV.
-  
-  Subgoal narrow_var:
-  
-  Vars: T1:o, DV:o, D:o, P:o, X:o, Q:o, S:o
-  Nominals: n8:o, n7:o, n6:o, n5:o, n4:o, n3:o, n2:o, n1:o, n:o
-  Contexts: L{n, n1, n2, n3, n4, n5, n6, n7, n8}:c[]
-  H1:{L |- X : ty}
-  H2:{L |- DV : var X}
-  H3:{L |- D : sub P Q}
-  H4:{L, n:bound X Q, n1:bound_var X Q n DV |- T1 : var S}
-  H6:{L |- P : ty}
-  H7:{L |- Q : ty}
-  H9:{L |- S : ty}
-  H10:{L |- X : ty}
-  H11:{L |- Q : ty}
-  H12:{L |- DV : var X}
-  H13:{L, n2:bound X Q, n3:bound_var X Q n2 DV |- T1 : var S}
-  H14:{L, n2:bound X Q |- T1 : var S}
-  H15:{L |- T1 : var S}
-  H16:{L, n4:bound X P |- X : ty}
-  H17:{L, n5:bound X P |- P : ty}
-  H18:{L, n6:bound X P |- DV : var X}
-  H19:{L, n7:bound X P |- T1 : var S}
-  H20:{L, n7:bound X P, n8:bound_var X P n7 DV |- T1 : var S}
-  
-  ==================================
-  {L |- [x][y]T1 : {x:bound X P}{y:bound_var X P x DV}var S}
+  {L |- [x][y]T : {x:bound X P}{y:bound_var X P x DV}var S}
   
   narrow_var>> search.
   Proof Completed!
