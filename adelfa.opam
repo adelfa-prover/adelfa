@@ -3,8 +3,10 @@ opam-version: "2.0"
 synopsis: "Proof assistant for reasoning about LF specifications"
 maintainer: ["Chase Johnson <joh13266@umn.edu>"]
 authors: ["Mary Southern" "Chase Johnson <joh13266@umn.edu>"]
+license: "GPL-3.0"
 homepage: "http://sparrow.cs.umn.edu/adelfa/index.html"
 doc: "http://sparrow.cs.umn.edu/adelfa/reference-guide.html"
+bug-reports: "https://github.com/adelfa-prover/adelfa/issues"
 depends: [
   "dune" {>= "3.0"}
   "ounit2" {with-test}
@@ -24,3 +26,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
+dev-repo: "git+https://github.com/adelfa-prover/adelfa.git"

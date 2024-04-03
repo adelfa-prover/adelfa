@@ -21,67 +21,6 @@ intros. split. search. search.
 %These results will be used in proving a narrowing result for the types "ty"
 %and "var" which is useful in showing narrowing of subtyping judgments.
 
-Theorem ty_strengthening : ctx L:c, forall X S DV T: o -> o -> o,
-  {L |- X : ty} => {L |- S : ty} => {L |- DV : var X} =>
-  {L |- [x][y] T x y : {x:bound X S}{y:bound_var X S x DV}ty} =>
-  exists T' Eq, {L |- Eq : eq_ty X S DV ([x][y] T x y) ([x][y] T')}.
-induction on 4. intros. case H4.
-  %case 1: all
-    apply IH to H1 H2 H3 H5 with (L = L), X = X, S = S, DV = DV, T = [x][y] T1 y x.
-        prune H7.
-    case H7.
-    weaken H6 with (var n2).
-    ctxpermute H12 to L,n2:ty,n5:var n2,n:bound X S, n1:bound_var X S n DV.
-    weaken H1 with ty. weaken H14 with (var n6).
-    weaken H2 with ty. weaken H16 with (var n8).
-    weaken H3 with ty. weaken H18 with (var n10).
-    apply IH to H15 H17 H19 H13 with (L = L, n1:ty, n:var n1).
-        prune H20.
-    case H20.
-    exists all T2 ([x] F1 x). exists refl_ty X S DV ([x][y]all T2 ([x] F1 x)).
-    search.
-  %case 2: arrow
-    apply IH to H1 H2 H3 H5.
-      case H7.
-    apply IH to H1 H2 H3 H6.
-      case H12.
-    exists arrow T3 T4. exists refl_ty X S DV ([x][y]arrow T3 T4).
-    search.
-  %case 3: top
-    weaken H1 with (bound X S). weaken H2 with (bound X S). weaken H3 with (bound X S).
-    exists top. exists refl_ty X S DV ([x][y] top).
-    search.
-  %case 4: new full block
-    weaken H1 with (bound (X n2 n3 n4 n5) (S n2 n3 n4 n5)).
-    weaken H2 with (bound (X n2 n3 n4 n5) (S n2 n3 n4 n5)).
-    weaken H3 with (bound (X n2 n3 n4 n5) (S n2 n3 n4 n5)).
-    exists n2. exists refl_ty (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([x][y]n2).
-    search.
-  %case 5: new split block
-    weaken H1 with (bound (X n2 n3) (S n2 n3)).
-    weaken H2 with (bound (X n2 n3) (S n2 n3)).
-    weaken H3 with (bound (X n2 n3) (S n2 n3)).
-    exists n2. exists refl_ty (X n2 n3) (S n2 n3) (DV n2 n3) ([x][y]n2).
-    search.
-
-Theorem var_strengthening : ctx L:c, forall Q X S DV T: o -> o -> o,
-  {L |- X : ty} => {L |- S : ty} => {L |- DV : var X} =>
-  {L |- [x][y] T x y : {x:bound X S}{y:bound_var X S x DV}var Q} =>
-  exists T' Eq, {L |- Eq : eq_var Q X S DV ([x][y] T x y) ([x][y] T')}.
-induction on 4. intros. case H4.
-  %case 1: new full block
-    weaken H1 with bound (X n2 n3 n4 n5) (S n2 n3 n4 n5).
-    weaken H2 with bound (X n2 n3 n4 n5) (S n2 n3 n4 n5).
-    weaken H3 with bound (X n2 n3 n4 n5) (S n2 n3 n4 n5).
-    exists n3. exists (refl_var n2 (X n2 n3 n4 n5) (S n2 n3 n4 n5) (DV n2 n3 n4 n5) ([x][y]n3)).
-    search.
-  %case 2: new split block
-    weaken H1 with bound (X n2 n3) (S n2 n3).
-    weaken H2 with bound (X n2 n3) (S n2 n3).
-    weaken H3 with bound (X n2 n3) (S n2 n3).
-    exists n3. exists refl_var n2 (X n2 n3) (S n2 n3) (DV n2 n3) ([x][y]n3).
-    search.
-
 %With the strengthening results above, narrowing for these types is proved
 %directly by strengthening the assumption derivation and then weakening it
 %with the desired context items.
@@ -92,10 +31,10 @@ Theorem narrow_ty : ctx L:c, forall Q X P D T: o -> o -> o DV,
   {L |- [x][y](T x y) : {x:bound X Q}{y:bound_var X Q x DV}ty} =>
   {L |- [x][y](T x y) : {x:bound X P}{y:bound_var X P x DV}ty}.
 intros. apply sub__ty to H3. case H5.
-apply ty_strengthening to H1 H7 H2 H4. case H8.
-strengthen H12. strengthen H13.
+prune H4.
+strengthen H4. strengthen H8.
 weaken H1 with (bound X P). weaken H6 with (bound X P). weaken H2 with (bound X P).
-weaken H14 with (bound X P). weaken H18 with (bound_var X P n7 DV).
+weaken H9 with (bound X P). weaken H13 with (bound_var X P n5 DV).
 search.
 
 Theorem narrow_var : ctx L:c, forall S Q X P D T: o -> o -> o DV,
@@ -104,10 +43,10 @@ Theorem narrow_var : ctx L:c, forall S Q X P D T: o -> o -> o DV,
   {L |- [x][y](T x y) : {x:bound X Q}{y:bound_var X Q x DV}var S} =>
   {L |- [x][y](T x y) : {x:bound X P}{y:bound_var X P x DV}var S}.
 intros. apply sub__ty to H3. case H5.
-apply var_strengthening to H1 H7 H2 H4. case H8.
-strengthen H13. strengthen H14.
+prune H4.
+strengthen H4. strengthen H8.
 weaken H1 with (bound X P). weaken H6 with (bound X P). weaken H2 with (bound X P).
-weaken H15 with (bound X P). weaken H19 with (bound_var X P n7 DV).
+weaken H9 with (bound X P). weaken H13 with (bound_var X P n5 DV).
 search.
 
 Theorem trans_and_narrow' :
