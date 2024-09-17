@@ -4,6 +4,7 @@ Help message should display when the `--help` flag is given
   Usage: adelfa [options]
   options are: 
     -i  Specifies a file from which to read input.
+    -s  Specified a file from which to read a specification.
     --input  Specifies a file from which to read input.
     -a  Annotate mode
     -help  Display this list of options

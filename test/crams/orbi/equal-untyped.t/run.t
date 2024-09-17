@@ -992,6 +992,101 @@
   
   Subgoal ceqG.1:
   
+  Vars: N:o
+  Contexts: G{}:daG[]
+  IH:
+      ctx G:daG,
+        forall M, forall N, forall D1,
+          {G |- D1 : deq M N}* => exists D2, {G |- D2 : aeq M N}
+  H1:{G |- de_r N : deq N N}@
+  H2:{G |- N : tm}*
+  
+  ==================================
+  exists D2, {G |- D2 : aeq N N}
+  
+  Subgoal ceqG.2 is:
+   exists D2, {G |- D2 : aeq M N}
+  
+  Subgoal ceqG.3 is:
+   exists D2, {G |- D2 : aeq M N}
+  
+  Subgoal ceqG.4 is:
+   exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
+  
+  Subgoal ceqG.5 is:
+   exists D2, {G |- D2 : aeq (app M1 M2) (app N1 N2)}
+  
+  Subgoal ceqG.6 is:
+   exists D2, {G |- D2 : aeq n n}
+  
+  ceqG.1>> apply reflG to H2.
+  
+  Subgoal ceqG.1:
+  
+  Vars: D:o, N:o
+  Contexts: G{}:daG[]
+  IH:
+      ctx G:daG,
+        forall M, forall N, forall D1,
+          {G |- D1 : deq M N}* => exists D2, {G |- D2 : aeq M N}
+  H1:{G |- de_r N : deq N N}@
+  H2:{G |- N : tm}*
+  H3:{G |- D : aeq N N}
+  
+  ==================================
+  exists D2, {G |- D2 : aeq N N}
+  
+  Subgoal ceqG.2 is:
+   exists D2, {G |- D2 : aeq M N}
+  
+  Subgoal ceqG.3 is:
+   exists D2, {G |- D2 : aeq M N}
+  
+  Subgoal ceqG.4 is:
+   exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
+  
+  Subgoal ceqG.5 is:
+   exists D2, {G |- D2 : aeq (app M1 M2) (app N1 N2)}
+  
+  Subgoal ceqG.6 is:
+   exists D2, {G |- D2 : aeq n n}
+  
+  ceqG.1>> exists D.
+  
+  Subgoal ceqG.1:
+  
+  Vars: D:o, N:o
+  Contexts: G{}:daG[]
+  IH:
+      ctx G:daG,
+        forall M, forall N, forall D1,
+          {G |- D1 : deq M N}* => exists D2, {G |- D2 : aeq M N}
+  H1:{G |- de_r N : deq N N}@
+  H2:{G |- N : tm}*
+  H3:{G |- D : aeq N N}
+  
+  ==================================
+  {G |- D : aeq N N}
+  
+  Subgoal ceqG.2 is:
+   exists D2, {G |- D2 : aeq M N}
+  
+  Subgoal ceqG.3 is:
+   exists D2, {G |- D2 : aeq M N}
+  
+  Subgoal ceqG.4 is:
+   exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
+  
+  Subgoal ceqG.5 is:
+   exists D2, {G |- D2 : aeq (app M1 M2) (app N1 N2)}
+  
+  Subgoal ceqG.6 is:
+   exists D2, {G |- D2 : aeq n n}
+  
+  ceqG.1>> search.
+  
+  Subgoal ceqG.2:
+  
   Vars: M2:o, D2:o, D3:o, N:o, M:o
   Contexts: G{}:daG[]
   IH:
@@ -1008,11 +1103,8 @@
   ==================================
   exists D2, {G |- D2 : aeq M N}
   
-  Subgoal ceqG.2 is:
-   exists D2, {G |- D2 : aeq M N}
-  
   Subgoal ceqG.3 is:
-   exists D2, {G |- D2 : aeq N N}
+   exists D2, {G |- D2 : aeq M N}
   
   Subgoal ceqG.4 is:
    exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
@@ -1023,9 +1115,9 @@
   Subgoal ceqG.6 is:
    exists D2, {G |- D2 : aeq n n}
   
-  ceqG.1>> apply IH to H5.
+  ceqG.2>> apply IH to H5.
   
-  Subgoal ceqG.1:
+  Subgoal ceqG.2:
   
   Vars: M2:o, D2:o, D3:o, D1:o, N:o, M:o
   Contexts: G{}:daG[]
@@ -1044,11 +1136,8 @@
   ==================================
   exists D2, {G |- D2 : aeq M N}
   
-  Subgoal ceqG.2 is:
-   exists D2, {G |- D2 : aeq M N}
-  
   Subgoal ceqG.3 is:
-   exists D2, {G |- D2 : aeq N N}
+   exists D2, {G |- D2 : aeq M N}
   
   Subgoal ceqG.4 is:
    exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
@@ -1059,9 +1148,9 @@
   Subgoal ceqG.6 is:
    exists D2, {G |- D2 : aeq n n}
   
-  ceqG.1>> apply IH to H6.
+  ceqG.2>> apply IH to H6.
   
-  Subgoal ceqG.1:
+  Subgoal ceqG.2:
   
   Vars: D4:o, M2:o, D2:o, D3:o, D1:o, N:o, M:o
   Contexts: G{}:daG[]
@@ -1081,11 +1170,8 @@
   ==================================
   exists D2, {G |- D2 : aeq M N}
   
-  Subgoal ceqG.2 is:
-   exists D2, {G |- D2 : aeq M N}
-  
   Subgoal ceqG.3 is:
-   exists D2, {G |- D2 : aeq N N}
+   exists D2, {G |- D2 : aeq M N}
   
   Subgoal ceqG.4 is:
    exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
@@ -1096,9 +1182,9 @@
   Subgoal ceqG.6 is:
    exists D2, {G |- D2 : aeq n n}
   
-  ceqG.1>> apply tranG to H7 H8.
+  ceqG.2>> apply tranG to H7 H8.
   
-  Subgoal ceqG.1:
+  Subgoal ceqG.2:
   
   Vars: D5:o, D4:o, M2:o, D2:o, D3:o, D1:o, N:o, M:o
   Contexts: G{}:daG[]
@@ -1119,11 +1205,8 @@
   ==================================
   exists D2, {G |- D2 : aeq M N}
   
-  Subgoal ceqG.2 is:
-   exists D2, {G |- D2 : aeq M N}
-  
   Subgoal ceqG.3 is:
-   exists D2, {G |- D2 : aeq N N}
+   exists D2, {G |- D2 : aeq M N}
   
   Subgoal ceqG.4 is:
    exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
@@ -1134,9 +1217,9 @@
   Subgoal ceqG.6 is:
    exists D2, {G |- D2 : aeq n n}
   
-  ceqG.1>> exists D5.
+  ceqG.2>> exists D5.
   
-  Subgoal ceqG.1:
+  Subgoal ceqG.2:
   
   Vars: D5:o, D4:o, M2:o, D2:o, D3:o, D1:o, N:o, M:o
   Contexts: G{}:daG[]
@@ -1157,11 +1240,8 @@
   ==================================
   {G |- D5 : aeq M N}
   
-  Subgoal ceqG.2 is:
-   exists D2, {G |- D2 : aeq M N}
-  
   Subgoal ceqG.3 is:
-   exists D2, {G |- D2 : aeq N N}
+   exists D2, {G |- D2 : aeq M N}
   
   Subgoal ceqG.4 is:
    exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
@@ -1172,9 +1252,9 @@
   Subgoal ceqG.6 is:
    exists D2, {G |- D2 : aeq n n}
   
-  ceqG.1>> search.
+  ceqG.2>> search.
   
-  Subgoal ceqG.2:
+  Subgoal ceqG.3:
   
   Vars: D:o, N:o, M:o
   Contexts: G{}:daG[]
@@ -1190,9 +1270,6 @@
   ==================================
   exists D2, {G |- D2 : aeq M N}
   
-  Subgoal ceqG.3 is:
-   exists D2, {G |- D2 : aeq N N}
-  
   Subgoal ceqG.4 is:
    exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
   
@@ -1202,9 +1279,9 @@
   Subgoal ceqG.6 is:
    exists D2, {G |- D2 : aeq n n}
   
-  ceqG.2>> apply IH to H4.
+  ceqG.3>> apply IH to H4.
   
-  Subgoal ceqG.2:
+  Subgoal ceqG.3:
   
   Vars: D2:o, D:o, N:o, M:o
   Contexts: G{}:daG[]
@@ -1221,9 +1298,6 @@
   ==================================
   exists D2, {G |- D2 : aeq M N}
   
-  Subgoal ceqG.3 is:
-   exists D2, {G |- D2 : aeq N N}
-  
   Subgoal ceqG.4 is:
    exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
   
@@ -1233,9 +1307,9 @@
   Subgoal ceqG.6 is:
    exists D2, {G |- D2 : aeq n n}
   
-  ceqG.2>> apply symG to H5.
+  ceqG.3>> apply symG to H5.
   
-  Subgoal ceqG.2:
+  Subgoal ceqG.3:
   
   Vars: D2:o, D:o, D1:o, N:o, M:o
   Contexts: G{}:daG[]
@@ -1253,9 +1327,6 @@
   ==================================
   exists D2, {G |- D2 : aeq M N}
   
-  Subgoal ceqG.3 is:
-   exists D2, {G |- D2 : aeq N N}
-  
   Subgoal ceqG.4 is:
    exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
   
@@ -1265,9 +1336,9 @@
   Subgoal ceqG.6 is:
    exists D2, {G |- D2 : aeq n n}
   
-  ceqG.2>> exists D1.
+  ceqG.3>> exists D1.
   
-  Subgoal ceqG.2:
+  Subgoal ceqG.3:
   
   Vars: D2:o, D:o, D1:o, N:o, M:o
   Contexts: G{}:daG[]
@@ -1284,86 +1355,6 @@
   
   ==================================
   {G |- D1 : aeq M N}
-  
-  Subgoal ceqG.3 is:
-   exists D2, {G |- D2 : aeq N N}
-  
-  Subgoal ceqG.4 is:
-   exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
-  
-  Subgoal ceqG.5 is:
-   exists D2, {G |- D2 : aeq (app M1 M2) (app N1 N2)}
-  
-  Subgoal ceqG.6 is:
-   exists D2, {G |- D2 : aeq n n}
-  
-  ceqG.2>> search.
-  
-  Subgoal ceqG.3:
-  
-  Vars: N:o
-  Contexts: G{}:daG[]
-  IH:
-      ctx G:daG,
-        forall M, forall N, forall D1,
-          {G |- D1 : deq M N}* => exists D2, {G |- D2 : aeq M N}
-  H1:{G |- de_r N : deq N N}@
-  H2:{G |- N : tm}*
-  
-  ==================================
-  exists D2, {G |- D2 : aeq N N}
-  
-  Subgoal ceqG.4 is:
-   exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
-  
-  Subgoal ceqG.5 is:
-   exists D2, {G |- D2 : aeq (app M1 M2) (app N1 N2)}
-  
-  Subgoal ceqG.6 is:
-   exists D2, {G |- D2 : aeq n n}
-  
-  ceqG.3>> apply reflG to H2.
-  
-  Subgoal ceqG.3:
-  
-  Vars: D:o, N:o
-  Contexts: G{}:daG[]
-  IH:
-      ctx G:daG,
-        forall M, forall N, forall D1,
-          {G |- D1 : deq M N}* => exists D2, {G |- D2 : aeq M N}
-  H1:{G |- de_r N : deq N N}@
-  H2:{G |- N : tm}*
-  H3:{G |- D : aeq N N}
-  
-  ==================================
-  exists D2, {G |- D2 : aeq N N}
-  
-  Subgoal ceqG.4 is:
-   exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
-  
-  Subgoal ceqG.5 is:
-   exists D2, {G |- D2 : aeq (app M1 M2) (app N1 N2)}
-  
-  Subgoal ceqG.6 is:
-   exists D2, {G |- D2 : aeq n n}
-  
-  ceqG.3>> exists D.
-  
-  Subgoal ceqG.3:
-  
-  Vars: D:o, N:o
-  Contexts: G{}:daG[]
-  IH:
-      ctx G:daG,
-        forall M, forall N, forall D1,
-          {G |- D1 : deq M N}* => exists D2, {G |- D2 : aeq M N}
-  H1:{G |- de_r N : deq N N}@
-  H2:{G |- N : tm}*
-  H3:{G |- D : aeq N N}
-  
-  ==================================
-  {G |- D : aeq N N}
   
   Subgoal ceqG.4 is:
    exists D2, {G |- D2 : aeq (lam ([c53]M1 c53)) (lam ([c56]N1 c56))}
