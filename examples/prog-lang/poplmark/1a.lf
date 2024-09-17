@@ -32,22 +32,3 @@ wfty-arrow : {T1:ty}{T2:ty}
 wfty-all : {T1:ty}{T2:{x:ty} ty}
             {d1: wfty T1 }{d2: ({x:ty} wfty (T2 x))}
              wfty (all T1 ([x] T2 x)).
-
-
-% Some equality definitions for use in strengthening lemmas
-eq_ty : {X:ty}{S:ty}{DV:var X}
-        {T1:{x:bound X S}{y:bound_var X S x DV}ty}
-        {T2:{x:bound X S}{y:bound_var X S x DV}ty}
-        type.
-refl_ty : {X:ty}{S:ty}{DV:var X}
-          {T:{x:bound X S}{y:bound_var X S x DV}ty}
-          eq_ty X S DV T T.
-
-eq_var : {Q:ty}{X:ty}{S:ty}{DV:var X}
-         {T1:{x:bound X S}{y:bound_var X S x DV}var Q}
-         {T2:{x:bound X S}{y:bound_var X S x DV}var Q}
-         type.
-
-refl_var : {Q:ty}{X:ty}{S:ty}{DV:var X}
-           {T:{x:bound X S}{y:bound_var X S x DV}var Q}
-           eq_var Q X S DV T T.

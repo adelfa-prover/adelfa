@@ -52,8 +52,7 @@ type unify_error = NotLLambda
 
 exception UnifyError of unify_error
 
-(* An explicit handler is specified for how to deal with
-   non-llambda conflict pairs *)
+(* An explicit handler is specified for how to deal with non-llambda conflict pairs *)
 module type Param = sig
   val instantiatable : tag
   val constant_like : tag
@@ -127,8 +126,9 @@ module Make (P : Param) = struct
   ;;
 
   (* Added: will check if the eta-normal form of the list meets Llambda requirements *)
+
   (** [check_flex_args l fts] checks that a list of terms meets the LLambda
-  * requirements for the arguments of a flex term whose timestamp is [fts]. *)
+      requirements for the arguments of a flex term whose timestamp is [fts]. *)
   let check_flex_args l fts =
     let rec aux = function
       | [] -> true, []
@@ -154,9 +154,9 @@ module Make (P : Param) = struct
   ;;
 
   (** [bvindex bv l n] return a nonzero index iff the db index [bv]
-  * appears in [l]; the index is the position from the right, representing
-  * the DeBruijn index of the abstraction capturing the argument.
-  * Arguments in the list are expected to be head-normalized. *)
+      appears in [l]; the index is the position from the right, representing
+      the DeBruijn index of the abstraction capturing the argument.
+      Arguments in the list are expected to be head-normalized. *)
   let rec bvindex i l n =
     match l with
     | [] -> 0
@@ -167,9 +167,9 @@ module Make (P : Param) = struct
   ;;
 
   (** [cindex c l n] return a nonzero index iff the constant [c]
-  * appears in [l]; the index is the position from the right, representing
-  * the DeBruijn index of the abstraction capturing the argument.
-  * Arguments in the list are expected to be head-normalized. *)
+      appears in [l]; the index is the position from the right, representing
+      the DeBruijn index of the abstraction capturing the argument.
+      Arguments in the list are expected to be head-normalized. *)
   let rec cindex c l n =
     match l with
     | [] -> 0
@@ -180,54 +180,54 @@ module Make (P : Param) = struct
   ;;
 
   (** Given a flexible term [v1 a11 ... a1n] and another term of the form
-  * [... (v2 a21 ... a2m) ...] where [v1] and [v2] are distinct variables,
-  * [ts1] and [ts2] being the timestamps associated with [v1] and [v2],
-  * and [lev] being the number of abstractions under which [v2] appears
-  * embedded in the second term,
-  * [raise_and_invert ts1 ts2 [a11 .. a1n] [a21 .. a2m] lev]
-  * return a triple consisting of:
-  *
-  * {ul
-  * {li a truth value indicating whether a pruning or raising
-  * substitution is needed for [v2],}
-  * {li a list of terms [b1 ... bk] such that the term
-  * [Lam ... Lam (... (v2' b1 ... bk) ...]
-  * represents a unifying substitution for [v1] -- these terms
-  * consist of constants from [a11 ... a1n] over which [v2] is
-  * possibly raised and inversions of a pruned [a21 ... a2m], and}
-  * {li the arguments [c1 ... ck] of a possible "raising" and pruning
-  * substitution for [v2] matching the arguments [b1 ... bk] for
-  * [v2'] in the second component.}}
-  *
-  * The composition of the arguments lists can be understood
-  * qualitatively as follows:
-  *
-  * If [ts1 < ts2] then {ul{li the initial part of
-  * [b1 ... bk] is the indices of constants from [a11 ... a1n] that do
-  * not appear in [a21 ... a2m] and that have a timestamp less than or
-  * equal to [ts2] (this corresponds to raising [v2]) and} {li the rest of
-  * [b1 ... bk] are the indices (relative to the list a11 ... a1n) of
-  * the constants in [a21 ... a2m] that appear in [a11 ... a1n] (these are
-  * the arguments that must not be pruned).}} Correspondingly, the first
-  * part of the list [c1 ... ck] are the constants from [a11 ... a1n] over
-  * which [v2] is "raised" and the second part are the indices relative
-  * to [a21 ... a2m] of the constants that are not pruned.
-  *
-  * If [ts1 >= ts2]
-  * then each of [b1 ... bk] is either {ul{li a constant in [a21 ... a2m] that
-  * does not appear in [a11 ... a1n] and which has a timestamp less than
-  * [ts1] (this corresponds to first raising [v1] and then reducing the
-  * substitution generated for [v1])} {li or it is the index, relative to
-  * [a11 ... a1n], of the terms in [a21 ... a2m] that are in
-  * [a11 ... a1n].}}
-  * The list [c1 ... ck] in this case are simply the indices
-  * relative to [a21 ... a2m] of the terms in [a21 ... a2m] that are
-  * preserved (i.e. not pruned) in [b1 ... bk].
-  *
-  * This definition assumes that the [aij] are in
-  * head-normal form and that [a1] satisfies the LLambda
-  * requirements. If [a2] does not satisfy these requirements, an
-  * exception will be raised. *)
+   [... (v2 a21 ... a2m) ...] where [v1] and [v2] are distinct variables,
+   [ts1] and [ts2] being the timestamps associated with [v1] and [v2],
+   and [lev] being the number of abstractions under which [v2] appears
+   embedded in the second term,
+   [raise_and_invert ts1 ts2 [a11 .. a1n] [a21 .. a2m] lev]
+   return a triple consisting of:
+  
+   {ul
+   {li a truth value indicating whether a pruning or raising
+   substitution is needed for [v2],}
+   {li a list of terms [b1 ... bk] such that the term
+   [Lam ... Lam (... (v2' b1 ... bk) ...)]
+   represents a unifying substitution for [v1] -- these terms
+   consist of constants from [a11 ... a1n] over which [v2] is
+   possibly raised and inversions of a pruned [a21 ... a2m], and}
+   {li the arguments [c1 ... ck] of a possible "raising" and pruning
+   substitution for [v2] matching the arguments [b1 ... bk] for
+   [v2'] in the second component.}}
+  
+   The composition of the arguments lists can be understood
+   qualitatively as follows:
+  
+   If [ts1 < ts2] then {ul{li the initial part of
+   [b1 ... bk] is the indices of constants from [a11 ... a1n] that do
+   not appear in [a21 ... a2m] and that have a timestamp less than or
+   equal to [ts2] (this corresponds to raising [v2]) and} {li the rest of
+   [b1 ... bk] are the indices (relative to the list a11 ... a1n) of
+   the constants in [a21 ... a2m] that appear in [a11 ... a1n] (these are
+   the arguments that must not be pruned).}} Correspondingly, the first
+   part of the list [c1 ... ck] are the constants from [a11 ... a1n] over
+   which [v2] is "raised" and the second part are the indices relative
+   to [a21 ... a2m] of the constants that are not pruned.
+  
+   If [ts1 >= ts2]
+   then each of [b1 ... bk] is either {ul{li a constant in [a21 ... a2m] that
+   does not appear in [a11 ... a1n] and which has a timestamp less than
+   [ts1] (this corresponds to first raising [v1] and then reducing the
+   substitution generated for [v1])} {li or it is the index, relative to
+   [a11 ... a1n], of the terms in [a21 ... a2m] that are in
+   [a11 ... a1n].}}
+   The list [c1 ... ck] in this case are simply the indices
+   relative to [a21 ... a2m] of the terms in [a21 ... a2m] that are
+   preserved (i.e. not pruned) in [b1 ... bk].
+  
+   This definition assumes that the [aij] are in
+   head-normal form and that [a1] satisfies the LLambda
+   requirements. If [a2] does not satisfy these requirements, an
+   exception will be raised. *)
   let raise_and_invert ts1 ts2 a1 a2 lev =
     let l1 = List.length a1 in
     (* [raise_var args n] generates the collection of
@@ -253,14 +253,12 @@ module Make (P : Param) = struct
            else raised, inds, consts
          | _ -> assert false)
     in
-    (*  [prune args n] "prunes" those items in [args] that are not
-      bound by an embedded abstraction and that do not appear in
-      [a1]. At the same time inverts the items that are not pruned
-      and that are not bound by an embedded abstraction; [n] is assumed to be
-      the length of [args] here and hence yields the index of the
-      leftmost argument position. This pruning computation is
-      relevant to the case when [ts1 < ts2]. The terms in [args]
-      are assumed to be constants or de Bruijn indices. *)
+    (* [prune args n] "prunes" those items in [args] that are not bound by an embedded
+       abstraction and that do not appear in [a1]. At the same time inverts the items that
+       are not pruned and that are not bound by an embedded abstraction; [n] is assumed to
+       be the length of [args] here and hence yields the index of the leftmost argument
+       position. This pruning computation is relevant to the case when [ts1 < ts2]. The
+       terms in [args] are assumed to be constants or de Bruijn indices. *)
     let rec prune l n =
       match l, n with
       | [], 0 -> false, [], []
@@ -284,15 +282,13 @@ module Make (P : Param) = struct
          | _ -> assert false)
       | _ -> assert false
     in
-    (*  Relevant to the case when [ts1 > ts2]. In this case,
-      [prune_and_raise args n] prunes those constants and de
-      Bruijn indices not bound by an embedded abstraction that do
-      not appear in [a1] and, in the case of constants, that do not
-      have a timestamp less than [ts1]. Constants that do have a timestamp
-      greater than or equal to [ts1] are preserved via a raising of
-      [v1]. As in prune, [n] is assumed to be the length of the list
-      args. The terms in [args] are assumed to be constants or de
-      Bruijn indices. *)
+    (* Relevant to the case when [ts1 > ts2]. In this case, [prune_and_raise args n]
+       prunes those constants and de Bruijn indices not bound by an embedded abstraction
+       that do not appear in [a1] and, in the case of constants, that do not have a
+       timestamp less than [ts1]. Constants that do have a timestamp greater than or equal
+       to [ts1] are preserved via a raising of [v1]. As in prune, [n] is assumed to be the
+       length of the list args. The terms in [args] are assumed to be constants or de
+       Bruijn indices. *)
     let rec prune_and_raise l n =
       match l, n with
       | [], 0 -> false, [], []
@@ -430,25 +426,25 @@ module Make (P : Param) = struct
   ;;
 
   (** [makesubst tyctx h1 t2 a1 n] unifies [App (h1,a1) = t2].
-    * Given a term of the form [App (h1,a1)] where [h1] is a variable and
-    * another term [t2], generate an LLambda substitution for [h1] if this is
-    * possible, making whatever pruning and raising substitution that are
-    * necessary to variables appearing within [t2].
-    *
-    * [t2] is assumed to be in head normal form, [h1] and [a1] are assumed to be
-    * dereferenced, and [n] is supposed to be the length of [a1].
-    *
-    * Exceptions can be
-    * raised from this code if a non LLambda situation is discovered or
-    * there is failure in unification or a type mismatch (possible if an
-    * a priori type checking has not been done) is encountered.
-    *
-    * The unification computation is split into two parts, one that
-    * examines the top level structure of [t2] and the other that descends
-    * into its nested subparts. This organization is useful primarily
-    * because [h1], the variable head of the first term can appear at the
-    * toplevel in t2 without sacrificing unifiability but not in a nested
-    * part. *)
+      * Given a term of the form [App (h1,a1)] where [h1] is a variable and
+      * another term [t2], generate an LLambda substitution for [h1] if this is
+      * possible, making whatever pruning and raising substitution that are
+      * necessary to variables appearing within [t2].
+      *
+      * [t2] is assumed to be in head normal form, [h1] and [a1] are assumed to be
+      * dereferenced, and [n] is supposed to be the length of [a1].
+      *
+      * Exceptions can be
+      * raised from this code if a non LLambda situation is discovered or
+      * there is failure in unification or a type mismatch (possible if an
+      * a priori type checking has not been done) is encountered.
+      *
+      * The unification computation is split into two parts, one that
+      * examines the top level structure of [t2] and the other that descends
+      * into its nested subparts. This organization is useful primarily
+      * because [h1], the variable head of the first term can appear at the
+      * toplevel in t2 without sacrificing unifiability but not in a nested
+      * part. *)
   let makesubst tyctx h1 t2 a1 n =
     (* Check that h1 is a variable, get its timestamp *)
     let hv1 =
@@ -460,13 +456,11 @@ module Make (P : Param) = struct
     in
     let ts1 = hv1.ts in
     let a1 = List.map hnorm a1 in
-    (*  Generating a substitution term and performing raising and
-      pruning substitutions corresponding to a non top-level
-      (sub)term. In this case the variable being bound cannot appear
-      embedded inside the term. This code assumes that its term
-      * argument is head normalized. Exceptions can be
-      raised if unification fails or if LLambda conditions are found
-      to be violated. *)
+    (* Generating a substitution term and performing raising and pruning substitutions
+       corresponding to a non top-level (sub)term. In this case the variable being bound
+       cannot appear embedded inside the term. This code assumes that its term * argument
+       is head normalized. Exceptions can be raised if unification fails or if LLambda
+       conditions are found to be violated. *)
     let rec nested_subst tyctx c lev =
       match observe c with
       | Var v when constant v.tag ->
@@ -540,19 +534,16 @@ module Make (P : Param) = struct
       | Var _ -> failwith "logic variable on the left (2)"
       | _ -> assert false
     in
-    (*  Processing toplevel structure in generating a substitution.
-      First descend under abstractions. Then if the term is a
-      variable, generate the simple substitution. Alternatively, if
-      it is an application with the variable being bound as its head,
-      then generate the pruning substitution. In all other cases,
-      pass the task on to nested_subst. An optimization is possible
-      in the case that the term being examined has no outer
-      abstractions (i.e. lev = 0) and its head is a variable with a
-      time stamp greater than that of the variable being bound. In
-      this case it may be better to invoke raise_and_invert
-      directly with the order of the "terms" reversed.
+    (* Processing toplevel structure in generating a substitution. First descend under
+       abstractions. Then if the term is a variable, generate the simple substitution.
+       Alternatively, if it is an application with the variable being bound as its head,
+       then generate the pruning substitution. In all other cases, pass the task on to
+       nested_subst. An optimization is possible in the case that the term being examined
+       has no outer abstractions (i.e. lev = 0) and its head is a variable with a time
+       stamp greater than that of the variable being bound. In this case it may be better
+       to invoke raise_and_invert directly with the order of the "terms" reversed.
 
-      The incoming term is assumed to be head normalized.*)
+       The incoming term is assumed to be head normalized.*)
     let rec toplevel_subst tyctx t2 lev =
       match observe t2 with
       | Lam (idtys, t2) ->
@@ -598,9 +589,9 @@ module Make (P : Param) = struct
   ;;
 
   (** Unifying the arguments of two rigid terms with the same head, these
-  * arguments being given as lists. Exceptions are raised if
-  * unification fails or if there are unequal numbers of arguments; the
-  * latter will not arise if type checking has been done. *)
+      * arguments being given as lists. Exceptions are raised if
+      * unification fails or if there are unequal numbers of arguments; the
+      * latter will not arise if type checking has been done. *)
   let rec unify_list (tyctx : tyctx) l1 l2 =
     try List.iter2 (fun a1 a2 -> unify tyctx (hnorm a1) (hnorm a2)) l1 l2 with
     | Invalid_argument _ -> assert false (* fail TypesMismatch *)
@@ -679,9 +670,8 @@ module Make (P : Param) = struct
         (pi lftys1 t1)
         (hnorm (app tm2 [ var_to_term v1 ]))
     | App (h1, args1), App (h2, args2) when Term.eq h1 h2 ->
-      (* Since types must be fully applied and the
-         constant at the heads are the same, the two
-         argument lists will be the same length. *)
+      (* Since types must be fully applied and the constant at the heads are the same, the
+         two argument lists will be the same length. *)
       List.iter2 (unify tyctx) args1 args2
     | Var v1, Var v2 when v1 = v2 -> ()
     | Var _, Var _ -> fail (ConstClash (tm1, tm2))
@@ -691,24 +681,24 @@ module Make (P : Param) = struct
       fail Generic
 
   (** The main unification procedure.
-  * Either succeeds and realizes the unification substitutions as side effects
-  * or raises an exception to indicate nonunifiability or to signal
-  * a case outside of the LLambda subset. When an exception is raised,
-  * it is necessary to catch this and at least undo bindings for
-  * variables made in the attempt to unify. This has not been included
-  * in the code at present.
-  *
-  * This procedure assumes that the two terms it gets are in
-  * head normal form and that there are no iterated
-  * lambdas or applications at the top level. Any necessary adjustment
-  * of binders through the eta rule is done on the fly. *)
+      * Either succeeds and realizes the unification substitutions as side effects
+      * or raises an exception to indicate nonunifiability or to signal
+      * a case outside of the LLambda subset. When an exception is raised,
+      * it is necessary to catch this and at least undo bindings for
+      * variables made in the attempt to unify. This has not been included
+      * in the code at present.
+      *
+      * This procedure assumes that the two terms it gets are in
+      * head normal form and that there are no iterated
+      * lambdas or applications at the top level. Any necessary adjustment
+      * of binders through the eta rule is done on the fly. *)
   and unify (tyctx : tyctx) t1 t2 =
-    (* print_endline ("Unifying:\n  "^(Print.string_of_term_literal t1)^"\nand\n  "^(Print.string_of_term_literal t2)); *)
+    (* print_endline ("Unifying:\n "^(Print.string_of_term_literal t1)^"\nand\n
+       "^(Print.string_of_term_literal t2)); *)
     try
       match observe t1, observe t2 with
-      (* New cases for unifying types. Since types must be 
-       fully applied if both terms are not pi expressions
-       them should fail. *)
+      (* New cases for unifying types. Since types must be fully applied if both terms are
+         not pi expressions them should fail. *)
       | Pi (_, _), Pi (_, _) -> unify_type_term tyctx t1 t2
       | Pi (_, _), _ | _, Pi (_, _) -> fail Generic
       | Var v1, Var v2 when v1 = v2 -> ()
@@ -748,104 +738,49 @@ module Make (P : Param) = struct
     unify [] (hnorm t1) (hnorm t2)
   ;;
 
-  (* Given Lam(tys1, App(h1, a1)) and Lam(tys2, App(h2, a2))
-   where h1 is flexible, h2 is rigid, and len(tys1) <= len(tys2),
-   return a complete list of possible bindings for h1 *)
-  (* Commenting this out because it's not used.
-  let flexible_heads ~used (tys1, h1, a1) (tys2, h2, a2) =
-    assert (tc [] (lambda tys1 (app h1 a1)) = tc [] (lambda tys2 (app h2 a2)));
-    let n1 = List.length tys1 in
-    let n2 = List.length tys2 in
-    let () = assert (n2 >= n1) in
-    let tys2' = List.drop n1 tys2 in
-    let a1tys = List.map (tc (List.rev tys1)) a1 in
-    let a1ids = gen_binder_ids (List.length a1) in
-    let a1ctx = List.combine a1ids a1tys in
-    let a2tys = List.map (tc (List.rev tys2)) a2 in
-    let a1n = List.length a1 in
-    let hv1 = term_to_var h1 in
-    let () = assert (variable hv1.tag) in
-    let create_raised_vars arg_tys target_tys =
-      local_used := used;
-      let dbs = List.rev_map db (List.range 1 (List.length arg_tys)) in
-      List.map
-        (fun ty ->
-          let arg_tys, dbs =
-            List.split
-              (List.filter
-                 (* We aren't implementing subordination so behave as if all types are subordinate *)
-                 (* (fun (aty, _) -> Subordination.query sr aty ty) *)
-                   (fun _ -> true)
-                 (List.combine arg_tys dbs))
-          in
-          app (named_fresh hv1.name hv1.ts (Type.tyarrow arg_tys ty)) dbs)
-        target_tys
-    in
-    (* Imitation *)
-    let imitable =
-      match observe (hnorm h2) with
-      | Var v when constant v.tag -> true
-      | DB i -> i <= n2 - n1
-      | _ -> assert false
-    in
-    let imitation =
-      if imitable
-      then
-        [ lambda
-            (a1ctx @ tys2')
-            (app h2 (create_raised_vars (a1tys @ get_ctx_tys tys2') a2tys))
-        ]
-      else []
-    in
-    (* Projection *)
-    let projections =
-      let n = a1n + (n2 - n1) in
-      let bty =
-        match hv1.ty with
-        | Type.Ty (tys, ty) -> Type.Ty (List.drop n tys, ty)
-      in
-      let bn =
-        match bty with
-        | Type.Ty (tys, _) -> List.length tys
-      in
-      List.filter_map
-        (fun (_, aty, i) ->
-          let (Type.Ty (tys, ty)) = aty in
-          let use = List.drop_last bn tys in
-          let leave = List.take_last bn tys in
-          if Type.Ty (leave, ty) = bty
-          then
-            Some
-              (lambda
-                 (a1ctx @ tys2')
-                 (app (db (n - i)) (create_raised_vars (a1tys @ get_ctx_tys tys2') use)))
-          else None)
-        (List.combine3 a1 a1tys (List.range 0 (a1n - 1)))
-    in
-    (* Final results *)
-    let results = imitation @ projections in
-    let () =
-      let tyctx = List.rev tys1 in
-      List.iter (fun r -> assert (hv1.ty = tc tyctx r)) results
-    in
-    results
-  ;;
-  *)
+  (* Given Lam(tys1, App(h1, a1)) and Lam(tys2, App(h2, a2)) where h1 is flexible, h2 is
+     rigid, and len(tys1) <= len(tys2), return a complete list of possible bindings for
+     h1 *)
+  (* Commenting this out because it's not used. let flexible_heads ~used (tys1, h1, a1)
+     (tys2, h2, a2) = assert (tc [] (lambda tys1 (app h1 a1)) = tc [] (lambda tys2 (app h2
+     a2))); let n1 = List.length tys1 in let n2 = List.length tys2 in let () = assert (n2
+     >= n1) in let tys2' = List.drop n1 tys2 in let a1tys = List.map (tc (List.rev tys1))
+     a1 in let a1ids = gen_binder_ids (List.length a1) in let a1ctx = List.combine a1ids
+     a1tys in let a2tys = List.map (tc (List.rev tys2)) a2 in let a1n = List.length a1 in
+     let hv1 = term_to_var h1 in let () = assert (variable hv1.tag) in let
+     create_raised_vars arg_tys target_tys = local_used := used; let dbs = List.rev_map db
+     (List.range 1 (List.length arg_tys)) in List.map (fun ty -> let arg_tys, dbs =
+     List.split (List.filter (* We aren't implementing subordination so behave as if all
+     types are subordinate *) (* (fun (aty, _) -> Subordination.query sr aty ty) *) (fun _
+     -> true) (List.combine arg_tys dbs)) in app (named_fresh hv1.name hv1.ts
+     (Type.tyarrow arg_tys ty)) dbs) target_tys in (* Imitation *) let imitable = match
+     observe (hnorm h2) with | Var v when constant v.tag -> true | DB i -> i <= n2 - n1 |
+     _ -> assert false in let imitation = if imitable then [ lambda (a1ctx @ tys2') (app
+     h2 (create_raised_vars (a1tys @ get_ctx_tys tys2') a2tys)) ] else [] in (* Projection
+     *) let projections = let n = a1n + (n2 - n1) in let bty = match hv1.ty with | Type.Ty
+     (tys, ty) -> Type.Ty (List.drop n tys, ty) in let bn = match bty with | Type.Ty (tys,
+     _) -> List.length tys in List.filter_map (fun (_, aty, i) -> let (Type.Ty (tys, ty))
+     = aty in let use = List.drop_last bn tys in let leave = List.take_last bn tys in if
+     Type.Ty (leave, ty) = bty then Some (lambda (a1ctx @ tys2') (app (db (n - i))
+     (create_raised_vars (a1tys @ get_ctx_tys tys2') use))) else None) (List.combine3 a1
+     a1tys (List.range 0 (a1n - 1))) in (* Final results *) let results = imitation @
+     projections in let () = let tyctx = List.rev tys1 in List.iter (fun r -> assert
+     (hv1.ty = tc tyctx r)) results in results ;; *)
 end
 
 let standard_handler _ _ = raise (UnifyError NotLLambda)
 
 module Right = Make (struct
-  let instantiatable = Logic
-  let constant_like = Eigen
-  let handler = standard_handler
-end)
+    let instantiatable = Logic
+    let constant_like = Eigen
+    let handler = standard_handler
+  end)
 
 module Left = Make (struct
-  let instantiatable = Eigen
-  let constant_like = Logic
-  let handler = standard_handler
-end)
+    let instantiatable = Eigen
+    let constant_like = Logic
+    let handler = standard_handler
+  end)
 
 let right_unify ?(used = []) t1 t2 = Right.pattern_unify ~used t1 t2
 let left_unify ?(used = []) t1 t2 = Left.pattern_unify ~used t1 t2

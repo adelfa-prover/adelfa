@@ -83,8 +83,8 @@ and check_type sign (ctx : Term.lftyctx) tm ty =
 ;;
 
 (* Context Expression Typing *)
-(* given a particular context variable context, determines if the 
-   given context expression satisfies the given schema. *)
+(* given a particular context variable context, determines if the given context expression
+   satisfies the given schema. *)
 let of_schema nvars ctxvars ctx (id, schema) =
   let ntys = List.map (fun (_, t) -> Term.get_var_ty t) nvars in
   (* if block is instance of one block schema *)
@@ -94,11 +94,10 @@ let of_schema nvars ctxvars ctx (id, schema) =
       if List.length block != List.length entries
       then false
       else (
-        (* make fresh logic vars for vars
-           substitute into the types in entries
-           substitute the nominals from the block into types of entries
-           attempt to unify this generalized block instance with the block
-           (not actually unification; only want to instantiate in the entries) *)
+        (* make fresh logic vars for vars substitute into the types in entries substitute
+           the nominals from the block into types of entries attempt to unify this
+           generalized block instance with the block (not actually unification; only want
+           to instantiate in the entries) *)
         let var_subst =
           List.map
             (fun (id, ty) ->

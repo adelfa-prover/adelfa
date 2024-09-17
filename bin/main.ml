@@ -19,7 +19,6 @@ let interactive = ref true
 let out = ref stdout
 let switch_to_interactive = ref false
 let lexbuf = ref (Lexing.from_channel stdin)
-let count = State.rref 0
 let inputFile = ref None
 
 let perform_switch_to_interactive () =
@@ -35,13 +34,13 @@ let interactive_or_exit () =
   then if !switch_to_interactive then perform_switch_to_interactive () else exit 1
 ;;
 
-(* if interactive, reset line count to provide
-   more accurate error position information. *)
+(* if interactive, reset line count to provide more accurate error position
+   information. *)
 let reset_if_interactive () =
   if !interactive
   then
-    !lexbuf.lex_curr_p
-    <- { !lexbuf.lex_curr_p with pos_cnum = 0; pos_bol = 0; pos_lnum = 1 }
+    !lexbuf.lex_curr_p <-
+      { !lexbuf.lex_curr_p with pos_cnum = 0; pos_bol = 0; pos_lnum = 1 }
 ;;
 
 let position_range (p1, p2) =
@@ -72,40 +71,6 @@ let setInputFile name =
   | Some _ -> failwith "Error: More than one input file specified."
 ;;
 
-let checkInput () =
-  match !inputFile with
-  | None -> ()
-  | Some fname ->
-    if Sys.file_exists fname
-    then (
-      lexbuf := Lexing.from_channel (open_in fname);
-      !lexbuf.Lexing.lex_curr_p
-      <- { !lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = fname })
-    else failwithf "Error: Invalid input file: `%s'." fname
-;;
-
-let usageMsg = "Usage: adelfa [options]\noptions are: "
-
-let specList =
-  [ "-i", Arg.String setInputFile, " Specifies a file from which to read input."
-  ; "--input", Arg.String setInputFile, " Specifies a file from which to read input."
-  ; "-a", Arg.Set Globals.annotate, " Annotate mode"
-  ]
-;;
-
-let parse_args () = Arg.parse specList (fun _ -> ()) usageMsg
-
-let print_top_prompt () =
-  print_string ">> ";
-  flush stdout
-;;
-
-let print_proof_prompt () =
-  let thm_name = (Prover.get_sequent ()).name in
-  print_string (thm_name ^ ">> ");
-  flush stdout
-;;
-
 let read_spec filename =
   if Prover.has_sig ()
   then failwithf "Specification file already given. Not reading `%s'" filename;
@@ -132,29 +97,58 @@ let read_spec filename =
     ()
 ;;
 
+let checkInput () =
+  match !inputFile with
+  | None -> ()
+  | Some fname ->
+    if Sys.file_exists fname
+    then (
+      lexbuf := Lexing.from_channel (open_in fname);
+      !lexbuf.Lexing.lex_curr_p <-
+        { !lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = fname })
+    else failwithf "Error: Invalid input file: `%s'." fname
+;;
+
+let usageMsg = "Usage: adelfa [options]\noptions are: "
+
+let specList =
+  [ "-i", Arg.String setInputFile, " Specifies a file from which to read input."
+  ; "-s", Arg.String read_spec, " Specified a file from which to read a specification."
+  ; "--input", Arg.String setInputFile, " Specifies a file from which to read input."
+  ; "-a", Arg.Set Globals.annotate, " Annotate mode"
+  ]
+;;
+
+let parse_args () = Arg.parse specList (fun _ -> ()) usageMsg
+
+let print_top_prompt () =
+  print_string ">> ";
+  flush stdout
+;;
+
+let print_proof_prompt () =
+  let thm_name = (Prover.get_sequent ()).name in
+  print_string (thm_name ^ ">> ");
+  flush stdout
+;;
+
 let handle_common v =
   match v with
   | Uterms.Undo -> State.Undo.back 2
   | Uterms.Set s -> Prover.change_settings s
 ;;
 
-(* process proof tactics for deriving the current theorem.
-   Read from a file or stdin *)
+(* process proof tactics for deriving the current theorem. Read from a file or stdin *)
 let process_proof () =
-  (* read in tactic, call appropriate step in prover.
-     if proof complete is raised return to outer loop. *)
+  (* read in tactic, call appropriate step in prover. if proof complete is raised return
+     to outer loop. *)
   if !Globals.annotate
   then (
     fprintf !out "</pre>\n%!";
-    incr count;
-    fprintf !out "<a name=\"%d\"></a>\n%!" !count;
     fprintf !out "<pre>\n%!");
   print_proof_prompt ();
   let input = Parser.command Lexer.token !lexbuf in
-  if not !interactive
-  then (
-    let pre, post = if !Globals.annotate then "<b>", "</b>" else "", "" in
-    fprintf !out "%s%s%s\n%!" pre (Print.string_of_command input) post);
+  if not !interactive then fprintf !out "%s\n%!" (Print.string_of_command input);
   match input with
   | Uterms.Abort -> raise End_of_file
   | Uterms.Skip -> Prover.skip ()
@@ -175,8 +169,8 @@ let process_proof () =
   | Uterms.Case (Uterms.Keep hyp) -> Prover.case false hyp
   | Uterms.Case (Uterms.Remove hyp) -> Prover.case true hyp
   | Uterms.Exists utm ->
-    (* weak type checking/inference must be done on utm using current proof state
-       then call Prover.exsits*)
+    (* weak type checking/inference must be done on utm using current proof state then
+       call Prover.exsits*)
     let nvars =
       List.filter
         (fun (_, t) -> Term.is_var Term.Nominal t)
@@ -223,8 +217,8 @@ let process_proof () =
         nvar_ctx
         uform
     in
-    (* Find new variable occurrences and add them to the sequent - replacing
-       them with nominals *)
+    (* Find new variable occurrences and add them to the sequent - replacing them with
+       nominals *)
     Prover.assert_thm depth form
   | Uterms.Weaken (clear, utm, depth) ->
     let nvars =
@@ -286,23 +280,15 @@ let process_proof () =
   | Uterms.Common v -> handle_common v
 ;;
 
-(* Process toplevel commands;
-   either from file or interactive *)
+(* Process toplevel commands; either from file or interactive *)
 let process_top_level () =
   (* parse top-level command from stdin, or file *)
   (* if no LF signature loaded, error on any other commands *)
   (* if a theorem is stated, enter proof construction *)
-  if !Globals.annotate
-  then (
-    incr count;
-    fprintf !out "<a name=\"%d\"></a>\n%!" !count;
-    fprintf !out "<pre class=\"code\">\n%!");
+  if !Globals.annotate then fprintf !out "<pre>\n%!";
   print_top_prompt ();
   let input = Parser.top_command Lexer.token !lexbuf in
-  if not !interactive
-  then (
-    let pre, post = if !Globals.annotate then "<b>", "</b>" else "", "" in
-    fprintf !out "%s%s%s\n%!" pre (Print.string_of_topcommand input) post);
+  if not !interactive then fprintf !out "%s\n%!" (Print.string_of_topcommand input);
   (match input with
    | Uterms.Theorem (name, uthm) ->
      proof_steps := 0;

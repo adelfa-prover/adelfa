@@ -1,11 +1,10 @@
 module Sig = Signature
 module T = Term
 
-(* NOTE: The subordination checks use associative lists and don't fill
-   transitive connections -- making lookup possibly expensive. If this causes a
-   slowdown, think about using sets and/or filling any transitive connections
-   after initial construction to allow [has_path] to only look at the single
-   entry. *)
+(* NOTE: The subordination checks use associative lists and don't fill transitive
+   connections -- making lookup possibly expensive. If this causes a slowdown, think about
+   using sets and/or filling any transitive connections after initial construction to
+   allow [has_path] to only look at the single entry. *)
 type key = Sig.id
 type value = Sig.id list
 type entry = key * value

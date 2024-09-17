@@ -1,5 +1,5 @@
-(* These general printing functions do not make use of fixity or
-   implicit information from the signature *)
+(* These general printing functions do not make use of fixity or implicit information from
+   the signature *)
 
 val pr_ty : Format.formatter -> Type.ty -> unit
 val pr_term : Term.id list -> Format.formatter -> Term.term -> unit

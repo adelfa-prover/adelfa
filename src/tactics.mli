@@ -118,18 +118,18 @@ type permutation_failure =
 
 exception PermutationFailure of permutation_failure
 
-(* Checks if the permutation of the context is valid,
-   returns modified formula with permuted context
-   raises InvalidCtxPermutation if given context expression is not
-   as good permutation. *)
+(* Checks if the permutation of the context is valid, returns modified formula with
+   permuted context raises InvalidCtxPermutation if given context expression is not as
+   good permutation. *)
 val permute_ctx : Formula.formula -> Context.ctx_expr -> Formula.formula
 
 (** [permute form perm sequent] attempts to apply [perm] to [form] if it is well formed with
     respect to [sequent].
 
-    @raise PermutationFailure if the permutation is not complete, attempts to map to or from a
-           nominal constant twice, or if the permutation attempts to permute nominal constants away from
-           the relevant allowed set, either the support set of the sequent or the restricted set. *)
+    @raise PermutationFailure
+      if the permutation is not complete, attempts to map to or from a
+      nominal constant twice, or if the permutation attempts to permute nominal constants away from
+      the relevant allowed set, either the support set of the sequent or the restricted set. *)
 val permute
   :  Formula.formula
   -> (Term.id * Term.id) list

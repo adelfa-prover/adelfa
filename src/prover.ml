@@ -205,9 +205,8 @@ let case_to_subgoal remove h_name case : subgoal =
   Term.set_bind_state case.Tactics.bind_state_case
 ;;
 
-(* the unification for first case is modifying the sequent.
-   need to make a true copy where the vars are different or
-   find another way to reset so we can try next unification *)
+(* the unification for first case is modifying the sequent. need to make a true copy where
+   the vars are different or find another way to reset so we can try next unification *)
 let case remove hyp =
   try
     match (Sequent.get_hyp sequent hyp).formula with
@@ -350,36 +349,17 @@ let type_apply_withs form (vwiths, cwiths) =
       cwiths )
 ;;
 
-(*
-   let freshen_formula_names f (vwiths, cwiths) =
-  let support =
-    Formula.formula_support_sans (Sequent.get_cvar_tys sequent.Sequent.ctxvars) f
-  in
-  let withs_used =
-    Term.find_var_refs Term.Nominal (List.map snd vwiths)
-    @ List.flatten
-        (List.map
-           (fun (_, ctxexpr) ->
-             Formula.context_support_sans
-               (Sequent.get_cvar_tys sequent.Sequent.ctxvars)
-               ctxexpr)
-           cwiths)
-  in
-  (* let used = ref (List.filter (fun (_,t) -> Term.is_var Nominal t) sequent.vars) in *)
-  let torename = List.intersect support withs_used in
-  let used = ref (List.map Term.term_to_pair (List.unique (withs_used @ support))) in
-  let rename =
-    List.map
-      (fun t ->
-        let t', used' = Term.fresh_wrt ~ts:3 Nominal "n" (Term.get_var_ty t) !used in
-        used := used';
-        Term.get_id t, t')
-      torename
-  in
-  List.iter (fun (_, t) -> Sequent.add_var sequent (Term.term_to_pair t)) rename;
-  Formula.replace_formula_vars rename f
-;;
-*)
+(* let freshen_formula_names f (vwiths, cwiths) = let support =
+   Formula.formula_support_sans (Sequent.get_cvar_tys sequent.Sequent.ctxvars) f in let
+   withs_used = Term.find_var_refs Term.Nominal (List.map snd vwiths) @ List.flatten
+   (List.map (fun (_, ctxexpr) -> Formula.context_support_sans (Sequent.get_cvar_tys
+   sequent.Sequent.ctxvars) ctxexpr) cwiths) in (* let used = ref (List.filter (fun (_,t)
+   -> Term.is_var Nominal t) sequent.vars) in *) let torename = List.intersect support
+   withs_used in let used = ref (List.map Term.term_to_pair (List.unique (withs_used @
+   support))) in let rename = List.map (fun t -> let t', used' = Term.fresh_wrt ~ts:3
+   Nominal "n" (Term.get_var_ty t) !used in used := used'; Term.get_id t, t') torename in
+   List.iter (fun (_, t) -> Sequent.add_var sequent (Term.term_to_pair t)) rename;
+   Formula.replace_formula_vars rename f ;; *)
 
 let term_vars_alist tag terms = List.map Term.term_to_pair (Term.find_var_refs tag terms)
 
@@ -419,9 +399,8 @@ let formula_free_logic_vars ctxvars formula =
   List.remove_all (fun (id, _) -> List.mem id bound_vars) logic_vars
 ;;
 
-(* check the given formula for logic variables.
-   Assumes that any context variable appearing in the formula f
-   is a member of the context variable context ctxvarctx.*)
+(* check the given formula for logic variables. Assumes that any context variable
+   appearing in the formula f is a member of the context variable context ctxvarctx.*)
 let ensure_no_logic_variable ctxvarctx f =
   let logic_vars = formula_free_logic_vars (Context.CtxVarCtx.copy ctxvarctx) f in
   if logic_vars <> [] then raise (ApplyFailure "Found logic variable at toplevel.")
@@ -476,14 +455,13 @@ let apply_form f forms uws =
   res_f
 ;;
 
-(* Generate a substitution for every nominal in [form] to new nominals away from
-   the support set of the sequent. Also modifies the sequent to add the newly
-   inserted variables into its support set.
+(* Generate a substitution for every nominal in [form] to new nominals away from the
+   support set of the sequent. Also modifies the sequent to add the newly inserted
+   variables into its support set.
 
    @param [form] the formula in which all nominals will be substituted for
 
-   @return the new formula with fresh nominals
-*)
+   @return the new formula with fresh nominals *)
 let freshen_nominals (form : Formula.formula) : Formula.formula =
   let nominals = Formula.get_formula_used_nominals sequent.Sequent.ctxvars form in
   let nvars = Sequent.get_nominals sequent in
@@ -782,7 +760,8 @@ let prune name =
   try
     let f = (Sequent.get_hyp sequent name).formula in
     match f with
-    | Formula.Atm (_, m, _, _) when check_term (Term.norm m) -> Tactics.prune !sub_rel sequent f
+    | Formula.Atm (_, m, _, _) when check_term (Term.norm m) ->
+      Tactics.prune !sub_rel sequent f
     | _ ->
       failwith
         "Pruning formulas must be of the form {G |- X n1 ... nm : A} with n1,...,nm \

@@ -17,8 +17,8 @@ debug:
 install: main
 	@dune install
 
-.PHONY: tar
-tar :
+.PHONY: bundle
+bundle :
 	@dune exec ./bundle/bundle.exe
 
 .PHONY: test

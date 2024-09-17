@@ -402,10 +402,9 @@ let block_eq_sub sub_rel a b1 b2 =
     |> Option.is_some
 ;;
 
-(* splits a context by the location of n.
-   n is assumed to appear in the explicit part of g.
-   returns the context to the left of n, the type of n, and the
-   context to the right of n. *)
+(* splits a context by the location of n. n is assumed to appear in the explicit part of
+   g. returns the context to the left of n, the type of n, and the context to the right of
+   n. *)
 let split_ctx g n =
   let rec find g g2 =
     match g with

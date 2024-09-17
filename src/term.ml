@@ -18,11 +18,9 @@ type tag =
 
 type id = string
 
-(* Note about timestamps:
-   Constants from sig are all at the outtermost level, ts = 0
-   Then are all the eigenvariables, ts = 1
-   Then there are the bound variables, ts = 2
-   Finally, nominals are also at the same as bound vars, ts = 2*)
+(* Note about timestamps: Constants from sig are all at the outtermost level, ts = 0 Then
+   are all the eigenvariables, ts = 1 Then there are the bound variables, ts = 2 Finally,
+   nominals are also at the same as bound vars, ts = 2*)
 type var =
   { name : id
   ; tag : tag
@@ -44,8 +42,7 @@ type term =
   | Pi of lftyctx * term
   | Type
 
-(* type contexts for abstractions and pis identify LF types for bound
-   variables. *)
+(* type contexts for abstractions and pis identify LF types for bound variables. *)
 and lftyctx = (var * term) list
 and env = envitem list
 
@@ -174,8 +171,7 @@ let rec hnorm term =
      (* Do we actually need to treat this differently from an *)
      (* abstraction? besides considering the LF types. *)
      | Pi (lfidtys, t) ->
-       (* should be ok to assume that number of args is less
-          than pi-bound variables *)
+       (* should be ok to assume that number of args is less than pi-bound variables *)
        let n = List.length args in
        let alist = List.map2 (fun (v, _) a -> v.name, a) (List.take n lfidtys) args in
        pi
@@ -397,9 +393,9 @@ let () =
 
 let () = State.add_hook ~time:AfterReload (fun () -> set_bind_state !bind_state)
 
-(* Scoped bind state is more efficient than regular bind state, but it
-   must always be used in a lexically scoped fashion. The unwind_state
-   wraps a function with a scoped get and set. *)
+(* Scoped bind state is more efficient than regular bind state, but it must always be used
+   in a lexically scoped fashion. The unwind_state wraps a function with a scoped get and
+   set. *)
 
 type scoped_bind_state = int
 
@@ -523,8 +519,7 @@ let fresh ?(tag = Logic) ?(ts = 1) ty =
   var tag name ts ty
 ;;
 
-(* given a variable term, eta expand into
-   equivallent term in eta long form. *)
+(* given a variable term, eta expand into equivallent term in eta long form. *)
 let rec eta_expand t =
   match observe (hnorm t) with
   | Var v ->

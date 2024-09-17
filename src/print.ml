@@ -18,8 +18,8 @@ let rec pr_strlst ppf = function
   | s :: lst -> Format.fprintf ppf "%a,@ %a" pr_str s pr_strlst lst
 ;;
 
-(*** These first functions will print LF terms in fully explicit form.
-  They do not use the signature to determine implicit arguments or fixity. ***)
+(*** These first functions will print LF terms in fully explicit form. They do not use the
+  signature to determine implicit arguments or fixity. ***)
 
 let rec pr_ty_literal ppf = function
   | Ty (tys, bty) -> Format.fprintf ppf "Ty([%a],%a)" pr_tylst_literal tys pr_str bty

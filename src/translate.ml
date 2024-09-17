@@ -59,13 +59,9 @@ let maybe_nominal name = Str.string_match nominal_regexp name 0
 
 let trans_term lf_sig evar_ctx logicvar_ctx nvar_ctx bvar_ctx ty_opt tm =
   let rec trans_match nvar_ctx bvar_ctx ty = function
-    (* order for resolving of names: 
-             1. bound variables
-             2. existing nominal constants
-             3. logic variables
-             4. eigen variable
-             5. constants from sig
-             6. new nominal constant (only if name is `n' followed by a number *)
+    (* order for resolving of names: 1. bound variables 2. existing nominal constants 3.
+       logic variables 4. eigen variable 5. constants from sig 6. new nominal constant
+       (only if name is `n' followed by a number) *)
     | UConst (pos, id) when List.mem_assoc id bvar_ctx ->
       let got = List.assoc id bvar_ctx in
       if Option.is_some !got
@@ -434,8 +430,8 @@ let trans_formula lf_sig schemas dfns evar_ctx logicvar_ctx ctxvar_ctx nvar_ctx 
 ;;
 
 let trans_schema lf_sig ublock_schemas =
-  (* Given an untyped block schema, perform arity type inference
-     to transform into a valid block schema *)
+  (* Given an untyped block schema, perform arity type inference to transform into a valid
+     block schema *)
   let trans_blockschema (locids, ublock_entries) =
     let logicvar_ctx = List.map (fun (_, id) -> id, ref None) locids in
     let entry_list =
@@ -483,19 +479,18 @@ let trans_dfn
   let trans_def (ufleft, ufright) =
     match ufleft with
     | Uterms.UProp _ ->
-      (* find unbound names across both formulas.
-          create new, untyped logic variables for these names.
-          attempt to translate both formulas with the extended logic variable context.
-          if at end any of the new variables is untyped, raise error.
-          otherwise, save context as the implicit prefix. *)
+      (* find unbound names across both formulas. create new, untyped logic variables for
+         these names. attempt to translate both formulas with the extended logic variable
+         context. if at end any of the new variables is untyped, raise error. otherwise,
+         save context as the implicit prefix. *)
       let dfns' = (name, ty) :: dfns in
       let new_var_lst =
         Uterms.extract_unbound_uform [] ufleft @ Uterms.extract_unbound_uform [] ufright
         |> List.unique
         |> List.remove_all (fun id ->
-             List.mem_assoc id dfns'
-             || Signature.is_obj lf_sig id
-             || Signature.is_type lf_sig id)
+          List.mem_assoc id dfns'
+          || Signature.is_obj lf_sig id
+          || Signature.is_type lf_sig id)
       in
       let new_nominal_ctx, new_logicvar_ctx =
         let regexp = Str.regexp "n[']*[0-9]*" in

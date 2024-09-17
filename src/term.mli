@@ -1,10 +1,9 @@
 (**TERM
- * Representation of the terms of the logic. 
- * 
- * These terms represent LF expressions and can be viewed as
- * simply-typed terms in a weakly typed setting or as
- * dependently-typed terms in an LF setting.
- *)
+   * Representation of the terms of the logic.
+   *
+   * These terms represent LF expressions and can be viewed as
+   * simply-typed terms in a weakly typed setting or as
+   * dependently-typed terms in an LF setting. *)
 
 open Type
 
@@ -18,11 +17,9 @@ type tag =
 (** [id] The string identifier for a {!type:var} *)
 type id = string
 
-(* Note about timestamps:
-     Constants from sig are all at the outtermost level, ts = 0
-     Then are all the eigenvariables, ts = 1 
-     Then there are the bound variables, ts = 2
-     Finally, nominals are also at the same as bound vars, ts = 2*)
+(* Note about timestamps: Constants from sig are all at the outtermost level, ts = 0 Then
+   are all the eigenvariables, ts = 1 Then there are the bound variables, ts = 2 Finally,
+   nominals are also at the same as bound vars, ts = 2*)
 
 (** [var] An LF variable *)
 type var =
@@ -48,8 +45,8 @@ type term =
   | Pi of lftyctx * term
   | Type
 
-(* type contexts for abstractions identify arity types, and type 
-   contexts for pis identify LF types for bound variables. *)
+(* type contexts for abstractions identify arity types, and type contexts for pis identify
+   LF types for bound variables. *)
 and tyctx = (id * ty) list
 and lftyctx = (var * term) list
 and env = envitem list

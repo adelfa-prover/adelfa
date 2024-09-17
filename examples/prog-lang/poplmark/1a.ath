@@ -13,18 +13,6 @@ Schema wf :=
 Theorem sub__ty : ctx L:c, forall D U1 U2, {L |- D : sub U1 U2} => {L |- U1 : ty} /\ {L |- U2 : ty}.
 intros. split. search. search.
 
-%Derivations for types "ty" and "var" cannot depend on assumptions of type
-%"bound" or "bound_var". We show this by inducion on the assumption
-%derivation of type ty or type var, showing that in each case the term
-%could not exhibit a dependency on such assumptions.
-%
-%These results will be used in proving a narrowing result for the types "ty"
-%and "var" which is useful in showing narrowing of subtyping judgments.
-
-%With the strengthening results above, narrowing for these types is proved
-%directly by strengthening the assumption derivation and then weakening it
-%with the desired context items.
-
 Theorem narrow_ty : ctx L:c, forall Q X P D T: o -> o -> o DV,
   {L |- X : ty} => {L |- DV : var X} =>
   {L |- D : sub P Q} =>
@@ -282,20 +270,20 @@ Theorem subty-refl : ctx L:c, forall Q D,
 induction on 1.
 intros. case H1 (keep).
 case H2.
-apply IH to H3 H7.
-weaken H4 with var n.
-weaken H3 with ty.
-weaken H11 with var n4.
-weaken H10 with bound n T. weaken H12 with bound n4 T.
-weaken H13 with bound_var n T n6 n3. weaken H14 with bound_var n4 T n7 n5.
-weaken H8 with var n2.
-weaken H17 with bound n2 T.
-weaken H18 with bound_var n2 T n11 n10.
-apply IH to H15 H19 with (L = L, n3:ty, n2:var n3, n1:bound n3 T, n:bound_var n3 T n1 n2).
-prune H20.
-exists sa-all T F T F (D' n2 n1 n) (D'1). search.
-case H2.
-apply IH to H3 H7. apply IH to H4 H8. exists sa-arrow T1 T2 T1 T2 D' D'1. search.
-exists sa-top top. search.
-case H2.
-case H2.
+  apply IH to H3 H7.
+  weaken H4 with var n.
+  weaken H3 with ty.
+  weaken H11 with var n4.
+  weaken H10 with bound n T. weaken H12 with bound n4 T.
+  weaken H13 with bound_var n T n6 n3. weaken H14 with bound_var n4 T n7 n5.
+  weaken H8 with var n2.
+  weaken H17 with bound n2 T.
+  weaken H18 with bound_var n2 T n11 n10.
+  apply IH to H15 H19 with (L = L, n3:ty, n2:var n3, n1:bound n3 T, n:bound_var n3 T n1 n2).
+  prune H20.
+  exists sa-all T F T F (D' n2 n1 n) (D'1). search.
+  case H2.
+  apply IH to H3 H7. apply IH to H4 H8. exists sa-arrow T1 T2 T1 T2 D' D'1. search.
+  exists sa-top top. search.
+  case H2.
+  case H2.

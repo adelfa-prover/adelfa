@@ -10,6 +10,9 @@ _coverage
 # vscode settings
 .vscode
 
+# Mac OS
+.DS_Store
+
 # Executable
 adelfa
 

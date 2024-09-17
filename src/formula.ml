@@ -25,8 +25,7 @@ type formula =
   | Or of formula * formula
   | Prop of id * term list
 
-(* Checks if two formulas are equal, ignoring
-   annotations. *)
+(* Checks if two formulas are equal, ignoring annotations. *)
 let rec eq f1 f2 =
   match f1, f2 with
   | Top, Top | Bottom, Bottom -> true
@@ -223,7 +222,7 @@ let fresh_alist ~used ~tag ~ts tids =
     (fun (n, t) ->
       let fresh, curr_used = Term.fresh_wrt ~ts tag n t !used in
       used := curr_used;
-      (*                 (n, Term.eta_expand fresh)) *)
+      (* (n, Term.eta_expand fresh)) *)
       n, fresh)
     tids
 ;;
@@ -263,8 +262,8 @@ let replace_formula_vars alist t =
   aux alist t
 ;;
 
-(* performs a replacement on formula vars and will rename any quantifiers
-   in the formula which appear in the substitution. *)
+(* performs a replacement on formula vars and will rename any quantifiers in the formula
+   which appear in the substitution. *)
 let rec replace_formula_vars_rename ~used alist t =
   let term_aux alist = replace_term_vars alist in
   let ctx_aux alist = replace_ctx_expr_vars alist in
@@ -409,8 +408,7 @@ let schema_transports f ctx_var sub_rel c1 c2 =
   List.for_all (fun block -> block_in_schema_sub f ctx_var sub_rel block c2) c1
 ;;
 
-(* Apply the given context variable substitution
-   within the given formula. *)
+(* Apply the given context variable substitution within the given formula. *)
 let rec replace_ctx_vars ctxvar_subst f =
   match f with
   | Top | Bottom | Prop _ -> f
@@ -470,8 +468,8 @@ let occurs_negatively (ctx_var : ctx_var) (f : formula) =
     | Top -> true
     | Bottom | Prop _ | Atm _ -> false
     | Ctx (bndrs, f') ->
-      (* If there is a quantifier that shadows [ctx_var] then we want to only
-         check if the structural properties hold *)
+      (* If there is a quantifier that shadows [ctx_var] then we want to only check if the
+         structural properties hold *)
       if List.map fst bndrs |> List.mem ~cmp:(fun _ x -> matcher x) ctx_var
       then pos (fun _ -> false) f'
       else pos matcher f'
@@ -490,8 +488,8 @@ let occurs_negatively (ctx_var : ctx_var) (f : formula) =
         if matcher ctx_var' then true else false)
       else false
     | Ctx (bndrs, f') ->
-      (* If there is a quantifier that shadows [ctx_var] then we want to only
-         check if the structural properties hold *)
+      (* If there is a quantifier that shadows [ctx_var] then we want to only check if the
+         structural properties hold *)
       if List.map fst bndrs |> List.mem ~cmp:(fun _ x -> matcher x) ctx_var
       then neg (fun _ -> false) f'
       else neg matcher f'

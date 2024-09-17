@@ -45,8 +45,8 @@ let add_var sequent (id, tm) =
   if not (List.mem_assoc id sequent.vars)
   then sequent.vars <- (id, tm) :: sequent.vars
   else
-    sequent.vars
-      <- List.map (fun (name, t) -> if id = name then name, tm else name, t) sequent.vars
+    sequent.vars <-
+      List.map (fun (name, t) -> if id = name then name, tm else name, t) sequent.vars
 ;;
 
 let remove_var sequent id =
@@ -86,22 +86,18 @@ let replace_assoc_ctxvars_restricted alist entries =
   List.map (fun (v, vars) -> v, aux vars) entries
 ;;
 
-(* apply susbtitution to eigenvariables in sequent.
-   Does not modify Psi (eigenvariable context) to reflect the substitution;
-   assumes this is handled by the caller. *)
+(* apply susbtitution to eigenvariables in sequent. Does not modify Psi (eigenvariable
+   context) to reflect the substitution; assumes this is handled by the caller. *)
 let replace_seq_vars subst sequent =
   sequent.vars <- sequent.vars;
   Context.CtxVarCtx.map_inplace
     (fun _ (r, t) -> r, Context.replace_ctx_typ_vars subst t)
     sequent.ctxvars;
-  sequent.hyps
-    <- List.map
-         (fun h ->
-           { id = h.id
-           ; tag = h.tag
-           ; formula = Formula.replace_formula_vars subst h.formula
-           })
-         sequent.hyps;
+  sequent.hyps <-
+    List.map
+      (fun h ->
+        { id = h.id; tag = h.tag; formula = Formula.replace_formula_vars subst h.formula })
+      sequent.hyps;
   sequent.goal <- Formula.replace_formula_vars subst sequent.goal;
   sequent.count <- sequent.count;
   sequent.name <- sequent.name;
@@ -173,7 +169,7 @@ let norm_atom sequent formula =
       (match Term.observe (Term.hnorm a) with
        | Term.Pi ((v, typ) :: bndrs, body) ->
          (* for each binder introduce new name n, raise relevant eigenvariables over n,
-             then move into context and apply term component to this n. *)
+            then move into context and apply term component to this n. *)
          let used = get_nominals sequent in
          let name, _ = Term.fresh_wrt ~ts:2 Nominal "n" v.Term.ty used in
          let _ = add_var sequent (Term.term_to_pair name) in

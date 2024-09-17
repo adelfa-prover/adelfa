@@ -721,8 +721,8 @@ let apply_tests =
           let e3 = var Eigen "E3" 0 ity in
           List.iter (fun v -> Term.term_to_pair v |> Sequent.add_var seq) [ e3; n ];
           List.iter (fun g -> Sequent.add_ctxvar seq g (Context.CtxTy ("c", []))) [ g1 ];
-          (* Some lemma, ctx G:c, forall E1:o,
-            {G |- E1 : tm} => exists E2, {G |- E2 : tm} *)
+          (* Some lemma, ctx G:c, forall E1:o, {G |- E1 : tm} => exists E2, {G |- E2 :
+             tm} *)
           let f =
             ctx
               [ "G", "c" ]
@@ -757,8 +757,8 @@ let apply_tests =
           let e3 = var Eigen "E3" 0 ity in
           List.iter (fun v -> Term.term_to_pair v |> Sequent.add_var seq) [ e3; n; n1 ];
           List.iter (fun g -> Sequent.add_ctxvar seq g (Context.CtxTy ("c", []))) [ g1 ];
-          (* Some lemma, ctx G:c, forall E1:o,
-            {G |- E1 : tm} => exists E2, {G |- E2 : tm} *)
+          (* Some lemma, ctx G:c, forall E1:o, {G |- E1 : tm} => exists E2, {G |- E2 :
+             tm} *)
           let f =
             ctx
               [ "G", "c" ]
@@ -1039,11 +1039,10 @@ let extract_tests =
           |> assert_bool "Returns duplicate formulas")
        ; ("Extraction alternates between terms and types - starting with types"
           >:: fun () ->
-          (* Given a new type declaration [foo: tm -> Type]
-            and formula {D: foo (app e1 e2)}, the type extraction
-            should firstly give {app e1 e2 : tm} then term extraction
-            should give {e1: tm}. Will fail if term-type extraction doesn't
-            alternate properly *)
+          (* Given a new type declaration [foo: tm -> Type] and formula {D: foo (app e1
+             e2)}, the type extraction should firstly give {app e1 e2 : tm} then term
+             extraction should give {e1: tm}. Will fail if term-type extraction doesn't
+             alternate properly *)
           let foo = const "foo" iity in
           let new_ty =
             Signature.ty_dec
@@ -1067,12 +1066,10 @@ let extract_tests =
           |> assert_bool "Does not extract multiple deep")
        ; ("Extraction raises success when it finds something not well formed"
           >:: fun () ->
-          (* Given a new type declaration [foo: tm -> Type]
-            an obj [bar : tm -> foo -> tm]
-            and formula {bar (app e1 e2) (foo (app e1 e2)) : tm}, the type extraction
-            will find that foo is not in the signature as an object. This indicates
-            that it's not a well formed atomic term and as such the proof is vacuously true
-          *)
+          (* Given a new type declaration [foo: tm -> Type] an obj [bar : tm -> foo -> tm]
+             and formula {bar (app e1 e2) (foo (app e1 e2)) : tm}, the type extraction
+             will find that foo is not in the signature as an object. This indicates that
+             it's not a well formed atomic term and as such the proof is vacuously true *)
           let foo = const "foo" iity in
           let new_ty =
             Signature.ty_dec
@@ -1107,12 +1104,10 @@ let extract_tests =
           assert_raises Tactics.Success (fun () -> extract_ty_info signature seq 5 [ f ])
          )
        ; ("Extraction substitutes for dependent types correctly"
-          (* Given a new type declaration [foo: tm -> Type]
-            an obj [bar : pi x: tm . pi y: foo x . tm]
-            and formula {bar (app e1 e2) D : tm}, the type extraction will need to determine
-            that D is of type (foo x) and correctly substitute x for (app e1 e2) to give
-            a new judgement of the form {D: foo (app e1 e2)}
-          *)
+          (* Given a new type declaration [foo: tm -> Type] an obj [bar : pi x: tm . pi y:
+             foo x . tm] and formula {bar (app e1 e2) D : tm}, the type extraction will
+             need to determine that D is of type (foo x) and correctly substitute x for
+             (app e1 e2) to give a new judgement of the form {D: foo (app e1 e2)} *)
           >:: fun () ->
           let foo = const "foo" iity in
           let new_ty =
@@ -1297,8 +1292,8 @@ let inst_tests =
   "Inst"
   >::: [ ("Simple instantiation test"
           >:: fun () ->
-          (* instantiate an assumption {n:tm |- n: tm} with term (app t t) 
-             with { |- t :tm} in assumptions. *)
+          (* instantiate an assumption {n:tm |- n: tm} with term (app t t) with { |- t
+             :tm} in assumptions. *)
           let n = var Nominal "n" 3 ity in
           let t = var Eigen "T" 1 ity in
           let f1 = atm Context.Nil t tm in
