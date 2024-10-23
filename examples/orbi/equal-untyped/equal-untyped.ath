@@ -57,13 +57,12 @@ exists n1. search.
 Theorem ceqG: ctx G:daG, forall M N D1,
   {G |- D1: deq M N} => exists D2, {G |- D2 : aeq M N}.
 induction on 1.
-intros. case H1 (keep).
+intros. case H1 (keep). apply reflG to H2. exists D. search.
 apply IH to H5.
 apply IH to H6.
 apply tranG to H7 H8. exists D5. search.
 apply IH to H4.
 apply symG to H5. exists D1. search.
-apply reflG to H2. exists D.  search.
 weaken H4 with aeq n2 n2.
 ctxpermute H5 to G, n2: tm, n4: aeq n2 n2, n3:deq n2 n2.
 apply IH to H6 with (G = G, n1:tm, n2:aeq n1 n1, n:deq n1 n1).
@@ -119,9 +118,3 @@ apply IH to H8 H2.
 exists ae_a (M3 N1) (M4 N1) (M5 N2) (M6 N2) (D1 n1 n) (D5 n1 n). search.
 exists D2. search.
 exists n3. search.
-
-% Theorem reflR: ctx G1:xG, ctx G2:xaG, forall M, { G1 |- M : tm } => exists D, { G2 |- D: aeq M M}.
-% induction on 1.
-% intros.
-% case H1.
-% apply IH to H2.

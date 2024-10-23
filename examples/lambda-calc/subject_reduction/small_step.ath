@@ -3,17 +3,6 @@ Specification "reduce.lf".
 Schema c :=
  {T}(x:tm,y:of x T).
 
-% MINORBUG1: from a fresh start of Adelfa, run the "Specification reduce.elf"
-% command twice, then try the theorem up to case H2. You will see there are 6
-% subgoals when there should be 3. run Specification a 3rd time and there are 9:
-% 3 copies of the 3 goals you were supposed to have.
-% 
-% So I think running Specification multiple times stacks the type signatures
-% together in a way that doesn't really seem ideal.
-% 
-% Note that if you only run Specification once, the theorem works as intended and
-% there is no issue. So this is avoidable.
-
 % Subject reduction for weak small step call by value reduction.
 Theorem subject_reduction_wsscbv : ctx Gamma:c, forall M1 M2 T D1 D2,
   {Gamma |- D1 : of M1 T} => {D2 : sscbv M1 M2} =>

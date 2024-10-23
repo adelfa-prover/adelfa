@@ -18,7 +18,6 @@ Theorem subject_reduction_lscbn : ctx Gamma:c, forall M1 M2 T D1 D2,
   inst H20 with n2 = N.
   inst H21 with n3 = D7.
   apply IH to H22 H9.
-  % QUESTION: it is fine having D1 n3 n2 n1 n without those being in the context, right?
   exists (D1 n3 n2 n1 n).
   search.
 

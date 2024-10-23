@@ -6,8 +6,8 @@
  "Mary Southern"
  "Chase Johnson <joh13266@umn.edu>")
 (maintainers "Chase Johnson <joh13266@umn.edu>")
-(homepage "http://sparrow.cs.umn.edu/adelfa/index.html")
-(documentation "http://sparrow.cs.umn.edu/adelfa/reference-guide.html")
+(homepage "https://adelfa-prover.org/")
+(documentation "https://adelfa-prover.org/")
 (source 
  (github adelfa-prover/adelfa))
 (license GPL-3.0)

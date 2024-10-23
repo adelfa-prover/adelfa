@@ -118,9 +118,3 @@ apply IH to H8 H2.
 exists ae_a (M3 N1) (M4 N1) (M5 N2) (M6 N2) (D1 n1 n) (D5 n1 n). search.
 exists D2. search.
 exists n3. search.
-
-% Theorem reflR: ctx G1:xG, ctx G2:xaG, forall M, { G1 |- M : tm } => exists D, { G2 |- D: aeq M M}.
-% induction on 1.
-% intros.
-% case H1.
-% apply IH to H2.

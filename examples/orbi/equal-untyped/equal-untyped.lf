@@ -1,9 +1,9 @@
-tm: type.
-lam: {M: tm -> tm} tm.
-app: {M1:tm}{M2:tm} tm.
+tm : type.
+lam : {M: tm -> tm} tm.
+app : {M1:tm}{M2:tm} tm.
 
-aeq: tm -> tm -> type.
-deq: tm -> tm -> type.
+aeq : tm -> tm -> type.
+deq : tm -> tm -> type.
 
 ae_a : {M1: tm}{M2: tm}{N1:tm}{N2:tm}
        {D1:aeq M1 N1}{D2:aeq M2 N2}
