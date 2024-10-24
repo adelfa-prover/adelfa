@@ -10,11 +10,12 @@
 (documentation "https://adelfa-prover.org/")
 (source 
  (github adelfa-prover/adelfa))
-(license GPL-3.0)
+(license GPL-3.0-only)
 (generate_opam_files)
 
 (package
  (name adelfa)
  (synopsis "Proof assistant for reasoning about LF specifications")
  (depends
+  (ocaml (>= 4.12))
   (ounit2 :with-test)))
