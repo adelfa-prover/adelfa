@@ -399,6 +399,8 @@ block:
       { ($2,$5) }
   | LPAREN aid_list RPAREN
       { ([],$2) }
+  | LPAREN RPAREN
+      { ([],[]) }
 
 block_list:
   | block SEMICOLON block_list
