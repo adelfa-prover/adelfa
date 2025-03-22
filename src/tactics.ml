@@ -17,7 +17,7 @@ exception InvalidName of string
 exception AmbiguousSubst of Context.ctx_expr * Context.ctx_expr
 exception NotLlambda
 
-(* Indicates a sucess in search *)
+(* Indicates a success in search *)
 exception Success
 
 type case =
@@ -526,24 +526,36 @@ let extract_ty_info signature sequent depth formulas =
   aux depth formulas
 ;;
 
-(* Search:
-   assumption is that the current goal formula is atomic, or a defined proposition.
-   raises Success exception if current goal is determined valid by search.
+(** Search:
+    assumption is that the current goal formula is atomic, or a defined
+    proposition.
+    raises Success exception if current goal is determined valid by search.
 
-   procedure:
-   1) once at outset check the nominal constants in explicit part of context
-   - no duplicate binding for name
-   - all explicit bindings must be restricted from appearing in context variables
-     2) Extract all typing information from all hypotheses and add them to the
-     assumption set
-     3) then being the search loop attempting to complete derivation
-     a) normalize the goal formula (i.e. apply Pi-R rule)
-     b) check for match in assumption set (i.e. apply id rule)
-     c) decompose typing judgement (i.e. apply atm-R rule)
-   - for leaves perform check of context formation
-     must either be the prefix of some context expression from an assumption or
-     shown well-formed explicitly
-*)
+    procedure:
+    {ol
+     {- once at outset check the nominal constants in explicit part of context
+       {ul
+        {- no duplicate binding for name }
+        {- all explicit bindings must be restricted from appearing in context
+          variables
+          {ol
+           {- Extract all typing information from all hypotheses and add them to the
+             assumption set
+          }
+           {- Then being the search loop attempting to complete derivation
+             + normalize the goal formula (i.e. apply Pi-R rule)
+             + check for match in assumption set (i.e. apply id rule)
+             + decompose typing judgement (i.e. apply atm-R rule)
+          }
+          }
+       }
+       }
+    }
+     {- for leaves perform check of context formation
+       must either be the prefix of some context expression from an assumption or
+       shown well-formed explicitly
+    }
+    } *)
 let search ~depth signature sequent =
   (* checks that the explicit bindings in context expression g are all distinct and are
      restricted from appearing in any instance of any context variable appearing in g. *)
@@ -830,7 +842,7 @@ let ind sequent i n =
          {Gamma|NGamma:C[G1[thetaj'];...;Gj[thetaj'];G;G{j+1}[thetaj'];...;Gn[thetaj']]}*)
 (* Possible raising optimization:
    in Psij' we might check which variables in Psi have a rigid
-   occurence in G1,...,Gj and avoid raising these variables because
+   occurrence in G1,...,Gj and avoid raising these variables because
    such dependencies would be ill-formed. *)
 let addBlock
   (seq : Sequent.sequent)
@@ -1022,7 +1034,7 @@ let allBlocks
    "implicitHeads seq schemas g"
 
    returns the set
-       U{allBlocks seq g tycvar bl_schmi | 1<= i<= m}
+       U{allBlocks seq g tycvar bl_schemai | 1<= i<= m}
    where
    - tycvar = Gamma|NGamma:C[G1,...,Gn]
 *)
@@ -1040,8 +1052,8 @@ let implicitHeads seq schemas (g : Context.ctx_expr)
 (* returns the tuple (seq, n:A) for each explicit binding in g
    relative to seq.*)
 let explicitHeads seq g : (Sequent.sequent * Term.term * Term.term) list =
-  let explct_bnds = Context.ctxexpr_to_ctx seq.ctxvars g in
-  List.map (fun (h, ty) -> seq, Term.var_to_term h, ty) explct_bnds
+  let explicit_bnds = Context.ctxexpr_to_ctx seq.ctxvars g in
+  List.map (fun (h, ty) -> seq, Term.var_to_term h, ty) explicit_bnds
 ;;
 
 let sigHeads lf_sig seq : (Sequent.sequent * Term.term * Term.term) list =
@@ -1065,7 +1077,7 @@ let heads lf_sig schemas seq g =
 ;;
 
 (* generates and adds cases for the head h:typ
-   Auumes that the given formula atomic formula and that it actually
+   Assumes that the given formula atomic formula and that it actually
    appears as an assumption in the given sequent.
 
    Note that the unification procedure we use returns at most one
@@ -1184,11 +1196,11 @@ let exists sequent t =
   | Formula.Exists ((n, ty) :: vs, body) ->
     if Type.eq got_ty ty
     then
-      sequent.goal
-      <- Formula.replace_formula_vars_rename
-           ~used:sequent.vars
-           [ n, t ]
-           (Formula.Exists (vs, body))
+      sequent.goal <-
+        Formula.replace_formula_vars_rename
+          ~used:sequent.vars
+          [ n, t ]
+          (Formula.Exists (vs, body))
     else raise (InvalidTerm t)
   | _ -> assert false
 ;;
@@ -1529,10 +1541,10 @@ let intro sequent =
         vs
     in
     List.iter (add_var sequent) new_vars;
-    sequent.goal
-    <- Formula.replace_formula_vars
-         (List.map2 (fun (n, _) (_, t) -> n, Term.app t support) vs new_vars)
-         f
+    sequent.goal <-
+      Formula.replace_formula_vars
+        (List.map2 (fun (n, _) (_, t) -> n, Term.app t support) vs new_vars)
+        f
   | Formula.Ctx (cvars, f) ->
     let cvars_alist, _ =
       Context.list_fresh_wrt cvars (Context.CtxVarCtx.get_vars sequent.ctxvars)
@@ -1646,7 +1658,7 @@ let permute_ctx form g' =
           let v, _ = g'_entry in
           raise
             (InvalidCtxPermutation
-               ("not found: " ^ v.Term.name ^ ". all entried must be in both contexts")))
+               ("not found: " ^ v.Term.name ^ ". all entries must be in both contexts")))
         else ())
       g'_explicit;
     check_dependencies (List.split g'_explicit);
@@ -1728,7 +1740,7 @@ let permute form perm sequent =
     (* These binders don't change the permutation and are skipped over *)
     | Formula.All (t, f) -> Formula.All (t, permute' f)
     | Formula.Exists (t, f) -> Formula.Exists (t, permute' f)
-    (* Propogate the permutation across connectives *)
+    (* propagate the permutation across connectives *)
     | Formula.Imp (l, r) -> Formula.Imp (permute' l, permute' r)
     | Formula.And (l, r) -> Formula.And (permute' l, permute' r)
     | Formula.Or (l, r) -> Formula.Or (permute' l, permute' r)

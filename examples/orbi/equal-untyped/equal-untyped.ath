@@ -1,6 +1,5 @@
 Specification "equal-untyped.lf".
 
-Schema xG := (x: tm).
 Schema xaG := (x: tm,a: aeq x x).
 Schema daG := (x:tm, a:aeq x x, u:deq x x).
 
@@ -17,7 +16,7 @@ apply IH to H3 with (G = G, n1: tm, n:aeq n1 n1).
 prune H2.
 exists ae_l M M D.
 search.
-%ctx
+%var
 exists n1. search.
 
 Theorem symG: ctx G:xaG, forall T1 T2 Q,

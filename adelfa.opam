@@ -5,7 +5,7 @@ maintainer: ["Chase Johnson <joh13266@umn.edu>"]
 authors: ["Mary Southern" "Chase Johnson <joh13266@umn.edu>"]
 license: "GPL-3.0-only"
 homepage: "https://adelfa-prover.org/"
-doc: "https://adelfa-prover.org/reference-guide"
+doc: "https://adelfa-prover.org/"
 bug-reports: "https://github.com/adelfa-prover/adelfa/issues"
 depends: [
   "dune" {>= "3.0"}

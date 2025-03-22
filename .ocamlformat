@@ -1,5 +1,4 @@
 profile = janestreet
 version = 0.26.1
 
-wrap-comments=true
 assignment-operator=end-line

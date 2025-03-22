@@ -2,17 +2,26 @@ Specification "stlc.lf".
 
 %subject reduction for stlc
 Theorem sr_eval : forall E V T D1 D2,
-                    {D1 : eval E V} => {D2 : of E T} => exists D, {D : of V T}.
+  {D1 : eval E V} => {D2 : of E T} => exists D, {D : of V T}.
 induction on 1. intros. case H1.
   %case 1: application; D1 = eval-app M N V R T1 a1 a2, E = app M N
     case H2. %D2 = of_app M N T D3 D4 D5
-    apply IH to H8 H14.
-    case H16.
-    inst H20 with n2 = N. inst H21 with n3 = D5.
-    apply IH to H9 H22.
+    apply IH to H7 H13.
+    case H15.
+    inst H19 with n2 = N. inst H20 with n3 = D5.
+    apply IH to H8 H21.
     exists (D n3 n2 n1 n).
     search.
   %case 2: abstraction; D1 = eval-abs R T1, E = abs T1 ([x]R x)
     exists D2.
     search.
 
+Theorem sr_det : forall E V T D1 D2,
+  {D1 : eval E V} => {D2 : eval E T} =>
+    exists D, {D: tm_eq V T}.
+induction on 1. intros.
+case H1.
+  case H2. apply IH to H7 H13. case H15.
+  apply IH to H8 H14. exists D n1 n. search.
+
+  case H2. exists tm_eq_refl (abs ([x] R x)). search.

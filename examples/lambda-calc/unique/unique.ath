@@ -1,5 +1,8 @@
 %Uniqueness of typing for the simply typed lambda-calculus
 
+Theorem right_example : false \/ true.
+right.
+
 Specification "unique.lf".
 
 Schema c :=
@@ -10,7 +13,8 @@ Theorem ty_independent : ctx G:c, forall T:o, {G |- T : ty} => {T:ty}.
 induction on 1. intros. case H1. 
   apply IH to H2. apply IH to H3. search.
 
-Theorem eq_independent : ctx G:c, forall T1 T2 D, {G |- D : eq T1 T2} => {D : eq T1 T2}.
+Theorem eq_independent : ctx G:c,
+        forall T1 T2 D, {G |- D : eq T1 T2} => {D : eq T1 T2}.
 intros. case H1. apply ty_independent to H2. search.
 
 

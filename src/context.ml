@@ -155,8 +155,15 @@ module CtxVarCtx = struct
   type entry = v * d
   type t = (v, d) H.t
 
-  let empty () = H.create 19
-  let is_empty ctx = H.length ctx = 0
+  let emptySchema = ref Res.empty, CtxTy ("EmptyBlock", [])
+  let emptySchemaName = "EmptySchema"
+
+  let empty () =
+    let h = H.create 19 in
+    H.add h "EmptySchema" emptySchema;
+    h
+  ;;
+
   let add_var ctx v ?(res = Res.empty) blocks = H.replace ctx v (ref res, blocks)
 
   let add_var ctx v ?(res = []) blocks =
@@ -168,7 +175,8 @@ module CtxVarCtx = struct
   let add_vars ctx vs = H.replace_seq ctx (List.to_seq vs)
   let find_var_opt t v = H.find_opt t v
   let find t v = H.find t v
-  let to_list ctx = H.to_seq ctx |> List.of_seq
+  let to_list ctx = H.to_list ctx |> List.filter (fun (n, _) -> n <> emptySchemaName)
+  let is_empty (ctx : t) = to_list ctx |> List.length |> ( = ) 0
 
   let of_list entries =
     let ctx = empty () in

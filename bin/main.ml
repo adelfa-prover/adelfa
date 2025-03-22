@@ -13,8 +13,8 @@ type proof_level =
 
 let interaction_level = State.rref TopLevel
 let proof_steps = State.rref 0
-let welcome_message = "Welcome!"
-let exit_message = "Goodbye!"
+let welcome_message = "Welcome!\n"
+let exit_message = "Goodbye!\n"
 let interactive = ref true
 let out = ref stdout
 let switch_to_interactive = ref false
@@ -31,7 +31,12 @@ let perform_switch_to_interactive () =
 
 let interactive_or_exit () =
   if not !interactive
-  then if !switch_to_interactive then perform_switch_to_interactive () else exit 1
+  then
+    if !switch_to_interactive
+    then perform_switch_to_interactive ()
+    else (
+      fprintf !out "%s\n" exit_message;
+      exit 1)
 ;;
 
 (* if interactive, reset line count to provide more accurate error position
