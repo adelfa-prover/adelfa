@@ -25,6 +25,98 @@ type formula =
   | Or of formula * formula
   | Prop of id * term list
 
+module Print = struct
+  let pr_str ppf s = Format.fprintf ppf "%s" s
+
+  let pr_ann ppf = function
+    | None -> ()
+    | EQ i -> Format.fprintf ppf "%s" (String.make i '@')
+    | LT i -> Format.fprintf ppf "%s" (String.make i '*')
+  ;;
+
+  let rec pr_ctxbndrs ppf bndrs =
+    match bndrs with
+    | [] -> ()
+    | (n, schema) :: bndrs' ->
+      Format.fprintf ppf "ctx %a@,:@,%a,@ %a" pr_str n pr_str schema pr_ctxbndrs bndrs'
+  ;;
+
+  let rec pr_allbndrs ppf bndrs =
+    match bndrs with
+    | [] -> ()
+    | (n, _) :: bndrs' -> Format.fprintf ppf "forall %a,@ %a" pr_str n pr_allbndrs bndrs'
+  ;;
+
+  let rec pr_existsbndrs ppf bndrs =
+    match bndrs with
+    | [] -> ()
+    | (n, _) :: bndrs' ->
+      Format.fprintf ppf "exists %a,@ %a" pr_str n pr_existsbndrs bndrs'
+  ;;
+
+  let rec pr_formula ppf = function
+    | Top -> Format.fprintf ppf "%s" "True"
+    | Bottom -> Format.fprintf ppf "%s" "False"
+    | Atm (g, m, a, ann) when Context.is_empty g ->
+      Format.fprintf
+        ppf
+        "@[<2>{%a@ :@ %a}%a@]"
+        (Term.Print.pr_term [])
+        m
+        (Term.Print.pr_term [])
+        a
+        pr_ann
+        ann
+    | Atm (g, m, a, ann) ->
+      Format.fprintf
+        ppf
+        "@[<2>{%a@,@ |-@ @,%a@ :@ %a}%a@]"
+        Context.Print.pr_ctxexpr
+        g
+        (Term.Print.pr_term [])
+        m
+        (Term.Print.pr_term [])
+        a
+        pr_ann
+        ann
+    | Ctx (bndrs, f) -> Format.fprintf ppf "@[<2>%a%a@]" pr_ctxbndrs bndrs pr_formula f
+    | All (bndrs, f) -> Format.fprintf ppf "@[<2>%a%a@]" pr_allbndrs bndrs pr_formula f
+    | Exists (bndrs, f) ->
+      Format.fprintf ppf "@[<2>%a%a@]" pr_existsbndrs bndrs pr_formula f
+    | Imp (f1, f2) -> Format.fprintf ppf "@[<4>%a@ =>@ %a@]" pr_formula f1 pr_formula f2
+    | And (f1, f2) ->
+      Format.fprintf ppf "@[<4>%a@ %a@ %a@]" pr_formula f1 pr_str "/\\" pr_formula f2
+    | Or (f1, f2) ->
+      Format.fprintf ppf "@[<4>%a@ %a@ %a@]" pr_formula f1 pr_str "\\/" pr_formula f2
+    | Prop (h, argtms) -> Format.fprintf ppf "@[<3>%a%a@]" pr_str h pr_propargs argtms
+
+  and pr_typing_judgement ppf = function
+    | Atm (g, m, a, ann) ->
+      Format.fprintf
+        ppf
+        "@[<2>%a@,@ |-@ @,%a@ :@ %a%a@]"
+        Context.Print.pr_ctxexpr
+        g
+        (Term.Print.pr_term [])
+        m
+        (Term.Print.pr_term [])
+        a
+        pr_ann
+        ann
+    | f -> pr_formula ppf f
+
+  and pr_propargs ppf = function
+    | [] -> ()
+    | arg :: args' ->
+      Format.fprintf ppf "@ %a%a" (Term.Print.pr_term []) arg pr_propargs args'
+  ;;
+
+  let string_of_formula f =
+    pr_formula Format.str_formatter f;
+    Format.flush_str_formatter ()
+  ;;
+end
+
 (* Checks if two formulas are equal, ignoring annotations. *)
 let rec eq f1 f2 =
   match f1, f2 with

@@ -13,8 +13,8 @@ type proof_level =
 
 let interaction_level = State.rref TopLevel
 let proof_steps = State.rref 0
-let welcome_message = "Welcome!\n"
-let exit_message = "Goodbye!\n"
+let welcome_message = "Welcome!"
+let exit_message = "Goodbye!"
 let interactive = ref true
 let out = ref stdout
 let switch_to_interactive = ref false
@@ -31,12 +31,7 @@ let perform_switch_to_interactive () =
 
 let interactive_or_exit () =
   if not !interactive
-  then
-    if !switch_to_interactive
-    then perform_switch_to_interactive ()
-    else (
-      fprintf !out "%s\n" exit_message;
-      exit 1)
+  then if !switch_to_interactive then perform_switch_to_interactive () else exit 1
 ;;
 
 (* if interactive, reset line count to provide more accurate error position
@@ -153,7 +148,7 @@ let process_proof () =
     fprintf !out "<pre>\n%!");
   print_proof_prompt ();
   let input = Parser.command Lexer.token !lexbuf in
-  if not !interactive then fprintf !out "%s\n%!" (Print.string_of_command input);
+  if not !interactive then fprintf !out "%s\n%!" (Uterms.Print.string_of_command input);
   match input with
   | Uterms.Abort -> raise End_of_file
   | Uterms.Skip -> Prover.skip ()
@@ -293,7 +288,7 @@ let process_top_level () =
   if !Globals.annotate then fprintf !out "<pre>\n%!";
   print_top_prompt ();
   let input = Parser.top_command Lexer.token !lexbuf in
-  if not !interactive then fprintf !out "%s\n%!" (Print.string_of_topcommand input);
+  if not !interactive then fprintf !out "%s\n%!" (Uterms.Print.string_of_topcommand input);
   (match input with
    | Uterms.Theorem (name, uthm) ->
      proof_steps := 0;

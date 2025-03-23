@@ -41,9 +41,9 @@ let explain_error = function
   | TypeMismatch (_, expected, got) ->
     Format.asprintf
       "expected type:@ @,%a,@ @,but got type:@ %a"
-      Print.pr_ty
+      Type.Print.pr_ty
       expected
-      Print.pr_ty
+      Type.Print.pr_ty
       got
   | TooManyArgs _ -> "term applied to too many arguments."
   | BadSchema (_, id) -> "can't find context schema " ^ id

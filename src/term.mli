@@ -134,3 +134,33 @@ val erase : term -> Type.ty
 val eta_expand : term -> term
 val is_uninstantiated : id * term -> bool
 val alpha_eq : term -> term -> (id * id) list -> (id * id) list option
+
+module Print : sig
+  val pr_var : Format.formatter -> var -> unit
+  val pr_str : Format.formatter -> string -> unit
+  val db_to_string : string list -> int -> string
+  val pr_term_literal : Format.formatter -> term -> unit
+  val pr_var_literal : Format.formatter -> var -> unit
+  val pr_ptr_literal : Format.formatter -> ptr -> unit
+  val pr_lfidlst : Format.formatter -> lftyctx -> unit
+  val pr_idlst : Format.formatter -> tyctx -> unit
+  val pr_tmlst : Format.formatter -> term list -> unit
+  val pr_term : id list -> Format.formatter -> term -> unit
+  val pr_term' : id list -> Format.formatter -> term -> unit
+  val pr_db : id list -> Format.formatter -> int -> unit
+
+  val pr_app :
+    id list -> Format.formatter -> term -> term list -> unit
+
+  val pr_lam :
+    id list -> Format.formatter -> tyctx -> term -> unit
+
+  val pr_pi :
+    id list -> Format.formatter -> lftyctx -> term -> unit
+
+  val string_of_term_literal : term -> string
+  val string_of_term : term -> string
+
+  val pr_varlst :
+    Format.formatter -> (string * term) list -> unit
+end

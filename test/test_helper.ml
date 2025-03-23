@@ -57,18 +57,18 @@ let renumber_term t =
 
 let assert_pprint_equal s t =
   let t = Formula.map_terms renumber_term t in
-  assert_string_equal s (Print.string_of_formula t)
+  assert_string_equal s (Formula.Print.string_of_formula t)
 ;;
 
 let assert_formula_equal s t =
   let s = Formula.map_terms renumber_term s in
   let t = Formula.map_terms renumber_term t in
-  assert_string_equal (Print.string_of_formula s) (Print.string_of_formula t)
+  assert_string_equal (Formula.Print.string_of_formula s) (Formula.Print.string_of_formula t)
 ;;
 
 let assert_context_equal g1 g2 =
-  let g1 = Print.string_of_ctxexpr g1 in
-  let g2 = Print.string_of_ctxexpr g2 in
+  let g1 = Context.Print.string_of_ctxexpr g1 in
+  let g2 = Context.Print.string_of_ctxexpr g2 in
   assert_string_equal g1 g2
 ;;
 
@@ -77,9 +77,9 @@ let assert_term_pprint_equal s t =
   assert_string_equal s (Print.string_of_term t)
 ;;
 
-let assert_ty_pprint_equal s t = assert_string_equal s (Print.string_of_ty t)
+let assert_ty_pprint_equal s t = assert_string_equal s (Type.Print.string_of_ty t)
 let assert_term_equal = assert_equal ~cmp:Term.eq ~printer:Print.string_of_term
-let assert_ty_equal = assert_equal ~printer:Print.string_of_ty
+let assert_ty_equal = assert_equal ~printer:Type.Print.string_of_ty
 let assert_int_equal = assert_equal ~printer:string_of_int
 
 let assert_string_list_equal lst1 lst2 =

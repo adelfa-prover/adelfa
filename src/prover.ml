@@ -35,7 +35,11 @@ let set_sig s =
 let has_sig () = !lf_sig = Signature.empty |> not
 
 (* 2. The available context schemas *)
-let schemas : (string, Context.ctx_schema) H.t = State.table ()
+let schemas : (string, Context.ctx_schema) H.t =
+  let h = State.table () in
+  H.add h Context.empty_schema_name [];
+  h
+;;
 
 (* Raises Not_found if schema of given name is not in the schema list *)
 let lookup_schema id = H.find schemas id
@@ -173,7 +177,7 @@ let next_subgoal () =
 let display_state () =
   let snapshot = State.snapshot () in
   (*let bind_state = Term.get_bind_state () in*)
-  Print.print_sequent sequent;
+  Sequent.Print.pr_sequent Format.std_formatter sequent;
   List.iter
     (fun subgoal ->
       subgoal ();
@@ -181,7 +185,7 @@ let display_state () =
         "@[<1>Subgoal %s%sis:@\n%a@]@\n@\n%!"
         sequent.name
         (if sequent.name = "" then "" else " ")
-        Print.pr_formula
+        Formula.Print.pr_formula
         sequent.goal)
     !subgoals;
   State.reload snapshot
@@ -253,8 +257,8 @@ let exists tm =
   | Typing.TypeError (exp, got) ->
     failwithf
       "Type Error: Expected type\n%s\nbut found type\n%s"
-      (Print.string_of_ty exp)
-      (Print.string_of_ty got)
+      (Type.Print.string_of_ty exp)
+      (Type.Print.string_of_ty got)
   | Tactics.InvalidTerm _ -> failwith "Bad term"
 ;;
 
@@ -270,7 +274,7 @@ let search depth () =
          Format.asprintf
            "@[<hv1>@[Search@ failed.@]@ @[Unable@ to@ determine@ validity@ of:@]@ \
             @[<1>%a@]"
-           Print.pr_typing_judgement
+           Formula.Print.pr_typing_judgement
            sequent.goal
        in
        failwith msg
@@ -341,7 +345,7 @@ let type_apply_withs form (vwiths, cwiths) =
                  (Format.asprintf
                     "@[<hv1>@[Context@ expression@] @[<1>%a@] @[does@ not@ match@ \
                      schema@]@ @[%s@].@]"
-                    Print.pr_ctxexpr
+                    Context.Print.pr_ctxexpr
                     ctxtm
                     schemaid))
         with
@@ -407,10 +411,10 @@ let ensure_no_logic_variable ctxvarctx f =
 ;;
 
 (* ensure that no dummy context variables remain in the formula *)
-let ensure_no_uninst_ctxvariable ctxvarctx f =
+let ensure_no_uninst_ctxvariable (ctxvarctx : Context.CtxVarCtx.t) f =
   let ctx_vars =
     List.filter
-      (fun ctxvar -> not (List.mem ctxvar (List.map fst ctxvarctx)))
+      (fun ctxvar -> not (Context.CtxVarCtx.mem ctxvarctx ctxvar))
       (Formula.get_formula_used_ctxvars f)
   in
   if ctx_vars <> []
@@ -421,7 +425,7 @@ let ensure_no_uninst_ctxvariable ctxvarctx f =
             "@[<hv1>@[Unable@ to@ find@ instantiation@ for@ context@ variable:@]@ \
              @[<1>%s@]@ @[in@ formula:@]@ @[%a@]@]"
             (List.hd ctx_vars)
-            Print.pr_formula
+            Formula.Print.pr_formula
             f))
 ;;
 
@@ -445,12 +449,8 @@ let apply_form f forms uws =
   in
   (* let f' = freshen_formula_names (Formula.copy_formula f) withs in *)
   (* let res_f = Tactics.apply_with !schemas sequent f' forms withs in *)
-  let res_f = Tactics.apply_with schemas ~sub_rel:!sub_rel sequent f forms withs in
-  let () =
-    ensure_no_uninst_ctxvariable
-      (Context.CtxVarCtx.get_var_tys sequent.Sequent.ctxvars)
-      res_f
-  in
+  let res_f = Tactics.apply_with ~schemas ~sub_rel:!sub_rel sequent f forms withs in
+  let () = ensure_no_uninst_ctxvariable sequent.Sequent.ctxvars res_f in
   let () = ensure_no_logic_variable sequent.Sequent.ctxvars res_f in
   res_f
 ;;
@@ -502,9 +502,9 @@ let apply name args uws =
       Format.asprintf
         "@[<hv>@[Ambiguous@ context@ substitution.@ Found:@]@ @[<v>@[<2>%a@]@ @[ and@]@ \
          @[<2>%a@]@]@]"
-        Print.pr_ctxexpr
+        Context.Print.pr_ctxexpr
         ctx1
-        Print.pr_ctxexpr
+        Context.Print.pr_ctxexpr
         ctx2
     in
     failwith msg
@@ -634,7 +634,7 @@ let weaken depth remove id ty =
       (Formula.atm ~ann (Context.Ctx (g, (Term.term_to_var nvar, ty))) a m)
   | Tactics.InvalidName id -> failwithf "`%s' is not a valid type constant." id
   | Tactics.InvalidTerm t ->
-    Format.asprintf "Given@ expression@ `%a'@ is@ not@ a@ type." (Print.pr_term []) t
+    Format.asprintf "Given@ expression@ `%a'@ is@ not@ a@ type." (Term.Print.pr_term []) t
     |> failwith
 ;;
 
@@ -745,7 +745,7 @@ let inst depth remove name withs =
   with
   | InstError str -> failwith str
   | Tactics.InstTypeError f ->
-    failwithf "Unable to derive formula:\n%s" (Print.string_of_formula f)
+    failwithf "Unable to derive formula:\n%s" (Formula.Print.string_of_formula f)
 ;;
 
 let prune name =

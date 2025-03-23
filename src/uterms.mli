@@ -117,3 +117,44 @@ type sig_decl =
 (* | Use of id *)
 
 val extract_unbound_uform : id list -> uformula -> id list
+
+module Print : sig
+  val pr_str : Format.formatter -> string -> unit
+  val pr_uterm : Format.formatter -> uterm -> unit
+  val pr_uctxtm : Format.formatter -> uctx -> unit
+  val pr_uctx : Format.formatter -> uctx -> unit
+  val pr_uform : Format.formatter -> uformula -> unit
+  val pr_locctxs : Format.formatter -> (pos * id * id) list -> unit
+  val pr_locidtys : Format.formatter -> (pos * aid) list -> unit
+  val pr_common : Format.formatter -> common_command -> unit
+  val pr_setting : Format.formatter -> setting -> unit
+  val pr_settings : Format.formatter -> setting list -> unit
+  val pr_perm : Format.formatter -> (string * string) list -> unit
+  val pr_command : Format.formatter -> command -> unit
+  val pr_clearable : Format.formatter -> clearable -> unit
+  val pr_clearablelist : Format.formatter -> clearable list -> unit
+  val pr_args : Format.formatter -> clearable list -> unit
+  val pr_with : Format.formatter -> uwith -> unit
+  val pr_withs : Format.formatter -> uwith list -> unit
+  val pr_aid : Format.formatter -> string * Type.ty option -> unit
+  val pr_udef : Format.formatter -> uformula * uformula -> unit
+  val pr_udefs : Format.formatter -> (uformula * uformula) list -> unit
+
+  val pr_uschema
+    :  Format.formatter
+    -> (('a * string) list * ('b * string * uterm) list) list
+    -> unit
+
+  val pr_ublockschema
+    :  Format.formatter
+    -> ('a * string) list * ('b * string * uterm) list
+    -> unit
+
+  val pr_locentries : Format.formatter -> ('a * string * uterm) list -> unit
+  val pr_locids : Format.formatter -> ('a * string) list -> unit
+  val pr_topcommand : Format.formatter -> top_command -> unit
+  val pr_subst : Format.formatter -> (string * Term.term) list -> unit
+  val string_of_uterm : uterm -> string
+  val string_of_command : command -> string
+  val string_of_topcommand : top_command -> string
+end

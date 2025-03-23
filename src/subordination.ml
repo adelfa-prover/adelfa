@@ -80,3 +80,23 @@ let sub_relation (signature : Sig.signature) : sub_rel =
 ;;
 
 let subordinates (rel : sub_rel) (a : Sig.id) (b : Sig.id) = Graph.has_path rel a b
+
+module Print = struct
+  let pr_str ppf s = Format.fprintf ppf "%s" s
+
+  let rec pr_strlst ppf = function
+    | [] -> ()
+    | [ s ] -> pr_str ppf s
+    | s :: lst -> Format.fprintf ppf "%a,@ %a" pr_str s pr_strlst lst
+  ;;
+
+  let pr_sub_rel ppf rel =
+    let entries = sub_rel_to_list rel in
+    let rec aux ppf = function
+      | [] -> ()
+      | (src, tys) :: tl ->
+        Format.fprintf ppf "@[<2>%a@ @,<|@ @,%a@]@.%a" pr_str src pr_strlst tys aux tl
+    in
+    aux ppf entries
+  ;;
+end

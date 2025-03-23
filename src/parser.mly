@@ -41,7 +41,7 @@
     | utm ->
        error_report
          ~pos:(snd (Uterms.get_pos utm))
-         "Invalid term %S.@\nMust be an identifier on left hand side." (Print.string_of_uterm utm)
+         "Invalid term %S.@\nMust be an identifier on left hand side." (Uterms.Print.string_of_uterm utm)
 %}                     
 
 %token IMP COMMA DOT LPAREN RPAREN TURN EQ TRUE FALSE DEFEQ

@@ -139,6 +139,9 @@ let replace_ctx_typ_vars ?tag alist (CtxTy (id, blocks)) =
         blocks )
 ;;
 
+let empty_ctx_var_name = "EmptySchemaVar"
+let empty_schema_name = "EmptySchema"
+
 (* context schemas *)
 
 type wctx = (Term.id * Type.ty) list
@@ -155,12 +158,11 @@ module CtxVarCtx = struct
   type entry = v * d
   type t = (v, d) H.t
 
-  let emptySchema = ref Res.empty, CtxTy ("EmptyBlock", [])
-  let emptySchemaName = "EmptySchema"
+  let empty_schema = ref Res.empty, CtxTy (empty_schema_name, [])
 
   let empty () =
     let h = H.create 19 in
-    H.add h "EmptySchema" emptySchema;
+    H.add h empty_ctx_var_name empty_schema;
     h
   ;;
 
@@ -175,8 +177,14 @@ module CtxVarCtx = struct
   let add_vars ctx vs = H.replace_seq ctx (List.to_seq vs)
   let find_var_opt t v = H.find_opt t v
   let find t v = H.find t v
-  let to_list ctx = H.to_list ctx |> List.filter (fun (n, _) -> n <> emptySchemaName)
-  let is_empty (ctx : t) = to_list ctx |> List.length |> ( = ) 0
+  let to_list ctx = H.to_list ctx
+
+  let is_empty (ctx : t) =
+    to_list ctx
+    |> List.filter (fun (v, _) -> v <> empty_ctx_var_name)
+    |> List.length
+    |> ( = ) 0
+  ;;
 
   let of_list entries =
     let ctx = empty () in
@@ -333,6 +341,13 @@ let length ctx =
   aux 0 ctx
 ;;
 
+let is_empty (ctx : ctx_expr) : bool =
+  match ctx with
+  | Nil -> true
+  | Var _ -> false
+  | Ctx (_, _) -> false
+;;
+
 (* checks if context expression g1 is a prefix of the context expression g2 *)
 let rec context_prefix g1 g2 =
   match g1, g2 with
@@ -422,3 +437,75 @@ let split_ctx g n =
   in
   find g []
 ;;
+
+module Print = struct
+  let pr_str ppf s = Format.fprintf ppf "%s" s
+  let pr_ctxvar ppf v = pr_str ppf v
+
+  let rec pr_strlst ppf = function
+    | [] -> ()
+    | [ s ] -> pr_str ppf s
+    | s :: lst -> Format.fprintf ppf "%a,@ %a" pr_str s pr_strlst lst
+  ;;
+
+  let rec pr_block ppf b =
+    match b with
+    | [] -> ()
+    | [ (v, tm) ] ->
+      Format.fprintf ppf "%a@,:@,%a" pr_str v.Term.name (Term.Print.pr_term []) tm
+    | (v, tm) :: b' ->
+      Format.fprintf
+        ppf
+        "%a@,:@,%a,@ %a"
+        pr_str
+        v.Term.name
+        (Term.Print.pr_term [])
+        tm
+        pr_block
+        b'
+  ;;
+
+  let rec pr_blocks ppf blocks =
+    match blocks with
+    | [] -> ()
+    | [ b ] -> Format.fprintf ppf "(%a)" pr_block b
+    | b :: blocks' -> Format.fprintf ppf "%a,@ (%a)" pr_block b pr_blocks blocks'
+  ;;
+
+  let pr_ctxty ppf (CtxTy (id, blocks)) =
+    Format.fprintf ppf "%a[%a]" pr_str id pr_blocks blocks
+  ;;
+
+  let pr_ctxvarlst ppf (ctx : CtxVarCtx.t) =
+    let lst =
+      CtxVarCtx.to_list ctx
+      |> List.filter (fun (v, _) -> v <> empty_ctx_var_name)
+      |> List.map (fun (v, (n, b)) -> v, (VarSet.to_id_list !n, b))
+    in
+    let rec aux ppf lst =
+      match lst with
+      | [] -> ()
+      | [ (id, (ns, ty)) ] ->
+        Format.fprintf ppf "%a{%a}@,:@,%a" pr_str id pr_strlst ns pr_ctxty ty
+      | (id, (ns, ty)) :: vs ->
+        Format.fprintf ppf "%a{%a}@,:@,%a,@ %a" pr_str id pr_strlst ns pr_ctxty ty aux vs
+    in
+    aux ppf lst
+  ;;
+
+  let pr_ctxentry ppf (v, tm) =
+    Format.fprintf ppf "%a@,:@,%a" Term.Print.pr_var v (Term.Print.pr_term []) tm
+  ;;
+
+  let rec pr_ctxexpr ppf = function
+    | Nil -> ()
+    | Var v -> Format.fprintf ppf "%s" v
+    | Ctx (Nil, entry) -> pr_ctxentry ppf entry
+    | Ctx (ctx, entry) -> Format.fprintf ppf "%a,@ %a" pr_ctxexpr ctx pr_ctxentry entry
+  ;;
+
+  let string_of_ctxexpr e =
+    pr_ctxexpr Format.str_formatter e;
+    Format.flush_str_formatter ()
+  ;;
+end

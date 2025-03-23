@@ -154,7 +154,7 @@ let apply_tests =
             ]
           in
           let f_res =
-            apply_with ~sub_rel:eval_sub_rel (Hashtbl.create 1) seq f args (vwiths, [])
+            apply_with ~sub_rel:eval_sub_rel seq f args (vwiths, [])
           in
           assert_pprint_equal "exists P3, {P3 : typeof (abs R) (arrow S T)}" f_res)
        ; ("Properly restricted"
@@ -208,7 +208,7 @@ let apply_tests =
             ]
           in
           let f_res =
-            apply_with ~sub_rel:eval_sub_rel (Hashtbl.create 1) seq f args (vwiths, [])
+            apply_with ~sub_rel:eval_sub_rel seq f args (vwiths, [])
           in
           assert_pprint_equal "exists P3, {P3 : typeof (abs R) (arrow S T)}" f_res)
        ; ("Needlessly restricted"
@@ -262,7 +262,7 @@ let apply_tests =
             ]
           in
           let f_res =
-            apply_with ~sub_rel:eval_sub_rel (Hashtbl.create 1) seq f args (vwiths, [])
+            apply_with ~sub_rel:eval_sub_rel  seq f args (vwiths, [])
           in
           assert_pprint_equal "exists P3, {P3 : typeof (abs R) (arrow S T)}" f_res)
        ; ("Improperly restricted"
@@ -316,7 +316,7 @@ let apply_tests =
             ]
           in
           assert_raises (Failure "Inductive restriction violated") (fun () ->
-            apply_with ~sub_rel:eval_sub_rel (Hashtbl.create 1) seq f args (vwiths, [])))
+            apply_with ~sub_rel:eval_sub_rel  seq f args (vwiths, [])))
        ; ("Improperly restricted (2)"
           >:: fun () ->
           let a = var Eigen "A" 0 ity in
@@ -369,7 +369,7 @@ let apply_tests =
             ]
           in
           assert_raises (Failure "Inductive restriction violated") (fun () ->
-            apply_with ~sub_rel:eval_sub_rel (Hashtbl.create 1) seq f args (vwiths, [])))
+            apply_with ~sub_rel:eval_sub_rel  seq f args (vwiths, [])))
        ; ("Properly double restricted"
           >:: fun () ->
           let a = var Eigen "A" 0 ity in
@@ -422,7 +422,7 @@ let apply_tests =
             ]
           in
           let f_res =
-            apply_with ~sub_rel:eval_sub_rel (Hashtbl.create 1) seq f args (vwiths, [])
+            apply_with ~sub_rel:eval_sub_rel  seq f args (vwiths, [])
           in
           assert_pprint_equal "exists P3, {P3 : typeof (abs R) (arrow S T)}" f_res)
        ; ("Improperly double restricted"
@@ -478,7 +478,7 @@ let apply_tests =
             ]
           in
           assert_raises (Failure "Inductive restriction violated") (fun () ->
-            apply_with ~sub_rel:eval_sub_rel (Hashtbl.create 1) seq f args (vwiths, [])))
+            apply_with ~sub_rel:eval_sub_rel  seq f args (vwiths, [])))
        ; ("Improperly double restricted (2)"
           >:: fun () ->
           let a = var Eigen "A" 0 ity in
@@ -531,7 +531,7 @@ let apply_tests =
             ]
           in
           assert_raises (Failure "Inductive restriction violated") (fun () ->
-            apply_with ~sub_rel:eval_sub_rel (Hashtbl.create 1) seq f args (vwiths, [])))
+            apply_with ~sub_rel:eval_sub_rel  seq f args (vwiths, [])))
        ; ("Failure to unify"
           >:: fun () ->
           let a = var Eigen "A" 0 ity in
@@ -582,7 +582,7 @@ let apply_tests =
               ]
             in
             let _ =
-              apply_with ~sub_rel:eval_sub_rel (Hashtbl.create 1) seq f args (vwiths, [])
+              apply_with ~sub_rel:eval_sub_rel  seq f args (vwiths, [])
             in
             assert_failure "Expected unification failure"
           with
@@ -668,7 +668,7 @@ let apply_tests =
               [ "E", Context.Ctx (Context.Var l, (term_to_var n1, Term.app hyp [ b ])) ]
             in
             let tbl = List.to_seq [ "c", schema ] |> Hashtbl.of_seq in
-            apply_with ~sub_rel:eval_sub_rel tbl seq f args (vwiths, cwiths)
+            apply_with ~sub_rel:eval_sub_rel ~schemas:tbl seq f args (vwiths, cwiths)
           in
           assert_pprint_equal "exists P3, {L, n1:hyp B |- P3 : conc C}" f_res)
        ; ("Cannot instantiate ctx var multiple times"

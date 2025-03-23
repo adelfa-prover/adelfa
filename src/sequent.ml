@@ -292,3 +292,50 @@ let eq sq1 sq2 =
   && sq1.name = sq2.name
   && sq1.next_subgoal_id = sq2.next_subgoal_id
 ;;
+
+module Print = struct
+  let pr_str ppf s = Format.fprintf ppf "%s" s
+
+  let pr_hyp ppf hyp =
+    if hyp.tag = Explicit
+    then Format.fprintf ppf "%a:@,%a" pr_str hyp.id Formula.Print.pr_formula hyp.formula
+    else ()
+  ;;
+
+  let rec pr_hyps ppf hyps =
+    match hyps with
+    | [] -> ()
+    | h :: hyps' -> Format.fprintf ppf "@[<4>%a@]@.%a" pr_hyp h pr_hyps hyps'
+  ;;
+
+  let pr_sequent ppf seq =
+    if seq.name = ""
+    then Format.fprintf ppf "@\n"
+    else Format.fprintf ppf "Subgoal %s:@\n@\n" seq.name;
+    let nvars = List.filter (fun (_, t) -> Term.is_var Term.Nominal t) seq.vars in
+    let evars = List.filter (fun (_, t) -> Term.is_var Term.Eigen t) seq.vars in
+    if evars = []
+    then ()
+    else
+      Format.fprintf
+        ppf
+        "Vars: @[<2>%a@]@."
+        Term.Print.pr_varlst
+        (List.filter Term.is_uninstantiated evars);
+    if nvars = []
+    then ()
+    else Format.fprintf ppf "Nominals: @[<2>%a@]@." Term.Print.pr_varlst nvars;
+    if Context.CtxVarCtx.is_empty seq.ctxvars
+    then ()
+    else Format.fprintf ppf "Contexts: @[<2>%a@]@." Context.Print.pr_ctxvarlst seq.ctxvars;
+    Format.fprintf ppf "@[%a@]@.==================================@." pr_hyps seq.hyps;
+    Format.fprintf ppf "%a@.@." Formula.Print.pr_formula seq.goal
+  ;;
+
+  let string_of_sequent s =
+    pr_sequent Format.str_formatter s;
+    Format.flush_str_formatter ()
+  ;;
+
+
+end

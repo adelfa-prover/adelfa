@@ -634,3 +634,178 @@ let convert_to_nominals bndrs used =
   in
   aux bndrs used
 ;;
+
+module Print = struct
+  let pr_var ppf v = Format.fprintf ppf "%s" v.name
+  let pr_str ppf s = Format.fprintf ppf "%s" s
+
+  let db_to_string cx0 i0 =
+    let rec spin cx i =
+      match cx, i with
+      | [], _ -> "x" ^ string_of_int (i0 - List.length cx0 + 1)
+      | name :: _, 1 -> name
+      | _ :: cx, _ -> spin cx (i - 1)
+    in
+    spin cx0 i0
+  ;;
+
+  let rec pr_term_literal ppf t =
+    match t with
+    | Var v -> Format.fprintf ppf "@[<2>Var(@,%a@,)@]" pr_var_literal v
+    | DB i -> Format.fprintf ppf "@[<2>DB(@,%a@,)@]" pr_str (string_of_int i)
+    | Lam (idtys, tm) ->
+      Format.fprintf ppf "@[<2>Lam(@,[%a],@,%a)@]" pr_idlst idtys pr_term_literal tm
+    | App (h, tms) ->
+      Format.fprintf ppf "@[<2>App(@,%a,@,[%a]@,)@]" pr_term_literal h pr_tmlst tms
+    | Pi (lfidtys, tm) ->
+      Format.fprintf ppf "@[<2>Pi(@,[%a],@,%a)@]" pr_lfidlst lfidtys pr_term_literal tm
+    | Type -> pr_str ppf "Type"
+    | Ptr p -> Format.fprintf ppf "@[<2>Ptr(@,%a@,)@]" pr_ptr_literal p
+    | Susp _ -> pr_term_literal ppf (hnorm t)
+
+  and pr_var_literal ppf v =
+    let string_of_tag = function
+      | Eigen -> "Eigen"
+      | Constant -> "Constant"
+      | Logic -> "Logic"
+      | Nominal -> "Nominal"
+    in
+    Format.fprintf
+      ppf
+      "name=%a,@,tag=%a,@,ts=%a,@,ty=%a"
+      pr_str
+      v.name
+      pr_str
+      (string_of_tag v.tag)
+      pr_str
+      (string_of_int v.ts)
+      Type.Print.pr_ty_literal
+      v.ty
+
+  and pr_ptr_literal ppf p =
+    match !p with
+    | V v -> Format.fprintf ppf "V(@,Var(%a))" pr_var_literal v
+    | T t -> Format.fprintf ppf "T(@,%a)" pr_term_literal t
+
+  and pr_lfidlst ppf lfidtys =
+    match lfidtys with
+    | [] -> Format.fprintf ppf "@,"
+    | [ (v, ty) ] -> Format.fprintf ppf "@,(%a,%a)@," pr_str v.name pr_term_literal ty
+    | (v, ty) :: lfidtys' ->
+      Format.fprintf
+        ppf
+        "@,(%a,%a)@,,%a"
+        pr_str
+        v.name
+        pr_term_literal
+        ty
+        pr_lfidlst
+        lfidtys'
+
+  and pr_idlst ppf idtys =
+    match idtys with
+    | [] -> Format.fprintf ppf "@,"
+    | [ (id, ty) ] -> Format.fprintf ppf "%a:%a" pr_str id Type.Print.pr_ty_literal ty
+    | (id, ty) :: idtys' ->
+      Format.fprintf
+        ppf
+        "%a:%a;@, %a"
+        pr_str
+        id
+        Type.Print.pr_ty_literal
+        ty
+        pr_idlst
+        idtys'
+
+  and pr_tmlst ppf tms =
+    match tms with
+    | [] -> Format.fprintf ppf "@,"
+    | [ tm ] -> pr_term_literal ppf tm
+    | tm :: tms' -> Format.fprintf ppf "%a;@, %a" pr_term_literal tm pr_tmlst tms'
+  ;;
+
+  let rec pr_term cx ppf t =
+    match observe (hnorm t) with
+    | Var v -> pr_var ppf v
+    | DB i -> pr_db cx ppf i
+    | Lam (idtys, tm) -> pr_lam cx ppf idtys tm
+    | App (h, tms) -> pr_app cx ppf h tms
+    | Pi (idtys, tm) -> pr_pi cx ppf idtys tm
+    | Type -> pr_str ppf "type"
+    | _ -> assert false
+
+  and pr_term' cx ppf t =
+    match observe (hnorm t) with
+    | Var v -> pr_var ppf v
+    | DB i -> pr_db cx ppf i
+    | Lam (idtys, tm) -> Format.fprintf ppf "(%a)" (fun ppf -> pr_lam cx ppf idtys) tm
+    | App _ -> Format.fprintf ppf "(%a)" (pr_term cx) t
+    | Pi (idtys, tm) -> pr_pi cx ppf idtys tm
+    | Type -> pr_str ppf "type"
+    | _ -> assert false
+
+  and pr_db cx ppf i = pr_str ppf (db_to_string cx i)
+
+  and pr_app cx ppf h tms =
+    let rec pr_args ppf tms =
+      match tms with
+      | [] -> ()
+      | t :: tms' -> Format.fprintf ppf "@ %a%a" (pr_term' cx) t pr_args tms'
+    in
+    Format.fprintf ppf "@[<hov 2>%a%a@]" (pr_term cx) h pr_args tms
+
+  and pr_lam cx ppf idtys tm =
+    let rec pr_bndr cx ppf idtys =
+      match idtys with
+      | [] -> pr_term cx ppf tm
+      | (n, _) :: idtys' ->
+        Format.fprintf ppf "@[<2>[@,%a@,]%a@]" pr_str n (pr_bndr (n :: cx)) idtys'
+    in
+    pr_bndr cx ppf idtys
+
+  and pr_pi cx ppf idtys tm =
+    let rec pr_bndr cx ppf idtys =
+      match idtys with
+      | [] -> pr_term cx ppf tm
+      | (v, k) :: idtys' ->
+        Format.fprintf
+          ppf
+          "@[<2>{@,%a@,:@,%a@,}%a@]"
+          pr_var
+          v
+          (pr_term cx)
+          k
+          (pr_bndr (v.name :: cx))
+          idtys'
+    in
+    pr_bndr cx ppf idtys
+  ;;
+
+  let string_of_term_literal tm =
+    pr_term_literal Format.str_formatter tm;
+    Format.flush_str_formatter ()
+  ;;
+
+  let string_of_term tm =
+    pr_term [] Format.str_formatter tm;
+    Format.flush_str_formatter ()
+  ;;
+
+  let rec pr_varlst ppf lst =
+    match lst with
+    | [] -> ()
+    | [ (id, t) ] ->
+      Format.fprintf ppf "%a@,:@,%a" pr_str id Type.Print.pr_ty (get_var_ty t)
+    (* pr_str ppf id *)
+    | (id, t) :: vs ->
+      Format.fprintf
+        ppf
+        "%a@,:@,%a,@ %a"
+        pr_str
+        id
+        Type.Print.pr_ty
+        (get_var_ty t)
+        pr_varlst
+        vs
+  ;;
+end

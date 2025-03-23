@@ -115,6 +115,9 @@ type schema_name = string
 (** [ctx_schema] is a context schema [block_schema] *)
 type ctx_schema = block_schema list
 
+val empty_ctx_var_name : string
+val empty_schema_name : string
+
 module CtxVarCtx : sig
   (** Context variable context for a sequent. *)
   module H = Extensions.Hashtbl
@@ -248,6 +251,9 @@ val get_explicit : ctx_expr -> (Term.var * Term.term) list
 (** [length g] returns the length of the context expression *)
 val length : ctx_expr -> int
 
+(** [is_empty g] returns true when the context expression is empty *)
+val is_empty : ctx_expr -> bool
+
 (** [context_prefix g1 g2] checks if [g1] is a prefix of [g2] *)
 val context_prefix : ctx_expr -> ctx_expr -> bool
 
@@ -282,3 +288,16 @@ val subordination_min : Subordination.sub_rel -> Term.id -> ctx_expr -> ctx_expr
     Returns the context to the left of n, the type of n, and the context
     to the right of n. Raises [Invalid_argument] if [n] is not in the context *)
 val split_ctx : ctx_expr -> Term.id -> ctx_expr * Term.term * entry list
+
+module Print : sig
+  val pr_str : Format.formatter -> string -> unit
+  val pr_ctxvar : Format.formatter -> string -> unit
+  val pr_strlst : Format.formatter -> string list -> unit
+  val pr_block : Format.formatter -> (Term.var * Term.term) list -> unit
+  val pr_blocks : Format.formatter -> (Term.var * Term.term) list list -> unit
+  val pr_ctxty : Format.formatter -> ctx_typ -> unit
+  val pr_ctxvarlst : Format.formatter -> CtxVarCtx.t -> unit
+  val pr_ctxentry : Format.formatter -> Term.var * Term.term -> unit
+  val pr_ctxexpr : Format.formatter -> ctx_expr -> unit
+  val string_of_ctxexpr : ctx_expr -> string
+end

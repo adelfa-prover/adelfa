@@ -1509,7 +1509,16 @@ let rec instantiate_withs term (vwiths, cwiths) =
   | _ -> term
 ;;
 
-let apply_with schemas ~sub_rel sequent formula args (vwiths, cwiths) =
+let apply_with ?schemas ~sub_rel sequent formula args (vwiths, cwiths) =
+  let schemas =
+    Option.default
+      (Hashtbl.create 1
+       |> fun h ->
+       Hashtbl.add h Context.empty_schema_name [];
+       h)
+      schemas
+  in
+  (* let formula = Formula.lift_empty_ctx formula in *)
   if args = [] && vwiths = [] && cwiths = []
   then formula
   else (

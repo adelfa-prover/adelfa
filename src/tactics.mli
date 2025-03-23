@@ -82,7 +82,7 @@ val apply
   -> Formula.formula
 
 val apply_with
-  :  (string, Context.ctx_schema) Hashtbl.t
+  :  ?schemas:(string, Context.ctx_schema) Hashtbl.t
   -> sub_rel:Subordination.sub_rel
   -> Sequent.sequent
   -> Formula.formula

@@ -39,7 +39,7 @@ let rec explain_failure = function
   | MatchingFormula form ->
     Format.asprintf
       "@[<hv>@[Failed@ while@ matching@ formula:@]@ @[<1>%a@]"
-      Print.pr_formula
+      Formula.Print.pr_formula
       form
   | ContextFail s -> s
 ;;

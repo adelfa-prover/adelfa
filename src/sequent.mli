@@ -64,3 +64,11 @@ val normalize_hyps : sequent -> unit
 val make_sequent_from_goal : ?name:string -> form:Formula.formula -> unit -> sequent
 val replace_seq_vars : (Term.id * Term.term) list -> sequent -> unit
 val eq : sequent -> sequent -> bool
+
+module Print : sig
+  val pr_str : Format.formatter -> string -> unit
+  val pr_hyp : Format.formatter -> hyp -> unit
+  val pr_hyps : Format.formatter -> hyp list -> unit
+  val pr_sequent : Format.formatter -> sequent -> unit
+  val string_of_sequent : sequent -> string
+end

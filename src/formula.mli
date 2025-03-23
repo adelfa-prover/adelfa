@@ -131,3 +131,14 @@ val formula_support_sans : CtxVarCtx.t -> formula -> term list
       must be only the body of a formula to avoid capturing inner
       quantified names of [var]. *)
 val occurs_negatively : Context.ctx_var -> formula -> bool
+module Print : sig
+  val pr_str : Format.formatter -> string -> unit
+  val pr_ann : Format.formatter -> annotation -> unit
+  val pr_ctxbndrs : Format.formatter -> (string * string) list -> unit
+  val pr_allbndrs : Format.formatter -> (string * 'a) list -> unit
+  val pr_existsbndrs : Format.formatter -> (string * 'a) list -> unit
+  val pr_formula : Format.formatter -> formula -> unit
+  val pr_typing_judgement : Format.formatter -> formula -> unit
+  val pr_propargs : Format.formatter -> Term.term list -> unit
+  val string_of_formula : formula -> string
+end
