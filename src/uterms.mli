@@ -49,7 +49,9 @@ type depth =
   | DefaultDepth
   | WithDepth of int
 
-type setting = SearchDepth of int
+type setting = 
+  | SearchDepth of int
+  | SchemaSub of bool
 
 val is_cws : uwith -> bool
 val unwrap_cws : uwith -> id * uctx

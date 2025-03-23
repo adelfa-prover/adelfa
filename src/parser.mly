@@ -50,7 +50,7 @@
 %token SKIP ABORT UNDO LEFT RIGHT WEAKEN PERMUTECTX PERMUTE STRENGTHEN INST
 %token SPLIT KEEP SPECIFICATION SEMICOLON
 %token THEOREM SCHEMA DEFINE SET
-%token SEARCHDEPTH
+%token SEARCHDEPTH SCHEMASUB
 %token QUIT
 %token COLON RARROW RLARROW CTX FORALL EXISTS STAR AT BY
 %token OR AND
@@ -106,9 +106,12 @@ id:
   | BY            { "by" }
   | SET           { "Set" }
   | SEARCHDEPTH   { "search_depth" }
+  | SCHEMASUB     { "schema_sub" }
 
 setting:
   | SEARCHDEPTH NUM { Uterms.SearchDepth ($2) }
+  | SCHEMASUB TRUE { Uterms.SchemaSub (true) }
+  | SCHEMASUB FALSE { Uterms.SchemaSub (false) }
 
 setting_list:
   | setting COMMA setting_list

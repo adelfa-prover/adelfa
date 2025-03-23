@@ -1,0 +1,23 @@
+nat : type.
+z : nat.
+s : {x:nat} nat.
+
+plus : {x1:nat}{x2:nat}{x3:nat} type.
+plus-z : {x: nat} plus z x x.
+plus-s : {x1:nat}{x2:nat}{x3:nat}
+         {D: plus x1 x2 x3} plus (s x1) x2 (s x3).
+
+tm : type.
+
+app : {E1:tm}{E2:tm} tm.
+lam : {E: {x:tm} tm} tm.
+
+size : {E:tm}{x:nat} type.
+size-lam : {E: {y:tm} tm}{X:nat}
+           {D:{x:tm} {dx: size x (s z)} size (E x) X}
+           size (lam ([x] E x)) (s X).
+size-app : {E1:tm}{E2:tm}{X1:nat}{X2:nat}{X3:nat}
+           {D1: size E1 X1}
+           {D2: size E2 X2}
+           {D3: plus X1 X2 X3}
+           size (app E1 E2) (s X3).

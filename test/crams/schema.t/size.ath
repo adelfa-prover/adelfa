@@ -1,0 +1,35 @@
+Specification "size.lf".
+
+Theorem plus-exist : forall N1 N2,
+  {N1: nat} => {N2:nat} => exists N3 D, {D: plus N1 N2 N3}.
+induction on 1.
+intros.
+case H1.
+apply IH to H3 H2.
+exists s N3.
+exists plus-s x N2 N3 D.
+search.
+exists N2.
+exists plus-z N2. search.
+
+Schema c := (A: tm, y: size A (s z)).
+
+Theorem tm-has-size : ctx G:c, forall E,
+  {G |- E : tm} => exists D N, {G |- D: size E N}.
+induction on 1. intros.
+case H1 (keep).
+weaken H2 with size n (s z).
+apply IH to H3 with (G = G, n1:tm, n:size n1 (s z)).
+assert { G, n1:tm, n:size n1 (s z) |- N n1 n : nat }.
+prune H5.
+strengthen H5. strengthen H6.
+exists size-lam ([x] E1 x) N D.
+exists (s N). search.
+apply IH to H2.
+apply IH to H3.
+assert { G |- N : nat }.
+assert { G |- N1 : nat }.
+% USE: empty => c
+apply plus-exist to H6 H7.
+exists size-app E1 E2 N N1 N3 D D1 D2. exists (s N3). search.
+exists n1. exists (s z). search.

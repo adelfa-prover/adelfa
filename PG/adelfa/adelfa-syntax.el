@@ -44,8 +44,8 @@
     ;; (regexp-opt '("Define" "Theorem" "by") 'words)
     ("\\<\\(Define\\|Theorem\\|by\\)\\>"
      . font-lock-keyword-face)
-    ;; (regexp-opt '("search" "intros" "split" "left" "right" "apply" "induction" "exists" "case" "to" "on" "keep" "with" "search_depth") 'words)
-    ("\\<\\(apply\\|case\\|exists\\|in\\(?:duction\\|tros\\)\\|keep\\|left\\|on\\|right\\|s\\(?:earch\\(?:_depth\\)?\\|plit\\)\\|to\\|with\\)\\>"
+    ;; (regexp-opt '("search" "intros" "split" "left" "right" "apply" "induction" "exists" "case" "to" "on" "keep" "with" "search_depth" "schema_sub") 'words)
+    ("\\<\\(apply\\|case\\|exists\\|in\\(?:duction\\|tros\\)\\|keep\\|left\\|on\\|right\\|s\\(?:chema_sub\\|earch\\(?:_depth\\)?\\|plit\\)\\|to\\|with\\)\\>"
      . font-lock-function-name-face)
     ;; (regexp-opt '("weaken" "strengthen" "ctxpermute" "inst" "prune" "unfold" "applydfn" "permute") 'words)
     ("\\<\\(applydfn\\|ctxpermute\\|inst\\|p\\(?:\\(?:ermut\\|run\\)e\\)\\|strengthen\\|unfold\\|weaken\\)\\>"

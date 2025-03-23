@@ -535,7 +535,7 @@ let rec replace_ctx_vars ctxvar_subst f =
 ;;
 
 let get_compatible_context_schemas schemas sub_rel f =
-  let rec collect_bindings f =
+  let rec collect_bindings (f : formula) : (Context.ctx_var * Context.schema_name) list =
     match norm f with
     | Ctx (cvars, f') -> cvars @ collect_bindings f'
     | All (_, f') -> collect_bindings f'
@@ -552,6 +552,52 @@ let get_compatible_context_schemas schemas sub_rel f =
       |> List.map fst
   in
   collect_bindings f |> List.map (fun x -> fst x, get_compatible_schemas x)
+;;
+
+let lift_empty_ctx (f : formula) : formula =
+  let rec should_quantify f =
+    match f with
+    | Top | Bottom | Prop (_, _) -> false
+    | Atm (Context.Nil, _, _, _) -> true
+    | Atm (_, _, _, _) -> false
+    | Ctx (_, f') | All (_, f') | Exists (_, f') -> should_quantify f'
+    | Imp (f1, f2) | And (f1, f2) | Or (f1, f2) ->
+      should_quantify f1 || should_quantify f2
+  in
+  let rec aux f =
+    match f with
+    | Top | Bottom | Prop (_, _) -> f
+    | Atm (Context.Nil, m, a, ann) ->
+      Atm (Context.Var Context.empty_ctx_var_name, m, a, ann)
+    | Atm (g, m, a, ann) -> Atm (g, m, a, ann)
+    | Ctx (bs, f') -> Ctx (bs, aux f')
+    | All (bs, f') -> All (bs, aux f')
+    | Exists (bs, f') -> Exists (bs, aux f')
+    | Imp (f1, f2) -> Imp (aux f1, aux f2)
+    | And (f1, f2) -> And (aux f1, aux f2)
+    | Or (f1, f2) -> Or (aux f1, aux f2)
+  in
+  if should_quantify f
+  then Ctx ([ Context.empty_ctx_var_name, Context.empty_schema_name ], aux f)
+  else f
+;;
+
+let lower_ctx (f : formula) : formula =
+  let rec aux f =
+    match f with
+    | Top | Bottom | Prop (_, _) -> f
+    | Atm (Context.Var v, m, a, ann)
+      when String.starts_with ~prefix:Context.empty_ctx_var_name v ->
+      Atm (Context.Nil, m, a, ann)
+    | Atm (g, m, a, ann) -> Atm (g, m, a, ann)
+    | Ctx (bs, f') -> Ctx (bs, aux f')
+    | All (bs, f') -> All (bs, aux f')
+    | Exists (bs, f') -> Exists (bs, aux f')
+    | Imp (f1, f2) -> Imp (aux f1, aux f2)
+    | And (f1, f2) -> And (aux f1, aux f2)
+    | Or (f1, f2) -> Or (aux f1, aux f2)
+  in
+  aux f
 ;;
 
 let occurs_negatively (ctx_var : ctx_var) (f : formula) =

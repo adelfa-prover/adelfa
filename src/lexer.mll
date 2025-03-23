@@ -46,6 +46,7 @@
 
     "Set",           SET ;
     "search_depth",  SEARCHDEPTH ;
+    "schema_sub",    SCHEMASUB;
   ] ;;
 
   let incrline lexbuf =

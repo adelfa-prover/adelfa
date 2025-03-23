@@ -1437,12 +1437,10 @@ let apply_arrow
  * and adds the resulting formula to the sequent. *)
 let apply schemas ~sub_rel sequent formula args =
   let process_bindings ctxs compatible_schemas foralls body =
-    let mapping, new_ctxvars, body' =
-      freshen_ctx_bindings
-        (Context.CtxVarCtx.map_entries Context.CtxVarCtx.get_id sequent.ctxvars)
-        ctxs
-        body
+    let ctx_vars =
+      Context.CtxVarCtx.map_entries Context.CtxVarCtx.get_id sequent.ctxvars
     in
+    let mapping, new_ctxvars, body' = freshen_ctx_bindings ctx_vars ctxs body in
     let fresh_compat =
       List.map (fun (src, dest) -> dest, List.assoc src compatible_schemas) mapping
       |> List.filter (fun (src, _) -> Formula.occurs_negatively src body')

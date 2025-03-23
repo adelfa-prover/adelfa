@@ -1,7 +1,7 @@
 exception ProofCompleted
 
 (** [prover_settings] stores modifiable preferences the user has. *)
-type prover_settings = { mutable search_depth : int }
+type prover_settings = { mutable search_depth : int; mutable schema_sub : bool }
 
 (** [change_settings sets] will modify the [prover_settings] based on [sets]
     values. The application of settings is done in left-to-right order *)

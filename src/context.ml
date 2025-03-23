@@ -344,7 +344,7 @@ let length ctx =
 let is_empty (ctx : ctx_expr) : bool =
   match ctx with
   | Nil -> true
-  | Var _ -> false
+  | Var g -> g = empty_ctx_var_name
   | Ctx (_, _) -> false
 ;;
 

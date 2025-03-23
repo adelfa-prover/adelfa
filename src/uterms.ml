@@ -73,7 +73,9 @@ type depth =
   | DefaultDepth
   | WithDepth of int
 
-type setting = SearchDepth of int
+type setting =
+  | SearchDepth of int
+  | SchemaSub of bool
 
 let is_cws = function
   | Cws _ -> true
@@ -276,6 +278,7 @@ module Print = struct
 
   and pr_setting ppf = function
     | SearchDepth v -> Format.fprintf ppf "search_depth %a" pr_str (string_of_int v)
+    | SchemaSub b -> Format.fprintf ppf "schema_sub %a" pr_str (string_of_bool b)
 
   and pr_settings ppf settings =
     match settings with

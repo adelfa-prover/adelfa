@@ -16,7 +16,10 @@ exception ProofCompleted
     8. The induction count
     **)
 
-type prover_settings = { mutable search_depth : int }
+type prover_settings =
+  { mutable search_depth : int
+  ; mutable schema_sub : bool
+  }
 
 (* 1. The currently loaded LF signature *)
 let lf_sig = State.rref Signature.empty
@@ -37,7 +40,7 @@ let has_sig () = !lf_sig = Signature.empty |> not
 (* 2. The available context schemas *)
 let schemas : (string, Context.ctx_schema) H.t =
   let h = State.table () in
-  H.add h Context.empty_schema_name [];
+  H.add h Context.empty_schema_name [ Context.B ([], []) ];
   h
 ;;
 
@@ -119,11 +122,18 @@ let add_definition (id, dfn) =
 
 (* 7. The current settings *)
 (* How deep to extract types from hypotheses  *)
-let copy_settings ss = { search_depth = ss.search_depth }
-let set_setting_state s1 s2 = s1.search_depth <- s2.search_depth
+let copy_settings ss = { search_depth = ss.search_depth; schema_sub = ss.schema_sub }
+
+let set_setting_state s1 s2 =
+  s1.search_depth <- s2.search_depth;
+  s1.schema_sub <- s2.schema_sub
+;;
 
 let settings =
-  State.make ~copy:copy_settings ~assign:set_setting_state { search_depth = 5 }
+  State.make
+    ~copy:copy_settings
+    ~assign:set_setting_state
+    { search_depth = 5; schema_sub = true }
 ;;
 
 let depth_or_default depth =
@@ -146,6 +156,7 @@ let change_settings sets =
   let aux setting =
     match setting with
     | Uterms.SearchDepth v -> settings.search_depth <- v
+    | Uterms.SchemaSub b -> settings.schema_sub <- b
   in
   List.iter aux sets
 ;;
@@ -414,7 +425,9 @@ let ensure_no_logic_variable ctxvarctx f =
 let ensure_no_uninst_ctxvariable (ctxvarctx : Context.CtxVarCtx.t) f =
   let ctx_vars =
     List.filter
-      (fun ctxvar -> not (Context.CtxVarCtx.mem ctxvarctx ctxvar))
+      (fun ctxvar ->
+        (not (Context.CtxVarCtx.mem ctxvarctx ctxvar))
+        && not (String.starts_with ~prefix:Context.empty_ctx_var_name ctxvar))
       (Formula.get_formula_used_ctxvars f)
   in
   if ctx_vars <> []
@@ -429,7 +442,11 @@ let ensure_no_uninst_ctxvariable (ctxvarctx : Context.CtxVarCtx.t) f =
             f))
 ;;
 
-let find_lemma_opt name = H.find_opt lemmas name
+let find_lemma_opt name =
+  let* f = H.find_opt lemmas name in
+  let r = if settings.schema_sub then Formula.lift_empty_ctx f else f in
+  Some r
+;;
 
 let find_by_name name =
   match find_lemma_opt name with
@@ -450,6 +467,7 @@ let apply_form f forms uws =
   (* let f' = freshen_formula_names (Formula.copy_formula f) withs in *)
   (* let res_f = Tactics.apply_with !schemas sequent f' forms withs in *)
   let res_f = Tactics.apply_with ~schemas ~sub_rel:!sub_rel sequent f forms withs in
+  let res_f = Formula.lower_ctx res_f in
   let () = ensure_no_uninst_ctxvariable sequent.Sequent.ctxvars res_f in
   let () = ensure_no_logic_variable sequent.Sequent.ctxvars res_f in
   res_f
