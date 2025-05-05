@@ -37,38 +37,6 @@ let maybe_guard ?guard f =
   | Some g -> g f
 ;;
 
-module Option = struct
-  let is_some x =
-    match x with
-    | Some _ -> true
-    | None -> false
-  ;;
-
-  let is_none x =
-    match x with
-    | Some _ -> false
-    | None -> true
-  ;;
-
-  let get x =
-    match x with
-    | Some v -> v
-    | None -> failwith "Option.get called on None"
-  ;;
-
-  let map_default f default x =
-    match x with
-    | Some v -> f v
-    | None -> default
-  ;;
-
-  let default default x =
-    match x with
-    | Some v -> v
-    | None -> default
-  ;;
-end
-
 module String = struct
   include String
 

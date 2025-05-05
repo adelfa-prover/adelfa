@@ -224,13 +224,14 @@ let rec collect_vars_ctx = function
 ;;
 
 (* Variable Renaming *)
-let rec collect_terms ctxvars = function
+let rec collect_terms ?(cond = fun _ -> true) ctxvars = function
   | Top | Bottom -> []
-  | Imp (l, r) | Or (l, r) | And (l, r) ->
-    collect_terms ctxvars l @ collect_terms ctxvars r
-  | Atm (g, m, a, _) -> collect_terms_ctx ctxvars g @ [ m; a ]
-  | All (_, f) | Exists (_, f) | Ctx (_, f) -> collect_terms ctxvars f
-  | Prop (_, tmlst) -> tmlst
+  | (Imp (l, r) | Or (l, r) | And (l, r)) as f ->
+    if cond f then collect_terms ctxvars l @ collect_terms ctxvars r else []
+  | Atm (g, m, a, _) as f -> if cond f then collect_terms_ctx ctxvars g @ [ m; a ] else []
+  | (All (_, f') | Exists (_, f') | Ctx (_, f')) as f ->
+    if cond f then collect_terms ctxvars f' else []
+  | Prop (_, tmlst) as f -> if cond f then tmlst else []
 
 and collect_terms_ctx ctxvars = function
   | Nil -> []
@@ -476,7 +477,7 @@ let block_sim f ctx_var sub_rel b1 b2 =
     | Atm (g, _, a, _) when g = Context.Var ctx_var ->
       Context.block_eq_sub sub_rel (Term.get_ty_head a) b1 b2
     (* Only supports contexts which only contain a context variable *)
-    | Atm (g, _, _, _) when Context.get_ctx_var g = ctx_var -> false
+    | Atm (g, _, _, _) when Context.get_ctx_var_opt g = Some ctx_var -> false
     | Atm _ -> true
     | Ctx (cvars, f) -> List.exists (fun (cv, _) -> cv = ctx_var) cvars || aux f
     | All (_, f) | Exists (_, f) -> aux f
@@ -484,20 +485,41 @@ let block_sim f ctx_var sub_rel b1 b2 =
   aux f
 ;;
 
-let block_in_schema_sub f ctx_var sub_rel b c =
-  let get_block_types (B (_, entries)) =
-    List.map (fun (_, t) -> Term.get_ty_head t) entries
+let block_in_schema_sub
+  ~(dest_block : Context.block_schema)
+  ~(src_schema : Context.ctx_schema)
+  (f : formula)
+  (ctx_var : ctx_var)
+  (sub_rel : Subordination.sub_rel)
+  =
+  let remove_ctx_bindings s = function
+    | Ctx (b, f') -> List.filter (fun (v, _) -> v <> s) b |> fun x -> Ctx (x, f')
+    | _ as f -> f
   in
-  let context_types = List.flatten_map get_block_types c in
+  let get_block_types (B (_, entries)) = List.map (Term.get_ty_head << snd) entries in
+  let context_types = List.flatten_map get_block_types src_schema in
+  let f' = remove_ctx_bindings ctx_var f in
   List.exists
     (fun schema_block ->
-      block_prefix_sub sub_rel context_types schema_block b
-      && block_sim f ctx_var sub_rel b schema_block)
-    c
+      block_prefix_sub sub_rel context_types schema_block dest_block
+      && block_sim f' ctx_var sub_rel schema_block dest_block)
+    src_schema
 ;;
 
-let schema_transports f ctx_var sub_rel c1 c2 =
-  List.for_all (fun block -> block_in_schema_sub f ctx_var sub_rel block c2) c1
+let schema_transports
+  ~(src_schema : Context.ctx_schema)
+  ~(dest_schema : Context.ctx_schema)
+  ~(ctx_var : Context.ctx_var)
+  (sub_rel : Subordination.sub_rel)
+  (f : formula)
+  =
+  let src_schema = Context.B ([],[]) :: src_schema in
+  (* For every block in the schema we are trying to transport validity to, it
+     must be the case that it has a corresponding block in the source schema which
+     it can map to*)
+  List.for_all
+    (fun block -> block_in_schema_sub ~dest_block:block ~src_schema f ctx_var sub_rel)
+    dest_schema
 ;;
 
 (* Apply the given context variable substitution within the given formula. *)
@@ -534,22 +556,37 @@ let rec replace_ctx_vars ctxvar_subst f =
     else f
 ;;
 
-let get_compatible_context_schemas schemas sub_rel f =
+let get_compatible_context_schemas
+  (sequent_schemas : (Context.ctx_var * Context.ctx_schema) list)
+  sub_rel
+  f
+  =
   let rec collect_bindings (f : formula) : (Context.ctx_var * Context.schema_name) list =
     match norm f with
     | Ctx (cvars, f') -> cvars @ collect_bindings f'
-    | All (_, f') -> collect_bindings f'
+    | All (_, f') | Exists (_, f') -> collect_bindings f'
+    | Or (f1, f2) | And (f1, f2) | Imp (f1, f2) ->
+      collect_bindings f1 @ collect_bindings f2
     | _ -> []
   in
-  let get_compatible_schemas (ctx_var, schema_name) =
-    let ctx_var_schema = List.assoc_opt schema_name schemas in
-    match ctx_var_schema with
-    | None -> []
-    | Some ctx_var_schema ->
-      schemas
-      |> List.filter (fun (_, schema) ->
-        schema_transports f ctx_var sub_rel schema ctx_var_schema)
-      |> List.map fst
+  let get_compatible_schemas
+    ((ctx_var, schema_name) : Context.ctx_var * Context.schema_name)
+    =
+    (* Get the schema associated with the var in the formula *)
+    List.assoc_opt schema_name sequent_schemas
+    |> Option.fold ~none:[] ~some:(fun ctx_var_schema ->
+      (* Look through all other schemas in scope, and see if the schema for the
+         bound context variable will transport to them *)
+      sequent_schemas
+      |> List.filter_map (fun (v, schema_in_scope) ->
+        if schema_transports
+             ~ctx_var
+             ~dest_schema:schema_in_scope
+             ~src_schema:ctx_var_schema
+             sub_rel
+             f
+        then Some v
+        else None))
   in
   collect_bindings f |> List.map (fun x -> fst x, get_compatible_schemas x)
 ;;

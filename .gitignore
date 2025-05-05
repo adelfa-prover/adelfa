@@ -15,6 +15,7 @@ _coverage
 
 # Executable
 adelfa
+!PG/adelfa
 
 # Distribution
 adelfa.tar

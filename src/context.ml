@@ -284,6 +284,78 @@ module CtxVarCtx = struct
   ;;
 end
 
+module Print = struct
+  let pr_str ppf s = Format.fprintf ppf "%s" s
+  let pr_ctxvar ppf v = pr_str ppf v
+
+  let rec pr_strlst ppf = function
+    | [] -> ()
+    | [ s ] -> pr_str ppf s
+    | s :: lst -> Format.fprintf ppf "%a,@ %a" pr_str s pr_strlst lst
+  ;;
+
+  let rec pr_block ppf b =
+    match b with
+    | [] -> ()
+    | [ (v, tm) ] ->
+      Format.fprintf ppf "%a@,:@,%a" pr_str v.Term.name (Term.Print.pr_term []) tm
+    | (v, tm) :: b' ->
+      Format.fprintf
+        ppf
+        "%a@,:@,%a,@ %a"
+        pr_str
+        v.Term.name
+        (Term.Print.pr_term [])
+        tm
+        pr_block
+        b'
+  ;;
+
+  let rec pr_blocks ppf blocks =
+    match blocks with
+    | [] -> ()
+    | [ b ] -> Format.fprintf ppf "(%a)" pr_block b
+    | b :: blocks' -> Format.fprintf ppf "%a,@ (%a)" pr_block b pr_blocks blocks'
+  ;;
+
+  let pr_ctxty ppf (CtxTy (id, blocks)) =
+    Format.fprintf ppf "%a[%a]" pr_str id pr_blocks blocks
+  ;;
+
+  let pr_ctxvarlst ppf (ctx : CtxVarCtx.t) =
+    let lst =
+      CtxVarCtx.to_list ctx
+      |> List.filter (fun (v, _) -> v <> empty_ctx_var_name)
+      |> List.map (fun (v, (n, b)) -> v, (VarSet.to_id_list !n, b))
+    in
+    let rec aux ppf lst =
+      match lst with
+      | [] -> ()
+      | [ (id, (ns, ty)) ] ->
+        Format.fprintf ppf "%a{%a}@,:@,%a" pr_str id pr_strlst ns pr_ctxty ty
+      | (id, (ns, ty)) :: vs ->
+        Format.fprintf ppf "%a{%a}@,:@,%a,@ %a" pr_str id pr_strlst ns pr_ctxty ty aux vs
+    in
+    aux ppf lst
+  ;;
+
+  let pr_ctxentry ppf (v, tm) =
+    Format.fprintf ppf "%a@,:@,%a" Term.Print.pr_var v (Term.Print.pr_term []) tm
+  ;;
+
+  let rec pr_ctxexpr ppf = function
+    | Nil -> ()
+    | Var v -> Format.fprintf ppf "%s" v
+    | Ctx (Nil, entry) -> pr_ctxentry ppf entry
+    | Ctx (ctx, entry) -> Format.fprintf ppf "%a,@ %a" pr_ctxexpr ctx pr_ctxentry entry
+  ;;
+
+  let string_of_ctxexpr e =
+    pr_ctxexpr Format.str_formatter e;
+    Format.flush_str_formatter ()
+  ;;
+end
+
 let rec ctxexpr_to_ctx ctxvars e =
   match e with
   | Nil -> []
@@ -361,16 +433,19 @@ let rec context_prefix g1 g2 =
 ;;
 
 let entries_alpha_eq mappings (v1, e1) (v2, e2) =
-  let* mappings = Term.alpha_eq (Term.var_to_term v1) (Term.var_to_term v2) mappings in
-  let* mappings = Term.alpha_eq e1 e2 mappings in
-  return mappings
+  Term.alpha_eq (Term.var_to_term v1) (Term.var_to_term v2) mappings
+  |> Option.map (Term.alpha_eq e1 e2)
+  |> Option.join
 ;;
 
-let block_prefix_sub sub_rel tys b1 b2 =
+let block_prefix_sub
+  (sub_rel : Subordination.sub_rel)
+  (tys : Term.id list)
+  (b1 : block_schema)
+  (b2 : block_schema)
+  =
   let subordinates_no_types (_, entry) =
-    List.for_all
-      (fun t -> Subordination.subordinates sub_rel (Term.get_ty_head entry) t |> not)
-      tys
+    List.for_all (Subordination.subordinates sub_rel (Term.get_ty_head entry) >> not) tys
   in
   let rec aux b1 b2 mapping =
     match b1, b2 with
@@ -437,75 +512,3 @@ let split_ctx g n =
   in
   find g []
 ;;
-
-module Print = struct
-  let pr_str ppf s = Format.fprintf ppf "%s" s
-  let pr_ctxvar ppf v = pr_str ppf v
-
-  let rec pr_strlst ppf = function
-    | [] -> ()
-    | [ s ] -> pr_str ppf s
-    | s :: lst -> Format.fprintf ppf "%a,@ %a" pr_str s pr_strlst lst
-  ;;
-
-  let rec pr_block ppf b =
-    match b with
-    | [] -> ()
-    | [ (v, tm) ] ->
-      Format.fprintf ppf "%a@,:@,%a" pr_str v.Term.name (Term.Print.pr_term []) tm
-    | (v, tm) :: b' ->
-      Format.fprintf
-        ppf
-        "%a@,:@,%a,@ %a"
-        pr_str
-        v.Term.name
-        (Term.Print.pr_term [])
-        tm
-        pr_block
-        b'
-  ;;
-
-  let rec pr_blocks ppf blocks =
-    match blocks with
-    | [] -> ()
-    | [ b ] -> Format.fprintf ppf "(%a)" pr_block b
-    | b :: blocks' -> Format.fprintf ppf "%a,@ (%a)" pr_block b pr_blocks blocks'
-  ;;
-
-  let pr_ctxty ppf (CtxTy (id, blocks)) =
-    Format.fprintf ppf "%a[%a]" pr_str id pr_blocks blocks
-  ;;
-
-  let pr_ctxvarlst ppf (ctx : CtxVarCtx.t) =
-    let lst =
-      CtxVarCtx.to_list ctx
-      |> List.filter (fun (v, _) -> v <> empty_ctx_var_name)
-      |> List.map (fun (v, (n, b)) -> v, (VarSet.to_id_list !n, b))
-    in
-    let rec aux ppf lst =
-      match lst with
-      | [] -> ()
-      | [ (id, (ns, ty)) ] ->
-        Format.fprintf ppf "%a{%a}@,:@,%a" pr_str id pr_strlst ns pr_ctxty ty
-      | (id, (ns, ty)) :: vs ->
-        Format.fprintf ppf "%a{%a}@,:@,%a,@ %a" pr_str id pr_strlst ns pr_ctxty ty aux vs
-    in
-    aux ppf lst
-  ;;
-
-  let pr_ctxentry ppf (v, tm) =
-    Format.fprintf ppf "%a@,:@,%a" Term.Print.pr_var v (Term.Print.pr_term []) tm
-  ;;
-
-  let rec pr_ctxexpr ppf = function
-    | Nil -> ()
-    | Var v -> Format.fprintf ppf "%s" v
-    | Ctx (Nil, entry) -> pr_ctxentry ppf entry
-    | Ctx (ctx, entry) -> Format.fprintf ppf "%a,@ %a" pr_ctxexpr ctx pr_ctxentry entry
-  ;;
-
-  let string_of_ctxexpr e =
-    pr_ctxexpr Format.str_formatter e;
-    Format.flush_str_formatter ()
-  ;;
-end

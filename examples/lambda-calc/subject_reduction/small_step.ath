@@ -21,8 +21,6 @@ Theorem subject_reduction_wsscbv : ctx Gamma:c, forall M1 M2 T D1 D2,
   % app2 case.
   case H1.
   apply IH to H13 H7.
-  %QUESTION: H14 has an eigenvariable without it being in the context. prune?
-  %QUESTION: Shouldn't prune work in this scenario?
   prune H14.
   exists of_app (lam T1 ([x] R x)) M4 T D4 D5 (D1 n).
   assert {Gamma |- M4 : tm}. search.

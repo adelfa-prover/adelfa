@@ -85,7 +85,10 @@ let rename_vars alist (t : term) =
        | { contents = V v } ->
          Ptr
            { contents =
-               V { v with name = Option.default v.name (List.assoc_opt v.name alist) }
+               V
+                 { v with
+                   name = Option.value ~default:v.name (List.assoc_opt v.name alist)
+                 }
            }
        | { contents = T t } -> Ptr { contents = T (aux t) })
     | Pi (bndrs, t') -> Pi (bndrs, aux t')

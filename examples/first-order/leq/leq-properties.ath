@@ -112,12 +112,12 @@ apply leq-monotonic-plus-r to H4 H1 H5.
 exists E.
 search.
 
-Theorem leq-monotonic-plus : forall x1 x2 x3 x4 x13 x24 D1 D2 D3 D4,
+Theorem leq-monotonic-plus : forall x1 x2 x3 x4 x13 x23 x24 D1 D2 D3 D4 D5,
   {D1: leq x1 x2} => {D2: leq x3 x4} =>
   {D3: plus x1 x3 x13} => {D4: plus x2 x4 x24} =>
+  {D5: plus x2 x3 x23} =>
   exists E, {E: leq x13 x24}.
 intros.
-apply plus-exist to leq-
 apply leq-monotonic-plus-l to H1 H3 H5.
 apply leq-monotonic-plus-r to H5 H2 H4.
 apply leq-transitive to H6 H7.

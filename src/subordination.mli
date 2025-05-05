@@ -21,5 +21,5 @@ val subordinates : sub_rel -> Sig.id -> Sig.id -> bool
 module Print : sig
   val pr_str : Format.formatter -> string -> unit
   val pr_strlst : Format.formatter -> string list -> unit
-  val pr_sub_rel : Format.formatter -> (string * string list) list -> unit
+  val pr_sub_rel : Format.formatter -> sub_rel -> unit
 end

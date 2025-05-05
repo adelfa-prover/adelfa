@@ -293,8 +293,8 @@ module Print : sig
   val pr_str : Format.formatter -> string -> unit
   val pr_ctxvar : Format.formatter -> string -> unit
   val pr_strlst : Format.formatter -> string list -> unit
-  val pr_block : Format.formatter -> (Term.var * Term.term) list -> unit
-  val pr_blocks : Format.formatter -> (Term.var * Term.term) list list -> unit
+  val pr_block : Format.formatter -> entry list -> unit
+  val pr_blocks : Format.formatter -> entry list list -> unit
   val pr_ctxty : Format.formatter -> ctx_typ -> unit
   val pr_ctxvarlst : Format.formatter -> CtxVarCtx.t -> unit
   val pr_ctxentry : Format.formatter -> Term.var * Term.term -> unit

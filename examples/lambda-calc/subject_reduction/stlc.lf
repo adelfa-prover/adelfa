@@ -3,7 +3,7 @@ arr : {T:ty}{U:ty} ty.
 
 tm : type.
 app : {E1:tm}{E2:tm} tm.
-abs : {R:{x:tm}tm} tm.
+abs : {T:ty}{R:{x:tm}tm} tm.
 
 of : {E:tm}{T:ty}type.
 of_app : {M:tm}{N:tm}{T:ty}{U:ty}
@@ -11,14 +11,11 @@ of_app : {M:tm}{N:tm}{T:ty}{U:ty}
            of (app M N) T.
 of_abs : {R : {x:tm} tm}{T:ty}{U:ty}
            {a1:({x:tm}{z:of x T} of (R x) U)}
-           of (abs ([x] R x)) (arr T U).
+           of (abs T ([x] R x)) (arr T U).
 
 eval : {E1:tm}{E2:tm}type.
-eval_abs : {R: {x:tm} tm}
-             eval (abs ([x] R x)) (abs ([x] R x)).
-eval_app : {M:tm}{N:tm}{V:tm}{R:{x:tm} tm}
-             {a1:eval M (abs ([x] R x))}{a2:eval (R N) V}
+eval_abs : {R: {x:tm} tm}{T:ty}
+             eval (abs T ([x] R x)) (abs T ([x] R x)).
+eval_app : {M:tm}{N:tm}{V:tm}{R:{x:tm} tm}{T:ty}
+             {a1:eval M (abs T ([x] R x))}{a2:eval (R N) V}
              eval (app M N) V.
-
-tm_eq: tm -> tm -> type.
-tm_eq_refl: {E:tm} tm_eq E E.

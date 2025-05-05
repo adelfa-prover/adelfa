@@ -13,7 +13,6 @@ Theorem subject_reduction_lscbn : ctx Gamma:c, forall M1 M2 T D1 D2,
   % beta reduction case.
   case H1.
   apply IH to H14 H8.
-  % QUESTION: prune opportunity?
   case H16.
   inst H20 with n2 = N.
   inst H21 with n3 = D7.

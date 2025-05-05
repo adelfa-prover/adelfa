@@ -63,7 +63,9 @@ let assert_pprint_equal s t =
 let assert_formula_equal s t =
   let s = Formula.map_terms renumber_term s in
   let t = Formula.map_terms renumber_term t in
-  assert_string_equal (Formula.Print.string_of_formula s) (Formula.Print.string_of_formula t)
+  assert_string_equal
+    (Formula.Print.string_of_formula s)
+    (Formula.Print.string_of_formula t)
 ;;
 
 let assert_context_equal g1 g2 =
@@ -158,6 +160,69 @@ let ityvar = Term.var Constant "x" 2 ity
 let atyvar = Term.var Constant "a" 2 aty
 let btyvar = Term.var Constant "b" 2 bty
 let ctyvar = Term.var Constant "c" 2 cty
+
+(* Natural numbers *)
+let nat = const "nat" ity
+let zero = const "zero" ity
+let succ = const "succ" (Type.tyarrow [ ity ] ity)
+let plus = const "plus" (Type.tyarrow [ ity; ity ] ity)
+let plus_zero = const "plus_zero" (Type.tyarrow [ ity ] ity)
+
+let plus_succ =
+  const "plus_succ" (Type.tyarrow [ ity; ity; ity ] (Type.tyarrow [ ity ] ity))
+;;
+
+let nat_decl = Signature.ty_dec "nat" Term.Type 0 (Signature.Prefix 0) []
+let zero_decl = Signature.obj_dec "zero" nat 0 (Signature.Prefix 0)
+
+let succ_decl =
+  Signature.obj_dec
+    "succ"
+    (Term.pi [ term_to_var (const ~ts:2 "x" ity), nat ] nat)
+    0
+    (Signature.Prefix 0)
+;;
+
+let plus_decl =
+  Signature.ty_dec
+    "plus"
+    (Term.pi
+       [ term_to_var (const ~ts:2 "x" ity), nat
+       ; term_to_var (const ~ts:2 "y" ity), nat
+       ; term_to_var (const ~ts:2 "z" ity), nat
+       ]
+       Term.Type)
+    0
+    (Signature.Prefix 0)
+    []
+;;
+
+let plus_zero_decl =
+  let x = const ~ts:2 "x" ity in
+  Signature.obj_dec
+    "plus_zero"
+    (Term.pi [ term_to_var x, nat ] (Term.app plus [ zero; x; x ]))
+    0
+    (Signature.Prefix 0)
+;;
+
+let plus_s_decl =
+  let x = const ~ts:2 "x" ity in
+  let y = const ~ts:2 "y" ity in
+  let z = const ~ts:2 "z" ity in
+  let d = const ~ts:2 "d" ity in
+  Signature.obj_dec
+    "plus_succ"
+    (Term.pi
+       [ term_to_var x, nat
+       ; term_to_var y, nat
+       ; term_to_var z, nat
+       ; term_to_var d, Term.app plus [ x; y; z ]
+       ]
+       (Term.app plus [ Term.app succ [ x ]; y; Term.app succ [ z ] ]))
+    0
+    (Signature.Prefix 0)
+;;
 
 (* eval sample *)
 let tm = const "tm" ity
@@ -321,6 +386,13 @@ let eval_abs_decl =
     (Signature.Prefix 0)
 ;;
 
+let nat_sig =
+  List.fold_left
+    Signature.add_obj_decl
+    (List.fold_left Signature.add_type_decl Signature.empty [ nat_decl; plus_decl ])
+    [ zero_decl; succ_decl; plus_zero_decl; plus_s_decl ]
+;;
+
 let eval_sig =
   List.fold_left
     Signature.add_obj_decl
@@ -355,6 +427,7 @@ let unique_sig =
     ]
 ;;
 
+let nat_sub_rel = Subordination.sub_relation nat_sig
 let eval_sub_rel = Subordination.sub_relation eval_sig
 let unique_sub_rel = Subordination.sub_relation unique_sig
 

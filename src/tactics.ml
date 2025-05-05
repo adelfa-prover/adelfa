@@ -147,9 +147,9 @@ let context_instance
     if Context.CtxVarCtx.mem ctxvar_ctx_form v_form
     then (
       let schema_seq_name = Context.CtxVarCtx.get_var_schema ctxvar_ctx_seq v_seq in
-      let schema_seq_name = Option.default "" schema_seq_name in
+      let schema_seq_name = Option.value ~default:"" schema_seq_name in
       let compatible_schemas = List.assoc_opt v_form compat in
-      Option.map_default (List.mem schema_seq_name) false compatible_schemas)
+      Option.fold ~some:(List.mem schema_seq_name) ~none:false compatible_schemas)
     else false
   in
   let can_instantiate_to_expr v_form g_seq =
@@ -319,7 +319,9 @@ let generate_mappings_for ctxvar_ctx nvars dest_form ?rng src_form =
     |> List.filter (fun x -> VarSet.mem restricted_set (Term.term_to_var x))
   in
   (* Get all nominal constants which we are allowed to generate a mapping to *)
-  let rng = Option.default (Formula.formula_support_sans ctxvar_ctx dest_form) rng in
+  let rng =
+    Option.value ~default:(Formula.formula_support_sans ctxvar_ctx dest_form) rng
+  in
   let rng = List.filter (fun x -> VarSet.mem restricted_set (Term.term_to_var x)) rng in
   (* Allow the identity mapping for any term in the ground formula *)
   let rng = rng @ dom |> List.unique in
@@ -570,7 +572,7 @@ let search ~depth signature sequent =
           let s =
             Context.get_ctx_var g
             |> Context.CtxVarCtx.get_var_restricted sequent.ctxvars
-            |> Option.default VarSet.empty
+            |> Option.value ~default:VarSet.empty
           in
           VarSet.mem s x)
         explicit_names
@@ -1351,7 +1353,7 @@ let apply_arrow
           Context.ctx_var_eq v1 v2 && not (Context.eq d1 d2))
     in
     if Option.is_none (fst !res) then res := new_res;
-    if List.exists can_be_ambiguous (Option.default [] (fst !res))
+    if List.exists can_be_ambiguous (Option.value ~default:[] (fst !res))
     then (
       let subst1, _ = !res in
       let subst2, _ = new_res in
@@ -1509,11 +1511,12 @@ let rec instantiate_withs term (vwiths, cwiths) =
 
 let apply_with ?schemas ~sub_rel sequent formula args (vwiths, cwiths) =
   let schemas =
-    Option.default
-      (Hashtbl.create 1
-       |> fun h ->
-       Hashtbl.add h Context.empty_schema_name [];
-       h)
+    Option.value
+      ~default:
+        (Hashtbl.create 1
+         |> fun h ->
+         Hashtbl.add h Context.empty_schema_name [];
+         h)
       schemas
   in
   (* let formula = Formula.lift_empty_ctx formula in *)

@@ -55,7 +55,7 @@ val fresh_raised_alist
   -> (id * term) list * term list
 
 val collect_vars_ctx : formula -> Term.var list
-val collect_terms : CtxVarCtx.t -> formula -> term list
+val collect_terms : ?cond:(formula -> bool) -> CtxVarCtx.t -> formula -> term list
 val replace_formula_vars : (id * term) list -> formula -> formula
 
 val replace_formula_vars_rename
@@ -81,22 +81,22 @@ val block_sim
 (** [block_in_schema_sub f ctx_var sub_rel b c] checks if the block [b] is in
     the schema [c] with respect to [sub_rel], [f], and [ctx_var]. *)
 val block_in_schema_sub
-  :  formula
+  :  dest_block:Context.block_schema
+  -> src_schema:Context.ctx_schema
+  -> formula
   -> Context.ctx_var
   -> Subordination.sub_rel
-  -> Context.block_schema
-  -> Context.ctx_schema
   -> bool
 
 (** [schema_transports f ctx_var sub_rel c1 c2] checks if [ctx_var] in a formula
     [f] can be transported from a context schema [c1] to a context schema [c2]
     with respect to [sub_rel]. *)
 val schema_transports
-  :  formula
-  -> Context.ctx_var
+  :  src_schema:Context.ctx_schema
+  -> dest_schema:Context.ctx_schema
+  -> ctx_var:Context.ctx_var
   -> Subordination.sub_rel
-  -> Context.ctx_schema
-  -> Context.ctx_schema
+  -> formula
   -> bool
 
 (** [get_compatible_context_schemas ctx_schemas sub_rel f] returns a list of
