@@ -1,6 +1,6 @@
   $ adelfa -i even-or-odd.ath
   Welcome!
-  >> Specification even-or-odd.lf.
+  >> Specification "even-or-odd.lf".
   
   >> Theorem even-or-odd:
       forall  N,

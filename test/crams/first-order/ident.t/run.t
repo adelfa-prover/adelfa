@@ -1,6 +1,6 @@
   $ adelfa -i ident.ath
   Welcome!
-  >> Specification ident.lf.
+  >> Specification "ident.lf".
   
   >> Theorem identity:
       exists  I,

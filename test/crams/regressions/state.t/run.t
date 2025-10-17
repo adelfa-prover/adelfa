@@ -1,14 +1,14 @@
   $ adelfa -i double-spec.ath
   Welcome!
-  >> Specification stlc.lf.
+  >> Specification "stlc.lf".
   
-  >> Specification stlc.lf.
+  >> Specification "stlc.lf".
   Error: Specification file already given. Not reading `stlc.lf'
   [1]
 
   $ adelfa -i abort.ath
   Welcome!
-  >> Specification stlc.lf.
+  >> Specification "stlc.lf".
   
   >> Schema f := {}(y:tm).
   
@@ -56,7 +56,7 @@
 
   $ adelfa -i undo-complete.ath
   Welcome!
-  >> Specification stlc.lf.
+  >> Specification "stlc.lf".
   
   >> Theorem undo-complete-formula: forall  X, {X : tm} => exists  E, {E : tm}.
   
@@ -106,7 +106,7 @@
 
   $ adelfa -i undo-toplevel.ath
   Welcome!
-  >> Specification stlc.lf.
+  >> Specification "stlc.lf".
   
   >> Schema c := {}(x:tm).
   

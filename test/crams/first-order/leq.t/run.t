@@ -1,6 +1,6 @@
   $ adelfa -i leq-properties.ath
   Welcome!
-  >> Specification leq-properties.lf.
+  >> Specification "leq-properties.lf".
   
   >> Theorem plus-zero-id:
       forall  x1, {x1 : nat} => exists  D, {D : plus x1 z x1}.

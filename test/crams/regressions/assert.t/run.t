@@ -1,6 +1,6 @@
   $ adelfa -i assertion.ath
   Welcome!
-  >> Specification stlc.lf.
+  >> Specification "stlc.lf".
   
   >> Theorem new-nominals: forall  X, {X : tm} => false.
   

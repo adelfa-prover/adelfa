@@ -1,6 +1,6 @@
   $ adelfa -i map.ath
   Welcome!
-  >> Specification map.lf.
+  >> Specification "map.lf".
   
   >> Theorem map-eq:
       forall  L1 L2 L3 D1 D2 f,

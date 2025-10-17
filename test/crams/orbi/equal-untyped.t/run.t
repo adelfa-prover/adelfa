@@ -1,6 +1,6 @@
   $ adelfa -i equal-untyped.ath
   Welcome!
-  >> Specification equal-untyped.lf.
+  >> Specification "equal-untyped.lf".
   
   >> Schema xG := {}(x:tm).
   

@@ -1,6 +1,6 @@
   $ adelfa -i size.ath
   Welcome!
-  >> Specification size.lf.
+  >> Specification "size.lf".
   
   >> Theorem plus-exist:
       forall  N1 N2,

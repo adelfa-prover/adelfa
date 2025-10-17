@@ -1,6 +1,6 @@
   $ adelfa -i append.ath
   Welcome!
-  >> Specification append.lf.
+  >> Specification "append.lf".
   
   >> Theorem app-nil: forall  L, {L : list} => exists  D, {D : append L nil L}.
   

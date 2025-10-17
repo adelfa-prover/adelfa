@@ -1,7 +1,7 @@
 Since these tests share a single specification file, group them here
   $ adelfa -i generalized.ath
   Welcome!
-  >> Specification generalized.lf.
+  >> Specification "generalized.lf".
   
   >> Schema c := {T}(x:tm,y:of x T).
   
@@ -634,7 +634,7 @@ Since these tests share a single specification file, group them here
 
   $ adelfa -i small_step.ath
   Welcome!
-  >> Specification reduce.lf.
+  >> Specification "reduce.lf".
   
   >> Schema c := {T}(x:tm,y:of x T).
   
@@ -1209,7 +1209,7 @@ Since these tests share a single specification file, group them here
 
   $ adelfa -i large_step.ath
   Welcome!
-  >> Specification reduce.lf.
+  >> Specification "reduce.lf".
   
   >> Schema c := {T}(x:tm,y:of x T).
   

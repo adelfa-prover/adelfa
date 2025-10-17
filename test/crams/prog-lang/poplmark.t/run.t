@@ -1,6 +1,6 @@
   $ adelfa -i 1a.ath
   Welcome!
-  >> Specification 1a.lf.
+  >> Specification "1a.lf".
   
   >> Schema c := {U}(w:ty,x:var w,y:bound w U,z:bound_var w U y x);
       {}(x:ty,y:var x); {V T DV}(x:bound V T,y:bound_var V T x DV).

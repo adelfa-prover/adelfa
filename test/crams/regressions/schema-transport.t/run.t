@@ -1,6 +1,6 @@
   $ adelfa -i schema-transport.ath
   Welcome!
-  >> Specification schema-transport.lf.
+  >> Specification "schema-transport.lf".
   
   >> Schema onlyTerm := {}(x:tm).
   

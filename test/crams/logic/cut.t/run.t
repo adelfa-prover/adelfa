@@ -1,6 +1,6 @@
   $ adelfa -i cut.ath
   Welcome!
-  >> Specification cut.lf.
+  >> Specification "cut.lf".
   
   >> Schema c := {A}(x:hyp A).
   

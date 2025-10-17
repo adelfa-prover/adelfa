@@ -1,6 +1,6 @@
   $ adelfa -i arith.ath
   Welcome!
-  >> Specification arith.lf.
+  >> Specification "arith.lf".
   
   >> Schema c := {}(x:nat).
   

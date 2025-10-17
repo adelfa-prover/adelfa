@@ -1,6 +1,6 @@
   $ adelfa -i lists.ath
   Welcome!
-  >> Specification lists.lf.
+  >> Specification "lists.lf".
   
   >> Theorem Lemma1:
       forall  L1 L2 L3 L4 D1 D2,

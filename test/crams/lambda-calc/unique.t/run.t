@@ -1,6 +1,6 @@
   $ adelfa -i unique.ath
   Welcome!
-  >> Specification unique.lf.
+  >> Specification "unique.lf".
   
   >> Schema c := {T}(x:tm,y:of x T).
   

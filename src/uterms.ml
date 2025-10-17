@@ -435,7 +435,7 @@ module Print = struct
       Format.fprintf ppf "@[<4>Theorem@ %a@,:@ %a.@]" pr_str name pr_uform uform
     | Schema (name, uschema) ->
       Format.fprintf ppf "@[<4>Schema@ %a@ :=@ %a.@]" pr_str name pr_uschema uschema
-    | Specification name -> Format.fprintf ppf "@[<4>Specification@ %a.@]" pr_str name
+    | Specification name -> Format.fprintf ppf "@[<4>Specification@ \"%a\".@]" pr_str name
     | Quit -> pr_str ppf "Quit."
     | Define (aid, defs) ->
       Format.fprintf ppf "@[<4>Define@ %a@ by\n%a.@]" pr_aid aid pr_udefs defs
