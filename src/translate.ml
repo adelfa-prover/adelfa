@@ -10,6 +10,7 @@ type typing_error =
   | BadProp of pos
   | UnknownContext of pos * Context.ctx_var
   | UnknownConstant of pos * Term.id
+  | DuplicateSchemaVar of pos * Term.id
   | Other of pos * string
 
 exception TypingError of typing_error
@@ -34,6 +35,7 @@ let get_error_pos = function
   | UnknownConstant (pos, _)
   | TooManyArgs pos
   | Other (pos, _) -> pos
+  | DuplicateSchemaVar (pos, _) -> pos
 ;;
 
 let explain_error = function
@@ -51,6 +53,7 @@ let explain_error = function
   | BadProp _ -> "Expected a defined expression."
   | UnknownContext (_, id) -> "unknown context variable " ^ id
   | UnknownConstant (_, id) -> "unknown constant " ^ id
+  | DuplicateSchemaVar (_, id) -> "schema entry's variable " ^ id ^ " declared twice"
   | Other (_, s) -> s
 ;;
 
@@ -436,7 +439,9 @@ let trans_schema lf_sig ublock_schemas =
     let logicvar_ctx = List.map (fun (_, id) -> id, ref None) locids in
     let entry_list =
       List.fold_left
-        (fun prev_entries (_, id, utm) ->
+        (fun prev_entries (entry_pos, id, utm) ->
+          if List.exists (fun (b, _) -> id = b.Term.name) prev_entries
+          then raise (TypingError (DuplicateSchemaVar (entry_pos, id)));
           let tm, nvar_ctx =
             trans_term
               lf_sig

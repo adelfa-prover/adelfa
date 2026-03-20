@@ -9,6 +9,7 @@ type typing_error =
   | BadProp of Uterms.pos
   | UnknownContext of Uterms.pos * Context.ctx_var
   | UnknownConstant of Uterms.pos * Term.id
+  | DuplicateSchemaVar of Uterms.pos * Term.id
   | Other of Uterms.pos * string
 
 exception TypingError of typing_error
